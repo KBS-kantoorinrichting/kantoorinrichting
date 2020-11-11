@@ -7,10 +7,10 @@ namespace Model
     public class Product
     {
         public int ProductId { get; set; }
-        public string Naam { get; set; }
+        public string Name { get; set; }
         #nullable enable
-        public double? Prijs { get; set; }
-        public string? Foto { get; set; }
+        public double? Price { get; set; }
+        public string? Photo { get; set; }
         #nullable disable
     }
 }
