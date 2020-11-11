@@ -8,8 +8,8 @@ using Model;
 
 namespace Model.Migrations
 {
-    [DbContext(typeof(SpaceDesignContext))]
-    partial class SpaceDesignContextModelSnapshot : ModelSnapshot
+    [DbContext(typeof(RoomDesignContext))]
+    partial class RoomDesignContextModelSnapshot : ModelSnapshot
     {
         protected override void BuildModel(ModelBuilder modelBuilder)
         {
@@ -26,12 +26,12 @@ namespace Model.Migrations
                         .HasColumnType("int")
                         .UseIdentityColumn();
 
-                    b.Property<int>("SpaceId")
+                    b.Property<int>("RoomId")
                         .HasColumnType("int");
 
                     b.HasKey("DesignId");
 
-                    b.HasIndex("SpaceId");
+                    b.HasIndex("RoomId");
 
                     b.ToTable("Designs");
                 });
@@ -54,7 +54,7 @@ namespace Model.Migrations
 
                     b.HasKey("ProductId");
 
-                    b.ToTable("Producten");
+                    b.ToTable("Products");
                 });
 
             modelBuilder.Entity("Model.ProductPlacement", b =>
@@ -85,9 +85,9 @@ namespace Model.Migrations
                     b.ToTable("ProductPlacements");
                 });
 
-            modelBuilder.Entity("Model.Space", b =>
+            modelBuilder.Entity("Model.Room", b =>
                 {
-                    b.Property<int>("SpaceId")
+                    b.Property<int>("RoomId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .UseIdentityColumn();
@@ -101,20 +101,20 @@ namespace Model.Migrations
                     b.Property<int>("Width")
                         .HasColumnType("int");
 
-                    b.HasKey("SpaceId");
+                    b.HasKey("RoomId");
 
-                    b.ToTable("Spaces");
+                    b.ToTable("Rooms");
                 });
 
             modelBuilder.Entity("Model.Design", b =>
                 {
-                    b.HasOne("Model.Space", "Space")
+                    b.HasOne("Model.Room", "Room")
                         .WithMany()
-                        .HasForeignKey("SpaceId")
+                        .HasForeignKey("RoomId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Space");
+                    b.Navigation("Room");
                 });
 
             modelBuilder.Entity("Model.ProductPlacement", b =>

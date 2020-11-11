@@ -7,7 +7,7 @@ namespace Model.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "Producten",
+                name: "Products",
                 columns: table => new
                 {
                     ProductId = table.Column<int>(type: "int", nullable: false)
@@ -18,14 +18,14 @@ namespace Model.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Producten", x => x.ProductId);
+                    table.PrimaryKey("PK_Products", x => x.ProductId);
                 });
 
             migrationBuilder.CreateTable(
-                name: "Spaces",
+                name: "Rooms",
                 columns: table => new
                 {
-                    SpaceId = table.Column<int>(type: "int", nullable: false)
+                    RoomId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Width = table.Column<int>(type: "int", nullable: false),
@@ -33,7 +33,7 @@ namespace Model.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Spaces", x => x.SpaceId);
+                    table.PrimaryKey("PK_Rooms", x => x.RoomId);
                 });
 
             migrationBuilder.CreateTable(
@@ -42,16 +42,16 @@ namespace Model.Migrations
                 {
                     DesignId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    SpaceId = table.Column<int>(type: "int", nullable: false)
+                    RoomId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Designs", x => x.DesignId);
                     table.ForeignKey(
-                        name: "FK_Designs_Spaces_SpaceId",
-                        column: x => x.SpaceId,
-                        principalTable: "Spaces",
-                        principalColumn: "SpaceId",
+                        name: "FK_Designs_Rooms_RoomId",
+                        column: x => x.RoomId,
+                        principalTable: "Rooms",
+                        principalColumn: "RoomId",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -76,17 +76,17 @@ namespace Model.Migrations
                         principalColumn: "DesignId",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_ProductPlacements_Producten_ProductId",
+                        name: "FK_ProductPlacements_Products_ProductId",
                         column: x => x.ProductId,
-                        principalTable: "Producten",
+                        principalTable: "Products",
                         principalColumn: "ProductId",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_Designs_SpaceId",
+                name: "IX_Designs_RoomId",
                 table: "Designs",
-                column: "SpaceId");
+                column: "RoomId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_ProductPlacements_DesignId",
@@ -108,10 +108,10 @@ namespace Model.Migrations
                 name: "Designs");
 
             migrationBuilder.DropTable(
-                name: "Producten");
+                name: "Products");
 
             migrationBuilder.DropTable(
-                name: "Spaces");
+                name: "Rooms");
         }
     }
 }

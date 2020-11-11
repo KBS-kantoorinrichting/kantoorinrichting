@@ -7,12 +7,11 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Model
 {
-    public class SpaceDesignContext : DbContext
+    public class RoomDesignContext : DbContext
     {
-        public DbSet<Space> Spaces { get; set; }
+        public DbSet<Room> Rooms { get; set; }
         public DbSet<Design> Designs { get; set; }
-        public DbSet<Product> Producten { get; set; }
-
+        public DbSet<Product> Products { get; set; }
         public DbSet<ProductPlacement> ProductPlacements { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder options)

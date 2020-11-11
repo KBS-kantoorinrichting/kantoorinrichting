@@ -4,9 +4,9 @@ using System.Text;
 
 namespace Model
 {
-    public class Space
+    public class Room
     {
-        public int SpaceId { get; set; }
+        public int RoomId { get; set; }
         public string Name { get; set; }
 
         public int Width { get; set; }

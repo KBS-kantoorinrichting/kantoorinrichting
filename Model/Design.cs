@@ -8,8 +8,8 @@ namespace Model
     {
         public int DesignId { get; set; }
         
-        public int SpaceId { get; set; }
-        public Space Space { get; set; }
+        public int RoomId { get; set; }
+        public Room Room { get; set; }
 
         public List<ProductPlacement> ProductPlacements { get; set; }
     }
