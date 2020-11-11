@@ -12,7 +12,5 @@ namespace Model
         public int Width { get; set; }
         public int Height { get; set; }
 
-        public int InstitutionId { get; set; }
-        public Institution Institution { get; set; }
     }
 }
