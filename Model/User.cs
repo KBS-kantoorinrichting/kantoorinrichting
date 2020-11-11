@@ -11,5 +11,7 @@ namespace Model
         public string Password { get; set; }
         public int InstitutionId { get; set; }
         public Institution Institution { get; set; }
+
+        public List<Design> Designs { get; set; }
     }
 }

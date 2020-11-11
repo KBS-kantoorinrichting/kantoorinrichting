@@ -12,5 +12,7 @@ namespace Model
         public double? Price { get; set; }
         public string? Photo { get; set; }
         #nullable disable
+
+        public List<ProductPlacement> ProductPlacements { get; set; }
     }
 }

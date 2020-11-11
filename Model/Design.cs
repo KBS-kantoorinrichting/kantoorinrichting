@@ -11,6 +11,9 @@ namespace Model
         public int SpaceId { get; set; }
         public Space Space { get; set; }
 
-        public List<ProductPlacement> ProductPlacements = new List<ProductPlacement>();
+        public int UserId { get; set; }
+        public User User { get; set; }
+
+        public List<ProductPlacement> ProductPlacements { get; set; }
     }
 }
