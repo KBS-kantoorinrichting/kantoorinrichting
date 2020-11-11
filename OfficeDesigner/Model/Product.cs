@@ -2,16 +2,14 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Model
+namespace OfficeDesigner.Model
 {
     public class Product
     {
         public int ProductId { get; set; }
         public string Name { get; set; }
-        #nullable enable
         public double? Price { get; set; }
-        public string? Photo { get; set; }
-        #nullable disable
+        public string Photo { get; set; }
 
         public List<ProductPlacement> ProductPlacements { get; set; }
     }

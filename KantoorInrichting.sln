@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.30413.136
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Model", "Model\Model.csproj", "{BA0725A3-92FA-417D-B529-8736DF896A6C}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OfficeDesigner", "OfficeDesigner\OfficeDesigner.csproj", "{6F820AAF-3B1C-48FA-8347-DA425046A71B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -11,10 +11,10 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{BA0725A3-92FA-417D-B529-8736DF896A6C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{BA0725A3-92FA-417D-B529-8736DF896A6C}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{BA0725A3-92FA-417D-B529-8736DF896A6C}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{BA0725A3-92FA-417D-B529-8736DF896A6C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6F820AAF-3B1C-48FA-8347-DA425046A71B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6F820AAF-3B1C-48FA-8347-DA425046A71B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6F820AAF-3B1C-48FA-8347-DA425046A71B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6F820AAF-3B1C-48FA-8347-DA425046A71B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

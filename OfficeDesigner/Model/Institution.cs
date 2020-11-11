@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Model
+namespace OfficeDesigner.Model
 {
     public class Institution
     {
