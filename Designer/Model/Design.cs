@@ -2,12 +2,13 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Model
+namespace Designer.Model
 {
     public class Design
     {
         public int DesignId { get; set; }
-        
+        public string Name { get; set; }
+
         public int RoomId { get; set; }
         public Room Room { get; set; }
 

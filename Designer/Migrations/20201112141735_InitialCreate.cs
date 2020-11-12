@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore.Migrations;
 
-namespace Model.Migrations
+namespace Designer.Migrations
 {
     public partial class InitialCreate : Migration
     {
@@ -14,7 +14,9 @@ namespace Model.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Price = table.Column<double>(type: "float", nullable: true),
-                    Photo = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    Photo = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Width = table.Column<int>(type: "int", nullable: false),
+                    Length = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -29,7 +31,7 @@ namespace Model.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Width = table.Column<int>(type: "int", nullable: false),
-                    Height = table.Column<int>(type: "int", nullable: false)
+                    Length = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -42,6 +44,7 @@ namespace Model.Migrations
                 {
                     DesignId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     RoomId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>

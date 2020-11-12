@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Model
+namespace Designer.Model
 {
     public class Product
     {
@@ -12,7 +12,8 @@ namespace Model
         public double? Price { get; set; }
         public string? Photo { get; set; }
         #nullable disable
-
+        public int Width { get; set; }
+        public int Length { get; set; }
         public List<ProductPlacement> ProductPlacements { get; set; }
     }
 }
