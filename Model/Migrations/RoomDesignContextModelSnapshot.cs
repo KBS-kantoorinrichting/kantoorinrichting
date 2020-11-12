@@ -26,6 +26,9 @@ namespace Model.Migrations
                         .HasColumnType("int")
                         .UseIdentityColumn();
 
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<int>("RoomId")
                         .HasColumnType("int");
 
@@ -43,6 +46,9 @@ namespace Model.Migrations
                         .HasColumnType("int")
                         .UseIdentityColumn();
 
+                    b.Property<int>("Length")
+                        .HasColumnType("int");
+
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
 
@@ -51,6 +57,9 @@ namespace Model.Migrations
 
                     b.Property<double?>("Price")
                         .HasColumnType("float");
+
+                    b.Property<int>("Width")
+                        .HasColumnType("int");
 
                     b.HasKey("ProductId");
 
@@ -92,7 +101,7 @@ namespace Model.Migrations
                         .HasColumnType("int")
                         .UseIdentityColumn();
 
-                    b.Property<int>("Height")
+                    b.Property<int>("Length")
                         .HasColumnType("int");
 
                     b.Property<string>("Name")

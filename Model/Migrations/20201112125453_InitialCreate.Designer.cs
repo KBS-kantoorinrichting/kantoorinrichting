@@ -10,7 +10,7 @@ using Model;
 namespace Model.Migrations
 {
     [DbContext(typeof(RoomDesignContext))]
-    [Migration("20201111214907_InitialCreate")]
+    [Migration("20201112125453_InitialCreate")]
     partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -27,6 +27,9 @@ namespace Model.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .UseIdentityColumn();
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("RoomId")
                         .HasColumnType("int");
@@ -45,6 +48,9 @@ namespace Model.Migrations
                         .HasColumnType("int")
                         .UseIdentityColumn();
 
+                    b.Property<int>("Length")
+                        .HasColumnType("int");
+
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
 
@@ -53,6 +59,9 @@ namespace Model.Migrations
 
                     b.Property<double?>("Price")
                         .HasColumnType("float");
+
+                    b.Property<int>("Width")
+                        .HasColumnType("int");
 
                     b.HasKey("ProductId");
 
@@ -94,7 +103,7 @@ namespace Model.Migrations
                         .HasColumnType("int")
                         .UseIdentityColumn();
 
-                    b.Property<int>("Height")
+                    b.Property<int>("Length")
                         .HasColumnType("int");
 
                     b.Property<string>("Name")
