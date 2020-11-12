@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace OfficeDesigner.Model
+namespace Model
 {
     public class Product
     {

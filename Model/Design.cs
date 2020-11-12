@@ -2,17 +2,14 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace OfficeDesigner.Model
+namespace Model
 {
     public class Design
     {
         public int DesignId { get; set; }
         
-        public int SpaceId { get; set; }
-        public Space Space { get; set; }
-
-        public int UserId { get; set; }
-        public User User { get; set; }
+        public int RoomId { get; set; }
+        public Room Room { get; set; }
 
         public List<ProductPlacement> ProductPlacements { get; set; }
     }
