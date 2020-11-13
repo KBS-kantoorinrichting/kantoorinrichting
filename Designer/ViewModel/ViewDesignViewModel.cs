@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Text;
+using System.Windows;
 
 namespace Designer.ViewModel
 {
@@ -27,9 +28,17 @@ namespace Designer.ViewModel
                 return List;
             }
         }
+        private Design Design { get; set; }
+        public List<ProductPlacement> ProductPlacements { get; set; } = new List<ProductPlacement>();
 
-        public ViewDesignViewModel()
+        public int Width { get; set; } = 200;
+        public int Length { get; set; } = 500;
+
+        public ViewDesignViewModel() { }
+        public ViewDesignViewModel(Design design)
         {
+            Design = design;
+            ProductPlacements = design.ProductPlacements;
         }
 
     }

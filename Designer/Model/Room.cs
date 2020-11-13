@@ -13,6 +13,5 @@ namespace Designer.Model
 
         public int Width { get; set; }
         public int Length { get; set; }
-
     }
 }
