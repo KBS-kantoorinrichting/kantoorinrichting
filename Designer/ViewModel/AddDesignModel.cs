@@ -7,6 +7,7 @@ using Designer.Model;
 
 namespace Designer.ViewModel {
     
+    //Command wat een actie uitvoert geen async
     public class DefaultCommand : ICommand {
         private readonly Action _action;
         public bool CanExecute(object parameter) => true;
@@ -25,6 +26,7 @@ namespace Designer.ViewModel {
         public string Name { get; set; }
         public ICommand Submit { get ; set; }
 
+        //Wordt aangeroepen wanneer het design toegevoegd is
         public event EventHandler<DesignAddedArgs> DesignAdded;
 
         public AddDesignModel() {

@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using dotenv.net;
 using dotenv.net.Utilities;
 using Microsoft.EntityFrameworkCore;
@@ -10,18 +6,19 @@ using Microsoft.EntityFrameworkCore;
 namespace Designer.Model
 {
     public class RoomDesignContext : DbContext {
+        //Zorgt er voor dat er maar 1 instance van de context bestaat.
         private static RoomDesignContext _instance;
         public static RoomDesignContext Instance {
             get => _instance ??= new RoomDesignContext();
             set => _instance = value;
         }
 
-        private bool _ignore = false;
-
         protected RoomDesignContext() {
         }
 
-        public RoomDesignContext(DbContextOptions options) : base(options) => _ignore = true;
+        //Alternative constructor zodat er de db getest kan worden.
+        public RoomDesignContext(DbContextOptions options) : base(options) {
+        }
 
         public virtual DbSet<Room> Rooms { get; set; }
         public virtual DbSet<Design> Designs { get; set; }
@@ -29,7 +26,7 @@ namespace Designer.Model
         public virtual DbSet<ProductPlacement> ProductPlacements { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder options) {
-            if (_ignore) return;
+            if (options.IsConfigured) return;
             Console.WriteLine("[RoomDesignContext] Currently running in: " + Environment.CurrentDirectory);
             //Load the .env file from the project root
             DotEnv.Config(true, Environment.CurrentDirectory + @"\..\..\..\..\.env");
