@@ -28,8 +28,6 @@ namespace Designer.View
         public ExamplePage()
         {
             InitializeComponent();
-            AddDesign addDesign = new AddDesign();
-            addDesign.Show();
         }
     }
 }

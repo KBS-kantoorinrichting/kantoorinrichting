@@ -7,9 +7,9 @@
         mc:Ignorable="d"
         Title="Kantoor Ontwerper" Height="450" Width="800">
 
-    <Window.Resources>
-        <viewModel:MainViewModel x:Key="ViewModel"/>
-    </Window.Resources>
+    <Window.DataContext>
+        <viewModel:MainViewModel/>
+    </Window.DataContext>
     <Grid>
         <DockPanel x:Name="Window" LastChildFill="False">
             <Menu DockPanel.Dock="Top" Height="20" VerticalAlignment="Top">
@@ -17,11 +17,11 @@
                     <MenuItem Header="TODO"/>
                     <MenuItem Header="Afsluiten" Click="ExitApplication"/>
                 </MenuItem>
-                <MenuItem Header="Ruimtes" Click="MenuItemNagivateExamplePage" />
-                <MenuItem Header="Product catalogus" Click="MenuItemNagivateExamplePage" />
+                <MenuItem Header="Ruimtes" Click="MenuItemNavigateExamplePage" />
+                <MenuItem Header="Product catalogus" Click="MenuItemNavigateExamplePage" />
+                <MenuItem Header="Ontwerp toevoegen" Click="MenuItemNavigateAddDesignPage" />
             </Menu>
-            <Label Content="{Binding TrackName, Mode=OneWay}" Width="355" RenderTransformOrigin="0.446,-0.528" Height="411"/>
         </DockPanel>
-        <Frame Name="Container" NavigationUIVisibility="Hidden" Grid.Row="1"></Frame>
+        <Frame Name="Container" NavigationUIVisibility="Hidden" Margin="0,20,0,0"/>
     </Grid>
 </Window>
