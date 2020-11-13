@@ -8,15 +8,13 @@
         Title="MainWindow" Height="450" Width="800">
 
     <Window.Resources>
-        <viewModel:MainViewModel x:Key="ViewModel"/>
+        <viewModel:MainViewModel x:Key="ViewModel" />
     </Window.Resources>
     <Grid>
         <Label HorizontalAlignment="Left" Margin="295,285,0,0" VerticalAlignment="Top">
             <Label.Content>
-                    <Binding Source="{StaticResource ViewModel}" Path="Test" UpdateSourceTrigger="PropertyChanged">
-
-                    </Binding>
-                </Label.Content>
-            </Label>
-        </Grid>
+                <Binding Source="{StaticResource ViewModel}" Path="Test" UpdateSourceTrigger="PropertyChanged" />
+            </Label.Content>
+        </Label>
+    </Grid>
 </Window>

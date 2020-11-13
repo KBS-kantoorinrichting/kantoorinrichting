@@ -23,6 +23,8 @@ namespace Designer.View
         public MainWindow()
         {
             InitializeComponent();
+            AddDesign addDesign = new AddDesign();
+            addDesign.Show();
         }
     }
 }
