@@ -14,5 +14,13 @@ namespace Designer.Model
         public int Width { get; set; }
         public int Length { get; set; }
 
+        public Room() { }
+
+        public Room(int roomId, string name, int width, int length) {
+            RoomId = roomId;
+            Name = name;
+            Width = width;
+            Length = length;
+        }
     }
 }

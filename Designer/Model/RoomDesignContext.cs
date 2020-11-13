@@ -11,15 +11,25 @@ namespace Designer.Model
 {
     public class RoomDesignContext : DbContext {
         private static RoomDesignContext _instance;
-        public static RoomDesignContext Instance => _instance ??= new RoomDesignContext();
+        public static RoomDesignContext Instance {
+            get => _instance ??= new RoomDesignContext();
+            set => _instance = value;
+        }
 
-        public DbSet<Room> Rooms { get; set; }
-        public DbSet<Design> Designs { get; set; }
-        public DbSet<Product> Products { get; set; }
-        public DbSet<ProductPlacement> ProductPlacements { get; set; }
+        private bool _ignore = false;
 
-        protected override void OnConfiguring(DbContextOptionsBuilder options)
-        {
+        protected RoomDesignContext() {
+        }
+
+        public RoomDesignContext(DbContextOptions options) : base(options) => _ignore = true;
+
+        public virtual DbSet<Room> Rooms { get; set; }
+        public virtual DbSet<Design> Designs { get; set; }
+        public virtual DbSet<Product> Products { get; set; }
+        public virtual DbSet<ProductPlacement> ProductPlacements { get; set; }
+
+        protected override void OnConfiguring(DbContextOptionsBuilder options) {
+            if (_ignore) return;
             Console.WriteLine("[RoomDesignContext] Currently running in: " + Environment.CurrentDirectory);
             //Load the .env file from the project root
             DotEnv.Config(true, Environment.CurrentDirectory + @"\..\..\..\..\.env");

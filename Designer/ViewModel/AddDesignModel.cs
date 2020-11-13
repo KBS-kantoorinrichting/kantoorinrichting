@@ -2,19 +2,17 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
-using System.Threading.Tasks;
 using System.Windows.Input;
 using Designer.Model;
 
 namespace Designer.ViewModel {
-    public delegate dynamic Runnable();
     
     public class DefaultCommand : ICommand {
-        private readonly Runnable _action;
+        private readonly Action _action;
         public bool CanExecute(object parameter) => true;
         public void Execute(object parameter) => _action?.Invoke();
 
-        public DefaultCommand(Runnable action) { _action = action; }
+        public DefaultCommand(Action action) { _action = action; }
 
         public event EventHandler CanExecuteChanged;
     }
@@ -38,9 +36,9 @@ namespace Designer.ViewModel {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
-        public async Task AddDesign() {
+        public void AddDesign() {
             Design design = CreateDesign(Name, Selected);
-            design = await SaveDesign(design);
+            design = SaveDesign(design);
             DesignAdded?.Invoke(this, new DesignAddedArgs(design));
         }
 
@@ -52,10 +50,10 @@ namespace Designer.ViewModel {
             return new Design(name, room, new List<ProductPlacement>());
         }
 
-        public static async Task<Design> SaveDesign(Design design) {
+        public static Design SaveDesign(Design design) {
             RoomDesignContext context = RoomDesignContext.Instance;
-            design = (await context.Designs.AddAsync(design)).Entity;
-            await context.SaveChangesAsync();
+            design = context.Add(design).Entity;
+            context.SaveChanges();
             return design;
         }
     }
