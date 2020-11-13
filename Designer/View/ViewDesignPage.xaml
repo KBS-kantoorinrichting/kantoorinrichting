@@ -9,6 +9,15 @@
       Title="ViewDesignPage">
 
     <Grid>
-        
+        <TabControl x:Name="Tabs" Margin="540,0,0,0" HorizontalAlignment="Left" Width="260">
+            <TabItem Header="Catalogus">
+                <Grid Background="#FFE5E5E5"/>
+            </TabItem>
+            <TabItem Header="Overzicht">
+                <Grid Background="#FFE5E5E5"/>
+            </TabItem>
+        </TabControl>
+        <Canvas x:Name="Editor" Margin="0,0,265,0"/>
+
     </Grid>
 </Page>
