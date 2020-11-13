@@ -23,11 +23,17 @@ namespace Designer
             InitializeComponent();
         }
 
-        private void MenuItemNagivateExamplePage(object sender, RoutedEventArgs e)
+        private void MenuItemNavigateExamplePage(object sender, RoutedEventArgs e)
         {
             ExamplePage page = new ExamplePage();
             this.Container.Content = page;
             page.ParentWindow = this;
+        }
+
+        private void MenuItemNavigateAddDesignPage(object sender, RoutedEventArgs e)
+        {
+            AddDesign page = new AddDesign();
+            this.Container.Content = page;
         }
 
         private void ExitApplication(object sender, RoutedEventArgs e)
