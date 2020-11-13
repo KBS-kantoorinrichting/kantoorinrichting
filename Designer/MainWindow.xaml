@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:viewModel="clr-namespace:Designer.ViewModel"
         mc:Ignorable="d"
-        Title="Kantoor Ontwerper" Height="450" Width="800">
+        Title="Kantoor Ontwerper" Height="720" Width="1280">
 
     <Window.Resources>
         <viewModel:MainViewModel x:Key="ViewModel"/>
@@ -18,10 +18,11 @@
                     <MenuItem Header="Afsluiten" Click="ExitApplication"/>
                 </MenuItem>
                 <MenuItem Header="Ruimtes" Click="MenuItemNagivateExamplePage" />
+                <MenuItem Header="Ruimte maken" Click="MenuItemNagivateRoomEditor" />
                 <MenuItem Header="Product catalogus" Click="MenuItemNagivateExamplePage" />
             </Menu>
-            <Label Content="{Binding TrackName, Mode=OneWay}" Width="355" RenderTransformOrigin="0.446,-0.528" Height="411"/>
+            <Label Content="{Binding TrackName, Mode=OneWay}" Width="1280" RenderTransformOrigin="0.446,-0.528" Height="720"/>
         </DockPanel>
-        <Frame Name="Container" NavigationUIVisibility="Hidden" Grid.Row="1"></Frame>
+        <Frame Name="Container" NavigationUIVisibility="Hidden" Grid.Row="1" Navigated="Container_Navigated"></Frame>
     </Grid>
 </Window>
