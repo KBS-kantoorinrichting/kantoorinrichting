@@ -9,8 +9,10 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Designer.Model
 {
-    public class RoomDesignContext : DbContext
-    {
+    public class RoomDesignContext : DbContext {
+        private static RoomDesignContext _instance;
+        public static RoomDesignContext Instance => _instance ??= new RoomDesignContext();
+
         public DbSet<Room> Rooms { get; set; }
         public DbSet<Design> Designs { get; set; }
         public DbSet<Product> Products { get; set; }
