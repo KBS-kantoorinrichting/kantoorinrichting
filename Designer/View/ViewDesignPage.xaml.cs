@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Designer.Model;
+using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Windows;
@@ -14,14 +15,16 @@ using System.Windows.Shapes;
 namespace Designer.View
 {
     /// <summary>
-    /// Interaction logic for ExamplePage.xaml
+    /// Interaction logic for ViewDesignPage.xaml
     /// </summary>
-    public partial class ExamplePage : Page
+    public partial class ViewDesignPage : Page
     {
-        public Window ParentWindow { get; set; }
+        public Design Design;
 
-        public ExamplePage()
+        public Window ParentWindow { get; set; }
+        public ViewDesignPage(Design Design)
         {
+            this.Design = Design;
             InitializeComponent();
         }
     }

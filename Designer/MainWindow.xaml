@@ -19,6 +19,7 @@
                 </MenuItem>
                 <MenuItem Header="Ruimtes" Click="MenuItemNagivateExamplePage" />
                 <MenuItem Header="Product catalogus" Click="MenuItemNagivateExamplePage" />
+                <MenuItem Header="Test ontwerp bekijken" Click="MenuItemNagivateViewDesignPage" />
             </Menu>
             <Label Content="{Binding TrackName, Mode=OneWay}" Width="355" RenderTransformOrigin="0.446,-0.528" Height="411"/>
         </DockPanel>

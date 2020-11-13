@@ -1,4 +1,5 @@
-﻿using Designer.View;
+﻿using Designer.Model;
+using Designer.View;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -26,6 +27,13 @@ namespace Designer
         private void MenuItemNagivateExamplePage(object sender, RoutedEventArgs e)
         {
             ExamplePage page = new ExamplePage();
+            this.Container.Content = page;
+            page.ParentWindow = this;
+        }
+
+        private void MenuItemNagivateViewDesignPage(object sender, RoutedEventArgs e)
+        {
+            ViewDesignPage page = new ViewDesignPage(new Design());
             this.Container.Content = page;
             page.ParentWindow = this;
         }
