@@ -11,12 +11,14 @@
         <viewModel:MainViewModel x:Key="ViewModel"/>
     </Window.Resources>
     <Grid>
-        <Label HorizontalAlignment="Left" Margin="295,285,0,0" VerticalAlignment="Top">
-            <Label.Content>
-                    <Binding Source="{StaticResource ViewModel}" Path="Test" UpdateSourceTrigger="PropertyChanged">
-
-                    </Binding>
-                </Label.Content>
-            </Label>
-        </Grid>
+        <DockPanel x:Name="Window" LastChildFill="False">
+            <Menu DockPanel.Dock="Top" Height="20" VerticalAlignment="Top">
+                <MenuItem Header="Menu">
+                    <MenuItem Header="Change page" Click="MenuItemNagivateExamplePage"/>
+                </MenuItem>
+            </Menu>
+            <Label Content="{Binding TrackName, Mode=OneWay}" Width="355" RenderTransformOrigin="0.446,-0.528" Height="411"/>
+        </DockPanel>
+        <Frame Name="Container" NavigationUIVisibility="Hidden" Grid.Row="1"></Frame>
+    </Grid>
 </Window>

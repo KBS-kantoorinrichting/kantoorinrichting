@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -16,20 +14,20 @@ using System.Windows.Shapes;
 namespace Designer.View
 {
     /// <summary>
-    /// Interaction logic for MainWindow.xaml
+    /// Interaction logic for ExamplePage.xaml
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class ExamplePage : Page
     {
-        public MainWindow()
+        private Window _parent;
+        public Window ParentWindow
         {
-            InitializeComponent();
+            get { return _parent; }
+            set { _parent = value; }
         }
 
-        private void MenuItemNagivateExamplePage(object sender, RoutedEventArgs e)
+        public ExamplePage()
         {
-            ExamplePage page = new ExamplePage();
-            this.Container.Content = page;
-            page.ParentWindow = this;
+            InitializeComponent();
         }
     }
 }
