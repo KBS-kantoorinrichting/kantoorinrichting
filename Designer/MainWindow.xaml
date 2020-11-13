@@ -1,0 +1,27 @@
+﻿<Window x:Class="Designer.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:viewModel="clr-namespace:Designer.ViewModel"
+        mc:Ignorable="d"
+        Title="Kantoor Ontwerper" Height="450" Width="800">
+
+    <Window.Resources>
+        <viewModel:MainViewModel x:Key="ViewModel"/>
+    </Window.Resources>
+    <Grid>
+        <DockPanel x:Name="Window" LastChildFill="False">
+            <Menu DockPanel.Dock="Top" Height="20" VerticalAlignment="Top">
+                <MenuItem Header="Application">
+                    <MenuItem Header="TODO"/>
+                    <MenuItem Header="Afsluiten" Click="ExitApplication"/>
+                </MenuItem>
+                <MenuItem Header="Ruimtes" Click="MenuItemNagivateExamplePage" />
+                <MenuItem Header="Product catalogus" Click="MenuItemNagivateExamplePage" />
+            </Menu>
+            <Label Content="{Binding TrackName, Mode=OneWay}" Width="355" RenderTransformOrigin="0.446,-0.528" Height="411"/>
+        </DockPanel>
+        <Frame Name="Container" NavigationUIVisibility="Hidden" Grid.Row="1"></Frame>
+    </Grid>
+</Window>

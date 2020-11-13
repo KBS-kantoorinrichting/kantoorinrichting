@@ -1,8 +1,7 @@
-﻿using System;
+﻿using Designer.View;
+using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -10,10 +9,9 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace Designer.View
+namespace Designer
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml
@@ -23,6 +21,18 @@ namespace Designer.View
         public MainWindow()
         {
             InitializeComponent();
+        }
+
+        private void MenuItemNagivateExamplePage(object sender, RoutedEventArgs e)
+        {
+            ExamplePage page = new ExamplePage();
+            this.Container.Content = page;
+            page.ParentWindow = this;
+        }
+
+        private void ExitApplication(object sender, RoutedEventArgs e)
+        {
+            Application.Current.Shutdown();
         }
     }
 }
