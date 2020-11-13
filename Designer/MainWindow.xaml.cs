@@ -29,5 +29,10 @@ namespace Designer
             this.Container.Content = page;
             page.ParentWindow = this;
         }
+
+        private void ExitApplication(object sender, RoutedEventArgs e)
+        {
+            Application.Current.Shutdown();
+        }
     }
 }

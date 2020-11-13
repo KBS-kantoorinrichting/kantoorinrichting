@@ -13,9 +13,12 @@
     <Grid>
         <DockPanel x:Name="Window" LastChildFill="False">
             <Menu DockPanel.Dock="Top" Height="20" VerticalAlignment="Top">
-                <MenuItem Header="Menu">
-                    <MenuItem Header="Change page" Click="MenuItemNagivateExamplePage"/>
+                <MenuItem Header="Application">
+                    <MenuItem Header="TODO"/>
+                    <MenuItem Header="Afsluiten" Click="ExitApplication"/>
                 </MenuItem>
+                <MenuItem Header="Ruimtes" Click="MenuItemNagivateExamplePage" />
+                <MenuItem Header="Product catalogus" Click="MenuItemNagivateExamplePage" />
             </Menu>
             <Label Content="{Binding TrackName, Mode=OneWay}" Width="355" RenderTransformOrigin="0.446,-0.528" Height="411"/>
         </DockPanel>
