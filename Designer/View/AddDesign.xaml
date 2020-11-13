@@ -11,20 +11,29 @@
         <viewModel:AddDesignModel />
     </Window.DataContext>
     <Grid>
-        <TextBox Margin="10,121,10,0" TextWrapping="Wrap" VerticalAlignment="Top"
-                 Text="{Binding Name}"/>
-        <ComboBox Margin="10,41,10,0" VerticalAlignment="Top"
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="400*" />
+            <ColumnDefinition Width="400*" />
+        </Grid.ColumnDefinitions>
+
+        <Label Content="Ruimte" Margin="10,10,10,0" VerticalAlignment="Top"
+               Grid.ColumnSpan="2" />
+        <ComboBox Margin="10,40,10,0" VerticalAlignment="Top"
                   ItemsSource="{Binding Rooms}"
                   DisplayMemberPath="Name"
-                  SelectedValue="{Binding Selected}"/>
-        <!-- <ComboBox.SelectedIndex> -->
-        <!-- <Binding Source="{StaticResource ViewModel}" Path="Selected" UpdateSourceTrigger="PropertyChanged" /> -->
-        <!-- </ComboBox.SelectedIndex> -->
-        <!-- <ComboBox.ItemsSource> -->
-        <!-- <Binding Source="{StaticResource ViewModel}" Path="Rooms" UpdateSourceTrigger="PropertyChanged" /> -->
-        <!-- </ComboBox.ItemsSource> -->
+                  SelectedValue="{Binding Selected}"
+                  Grid.ColumnSpan="2" Grid.Column="0" />
 
-        <Label Content="Ruimte" Margin="10,10,10,0" VerticalAlignment="Top" />
-        <Label Content="Ontwerp naam" Margin="10,90,10,0" VerticalAlignment="Top" />
+        <Label Content="Ontwerp naam" Margin="10,90,10,0" VerticalAlignment="Top"
+               Grid.ColumnSpan="2" Grid.Column="0" />
+        <TextBox Margin="10,120,10,0" TextWrapping="Wrap" VerticalAlignment="Top"
+                 Text="{Binding Name}"
+                 Grid.ColumnSpan="2" Grid.Column="0" />
+
+        <Button Content="Annuleren" Margin="10,170,10,0" VerticalAlignment="Top"
+                Grid.Column="0" />
+        <Button Content="Aanmaken" Margin="10,170,10,0" VerticalAlignment="Top"
+                Command="{Binding Submit}"
+                Grid.Column="1" />
     </Grid>
 </Window>
