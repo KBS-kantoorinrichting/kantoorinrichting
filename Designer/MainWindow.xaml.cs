@@ -33,7 +33,10 @@ namespace Designer
 
         private void MenuItemNagivateViewDesignPage(object sender, RoutedEventArgs e)
         {
-            ViewDesignPage page = new ViewDesignPage(new Design());
+            var design = new Design();
+            design.ProductPlacements.Add(new ProductPlacement(){X = 5, Y = 5});
+            design.ProductPlacements.Add(new ProductPlacement(){X = 5, Y = 20});
+            ViewDesignPage page = new ViewDesignPage(design);
             this.Container.Content = page;
             page.ParentWindow = this;
         }
