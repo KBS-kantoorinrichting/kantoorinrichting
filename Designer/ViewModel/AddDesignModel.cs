@@ -37,6 +37,7 @@ namespace Designer.ViewModel {
         }
 
         public void AddDesign() {
+            if (Name == null || Selected == null) throw new ArgumentNullException();
             Design design = CreateDesign(Name, Selected);
             design = SaveDesign(design);
             DesignAdded?.Invoke(this, new DesignAddedArgs(design));
