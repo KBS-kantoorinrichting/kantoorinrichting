@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows.Input;
 using Designer.Model;
 
@@ -25,6 +26,7 @@ namespace Designer.ViewModel {
         public Room Selected { get; set; }
         public string Name { get; set; }
         public ICommand Submit { get ; set; }
+        public string Error { get; set; }
 
         //Wordt aangeroepen wanneer het design toegevoegd is
         public event EventHandler<DesignAddedArgs> DesignAdded;
@@ -39,10 +41,24 @@ namespace Designer.ViewModel {
         }
 
         public void AddDesign() {
-            if (Name == null || Selected == null) throw new ArgumentNullException();
+            if (Name == null || Selected == null) {
+                ShowError("Vul eerst alles in.");
+                return;
+            }
+            
             Design design = CreateDesign(Name, Selected);
             design = SaveDesign(design);
             DesignAdded?.Invoke(this, new DesignAddedArgs(design));
+        }
+
+        public void ShowError(string error) {
+            Error = error;
+            OnPropertyChanged();
+            Task.Delay(2000).ContinueWith(
+                t => {
+                    Error = "";
+                    OnPropertyChanged();
+                });
         }
 
         public static List<Room> LoadRooms() {

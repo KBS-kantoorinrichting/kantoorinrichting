@@ -35,5 +35,9 @@
         <Button Content="Aanmaken" Margin="10,170,10,0" VerticalAlignment="Top"
                 Command="{Binding Submit}"
                 Grid.Column="1" />
+        
+        <Label Content="{Binding Error}" Margin="10,210,10,0" VerticalAlignment="Top"
+               Foreground="Red"
+               Grid.ColumnSpan="2" Grid.Column="0" />
     </Grid>
 </Page>

@@ -114,7 +114,10 @@ namespace DesignerTest {
 
         [Test]
         public void AddDesign_NeedsAll() {
-            Assert.Catch(() => _designModel.AddDesign());
+            _designModel.AddDesign();
+
+            int count = RoomDesignContext.Instance.Designs.Count();
+            Assert.AreEqual(0, count);
         }
 
         [Test]
