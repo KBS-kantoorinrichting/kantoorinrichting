@@ -5,9 +5,12 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using Designer.Model;
+using Designer.Other;
 
 namespace Designer.ViewModel {
     public class AddDesignModel : INotifyPropertyChanged {
+        //Wordt aangeroepen wanneer het design toegevoegd is
+        public event EventHandler<DesignAddedArgs> DesignAdded;
         public event PropertyChangedEventHandler PropertyChanged;
 
         public List<Room> Rooms { get; set; }
@@ -28,15 +31,18 @@ namespace Designer.ViewModel {
                 Submit.Disabled = _selected == null || Name == null;
             }
         }
+        
         public BasicCommand Submit { get; set; }
+        public BasicCommand Cancel { get; set; }
         public string Error { get; set; }
 
-        //Wordt aangeroepen wanneer het design toegevoegd is
-        public event EventHandler<DesignAddedArgs> DesignAdded;
+        public Navigator Navigator { get; set; }
 
         public AddDesignModel() {
             Rooms = LoadRooms();
             Submit = new BasicCommand(AddDesign, true);
+            Navigator = Navigator.Instance;
+            Cancel = new BasicCommand(() => Navigator.Pop());
         }
 
         private void OnPropertyChanged(string propertyName = "") {

@@ -5,6 +5,7 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using Designer.Model;
+using Designer.Other;
 using Designer.View;
 
 namespace Designer.ViewModel {
@@ -25,7 +26,7 @@ namespace Designer.ViewModel {
             Rooms = context.Rooms.ToList();
             Designs = context.Designs.ToList();
 
-            Navigator = new Navigator();
+            Navigator = Navigator.Instance;
             GotoAddDesign = new PageCommand(Navigator, () => new AddDesign());
             GotoExample = new PageCommand(Navigator, () => new ExamplePage());
             Exit = new BasicCommand(() => Application.Current.Shutdown());
@@ -36,27 +37,9 @@ namespace Designer.ViewModel {
         }
     }
 
-    public class Navigator : INotifyPropertyChanged {
-        private Page _currentPage;
-
-        public Page CurrentPage {
-            get => _currentPage;
-            set {
-                _currentPage = value;
-                OnPropertyChanged();
-            }
-        }
-
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        private void OnPropertyChanged(string propertyName = "") {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
-    }
-
     public class PageCommand : BasicCommand {
         public PageCommand(Navigator navigator, Func<Page> builder, bool disabled = false) : base(
-            () => navigator.CurrentPage = builder?.Invoke(), disabled
+            () => navigator.ReplaceAll(builder?.Invoke()), disabled
         ) { }
     }
 }

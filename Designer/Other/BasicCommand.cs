@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Windows.Input;
 
-namespace Designer.ViewModel {
+namespace Designer.Other {
     //Command wat een actie uitvoert geen async
     public class BasicCommand : ICommand {
         private readonly Action _action;
