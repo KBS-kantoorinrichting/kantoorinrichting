@@ -13,7 +13,7 @@ namespace Designer.ViewModel
 
         public event PropertyChangedEventHandler PropertyChanged;
 
-        public List<Model.Product> Products = new List<Model.Product>();
+        public List<Model.Product> Products { get; set; }
 
 
 
