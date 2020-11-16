@@ -42,22 +42,6 @@ namespace Designer.View
             InitializeComponent();
         }
 
-        // Voorkomt dat je text kan plakken
-        private void WidthLengthTypeCheck(object sender, DataObjectPastingEventArgs e)
-        {
-            if (e.DataObject.GetDataPresent(typeof(String)))
-            {
-                String text = (String)e.DataObject.GetData(typeof(String));
-                if (!ViewModel.IsTextAllowed(text))
-                {
-                    e.CancelCommand();
-                }
-            }
-            else
-            {
-                e.CancelCommand();
-            }
-        }
 
         
 
@@ -66,24 +50,8 @@ namespace Designer.View
         {
             if (RoomNameTextBox.Text.Length > 300)
             {
-                TemplateLabel.Focus();
+                // TemplateLabel.Focus();
                 RoomNameTextBox.Text = "De teksts is te lang!!";
-            }
-        }
-
-         // controles of de input wel int is
-        private void RoomWidthTextBox_TextChanged(object sender, TextChangedEventArgs e)
-        {
-            if (!ViewModel.IsTextAllowed(RoomWidthTextBox.Text)) 
-            {
-                RoomWidthTextBox.Text = "";
-            }
-        }
-        private void RoomLengthTextBox_TextChanged(object sender, TextChangedEventArgs e)
-        {
-            if (!ViewModel.IsTextAllowed(RoomLengthTextBox.Text)) 
-            {
-                RoomLengthTextBox.Text = "";
             }
         }
         
@@ -91,36 +59,36 @@ namespace Designer.View
         // sla de gegevens op (checkt de waardes en stuurt ze)
         private void SaveRoomButton_Click(object sender, RoutedEventArgs e)
         {
-            // TODO waardes checken
-            //controleert of de waardes te parsen zijn naar int (kijken of het getallen zijn)
-            long number1 = 0;
-            long number2 = 0;
-            bool canConvert1 = long.TryParse(RoomWidthTextBox.Text, out number1);
-            bool canConvert2 = long.TryParse(RoomLengthTextBox.Text, out number2);
-            if (!canConvert1)
-            {
-                RoomWidthTextBox.Text = "Voer aub een getal in";
-            }
-            else if (!canConvert2)
-            {
-                RoomLengthTextBox.Text = "Voer aub een getal in";
-            }
-            else
-            {
-                // opslaan van de ruimte als het aan de condities voldoet
-                if (ViewModel.SaveRoom(RoomNameTextBox.Text, Int32.Parse(RoomWidthTextBox.Text), Int32.Parse(RoomLengthTextBox.Text)))
-                {
-                    //opent successvol dialoog
-                    RoomEditorPopupView popup = new RoomEditorPopupView("De kamer is opgeslagen!");
-                    popup.ShowDialog();
-                }
-                else
-                {
-                    //opent onsuccesvol dialoog
-                    RoomEditorPopupView popup = new RoomEditorPopupView("Er is iets misgegaan! probeer opnieuw.");
-                    popup.ShowDialog();
-                }
-            }
+            // // TODO waardes checken
+            // //controleert of de waardes te parsen zijn naar int (kijken of het getallen zijn)
+            // long number1 = 0;
+            // long number2 = 0;
+            // bool canConvert1 = long.TryParse(RoomWidthTextBox.Text, out number1);
+            // bool canConvert2 = long.TryParse(RoomLengthTextBox.Text, out number2);
+            // if (!canConvert1)
+            // {
+            //     RoomWidthTextBox.Text = "Voer aub een getal in";
+            // }
+            // else if (!canConvert2)
+            // {
+            //     RoomLengthTextBox.Text = "Voer aub een getal in";
+            // }
+            // else
+            // {
+            //     // opslaan van de ruimte als het aan de condities voldoet
+            //     if (ViewModel.SaveRoom(RoomNameTextBox.Text, Int32.Parse(RoomWidthTextBox.Text), Int32.Parse(RoomLengthTextBox.Text)))
+            //     {
+            //         //opent successvol dialoog
+            //         RoomEditorPopupView popup = new RoomEditorPopupView("De kamer is opgeslagen!");
+            //         popup.ShowDialog();
+            //     }
+            //     else
+            //     {
+            //         //opent onsuccesvol dialoog
+            //         RoomEditorPopupView popup = new RoomEditorPopupView("Er is iets misgegaan! probeer opnieuw.");
+            //         popup.ShowDialog();
+            //     }
+            // }
 
         }
 
