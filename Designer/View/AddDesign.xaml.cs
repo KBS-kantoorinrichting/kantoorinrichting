@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Windows.Controls;
+using Designer.Model;
+using Designer.Other;
 using Designer.ViewModel;
 
 namespace Designer.View {
     public partial class AddDesign : Page {
         //Wordt aangeroepen wanneer het design toegevoegd is
-        public event EventHandler<DesignAddedArgs> DesignAdded;
+        public event EventHandler<BasicEventArgs<Design>> DesignAdded;
         
         public AddDesign() {
             InitializeComponent();

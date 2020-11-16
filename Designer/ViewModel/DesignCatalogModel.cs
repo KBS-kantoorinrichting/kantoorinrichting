@@ -9,6 +9,7 @@ using Designer.View;
 namespace Designer.ViewModel {
     public class DesignCatalogModel : INotifyPropertyChanged {
         public event PropertyChangedEventHandler PropertyChanged;
+        public event EventHandler<BasicEventArgs<Design>> DesignSelected;
 
         public List<Design> Designs { get; set; }
         public BasicCommand AddDesign { get; set; }
@@ -38,17 +39,14 @@ namespace Designer.ViewModel {
             OnPropertyChanged();
         }
 
-        public void PageOnDesignAdded(object sender, DesignAddedArgs e) {
+        public void PageOnDesignAdded(object sender, BasicEventArgs<Design> e) {
             Navigator.Pop();
             Reload();
-            GotoDesign(e.Design);
+            GotoDesign(e.Value);
         }
 
-        public static void GotoDesign(Design design) {
-            Console.WriteLine(design.Name);
-            //TODO voeg pagina toe van design
-            // Navigator = Navigator.Instance;
-            // Navigator.Replace(<PAGINA>);
+        public void GotoDesign(Design design) {
+            DesignSelected?.Invoke(this, new BasicEventArgs<Design>(design));
         }
 
         public static List<Design> LoadDesigns() { return RoomDesignContext.Instance.Designs.ToList(); }

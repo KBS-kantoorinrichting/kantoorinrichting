@@ -9,7 +9,7 @@ using Designer.Other;
 namespace Designer.ViewModel {
     public class AddDesignModel : INotifyPropertyChanged {
         //Wordt aangeroepen wanneer het design toegevoegd is
-        public event EventHandler<DesignAddedArgs> DesignAdded;
+        public event EventHandler<BasicEventArgs<Design>> DesignAdded;
         public event PropertyChangedEventHandler PropertyChanged;
 
         public List<Room> Rooms { get; set; }
@@ -53,7 +53,7 @@ namespace Designer.ViewModel {
 
             Design design = CreateDesign(Name, Selected);
             design = SaveDesign(design);
-            DesignAdded?.Invoke(this, new DesignAddedArgs(design));
+            DesignAdded?.Invoke(this, new BasicEventArgs<Design>(design));
         }
 
         public void ShowError(string error) {
@@ -79,11 +79,5 @@ namespace Designer.ViewModel {
             context.SaveChanges();
             return design;
         }
-    }
-
-    public class DesignAddedArgs {
-        public Design Design { get; }
-
-        public DesignAddedArgs(Design design) { Design = design; }
     }
 }
