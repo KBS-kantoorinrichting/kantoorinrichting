@@ -7,29 +7,6 @@ using System.Windows.Input;
 using Designer.Model;
 
 namespace Designer.ViewModel {
-    //Command wat een actie uitvoert geen async
-    public class DefaultCommand : ICommand {
-        private readonly Action _action;
-        private bool _disabled;
-        public bool Disabled {
-            get => _disabled;
-            set {
-                _disabled = value;
-                CanExecuteChanged?.Invoke(this, EventArgs.Empty);
-            }
-        }
-
-        public bool CanExecute(object parameter) => !Disabled;
-        public void Execute(object parameter) => _action?.Invoke();
-
-        public DefaultCommand(Action action, bool disabled = false) {
-            _action = action;
-            Disabled = disabled;
-        }
-
-        public event EventHandler CanExecuteChanged;
-    }
-
     public class AddDesignModel : INotifyPropertyChanged {
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -51,7 +28,7 @@ namespace Designer.ViewModel {
                 Submit.Disabled = _selected == null || Name == null;
             }
         }
-        public DefaultCommand Submit { get; set; }
+        public BasicCommand Submit { get; set; }
         public string Error { get; set; }
 
         //Wordt aangeroepen wanneer het design toegevoegd is
@@ -59,7 +36,7 @@ namespace Designer.ViewModel {
 
         public AddDesignModel() {
             Rooms = LoadRooms();
-            Submit = new DefaultCommand(AddDesign, true);
+            Submit = new BasicCommand(AddDesign, true);
         }
 
         private void OnPropertyChanged(string propertyName = "") {

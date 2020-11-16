@@ -1,40 +1,62 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
-using System.Diagnostics;
-using System.Timers;
+using System.Linq;
+using System.Windows;
+using System.Windows.Controls;
+using Designer.Model;
+using Designer.View;
 
-namespace Designer.ViewModel
-{
-    public class MainViewModel : INotifyPropertyChanged
-    {
+namespace Designer.ViewModel {
+    public class MainViewModel : INotifyPropertyChanged {
         public event PropertyChangedEventHandler PropertyChanged;
-        public Timer Timer = new Timer(100);
-        public int counter = 0;
-        public string Test { get; set; }
-        public MainViewModel()
-        {
-            Timer.Start();
-            Timer.Elapsed += TimerOnElapsed;
-            Test = "test";
-            Console.WriteLine("Yeet");
-            Debug.WriteLine("Yeet");
-            // Do your thing
+
+        public List<Room> Rooms { get; set; }
+        public List<Design> Designs { get; set; }
+
+        public BasicCommand GotoAddDesign { get; set; }
+        public BasicCommand GotoExample { get; set; }
+        public BasicCommand Exit { get; set; }
+
+        public Navigator Navigator { get; set; }
+
+        public MainViewModel() {
+            RoomDesignContext context = RoomDesignContext.Instance;
+            Rooms = context.Rooms.ToList();
+            Designs = context.Designs.ToList();
+
+            Navigator = new Navigator();
+            GotoAddDesign = new PageCommand(Navigator, () => new AddDesign());
+            GotoExample = new PageCommand(Navigator, () => new ExamplePage());
+            Exit = new BasicCommand(() => Application.Current.Shutdown());
         }
 
-        private void TimerOnElapsed(object sender, ElapsedEventArgs e)
-        {
-            counter++;
-            Test = counter.ToString();
-            OnPropertyChanged("Test");
+        private void OnPropertyChanged(string propertyName = "") {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+    }
+
+    public class Navigator : INotifyPropertyChanged {
+        private Page _currentPage;
+
+        public Page CurrentPage {
+            get => _currentPage;
+            set {
+                _currentPage = value;
+                OnPropertyChanged();
+            }
         }
 
+        public event PropertyChangedEventHandler PropertyChanged;
 
-        private void OnPropertyChanged(string propertyName)  
-        {  
-            if (PropertyChanged != null)  
-            {  
-                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));  
-            }  
-        }  
+        private void OnPropertyChanged(string propertyName = "") {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+    }
+
+    public class PageCommand : BasicCommand {
+        public PageCommand(Navigator navigator, Func<Page> builder, bool disabled = false) : base(
+            () => navigator.CurrentPage = builder?.Invoke(), disabled
+        ) { }
     }
 }

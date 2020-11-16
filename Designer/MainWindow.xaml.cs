@@ -11,34 +11,11 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 
-namespace Designer
-{
+namespace Designer {
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
-    public partial class MainWindow : Window
-    {
-        public MainWindow()
-        {
-            InitializeComponent();
-        }
-
-        private void MenuItemNavigateExamplePage(object sender, RoutedEventArgs e)
-        {
-            ExamplePage page = new ExamplePage();
-            this.Container.Content = page;
-            page.ParentWindow = this;
-        }
-
-        private void MenuItemNavigateAddDesignPage(object sender, RoutedEventArgs e)
-        {
-            AddDesign page = new AddDesign();
-            this.Container.Content = page;
-        }
-
-        private void ExitApplication(object sender, RoutedEventArgs e)
-        {
-            Application.Current.Shutdown();
-        }
+    public partial class MainWindow : Window {
+        public MainWindow() { InitializeComponent(); }
     }
 }
