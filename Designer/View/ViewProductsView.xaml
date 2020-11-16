@@ -37,6 +37,7 @@
                                         BorderBrush="Black">
                                         <StackPanel Orientation="Vertical" Width="108" Height="108">
                                             <TextBlock
+                                            
                                             Text="{Binding Name}"
                                             HorizontalAlignment="Center"                               
                                             VerticalAlignment="Top"
@@ -68,9 +69,6 @@
                         </ItemsControl>
                     </ScrollViewer>
                 </Grid>
-            </TabItem>
-            <TabItem Header="Overzicht">
-                <Grid Background="#FFE5E5E5"/>
             </TabItem>
         </TabControl>
         <Canvas x:Name="Editor" Margin="0,25,260,0"/>

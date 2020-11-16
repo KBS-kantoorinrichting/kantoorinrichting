@@ -31,18 +31,32 @@ namespace Designer.ViewModel
 
 
 
-       /* public void FillDataBase()
-        {
-            using (var context = new RoomDesignContext())
-            {
+         public void FillDataBase()
+         {
+             using (var context =  RoomDesignContext.Instance)
+             {
 
-                for (int i = 0; i < 100; i++)
+                 for (int i = 0; i < 100; i++)
+                 {
+                     context.Products.Add(new Model.Product("bas", 5.00, "nee"));
+                 }
+                 context.SaveChanges();
+             }
+         }
+
+        public void EmptyDataBase()
+        {
+            using (var context = RoomDesignContext.Instance)
+            {
+                for (int i = 0; i < Products.Count; i++)
                 {
-                    context.Products.Add(new Model.Product("bas", 5.00, "nee"));
+                    context.Products.Remove(Products[i]);
                 }
+
                 context.SaveChanges();
             }
-        }*/
+
+        }
 
     }
 }
