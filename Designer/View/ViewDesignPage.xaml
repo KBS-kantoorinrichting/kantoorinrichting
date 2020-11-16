@@ -20,7 +20,7 @@
                         <ItemsControl
                             x:Name="CatalogusList" 
                             ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-                            ItemsSource="{Binding ProductList}" Width="237" Height="579">
+                            ItemsSource="{Binding ProductList}" Width="237">
 
                             <ItemsControl.ItemsPanel>
                                 <ItemsPanelTemplate>
@@ -29,21 +29,23 @@
                             </ItemsControl.ItemsPanel>
 
                             <ItemsControl.ItemTemplate>
-                                <DataTemplate>
+                                <DataTemplate DataType="Models:Product">
                                     <Border
+                                        DataContext="{ Binding ProductId }"
                                         Margin="5"
                                         BorderThickness="0.2"
-                                        BorderBrush="Black">
+                                        BorderBrush="Black"
+                                        MouseDown="Catalogus_Product_Mousedown">
                                         <StackPanel Orientation="Vertical" Width="108" Height="108">
                                             <TextBlock
-                                            Text="{Binding Name}"
-                                            HorizontalAlignment="Center"                               
-                                            VerticalAlignment="Top"
-                                            FontSize="12"
-                                            TextWrapping="Wrap"
-                                            TextAlignment="Center"
-                                            FontWeight="DemiBold"
-                                            Width="108" Height="20"/>
+                                                Text="{Binding Name}"
+                                                HorizontalAlignment="Center"                               
+                                                VerticalAlignment="Top"
+                                                FontSize="12"
+                                                TextWrapping="Wrap"
+                                                TextAlignment="Center"
+                                                FontWeight="DemiBold"
+                                                Width="108" Height="20"/>
                                             <Border
                                                 BorderThickness="0.2"
                                                 BorderBrush="Black"
@@ -72,7 +74,6 @@
                 <Grid Background="#FFE5E5E5"/>
             </TabItem>
         </TabControl>
-        <Canvas Name="Editor" Margin="0,25,260,0">
-        </Canvas>
+        <Canvas Name="Editor" Margin="0,25,260,0" AllowDrop="True" Background="Transparent" DragDrop.Drop="Canvas_DragDrop" />
     </Grid>
 </Page>

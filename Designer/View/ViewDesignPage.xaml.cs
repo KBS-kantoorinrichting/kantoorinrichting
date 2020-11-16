@@ -3,6 +3,7 @@ using Designer.ViewModel;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Text;
 using System.Windows;
 using System.Windows.Controls;
@@ -13,7 +14,6 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-using Designer.ViewModel;
 
 namespace Designer.View
 {
@@ -24,6 +24,7 @@ namespace Designer.View
     {
         public Window ParentWindow { get; set; }
         private ViewDesignViewModel ViewModel { get; set; }
+        private Product SelectedProduct { get; set; }
         public ViewDesignPage(Design Design)
         {
             this.ViewModel = new ViewDesignViewModel(Design);
@@ -39,20 +40,53 @@ namespace Designer.View
         private void RenderRoom()
         {
             Editor.Children.Clear();
-            var room = new Rectangle() {Height = ViewModel.Length, Width = ViewModel.Width};
-            room.Fill = new SolidColorBrush(Color.FromRgb(0, 255,0));
-            Canvas.SetTop(room, 0);
-            Canvas.SetLeft(room, 0);
-            Editor.Children.Add(room);
+            //var room = new Rectangle() {Height = ViewModel.Length, Width = ViewModel.Width};
+            //room.Fill = new SolidColorBrush(Color.FromRgb(0, 255,0));
+            //Canvas.SetTop(room, 0);
+            //Canvas.SetLeft(room, 0);
+            //Editor.Children.Add(room);
             foreach (var placement in ViewModel.ProductPlacements)
             {
                 var rect = new Rectangle() {Height = 10, Width = 10};
                 rect.Fill = new SolidColorBrush(Color.FromRgb(255,0,0));
                 Editor.Children.Add(rect);
-                Canvas.SetTop(rect, placement.X);
-                Canvas.SetLeft(rect, placement.Y); 
+                Canvas.SetTop(rect, placement.Y);
+                Canvas.SetLeft(rect, placement.X); 
             }
         }
 
+        private void Catalogus_Product_Mousedown(object sender, MouseButtonEventArgs e)
+        {
+            // Linker muisknop moet ingdrukt zijn
+            if(e.LeftButton == MouseButtonState.Pressed)
+            {
+                // Cast datacontext naar int
+                var obj = (int)((Border)sender).DataContext;
+
+                // Init drag & drop voor geselecteerde product
+                DragDrop.DoDragDrop(this, sender, DragDropEffects.Link);
+
+                // Zoek product op basis van int
+                Product Product = ViewModel.ProductList.Where((p) => p.ProductId == obj).FirstOrDefault();
+            }
+        }
+
+        private void Canvas_DragDrop(object sender, DragEventArgs e)
+        {
+            // Muispositie
+            Point position = e.GetPosition((IInputElement)sender);
+
+            // TODO: Add image of product
+            var rect = new Rectangle() { Height = 10, Width = 10 };
+
+            rect.Fill = new SolidColorBrush(Color.FromRgb(255, 0, 0));
+            
+            // Voeg product toe aan canvas
+            Editor.Children.Add(rect);
+            
+            // Zet posities van product
+            Canvas.SetTop(rect, position.Y);
+            Canvas.SetLeft(rect, position.X);
+        }
     }
 }

@@ -10,6 +10,7 @@ namespace Designer.ViewModel
     public class ViewDesignViewModel : INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler PropertyChanged;
+        public List<ProductPlacement> ProductPlacements { get; set; } = new List<ProductPlacement>();
         public List<Product> ProductList
         {
             get
@@ -20,6 +21,7 @@ namespace Designer.ViewModel
                 {
                     Product Product = new Product
                     {
+                        ProductId = i,
                         Name = $"Test {i}"
                     };
                     List.Add(Product);
@@ -29,8 +31,6 @@ namespace Designer.ViewModel
             }
         }
         private Design Design { get; set; }
-        public List<ProductPlacement> ProductPlacements { get; set; } = new List<ProductPlacement>();
-
         public int Width { get; set; } = 200;
         public int Length { get; set; } = 500;
 
