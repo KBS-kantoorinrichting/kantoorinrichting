@@ -13,7 +13,7 @@
         <ViewModel:ViewDesignViewModel/>
     </Page.DataContext>
     <Grid>
-        <TabControl x:Name="Tabs" Margin="540,20,0,0" HorizontalAlignment="Left" Width="260">
+        <TabControl x:Name="Tabs" Margin="540,0,0,0" HorizontalAlignment="Left" Width="260">
             <TabItem Header="Catalogus">
                 <Grid Background="#FFE5E5E5" Height="410">
                     <ScrollViewer>
