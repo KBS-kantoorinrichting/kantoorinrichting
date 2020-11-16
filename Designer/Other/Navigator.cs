@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Windows.Controls;
+using Designer.View;
 
 namespace Designer.Other {
     public class Navigator : INotifyPropertyChanged {
@@ -21,7 +22,7 @@ namespace Designer.Other {
         /**
          * De momentelen pagina laat altijd de laatste zien
          */
-        public Page CurrentPage => _stack.Peek();
+        public Page CurrentPage => _stack.Count > 0 ? _stack.Peek() : null;
 
         /**
          * Laat je pagina zien zonder de oude te verwijderen
