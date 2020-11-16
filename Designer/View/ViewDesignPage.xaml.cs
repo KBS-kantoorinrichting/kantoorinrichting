@@ -24,10 +24,9 @@ namespace Designer.View
     {
         public Window ParentWindow { get; set; }
         private ViewDesignViewModel ViewModel { get; set; }
-        private Product SelectedProduct { get; set; }
         public ViewDesignPage(Design Design)
         {
-            this.ViewModel = new ViewDesignViewModel(Design);
+            ViewModel = new ViewDesignViewModel(Design);
             ViewModel.PropertyChanged += (o,e) => RenderRoom();
             InitializeComponent();
         }
@@ -45,33 +44,32 @@ namespace Designer.View
             //Canvas.SetTop(room, 0);
             //Canvas.SetLeft(room, 0);
             //Editor.Children.Add(room);
-            foreach (var placement in ViewModel.ProductPlacements)
-            {
-                var rect = new Rectangle() {Height = 10, Width = 10};
-                rect.Fill = new SolidColorBrush(Color.FromRgb(255,0,0));
-                Editor.Children.Add(rect);
-                Canvas.SetTop(rect, placement.Y);
-                Canvas.SetLeft(rect, placement.X); 
-            }
+            //foreach (var placement in ViewModel.ProductPlacements)
+            //{
+            //    var rect = new Rectangle() {Height = 10, Width = 10};
+            //    rect.Fill = new SolidColorBrush(Color.FromRgb(255,0,0));
+            //    ViewModel.Editor.Children.Add(rect);
+            //    Canvas.SetTop(rect, placement.Y);
+            //    Canvas.SetLeft(rect, placement.X); 
+            //}
         }
 
-        private void Catalogus_Product_Mousedown(object sender, MouseButtonEventArgs e)
+        public void Catalogus_Product_Mousedown(object sender, MouseButtonEventArgs e)
         {
             // Linker muisknop moet ingdrukt zijn
-            if(e.LeftButton == MouseButtonState.Pressed)
+            if (e.LeftButton == MouseButtonState.Pressed)
             {
                 // Cast datacontext naar int
                 var obj = (int)((Border)sender).DataContext;
 
                 // Init drag & drop voor geselecteerde product
-                DragDrop.DoDragDrop(this, sender, DragDropEffects.Link);
+                DragDrop.DoDragDrop(Editor, sender, DragDropEffects.Link);
 
-                // Zoek product op basis van int
-                Product Product = ViewModel.ProductList.Where((p) => p.ProductId == obj).FirstOrDefault();
+                ViewModel.SelectProduct(obj);
             }
         }
 
-        private void Canvas_DragDrop(object sender, DragEventArgs e)
+        public void Canvas_DragDrop(object sender, DragEventArgs e)
         {
             // Muispositie
             Point position = e.GetPosition((IInputElement)sender);
@@ -80,13 +78,14 @@ namespace Designer.View
             var rect = new Rectangle() { Height = 10, Width = 10 };
 
             rect.Fill = new SolidColorBrush(Color.FromRgb(255, 0, 0));
-            
+
             // Voeg product toe aan canvas
             Editor.Children.Add(rect);
-            
+
             // Zet posities van product
             Canvas.SetTop(rect, position.Y);
             Canvas.SetLeft(rect, position.X);
         }
+
     }
 }

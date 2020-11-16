@@ -27,23 +27,23 @@ namespace Designer
         private void MenuItemNavigateExamplePage(object sender, RoutedEventArgs e)
         {
             ExamplePage page = new ExamplePage();
-            this.Container.Content = page;
+            Container.Content = page;
             page.ParentWindow = this;
         }
 
         private void MenuItemNavigateAddDesignPage(object sender, RoutedEventArgs e)
         {
             AddDesign page = new AddDesign();
-            this.Container.Content = page;
+            Container.Content = page;
         }
 
         private void MenuItemNavigateViewDesignPage(object sender, RoutedEventArgs e)
         {
             var design = new Design();
-            design.ProductPlacements.Add(new ProductPlacement(){X = 5, Y = 5});
-            design.ProductPlacements.Add(new ProductPlacement(){X = 5, Y = 20});
+            //design.ProductPlacements.Add(new ProductPlacement(){X = 5, Y = 5});
+            //design.ProductPlacements.Add(new ProductPlacement(){X = 5, Y = 20});
             ViewDesignPage page = new ViewDesignPage(design);
-            this.Container.Content = page;
+            Container.Content = page;
             page.ParentWindow = this;
         }
 

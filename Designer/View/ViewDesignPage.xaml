@@ -35,7 +35,8 @@
                                         Margin="5"
                                         BorderThickness="0.2"
                                         BorderBrush="Black"
-                                        MouseDown="Catalogus_Product_Mousedown">
+                                        MouseDown="Catalogus_Product_Mousedown"
+                                        >
                                         <StackPanel Orientation="Vertical" Width="108" Height="108">
                                             <TextBlock
                                                 Text="{Binding Name}"
