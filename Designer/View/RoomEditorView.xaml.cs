@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Diagnostics.Eventing.Reader;
 using System.Linq;
 using System.Text;
-using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -24,33 +23,10 @@ namespace Designer.View
     /// </summary>
     public partial class RoomEditorView : Page
     {
+        // link met viewmodel
         private RoomEditorViewModel ViewModel
         {
             get { return this.DataContext as RoomEditorViewModel; }
-        }
-
-        // gebruik regex om te kijken of je text letters bevat (voor lengte en breedte)
-        private static readonly Regex _regex = new Regex("[^0-9.-]+");
-        private static bool IsTextAllowed(string text)
-        {
-            return !_regex.IsMatch(text);
-        }
-
-        // Voorkomt dat je text kan plakken
-        private void WidthLengthTypeCheck(object sender, DataObjectPastingEventArgs e)
-        {
-            if (e.DataObject.GetDataPresent(typeof(String)))
-            {
-                String text = (String)e.DataObject.GetData(typeof(String));
-                if (!IsTextAllowed(text))
-                {
-                    e.CancelCommand();
-                }
-            }
-            else
-            {
-                e.CancelCommand();
-            }
         }
 
         // vorige scherm ophalen
@@ -66,6 +42,25 @@ namespace Designer.View
             InitializeComponent();
         }
 
+        // Voorkomt dat je text kan plakken
+        private void WidthLengthTypeCheck(object sender, DataObjectPastingEventArgs e)
+        {
+            if (e.DataObject.GetDataPresent(typeof(String)))
+            {
+                String text = (String)e.DataObject.GetData(typeof(String));
+                if (!ViewModel.IsTextAllowed(text))
+                {
+                    e.CancelCommand();
+                }
+            }
+            else
+            {
+                e.CancelCommand();
+            }
+        }
+
+        
+
         // extra beveiliging of de text niet te lang is
         private void RoomNameTextBox_TextChanged(object sender, TextChangedEventArgs e)
         {
@@ -79,14 +74,14 @@ namespace Designer.View
          // controles of de input wel int is
         private void RoomWidthTextBox_TextChanged(object sender, TextChangedEventArgs e)
         {
-            if (!IsTextAllowed(RoomWidthTextBox.Text)) 
+            if (!ViewModel.IsTextAllowed(RoomWidthTextBox.Text)) 
             {
                 RoomWidthTextBox.Text = "";
             }
         }
         private void RoomLengthTextBox_TextChanged(object sender, TextChangedEventArgs e)
         {
-            if (!IsTextAllowed(RoomLengthTextBox.Text)) 
+            if (!ViewModel.IsTextAllowed(RoomLengthTextBox.Text)) 
             {
                 RoomLengthTextBox.Text = "";
             }
@@ -113,10 +108,20 @@ namespace Designer.View
             else
             {
                 // opslaan van de ruimte als het aan de condities voldoet
-                ViewModel.SaveRoom(RoomNameTextBox.Text, Int32.Parse(RoomWidthTextBox.Text), Int32.Parse(RoomLengthTextBox.Text));
+                if (ViewModel.SaveRoom(RoomNameTextBox.Text, Int32.Parse(RoomWidthTextBox.Text), Int32.Parse(RoomLengthTextBox.Text)))
+                {
+                    //opent successvol dialoog
+                    RoomEditorPopupView popup = new RoomEditorPopupView("De kamer is opgeslagen!");
+                    popup.ShowDialog();
+                }
+                else
+                {
+                    //opent onsuccesvol dialoog
+                    RoomEditorPopupView popup = new RoomEditorPopupView("Er is iets misgegaan! probeer opnieuw.");
+                    popup.ShowDialog();
+                }
             }
 
-            
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)

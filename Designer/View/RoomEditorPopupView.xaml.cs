@@ -17,9 +17,18 @@ namespace Designer.View
     /// </summary>
     public partial class RoomEditorPopupView : Window
     {
-        public RoomEditorPopupView()
+
+        public RoomEditorPopupView(String text)
         {
+
             InitializeComponent();
+            TextLabel.Content = text;
+        }
+
+
+        private void Continue_Button_Click(object sender, RoutedEventArgs e)
+        {
+            this.Close();
         }
     }
 }

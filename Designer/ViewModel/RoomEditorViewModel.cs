@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Text;
+using System.Text.RegularExpressions;
 using Designer.Model;
 
 namespace Designer.ViewModel
@@ -9,30 +10,35 @@ namespace Designer.ViewModel
     public class RoomEditorViewModel
     {
 
-        public void SaveRoom(string name, int width, int length)
+        public Room room = new Room();
+
+        // gebruik regex om te kijken of je text letters bevat (voor lengte en breedte)
+        private readonly Regex _regex = new Regex("[^0-9.-]+");
+        public bool IsTextAllowed(string text)
         {
-            Room room = new Room()
-            {
-                Name = name,
-                Width = width,
-                Length = length,
-            };
+            return !_regex.IsMatch(text);
+        }
 
+        public Boolean SaveRoom(string name, int width, int length)
+        {
 
+            room.Name = name;
+            room.Width = width;
+            room.Length = length;
+            
             using (var context = RoomDesignContext.Instance)
             {
                 var post = context.Rooms.Add(room);
 
-                /* post.Name = RoomNameTextBox.Text;
-                 post.Width = 300;
-                 post.Length = 300;*/
                 try
                 {
                     context.SaveChanges();
+                    return true;
                 }
                 catch (Exception e)
                 {
                     Console.WriteLine(e);
+                    return false;
                     throw;
                 }
             }

@@ -5,14 +5,14 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:viewModel="clr-namespace:Designer.ViewModel"
         mc:Ignorable="d"
-        Title="Kantoor Ontwerper" Height="450" Width="800">
+        Title="Kantoor Ontwerper" Width="1280" Height="720" FontFamily="Verdana">
 
     <Window.DataContext>
         <viewModel:MainViewModel/>
     </Window.DataContext>
     <Grid>
         <DockPanel x:Name="Window" LastChildFill="False">
-            <Menu DockPanel.Dock="Top" Height="20" VerticalAlignment="Top">
+            <Menu DockPanel.Dock="Top" FontFamily="Verdana" Height="20" VerticalAlignment="Top">
                 <MenuItem Header="Application">
                     <MenuItem Header="TODO"/>
                     <MenuItem Header="Afsluiten" Click="ExitApplication"/>
