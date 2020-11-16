@@ -16,85 +16,14 @@ using Designer.Model;
 using Designer.ViewModel;
 using Microsoft.EntityFrameworkCore;
 
-namespace Designer.View
-{
+namespace Designer.View {
     /// <summary>
     /// Interaction logic for RoomEditorView.xaml
     /// </summary>
-    public partial class RoomEditorView : Page
-    {
-        // link met viewmodel
-        private RoomEditorViewModel ViewModel
-        {
-            get { return this.DataContext as RoomEditorViewModel; }
-        }
-
-        // vorige scherm ophalen
-        private Window _parent;
-        public Window ParentWindow
-        {
-            get { return _parent; }
-            set { _parent = value; }
-        }
-        public RoomEditorView()
-        {
+    public partial class RoomEditorView : Page {
+        public RoomEditorView() {
             //pagina initializen
             InitializeComponent();
-        }
-
-
-        
-
-        // extra beveiliging of de text niet te lang is
-        private void RoomNameTextBox_TextChanged(object sender, TextChangedEventArgs e)
-        {
-            if (RoomNameTextBox.Text.Length > 300)
-            {
-                // TemplateLabel.Focus();
-                RoomNameTextBox.Text = "De teksts is te lang!!";
-            }
-        }
-        
-
-        // sla de gegevens op (checkt de waardes en stuurt ze)
-        private void SaveRoomButton_Click(object sender, RoutedEventArgs e)
-        {
-            // // TODO waardes checken
-            // //controleert of de waardes te parsen zijn naar int (kijken of het getallen zijn)
-            // long number1 = 0;
-            // long number2 = 0;
-            // bool canConvert1 = long.TryParse(RoomWidthTextBox.Text, out number1);
-            // bool canConvert2 = long.TryParse(RoomLengthTextBox.Text, out number2);
-            // if (!canConvert1)
-            // {
-            //     RoomWidthTextBox.Text = "Voer aub een getal in";
-            // }
-            // else if (!canConvert2)
-            // {
-            //     RoomLengthTextBox.Text = "Voer aub een getal in";
-            // }
-            // else
-            // {
-            //     // opslaan van de ruimte als het aan de condities voldoet
-            //     if (ViewModel.SaveRoom(RoomNameTextBox.Text, Int32.Parse(RoomWidthTextBox.Text), Int32.Parse(RoomLengthTextBox.Text)))
-            //     {
-            //         //opent successvol dialoog
-            //         RoomEditorPopupView popup = new RoomEditorPopupView("De kamer is opgeslagen!");
-            //         popup.ShowDialog();
-            //     }
-            //     else
-            //     {
-            //         //opent onsuccesvol dialoog
-            //         RoomEditorPopupView popup = new RoomEditorPopupView("Er is iets misgegaan! probeer opnieuw.");
-            //         popup.ShowDialog();
-            //     }
-            // }
-
-        }
-
-        private void Button_Click(object sender, RoutedEventArgs e)
-        {
-            // TODO preset knoppen
         }
     }
 }

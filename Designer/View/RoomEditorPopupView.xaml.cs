@@ -10,25 +10,16 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 
-namespace Designer.View
-{
+namespace Designer.View {
     /// <summary>
     /// Interaction logic for RoomEditorPopupView.xaml
     /// </summary>
-    public partial class RoomEditorPopupView : Window
-    {
-
-        public RoomEditorPopupView(String text)
-        {
-
+    public partial class RoomEditorPopupView : Window {
+        public RoomEditorPopupView(string text) {
             InitializeComponent();
             TextLabel.Content = text;
         }
 
-
-        private void Continue_Button_Click(object sender, RoutedEventArgs e)
-        {
-            this.Close();
-        }
+        private void Continue_Button_Click(object sender, RoutedEventArgs e) { Close(); }
     }
 }
