@@ -19,7 +19,7 @@ namespace Designer.ViewModel
             };
 
 
-            using (var context = new RoomDesignContext())
+            using (var context = RoomDesignContext.Instance)
             {
                 var post = context.Rooms.Add(room);
 
