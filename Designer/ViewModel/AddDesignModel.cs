@@ -42,7 +42,7 @@ namespace Designer.ViewModel {
             Rooms = LoadRooms();
             Submit = new BasicCommand(AddDesign, true);
             Navigator = Navigator.Instance;
-            Cancel = new BasicCommand(() => Navigator.Pop());
+            Cancel = new PageCommand(type: NavigationType.Pop);
         }
 
         private void OnPropertyChanged(string propertyName = "") {
@@ -57,6 +57,7 @@ namespace Designer.ViewModel {
 
             Design design = CreateDesign(Name, Selected);
             design = SaveDesign(design);
+            Navigator.Pop();
             DesignAdded?.Invoke(this, new DesignAddedArgs(design));
         }
 

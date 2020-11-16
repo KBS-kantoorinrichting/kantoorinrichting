@@ -15,7 +15,7 @@ namespace Designer.ViewModel {
         public List<Room> Rooms { get; set; }
         public List<Design> Designs { get; set; }
 
-        public BasicCommand GotoAddDesign { get; set; }
+        public BasicCommand GotoDesigns { get; set; }
         public BasicCommand GotoExample { get; set; }
         public BasicCommand Exit { get; set; }
 
@@ -27,19 +27,13 @@ namespace Designer.ViewModel {
             Designs = context.Designs.ToList();
 
             Navigator = Navigator.Instance;
-            GotoAddDesign = new PageCommand(Navigator, () => new AddDesign());
-            GotoExample = new PageCommand(Navigator, () => new ExamplePage());
+            GotoDesigns = new PageCommand(() => new DesignCatalog());
+            GotoExample = new PageCommand(() => new ExamplePage());
             Exit = new BasicCommand(() => Application.Current.Shutdown());
         }
 
         private void OnPropertyChanged(string propertyName = "") {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
-    }
-
-    public class PageCommand : BasicCommand {
-        public PageCommand(Navigator navigator, Func<Page> builder, bool disabled = false) : base(
-            () => navigator.ReplaceAll(builder?.Invoke()), disabled
-        ) { }
     }
 }

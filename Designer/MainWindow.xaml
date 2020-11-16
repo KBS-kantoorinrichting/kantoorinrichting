@@ -18,22 +18,7 @@
                     <MenuItem Header="Afsluiten" Command="{Binding Exit}" />
                 </MenuItem>
                 <MenuItem Header="Product catalogus" Command="{Binding GotoExample}" />
-                <MenuItem Header="Ontwerp toevoegen" Command="{Binding GotoAddDesign}" />
-                
-                <MenuItem Header="Ruimtes" ItemsSource="{Binding Rooms}">
-                    <MenuItem.ItemTemplate>
-                        <DataTemplate>
-                            <TextBlock Text="{Binding Name}" />
-                        </DataTemplate>
-                    </MenuItem.ItemTemplate>
-                </MenuItem>
-                <MenuItem Header="Ontwerpen" ItemsSource="{Binding Designs}">
-                    <MenuItem.ItemTemplate>
-                        <DataTemplate>
-                            <TextBlock Text="{Binding Name}" />
-                        </DataTemplate>
-                    </MenuItem.ItemTemplate>
-                </MenuItem>
+                <MenuItem Header="Ontwerpen" Command="{Binding GotoDesigns}" />
             </Menu>
         </DockPanel>
         <Frame NavigationUIVisibility="Hidden" Margin="0,20,0,0" 

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Windows.Controls;
 
@@ -44,5 +45,27 @@ namespace Designer.Other {
         private void OnPropertyChanged(string propertyName = "") {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
+    }
+
+    public class PageCommand : BasicCommand {
+        //Default navigation type is replace all
+        public PageCommand(Func<Page> builder = null, NavigationType type = null, bool disabled = false) : base(
+            () => {
+                Page page = builder?.Invoke();
+                type ??= NavigationType.ReplaceAll;
+                type.Action?.Invoke(page);
+            }, disabled
+        ) { }
+    }
+
+    public class NavigationType {
+        internal readonly Action<Page> Action;
+
+        private NavigationType(Action<Page> action) { Action = action; }
+
+        public static readonly NavigationType Pop = new NavigationType(page => Navigator.Instance.Pop());
+        public static readonly NavigationType Replace = new NavigationType(Navigator.Instance.Replace);
+        public static readonly NavigationType ReplaceAll = new NavigationType(Navigator.Instance.ReplaceAll);
+        public static readonly NavigationType Push = new NavigationType(Navigator.Instance.Push);
     }
 }
