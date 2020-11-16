@@ -1,13 +1,18 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Text.RegularExpressions;
+using System.Windows.Controls;
 using Designer.Model;
 
 namespace Designer.ViewModel {
     public class RoomEditorViewModel {
         public Room room = new Room();
 
-        public long Width { get; set; }
-        public long Length { get; set; }
+        public int Width { get; set; }
+
+        public int Length { get; set; }
+
+        public RoomEditorViewModel() { }
 
         // gebruik regex om te kijken of je text letters bevat (voor lengte en breedte)
         private static readonly Regex Regex = new Regex("[^0-9.-]+");
@@ -19,7 +24,7 @@ namespace Designer.ViewModel {
             room.Name = name;
             room.Width = width;
             room.Length = length;
-            
+
             // kamer opslaan
             var context = RoomDesignContext.Instance;
             var post = context.Rooms.Add(room);
@@ -33,6 +38,12 @@ namespace Designer.ViewModel {
                 throw;
             }
         }
+    }
 
+    public class StringToIntValidationRule : ValidationRule {
+        public override ValidationResult Validate(object value, System.Globalization.CultureInfo cultureInfo) {
+            if (int.TryParse(value?.ToString(), out int _)) return new ValidationResult(true, null);
+            return new ValidationResult(false, "Please enter a valid integer value.");
+        }
     }
 }

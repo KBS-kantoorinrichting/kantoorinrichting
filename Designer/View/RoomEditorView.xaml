@@ -24,11 +24,19 @@
         <Label Content="Ruimte naam:" HorizontalAlignment="Left" Margin="661,511,0,0" VerticalAlignment="Top" />
         <Label Content="Ruimte breedte:" HorizontalAlignment="Left" Margin="424,507,0,0" VerticalAlignment="Top" />
         <Label Content="Ruimte lengte" HorizontalAlignment="Left" Margin="426,584,0,0" VerticalAlignment="Top" />
+        <TextBlock Text="{Binding (Validation.Errors)[0].ErrorContent, ElementName=Length}"/>
         <TextBox MaxLength="25" HorizontalAlignment="Left" Margin="426,548,0,0"
                  TextWrapping="Wrap" VerticalAlignment="Top" Width="190"
                  Text="{Binding Width, UpdateSourceTrigger=PropertyChanged}" />
-        <TextBox MaxLength="25" HorizontalAlignment="Left" Margin="427,625,0,0"
-                 TextWrapping="Wrap" VerticalAlignment="Top" Width="189"
-                 Text="{Binding Length, UpdateSourceTrigger=PropertyChanged}" />
+        <TextBox Name="Length" MaxLength="25" HorizontalAlignment="Left" Margin="427,625,0,0"
+                 TextWrapping="Wrap" VerticalAlignment="Top" Width="189" >
+            <TextBox.Text>
+                <Binding Path="Length" UpdateSourceTrigger="PropertyChanged">
+                    <Binding.ValidationRules>
+                        <ViewModel:StringToIntValidationRule ValidationStep="RawProposedValue"/>
+                    </Binding.ValidationRules>
+                </Binding>
+            </TextBox.Text>
+        </TextBox>
     </Grid>
 </Page>
