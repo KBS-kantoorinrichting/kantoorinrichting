@@ -29,14 +29,14 @@ namespace Designer.View
             get { return this.DataContext as RoomEditorViewModel; }
         }
 
-        // gebruik regex om te kijken of je text gebruikt mag worden (voor lengte en breedte)
+        // gebruik regex om te kijken of je text letters bevat (voor lengte en breedte)
         private static readonly Regex _regex = new Regex("[^0-9.-]+");
         private static bool IsTextAllowed(string text)
         {
             return !_regex.IsMatch(text);
         }
 
-        // zou moeten voorkomen dat je text kan plakken
+        // Voorkomt dat je text kan plakken
         private void WidthLengthTypeCheck(object sender, DataObjectPastingEventArgs e)
         {
             if (e.DataObject.GetDataPresent(typeof(String)))
@@ -53,6 +53,7 @@ namespace Designer.View
             }
         }
 
+        // vorige scherm ophalen
         private Window _parent;
         public Window ParentWindow
         {
@@ -61,14 +62,21 @@ namespace Designer.View
         }
         public RoomEditorView()
         {
+            //pagina initializen
             InitializeComponent();
         }
 
+        // extra beveiliging of de text niet te lang is
         private void RoomNameTextBox_TextChanged(object sender, TextChangedEventArgs e)
         {
-            
+            if (RoomNameTextBox.Text.Length > 300)
+            {
+                TemplateLabel.Focus();
+                RoomNameTextBox.Text = "De teksts is te lang!!";
+            }
         }
-         // controleer of de input wel int is
+
+         // controles of de input wel int is
         private void RoomWidthTextBox_TextChanged(object sender, TextChangedEventArgs e)
         {
             if (!IsTextAllowed(RoomWidthTextBox.Text)) 
@@ -104,12 +112,16 @@ namespace Designer.View
             }
             else
             {
+                // opslaan van de ruimte als het aan de condities voldoet
                 ViewModel.SaveRoom(RoomNameTextBox.Text, Int32.Parse(RoomWidthTextBox.Text), Int32.Parse(RoomLengthTextBox.Text));
             }
 
             
         }
 
-
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            // TODO preset knoppen
+        }
     }
 }
