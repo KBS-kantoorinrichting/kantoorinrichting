@@ -1,40 +1,27 @@
-﻿using System;
-using System.ComponentModel;
-using System.Diagnostics;
-using System.Timers;
+﻿using System.ComponentModel;
+using System.Windows;
+using Designer.Other;
+using Designer.View;
 
-namespace Designer.ViewModel
-{
-    public class MainViewModel : INotifyPropertyChanged
-    {
+namespace Designer.ViewModel {
+    public class MainViewModel : INotifyPropertyChanged {
         public event PropertyChangedEventHandler PropertyChanged;
-        public Timer Timer = new Timer(100);
-        public int counter = 0;
-        public string Test { get; set; }
-        public MainViewModel()
-        {
-            Timer.Start();
-            Timer.Elapsed += TimerOnElapsed;
-            Test = "test";
-            Console.WriteLine("Yeet");
-            Debug.WriteLine("Yeet");
-            // Do your thing
+
+        public BasicCommand GotoDesigns { get; set; }
+        public BasicCommand GotoExample { get; set; }
+        public BasicCommand Exit { get; set; }
+
+        public Navigator Navigator { get; set; }
+
+        public MainViewModel() {
+            Navigator = Navigator.Instance;
+            GotoDesigns = new PageCommand(() => new DesignCatalog());
+            GotoExample = new PageCommand(() => new ExamplePage());
+            Exit = new BasicCommand(() => Application.Current.Shutdown());
         }
 
-        private void TimerOnElapsed(object sender, ElapsedEventArgs e)
-        {
-            counter++;
-            Test = counter.ToString();
-            OnPropertyChanged("Test");
+        private void OnPropertyChanged(string propertyName = "") {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
-
-
-        private void OnPropertyChanged(string propertyName)  
-        {  
-            if (PropertyChanged != null)  
-            {  
-                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));  
-            }  
-        }  
     }
 }

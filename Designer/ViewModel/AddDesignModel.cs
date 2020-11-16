@@ -3,34 +3,13 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Windows.Input;
 using Designer.Model;
+using Designer.Other;
 
 namespace Designer.ViewModel {
-    //Command wat een actie uitvoert geen async
-    public class DefaultCommand : ICommand {
-        private readonly Action _action;
-        private bool _disabled;
-        public bool Disabled {
-            get => _disabled;
-            set {
-                _disabled = value;
-                CanExecuteChanged?.Invoke(this, EventArgs.Empty);
-            }
-        }
-
-        public bool CanExecute(object parameter) => !Disabled;
-        public void Execute(object parameter) => _action?.Invoke();
-
-        public DefaultCommand(Action action, bool disabled = false) {
-            _action = action;
-            Disabled = disabled;
-        }
-
-        public event EventHandler CanExecuteChanged;
-    }
-
     public class AddDesignModel : INotifyPropertyChanged {
+        //Wordt aangeroepen wanneer het design toegevoegd is
+        public event EventHandler<BasicEventArgs<Design>> DesignAdded;
         public event PropertyChangedEventHandler PropertyChanged;
 
         public List<Room> Rooms { get; set; }
@@ -51,15 +30,15 @@ namespace Designer.ViewModel {
                 Submit.Disabled = _selected == null || Name == null;
             }
         }
-        public DefaultCommand Submit { get; set; }
+        
+        public BasicCommand Submit { get; set; }
+        public BasicCommand Cancel { get; set; }
         public string Error { get; set; }
-
-        //Wordt aangeroepen wanneer het design toegevoegd is
-        public event EventHandler<DesignAddedArgs> DesignAdded;
 
         public AddDesignModel() {
             Rooms = LoadRooms();
-            Submit = new DefaultCommand(AddDesign, true);
+            Submit = new BasicCommand(AddDesign, true);
+            Cancel = new PageCommand(type: NavigationType.Pop);
         }
 
         private void OnPropertyChanged(string propertyName = "") {
@@ -74,7 +53,7 @@ namespace Designer.ViewModel {
 
             Design design = CreateDesign(Name, Selected);
             design = SaveDesign(design);
-            DesignAdded?.Invoke(this, new DesignAddedArgs(design));
+            DesignAdded?.Invoke(this, new BasicEventArgs<Design>(design));
         }
 
         public void ShowError(string error) {
@@ -100,11 +79,5 @@ namespace Designer.ViewModel {
             context.SaveChanges();
             return design;
         }
-    }
-
-    public class DesignAddedArgs {
-        public Design Design { get; }
-
-        public DesignAddedArgs(Design design) { Design = design; }
     }
 }
