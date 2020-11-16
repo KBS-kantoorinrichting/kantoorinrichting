@@ -11,7 +11,7 @@ namespace Designer.View {
         
         public AddDesign() {
             InitializeComponent();
-            if (!(DataContext is AddDesignModel model)) return;
+            if (!(DataContext is AddDesignModel model)) throw new NotSupportedException();
             model.DesignAdded += (sender, args) => DesignAdded?.Invoke(sender, args);
         }
     }

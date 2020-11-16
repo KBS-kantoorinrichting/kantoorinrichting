@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using Designer.Model;
 using Designer.Other;
 using Designer.ViewModel;

@@ -1,7 +1,18 @@
-﻿using System.Windows.Controls;
+﻿using System;
+using System.Windows.Controls;
+using Designer.Model;
+using Designer.Other;
+using Designer.ViewModel;
 
 namespace Designer.View {
     public partial class DesignCatalog : Page {
-        public DesignCatalog() { InitializeComponent(); }
+        //Wordt aangeroepen wanneer er eem design geselecteerd is
+        public event EventHandler<BasicEventArgs<Design>> DesignSelected;
+
+        public DesignCatalog() {
+            InitializeComponent();
+            if (!(DataContext is DesignCatalogModel model)) throw new NotSupportedException();
+            model.DesignSelected += (sender, args) => DesignSelected?.Invoke(sender, args);
+        }
     }
 }

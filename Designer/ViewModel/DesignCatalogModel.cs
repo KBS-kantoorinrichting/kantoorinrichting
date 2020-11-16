@@ -8,8 +8,9 @@ using Designer.View;
 
 namespace Designer.ViewModel {
     public class DesignCatalogModel : INotifyPropertyChanged {
-        public event PropertyChangedEventHandler PropertyChanged;
+        //Wordt aangeroepen wanneer er eem design geselecteerd is
         public event EventHandler<BasicEventArgs<Design>> DesignSelected;
+        public event PropertyChangedEventHandler PropertyChanged;
 
         public List<Design> Designs { get; set; }
         public BasicCommand AddDesign { get; set; }
@@ -28,7 +29,8 @@ namespace Designer.ViewModel {
             ReloadCommand = new BasicCommand(Reload);
         }
 
-        public AddDesign AddDesignPage() {
+        private AddDesign AddDesignPage() {
+            //Maak de toevoegen design pagina aan en registeerd de event listeren
             AddDesign page = new AddDesign();
             page.DesignAdded += PageOnDesignAdded;
             return page;
