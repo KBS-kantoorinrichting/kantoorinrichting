@@ -8,22 +8,22 @@
         Title="Kantoor Ontwerper" Width="1280" Height="720" FontFamily="Verdana">
 
     <Window.DataContext>
-        <viewModel:MainViewModel/>
+        <viewModel:MainViewModel />
     </Window.DataContext>
     <Grid>
-        <DockPanel x:Name="Window" LastChildFill="False">
+        <DockPanel LastChildFill="False">
             <Menu DockPanel.Dock="Top" FontFamily="Verdana" Height="20" VerticalAlignment="Top">
                 <MenuItem Header="Application">
-                    <MenuItem Header="TODO"/>
-                    <MenuItem Header="Afsluiten" Click="ExitApplication"/>
+                    <MenuItem Header="TODO" />
+                    <MenuItem Header="Afsluiten" Command="{Binding Exit}" />
                 </MenuItem>
-                <MenuItem Header="Ruimtes" Click="MenuItemNavigateExamplePage" />
-                <MenuItem Header="Ruimte maken" Click="MenuItemNavigateRoomEditor" />
-                <MenuItem Header="Product catalogus" Click="MenuItemNavigateExamplePage" />
-                <MenuItem Header="Ontwerp toevoegen" Click="MenuItemNavigateAddDesignPage" />
+                <MenuItem Header="Product catalogus" Command="{Binding GotoExample}" />
+                <MenuItem Header="Ontwerpen" Command="{Binding GotoDesigns}" />
+                <MenuItem Header="Ruimtes" Command="{Binding GotoRooms}" />
             </Menu>
-            <Label Content="{Binding TrackName, Mode=OneWay}" Width="1280" RenderTransformOrigin="0.446,-0.528" Height="720"/>
         </DockPanel>
-        <Frame Name="Container" NavigationUIVisibility="Hidden" Margin="0,20,0,0"/>
+        <Frame NavigationUIVisibility="Hidden" Margin="0,20,0,0" 
+               DataContext="{Binding Navigator}" 
+               Content="{Binding CurrentPage}"/>
     </Grid>
 </Window>

@@ -5,7 +5,7 @@ using Designer.ViewModel;
 using NUnit.Framework;
 
 namespace DesignerTest {
-    public class AddDesignTests_StaticMethods {
+    public class AddDesignTestsStaticMethods {
         private static readonly Room Room1 = new Room(1, "TestRoom1", 1, 1);
         private static readonly Room Room2 = new Room(2, "TestRoom2", 2, 4);
         private static readonly Room Room3 = new Room(3, "TestRoom3", 2, 5);
@@ -23,6 +23,14 @@ namespace DesignerTest {
         public void LoadRooms_Count() {
             List<Room> rooms = AddDesignModel.LoadRooms();
             Assert.AreEqual(3, rooms.Count);
+        }
+
+        [Test]
+        public void LoadRooms_Contains() {
+            List<Room> rooms = AddDesignModel.LoadRooms();
+            Assert.Contains(Room1, rooms);
+            Assert.Contains(Room2, rooms);
+            Assert.Contains(Room3, rooms);
         }
 
         [Test]
@@ -94,7 +102,7 @@ namespace DesignerTest {
         }
     }
 
-    public class AddDesignTests_Instace {
+    public class AddDesignTestsInstace {
         private static readonly Room Room1 = new Room(1, "TestRoom1", 1, 1);
         private static readonly Room Room2 = new Room(2, "TestRoom2", 2, 4);
         private static readonly Room Room3 = new Room(3, "TestRoom3", 2, 5);
@@ -146,7 +154,7 @@ namespace DesignerTest {
         }
 
         [Test]
-        public void AddDesign_RunsEvent() {
+        public void AddDesign_TriggersEvent() {
             _designModel.Name = TestName;
             _designModel.Selected = Room1;
 
@@ -164,10 +172,10 @@ namespace DesignerTest {
             _designModel.Selected = Room1;
 
             _designModel.DesignAdded += (sender, args) => {
-                Assert.NotNull(args.Design);
-                Assert.AreEqual(TestName, args.Design.Name);
-                Assert.AreEqual(Room1, args.Design.Room);
-                Assert.IsEmpty(args.Design.ProductPlacements);
+                Assert.NotNull(args.Value);
+                Assert.AreEqual(TestName, args.Value.Name);
+                Assert.AreEqual(Room1, args.Value.Room);
+                Assert.IsEmpty(args.Value.ProductPlacements);
             };
             
             _designModel.AddDesign();
