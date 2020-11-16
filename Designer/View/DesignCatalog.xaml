@@ -16,10 +16,13 @@
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
 
-        <ListView Margin="10,35,10,10"
+        <Label Content="Ontwerpen:" Margin="10,35,10,0" VerticalAlignment="Top"
+               Grid.ColumnSpan="2" Grid.Column="0" />
+        
+        <ListView Margin="10,65,10,10"
                   ItemsSource="{Binding Designs}"
                   SelectedValue="{Binding Selected}"
-                  Grid.ColumnSpan="2">
+                  Grid.ColumnSpan="2" Grid.Column="0">
             <ListView.ItemTemplate>
                 <DataTemplate>
                     <Grid HorizontalAlignment="Stretch">

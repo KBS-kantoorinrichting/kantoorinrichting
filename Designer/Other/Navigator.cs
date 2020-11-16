@@ -34,7 +34,7 @@ namespace Designer.Other {
         }
 
         public void Pop() {
-            _stack.Pop();
+            if (CanPop()) _stack.Pop();
             OnPropertyChanged();
         }
 

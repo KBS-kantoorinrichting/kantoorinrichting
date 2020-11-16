@@ -39,6 +39,7 @@ namespace Designer.ViewModel {
         }
 
         public void PageOnDesignAdded(object sender, DesignAddedArgs e) {
+            Navigator.Pop();
             Reload();
             GotoDesign(e.Design);
         }

@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Windows.Input;
 using Designer.Model;
 using Designer.Other;
 
@@ -36,12 +35,9 @@ namespace Designer.ViewModel {
         public BasicCommand Cancel { get; set; }
         public string Error { get; set; }
 
-        public Navigator Navigator { get; set; }
-
         public AddDesignModel() {
             Rooms = LoadRooms();
             Submit = new BasicCommand(AddDesign, true);
-            Navigator = Navigator.Instance;
             Cancel = new PageCommand(type: NavigationType.Pop);
         }
 
@@ -57,7 +53,6 @@ namespace Designer.ViewModel {
 
             Design design = CreateDesign(Name, Selected);
             design = SaveDesign(design);
-            Navigator.Pop();
             DesignAdded?.Invoke(this, new DesignAddedArgs(design));
         }
 
