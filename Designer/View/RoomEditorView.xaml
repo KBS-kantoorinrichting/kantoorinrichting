@@ -22,8 +22,6 @@
         <Label Content="Ruimte lengte" HorizontalAlignment="Left" Margin="426,584,0,0" VerticalAlignment="Top"/>
         <TextBox x:Name="RoomWidthTextBox" MaxLength="25" HorizontalAlignment="Left" Margin="426,548,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="190" TextChanged="RoomWidthTextBox_TextChanged" />
         <TextBox x:Name="RoomLengthTextBox" MaxLength="25" HorizontalAlignment="Left" Margin="427,625,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="189" TextChanged="RoomLengthTextBox_TextChanged" />
-        <Label Content="Kies een template&#xD;&#xA;" HorizontalAlignment="Center" Margin="0,120,0,0" VerticalAlignment="Top"/>
-        <Label Name="TemplateLabel" Content="Template" HorizontalAlignment="Center" FontSize="30" Margin="0,65,0,0" VerticalAlignment="Top"/>
         <Image Margin="901,269,210,333" Stretch="Fill" Source="pack://siteoforigin:,,,/Image1.png"/>
         <Image HorizontalAlignment="Left" Height="300" Margin="248,178,0,0" VerticalAlignment="Top" Width="302" Source="/View/Vierhoek.jpg"/>
         <Image HorizontalAlignment="Left" Height="300" Margin="735,178,0,0" VerticalAlignment="Top" Width="300" Source="/View/hoek vormig.jpg"/>

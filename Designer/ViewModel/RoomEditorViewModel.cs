@@ -19,13 +19,16 @@ namespace Designer.ViewModel
             return !_regex.IsMatch(text);
         }
 
+        // methode om de kamer op te slaan
         public Boolean SaveRoom(string name, int width, int length)
         {
 
+            // voegt de specificaties van de kamer aan het object room toe
             room.Name = name;
             room.Width = width;
             room.Length = length;
             
+            // kamer opslaan
             using (var context = RoomDesignContext.Instance)
             {
                 var post = context.Rooms.Add(room);
