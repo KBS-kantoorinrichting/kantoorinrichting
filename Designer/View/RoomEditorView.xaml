@@ -1,0 +1,33 @@
+﻿<Page
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:Designer.View"
+      xmlns:ViewModel="clr-namespace:Designer.ViewModel" x:Class="Designer.View.RoomEditorView"
+      mc:Ignorable="d" 
+      d:DesignHeight="720" d:DesignWidth="1280"
+      Title="KantoorInrichting - Ruimte Editor">
+
+    <Page.DataContext>
+        <ViewModel:RoomEditorViewModel/>
+    </Page.DataContext>
+
+    <Grid>
+        <Label Content="Ruimte Toevoegen" HorizontalAlignment="Left" FontSize="35" Margin="10,10,0,0" VerticalAlignment="Top"/>
+        <TextBox x:Name="RoomNameTextBox" MaxLength="25" HorizontalAlignment="Left" Margin="304,542,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="189" TextChanged="RoomNameTextBox_TextChanged"/>
+        <Button x:Name="SaveRoomButton" Content="Opslaan" Background="Bisque" FontFamily="Forte" HorizontalAlignment="Left" VerticalAlignment="Top" Height="52" Width="190" Click="SaveRoomButton_Click" RenderTransformOrigin="0.906,0.372" Margin="304,585,0,0"/>
+        <Label Content="Ruimte naam:" HorizontalAlignment="Left" Margin="299,505,0,0" VerticalAlignment="Top"/>
+        <Label Content="Ruimte breedte:" HorizontalAlignment="Left" Margin="62,501,0,0" VerticalAlignment="Top"/>
+        <Label Content="Ruimte lengte" HorizontalAlignment="Left" Margin="64,578,0,0" VerticalAlignment="Top"/>
+        <TextBox x:Name="RoomWidthTextBox" MaxLength="25" HorizontalAlignment="Left" Margin="64,542,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="190" TextChanged="RoomWidthTextBox_TextChanged" />
+        <TextBox x:Name="RoomLengthTextBox" MaxLength="25" HorizontalAlignment="Left" Margin="65,619,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="189" TextChanged="RoomLengthTextBox_TextChanged" />
+        <Label Content="Kies een template&#xD;&#xA;" HorizontalAlignment="Center" Margin="0,120,0,0" VerticalAlignment="Top"/>
+        <Label Name="TemplateLabel" Content="Template" HorizontalAlignment="Center" FontSize="30" Margin="0,65,0,0" VerticalAlignment="Top"/>
+        <Image Margin="901,269,210,333" Stretch="Fill" Source="pack://siteoforigin:,,,/Image1.png"/>
+        <Image HorizontalAlignment="Left" Height="300" Margin="248,178,0,0" VerticalAlignment="Top" Width="302" Source="/View/Vierhoek.jpg"/>
+        <Image HorizontalAlignment="Left" Height="300" Margin="735,178,0,0" VerticalAlignment="Top" Width="300" Source="/View/hoek vormig.jpg"/>
+        <!-- voor de plakcheck DataObject.Pasting="WidthLengthTypeCheck"  -->
+        <!-- voor de int controles TextChanged="RoomWidthTextBox_TextChanged" -->
+    </Grid>
+</Page>

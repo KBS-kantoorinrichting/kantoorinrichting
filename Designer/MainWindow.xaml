@@ -17,10 +17,12 @@
                     <MenuItem Header="TODO"/>
                     <MenuItem Header="Afsluiten" Click="ExitApplication"/>
                 </MenuItem>
-                <MenuItem Header="Ruimtes" Click="MenuItemNavigateExamplePage" />
-                <MenuItem Header="Product catalogus" Click="MenuItemNavigateExamplePage" />
+                <MenuItem Header="Ruimtes" Click="MenuItemNagivateExamplePage" />
+                <MenuItem Header="Ruimte maken" Click="MenuItemNagivateRoomEditor" />
+                <MenuItem Header="Product catalogus" Click="MenuItemNagivateExamplePage" />
                 <MenuItem Header="Ontwerp toevoegen" Click="MenuItemNavigateAddDesignPage" />
             </Menu>
+            <Label Content="{Binding TrackName, Mode=OneWay}" Width="1280" RenderTransformOrigin="0.446,-0.528" Height="720"/>
         </DockPanel>
         <Frame Name="Container" NavigationUIVisibility="Hidden" Margin="0,20,0,0"/>
     </Grid>

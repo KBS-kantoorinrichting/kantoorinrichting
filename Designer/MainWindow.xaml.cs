@@ -36,9 +36,21 @@ namespace Designer
             this.Container.Content = page;
         }
 
+        private void MenuItemNavigateRoomEditor(object sender, RoutedEventArgs e)
+        {
+            RoomEditorView page = new RoomEditorView();
+            this.Container.Content = page;
+            page.ParentWindow = this;
+        }
+
         private void ExitApplication(object sender, RoutedEventArgs e)
         {
             Application.Current.Shutdown();
+        }
+
+        private void Container_Navigated(object sender, System.Windows.Navigation.NavigationEventArgs e)
+        {
+
         }
     }
 }
