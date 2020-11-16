@@ -18,7 +18,7 @@
                     <MenuItem Header="Afsluiten" Click="ExitApplication"/>
                 </MenuItem>
                 <MenuItem Header="Ruimtes" Click="MenuItemNavigateExamplePage" />
-                <MenuItem Header="Product catalogus" Click="MenuItemNavigateExamplePage" />
+                <MenuItem Header="Product catalogus" Click="MenuItemNavigateViewProductPage" />
                 <MenuItem Header="Ontwerp toevoegen" Click="MenuItemNavigateAddDesignPage" />
             </Menu>
         </DockPanel>

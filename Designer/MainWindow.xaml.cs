@@ -40,5 +40,11 @@ namespace Designer
         {
             Application.Current.Shutdown();
         }
+
+        private void MenuItemNavigateViewProductPage(object sender, RoutedEventArgs e)
+        {
+            ViewProductsView page = new ViewProductsView();
+            this.Container.Content = page;
+        }
     }
 }
