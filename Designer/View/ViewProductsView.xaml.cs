@@ -21,6 +21,7 @@ namespace Designer.View
         public ViewProductsView()
         {
             InitializeComponent();
+
         }
     }
 }

@@ -15,5 +15,18 @@ namespace Designer.Model
         public int Width { get; set; }
         public int Length { get; set; }
         public List<ProductPlacement> ProductPlacements { get; set; }
+
+        public Product()
+        {
+
+        }
+
+        public Product(string name, double price, string photo)
+        {
+
+            Name = name;
+            Price = price;
+            Photo = photo;
+        }
     }
 }
