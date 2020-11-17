@@ -1,16 +1,17 @@
 ﻿<Page
-      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-      xmlns:local="clr-namespace:Designer"
-      xmlns:ViewModel="clr-namespace:Designer.ViewModel" x:Class="Designer.View.ViewDesignPage"
-      mc:Ignorable="d" 
-      d:DesignHeight="450" d:DesignWidth="800"
-      Title="ViewDesignPage"
-      Initialized="Page_Initialized">
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:viewModel="clr-namespace:Designer.ViewModel" x:Class="Designer.View.ViewDesignPage"
+    xmlns:model="clr-namespace:Designer.Model"
+    xmlns:behaviors="http://schemas.microsoft.com/xaml/behaviors"
+    mc:Ignorable="d"
+    d:DesignHeight="450" d:DesignWidth="800"
+    Title="ViewDesignPage"
+    Initialized="Page_Initialized">
     <Page.DataContext>
-        <ViewModel:ViewDesignViewModel/>
+        <viewModel:ViewDesignViewModel />
     </Page.DataContext>
     <Grid>
         <TabControl x:Name="Tabs" Margin="540,0,0,0" HorizontalAlignment="Left" Width="260">
@@ -18,7 +19,7 @@
                 <Grid Background="#FFE5E5E5" Height="410">
                     <ScrollViewer>
                         <ItemsControl
-                            x:Name="CatalogusList" 
+                            x:Name="CatalogusList"
                             ScrollViewer.HorizontalScrollBarVisibility="Disabled"
                             ItemsSource="{Binding ProductList}" Width="237">
 
@@ -29,40 +30,39 @@
                             </ItemsControl.ItemsPanel>
 
                             <ItemsControl.ItemTemplate>
-                                <DataTemplate DataType="Models:Product">
+                                <DataTemplate DataType="model:Product">
                                     <Border
                                         DataContext="{ Binding ProductId }"
                                         Margin="5"
                                         BorderThickness="0.2"
                                         BorderBrush="Black"
-                                        MouseDown="Catalogus_Product_Mousedown"
-                                        >
+                                        MouseDown="Catalogus_Product_Mousedown">
                                         <StackPanel Orientation="Vertical" Width="108" Height="108">
                                             <TextBlock
                                                 Text="{Binding Name}"
-                                                HorizontalAlignment="Center"                               
+                                                HorizontalAlignment="Center"
                                                 VerticalAlignment="Top"
                                                 FontSize="12"
                                                 TextWrapping="Wrap"
                                                 TextAlignment="Center"
                                                 FontWeight="DemiBold"
-                                                Width="108" Height="20"/>
+                                                Width="108" Height="20" />
                                             <Border
                                                 BorderThickness="0.2"
                                                 BorderBrush="Black"
-                                                Height="68" 
+                                                Height="68"
                                                 Width="68">
-                                                <Image Source="..\Resources\Images\placeholder.png"/>
+                                                <Image Source="..\Resources\Images\placeholder.png" />
                                             </Border>
                                             <TextBlock
-                                            Text="{Binding Price}"
-                                            HorizontalAlignment="Center"                               
-                                            VerticalAlignment="Top"
-                                            FontSize="12"
-                                            TextWrapping="Wrap"
-                                            TextAlignment="Center"
-                                            FontWeight="DemiBold"
-                                            Width="108" Height="20"/>
+                                                Text="{Binding Price}"
+                                                HorizontalAlignment="Center"
+                                                VerticalAlignment="Top"
+                                                FontSize="12"
+                                                TextWrapping="Wrap"
+                                                TextAlignment="Center"
+                                                FontWeight="DemiBold"
+                                                Width="108" Height="20" />
                                         </StackPanel>
                                     </Border>
                                 </DataTemplate>
@@ -72,9 +72,15 @@
                 </Grid>
             </TabItem>
             <TabItem Header="Overzicht">
-                <Grid Background="#FFE5E5E5"/>
+                <Grid Background="#FFE5E5E5" />
             </TabItem>
         </TabControl>
-        <Canvas Name="Editor" Margin="0,25,260,0" AllowDrop="True" Background="Transparent" DragDrop.Drop="Canvas_DragDrop" />
+        <Canvas Name="Editor" Margin="0,25,260,0" AllowDrop="True" Background="Transparent">
+            <behaviors:Interaction.Triggers>
+                <behaviors:EventTrigger EventName="Drop" SourceObject="{Binding ElementName=Editor}">
+                    <behaviors:InvokeCommandAction Command="{Binding Test}" PassEventArgsToCommand="True" />
+                </behaviors:EventTrigger>
+            </behaviors:Interaction.Triggers>
+        </Canvas>
     </Grid>
 </Page>
