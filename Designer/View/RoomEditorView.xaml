@@ -15,21 +15,16 @@
 
     <Grid>
         <Label Content="Ruimte Toevoegen" HorizontalAlignment="Left" FontSize="35" Margin="10,10,0,0"
-               VerticalAlignment="Top" />
+               VerticalAlignment="Top"  />
 
-        <TextBox x:Name="RoomNameTextBox" MaxLength="25" HorizontalAlignment="Left" Margin="666,346,0,0"
+        <!--naam invoerveld-->
+        <TextBox x:Name="Name" MaxLength="25" HorizontalAlignment="Left" Margin="666,346,0,0"
                  TextWrapping="Wrap" VerticalAlignment="Top" Width="189" />
-        <Button Content="Opslaan" Background="Bisque" FontFamily="Verdana" FontSize="30"
-                HorizontalAlignment="Left" VerticalAlignment="Top" Height="52" Width="190"
-                RenderTransformOrigin="0.906,0.372" Margin="666,382,0,0" 
-                Command="{Binding Submit}"/>
         <Label Content="Ruimte naam:" HorizontalAlignment="Left" Margin="661,309,0,0" VerticalAlignment="Top" />
+        
+        <!--Breedte invoerveld-->             
         <Label Content="Ruimte breedte:" HorizontalAlignment="Left" Margin="426,309,0,0" VerticalAlignment="Top" />
-        <Label Content="Ruimte lengte" HorizontalAlignment="Left" Margin="426,382,0,0" VerticalAlignment="Top" />
-        <TextBlock Name="LengthValidation" Foreground="Red" Text="{Binding (Validation.Errors)[0].ErrorContent, ElementName=Length}" Margin="426,446,622,58"/>
-        <TextBlock Name="WidthValidation" Foreground="Red" Text="{Binding (Validation.Errors)[0].ErrorContent, ElementName=Width}" Margin="426,369,622,135"/>
-
-       
+        
         <TextBox Name="Width" MaxLength="25" HorizontalAlignment="Left" Margin="427,346,0,0"
                  TextWrapping="Wrap" VerticalAlignment="Top" Width="189" >
             <TextBox.Text>
@@ -40,6 +35,13 @@
                 </Binding>
             </TextBox.Text>
         </TextBox>
+
+        <TextBlock Name="WidthValidation" Foreground="Red" Text="{Binding (Validation.Errors)[0].ErrorContent, ElementName=Width}" Margin="426,369,622,135"/>
+
+        
+        <!--Lengte invoerveld-->      
+        <Label Content="Ruimte lengte" HorizontalAlignment="Left" Margin="426,382,0,0" VerticalAlignment="Top" />
+
         <TextBox Name="Length" MaxLength="25" HorizontalAlignment="Left" Margin="427,415,0,0"
                  TextWrapping="Wrap" VerticalAlignment="Top" Width="189" TextChanged="Length_TextChanged" >
             <TextBox.Text>
@@ -50,5 +52,17 @@
                 </Binding>
             </TextBox.Text>
         </TextBox>
+
+        <TextBlock Name="LengthValidation" Foreground="Red" Text="{Binding (Validation.Errors)[0].ErrorContent, ElementName=Length}" Margin="426,446,622,58"/>
+        
+
+      
+        <!--Opslaan knop-->
+        <Button Content="Opslaan" Background="Bisque" FontFamily="Verdana" FontSize="30"
+                HorizontalAlignment="Left" VerticalAlignment="Top" Height="52" Width="190"
+                RenderTransformOrigin="0.906,0.372" Margin="666,382,0,0" 
+                Command="{Binding Submit}"/>
+        
+        
     </Grid>
 </Page>
