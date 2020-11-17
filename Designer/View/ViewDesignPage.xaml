@@ -20,9 +20,9 @@
         <designer:ImagePathConverter x:Key="ImagePathConverter"/>
     </Page.Resources>
     <Grid>
-        <TabControl x:Name="Tabs" Margin="540,0,0,0" HorizontalAlignment="Left" Width="260">
+        <TabControl x:Name="Tabs" HorizontalAlignment="Right" Width="260">
             <TabItem Header="Catalogus">
-                <Grid Background="#FFE5E5E5" Height="410">
+                <Grid Background="#FFE5E5E5">
                     <ScrollViewer>
                         <ItemsControl
                             x:Name="CatalogusList"

@@ -132,7 +132,7 @@ namespace Designer.ViewModel {
         }
 
         public static List<Product> LoadProducts() { 
-            using var Context = new RoomDesignContext();
+            var Context = RoomDesignContext.Instance;
             return Context.Products.ToList();
         }
     }
