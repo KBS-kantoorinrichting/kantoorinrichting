@@ -14,11 +14,14 @@ namespace DesignerTest.Model {
 
         [Test]
         [TestCaseSource(nameof(FromListCorrectTestCases))]
-        public void ToList_Correct(int expected, string input) { Assert.AreEqual(expected, Room.ToList(input)); }
+        public void ToList_Correct(List<Position> expected, string input) {
+            Assert.AreEqual(expected, Room.ToList(input));
+        }
 
         public static IEnumerable<TestCaseData> FromListCorrectTestCases {
             get {
                 yield return new TestCaseData(new List<Position>(), "");
+                yield return new TestCaseData(null, null);
                 yield return new TestCaseData(
                     new List<Position> {
                         new Position(0, 0)

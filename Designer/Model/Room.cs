@@ -16,14 +16,20 @@ namespace Designer.Model {
         }
 
         public static List<Position> ToList(string positions) {
-            return positions.Split("|")
-                .Select(p => new Position(p))
-                .ToList();
+            return positions switch {
+                null => null,
+                "" => new List<Position>(),
+                _ => positions.Split("|").Select(p => new Position(p)).ToList()
+            };
         }
 
         public static string FromList(IEnumerable<Position> positions) {
-            return positions.Select(p => p.ToString())
-                .Aggregate((s1, s2) => $"${s1}|${s2}");
+            if (positions == null) return null;
+            IEnumerable<Position> enumerable = positions.ToList();
+
+            if (!enumerable.Any()) return "";
+            return enumerable.Select(p => p.ToString())
+                .Aggregate((s1, s2) => $"{s1}|{s2}");
         }
 
         public static Room FromDimensions(string name, int width, int length) {
@@ -31,12 +37,14 @@ namespace Designer.Model {
         }
 
         public static string FromDimensions(int width, int length) {
-            return FromList(new[] {
-                new Position(0,0),
-                new Position(width,0),
-                new Position(width,length),
-                new Position(0,length),
-            });
+            return FromList(
+                new[] {
+                    new Position(0, 0),
+                    new Position(width, 0),
+                    new Position(width, length),
+                    new Position(0, length),
+                }
+            );
         }
     }
 }
