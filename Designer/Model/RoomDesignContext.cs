@@ -13,7 +13,7 @@ namespace Designer.Model {
             set => _instance = value;
         }
 
-        protected RoomDesignContext() { }
+        public RoomDesignContext() { }
 
         //Alternative constructor zodat er de db getest kan worden.
         public RoomDesignContext(DbContextOptions options) : base(options) { }

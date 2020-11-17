@@ -21,7 +21,7 @@
                         <ItemsControl
                             x:Name="CatalogusList"
                             ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-                            ItemsSource="{Binding ProductList}" Width="237">
+                            ItemsSource="{Binding Products}" Width="237">
 
                             <ItemsControl.ItemsPanel>
                                 <ItemsPanelTemplate>
@@ -32,11 +32,10 @@
                             <ItemsControl.ItemTemplate>
                                 <DataTemplate DataType="model:Product">
                                     <Border
-                                        DataContext="{ Binding ProductId }"
+                                        Uid="{ Binding ProductId }"
                                         Margin="5"
                                         BorderThickness="0.2"
-                                        BorderBrush="Black"
-                                        MouseDown="Catalogus_Product_Mousedown">
+                                        BorderBrush="Black">
                                         <StackPanel Orientation="Vertical" Width="108" Height="108">
                                             <TextBlock
                                                 Text="{Binding Name}"
@@ -78,7 +77,7 @@
         <Canvas Name="Editor" Margin="0,25,260,0" AllowDrop="True" Background="Transparent">
             <behaviors:Interaction.Triggers>
                 <behaviors:EventTrigger EventName="Drop" SourceObject="{Binding ElementName=Editor}">
-                    <behaviors:InvokeCommandAction Command="{Binding Test}" PassEventArgsToCommand="True" />
+                    <behaviors:InvokeCommandAction Command="{Binding DragDropCommand}" PassEventArgsToCommand="True" />
                 </behaviors:EventTrigger>
             </behaviors:Interaction.Triggers>
         </Canvas>
