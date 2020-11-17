@@ -17,13 +17,14 @@ namespace Designer.Model
         public List<ProductPlacement> ProductPlacements { get; set; }
 
         public Product()
+        // Lege constructor voor product
         {
 
         }
 
         public Product(string name, double price, string photo)
+        // Alternatieve constructor voor Product
         {
-
             Name = name;
             Price = price;
             Photo = photo;

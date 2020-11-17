@@ -21,7 +21,7 @@
                         <ItemsControl
                             x:Name="CatalogusList" 
                             ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-                            ItemsSource="{Binding Products}" Width="237" Height="579">
+                            ItemsSource="{Binding Products}" ItemStringFormat='{}{0,N}€'  Width="237" Height="579">
 
                             <ItemsControl.ItemsPanel>
                                 <ItemsPanelTemplate>
@@ -54,7 +54,7 @@
                                                 <Image Source="..\Resources\Images\placeholder.png"/>
                                             </Border>
                                             <TextBlock
-                                            Text="{Binding Price}"
+                                            Text="{Binding Price, StringFormat='€{0:C}'}"
                                             HorizontalAlignment="Center"                               
                                             VerticalAlignment="Top"
                                             FontSize="12"
