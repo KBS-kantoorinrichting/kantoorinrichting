@@ -16,22 +16,32 @@
     <Grid>
         <Label Content="Ruimte Toevoegen" HorizontalAlignment="Left" FontSize="35" Margin="10,10,0,0"
                VerticalAlignment="Top" />
-        <TextBox MaxLength="25" HorizontalAlignment="Left" Margin="666,548,0,0"
-                 TextWrapping="Wrap" VerticalAlignment="Top" Width="189"
-                 Text="{Binding Name, UpdateSourceTrigger=PropertyChanged}"/>
+
+        <TextBox x:Name="RoomNameTextBox" MaxLength="25" HorizontalAlignment="Left" Margin="666,346,0,0"
+                 TextWrapping="Wrap" VerticalAlignment="Top" Width="189" />
         <Button Content="Opslaan" Background="Bisque" FontFamily="Verdana" FontSize="30"
                 HorizontalAlignment="Left" VerticalAlignment="Top" Height="52" Width="190"
-                RenderTransformOrigin="0.906,0.372" Margin="666,591,0,0" 
+                RenderTransformOrigin="0.906,0.372" Margin="666,382,0,0" 
                 Command="{Binding Submit}"/>
-        <Label Content="Ruimte naam:" HorizontalAlignment="Left" Margin="661,511,0,0" VerticalAlignment="Top" />
-        <Label Content="Ruimte breedte:" HorizontalAlignment="Left" Margin="424,507,0,0" VerticalAlignment="Top" />
-        <Label Content="Ruimte lengte" HorizontalAlignment="Left" Margin="426,584,0,0" VerticalAlignment="Top" />
-        <TextBlock Text="{Binding (Validation.Errors)[0].ErrorContent, ElementName=Length}"/>
-        <TextBox MaxLength="25" HorizontalAlignment="Left" Margin="426,548,0,0"
-                 TextWrapping="Wrap" VerticalAlignment="Top" Width="190"
-                 Text="{Binding Width, UpdateSourceTrigger=PropertyChanged}" />
-        <TextBox Name="Length" MaxLength="25" HorizontalAlignment="Left" Margin="427,625,0,0"
+        <Label Content="Ruimte naam:" HorizontalAlignment="Left" Margin="661,309,0,0" VerticalAlignment="Top" />
+        <Label Content="Ruimte breedte:" HorizontalAlignment="Left" Margin="426,309,0,0" VerticalAlignment="Top" />
+        <Label Content="Ruimte lengte" HorizontalAlignment="Left" Margin="426,382,0,0" VerticalAlignment="Top" />
+        <TextBlock Name="LengthValidation" Foreground="Red" Text="{Binding (Validation.Errors)[0].ErrorContent, ElementName=Length}" Margin="426,446,622,58"/>
+        <TextBlock Name="WidthValidation" Foreground="Red" Text="{Binding (Validation.Errors)[0].ErrorContent, ElementName=Width}" Margin="426,369,622,135"/>
+
+       
+        <TextBox Name="Width" MaxLength="25" HorizontalAlignment="Left" Margin="427,346,0,0"
                  TextWrapping="Wrap" VerticalAlignment="Top" Width="189" >
+            <TextBox.Text>
+                <Binding Path="Width" UpdateSourceTrigger="PropertyChanged">
+                    <Binding.ValidationRules>
+                        <ViewModel:StringToIntValidationRule ValidationStep="RawProposedValue"/>
+                    </Binding.ValidationRules>
+                </Binding>
+            </TextBox.Text>
+        </TextBox>
+        <TextBox Name="Length" MaxLength="25" HorizontalAlignment="Left" Margin="427,415,0,0"
+                 TextWrapping="Wrap" VerticalAlignment="Top" Width="189" TextChanged="Length_TextChanged" >
             <TextBox.Text>
                 <Binding Path="Length" UpdateSourceTrigger="PropertyChanged">
                     <Binding.ValidationRules>

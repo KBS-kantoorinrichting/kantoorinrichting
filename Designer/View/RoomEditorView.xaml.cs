@@ -25,5 +25,20 @@ namespace Designer.View {
             //pagina initializen
             InitializeComponent();
         }
+
+        private void Length_TextChanged(object sender, TextChangedEventArgs e)
+        {
+
+        }
+
+        private void Width_TextChanged(object sender, TextChangedEventArgs e)
+        {
+
+        }
+
+        private void Name_TextChanged(object sender, TextChangedEventArgs e)
+        {
+
+        }
     }
 }
