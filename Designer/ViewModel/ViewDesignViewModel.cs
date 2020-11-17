@@ -61,5 +61,7 @@ namespace Designer.ViewModel
 
             SelectedProduct = Product;
         }
+
+        public static List<Product> LoadProducts() { return RoomDesignContext.Instance.Products.ToList(); }
     }
 }
