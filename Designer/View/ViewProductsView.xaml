@@ -93,7 +93,7 @@
             </Expander>
             <Expander Header="Foto" HorizontalAlignment="Left" Height="227" Margin="270,20,0,0" VerticalAlignment="Top" Width="237" IsExpanded="True">
                 <StackPanel Height="199" VerticalAlignment="Top">
-                    <Image Source="C:\Users\bashe\Source\Repos\kantoorinrichting\Designer\View\asdfasdfasdf.png" Width="200" Height="200" />
+                    <Image Source="/View/asdfasdfasdf.png" Width="200" Height="200" />
                 </StackPanel>
             </Expander>
         </Grid>
