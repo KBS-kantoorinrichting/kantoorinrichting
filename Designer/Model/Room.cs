@@ -26,13 +26,17 @@ namespace Designer.Model {
                 .Aggregate((s1, s2) => $"${s1}|${s2}");
         }
 
-        public static Room FromDimensions(string name, int width, int height) {
-            return new Room(name, FromList(new[] {
+        public static Room FromDimensions(string name, int width, int length) {
+            return new Room(name, FromDimensions(width, length));
+        }
+
+        public static string FromDimensions(int width, int length) {
+            return FromList(new[] {
                 new Position(0,0),
                 new Position(width,0),
-                new Position(width,height),
-                new Position(0,height),
-            }));
+                new Position(width,length),
+                new Position(0,length),
+            });
         }
     }
 }
