@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel;
 using System.Windows;
+using Designer.Model;
 using Designer.Other;
 using Designer.View;
 
@@ -16,8 +17,15 @@ namespace Designer.ViewModel {
 
         public MainViewModel() {
             Navigator = Navigator.Instance;
-            GotoDesigns = new PageCommand(() => new DesignCatalog());
             GotoRooms = new PageCommand(() => new RoomEditorView());
+            GotoDesigns = new PageCommand(() => {
+                DesignCatalog DesignCatalog = new DesignCatalog();
+                DesignCatalog.DesignSelected += (o, e) =>
+                {
+                    Navigator.Instance.Replace(new ViewDesignPage(e.Value));
+                };
+                return DesignCatalog;
+            });
             GotoExample = new PageCommand(() => new ExamplePage());
             Exit = new BasicCommand(() => Application.Current.Shutdown());
         }

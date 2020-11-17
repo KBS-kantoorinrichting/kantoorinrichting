@@ -4,7 +4,6 @@
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
       xmlns:viewModel="clr-namespace:Designer.ViewModel"
-      xmlns:local="clr-namespace:Designer.View"
       mc:Ignorable="d"
       Title="DesignCatalog">
     <Page.DataContext>
@@ -18,7 +17,7 @@
 
         <Label Content="Ontwerpen:" Margin="10,35,10,0" VerticalAlignment="Top"
                Grid.ColumnSpan="2" Grid.Column="0" />
-        
+
         <ListView Margin="10,65,10,10"
                   ItemsSource="{Binding Designs}"
                   SelectedValue="{Binding Selected}"
@@ -37,7 +36,7 @@
                 </Style>
             </ListView.ItemContainerStyle>
         </ListView>
-        
+
         <Button Content="Nieuw ontwerp" Margin="10,10,10,0" VerticalAlignment="Top"
                 Command="{Binding AddDesign}"
                 Grid.Column="0" />

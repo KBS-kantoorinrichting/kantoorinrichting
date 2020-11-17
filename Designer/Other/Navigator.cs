@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Windows.Controls;
-using Designer.View;
 
 namespace Designer.Other {
     public class Navigator : INotifyPropertyChanged {
