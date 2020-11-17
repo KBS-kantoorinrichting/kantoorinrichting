@@ -5,15 +5,15 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:viewModel="clr-namespace:Designer.ViewModel"
         mc:Ignorable="d"
-        Title="AddDesign" Height="450" Width="800">
+        Title="AddDesign">
 
     <Page.DataContext>
         <viewModel:AddDesignModel />
     </Page.DataContext>
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="400*" />
-            <ColumnDefinition Width="400*" />
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
 
         <Label Content="Ruimte" Margin="10,10,10,0" VerticalAlignment="Top"
@@ -31,6 +31,7 @@
                  Grid.ColumnSpan="2" Grid.Column="0" />
 
         <Button Content="Annuleren" Margin="10,170,10,0" VerticalAlignment="Top"
+                Command="{Binding Cancel}"
                 Grid.Column="0" />
         <Button Content="Aanmaken" Margin="10,170,10,0" VerticalAlignment="Top"
                 Command="{Binding Submit}"

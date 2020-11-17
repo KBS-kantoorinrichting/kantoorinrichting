@@ -1,0 +1,48 @@
+﻿<Page x:Class="Designer.View.DesignCatalog"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+      xmlns:viewModel="clr-namespace:Designer.ViewModel"
+      xmlns:local="clr-namespace:Designer.View"
+      mc:Ignorable="d"
+      Title="DesignCatalog">
+    <Page.DataContext>
+        <viewModel:DesignCatalogModel />
+    </Page.DataContext>
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+
+        <Label Content="Ontwerpen:" Margin="10,35,10,0" VerticalAlignment="Top"
+               Grid.ColumnSpan="2" Grid.Column="0" />
+        
+        <ListView Margin="10,65,10,10"
+                  ItemsSource="{Binding Designs}"
+                  SelectedValue="{Binding Selected}"
+                  Grid.ColumnSpan="2" Grid.Column="0">
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <Grid HorizontalAlignment="Stretch">
+                        <TextBlock Text="{Binding Name}" />
+                        <TextBlock Text="{Binding Room.Name}" HorizontalAlignment="Right" />
+                    </Grid>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+            <ListView.ItemContainerStyle>
+                <Style TargetType="ListViewItem">
+                    <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                </Style>
+            </ListView.ItemContainerStyle>
+        </ListView>
+        
+        <Button Content="Nieuw ontwerp" Margin="10,10,10,0" VerticalAlignment="Top"
+                Command="{Binding AddDesign}"
+                Grid.Column="0" />
+        <Button Content="Herlaad" Margin="10,10,10,0" VerticalAlignment="Top"
+                Command="{Binding ReloadCommand}"
+                Grid.Column="1" />
+    </Grid>
+</Page>
