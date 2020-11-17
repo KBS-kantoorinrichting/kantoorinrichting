@@ -18,6 +18,11 @@ namespace Designer.ViewModel {
         public event PropertyChangedEventHandler PropertyChanged;
 
         public List<Product> Products { get; set; }
+        private Dictionary<Product, int> _productOverview { get; set; }
+        public List<Product> ProductOverview
+        {
+            get => _productOverview.Keys.ToList();
+        }
         public List<ProductPlacement> ProductPlacements { get; set; }
         public ArgumentCommand<DragEventArgs> DragDropCommand { get; set; }
         public ArgumentCommand<DragEventArgs> DragOverCommand { get; set; }
@@ -29,18 +34,20 @@ namespace Designer.ViewModel {
 
         public ViewDesignViewModel()
         {
-            Editor = new Canvas();
             Products = LoadProducts(); 
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("ProductPlacements"));
             MouseDownCommand = new ArgumentCommand<MouseButtonEventArgs>(e => CatalogusMouseDown(e.OriginalSource, e));
             DragDropCommand = new ArgumentCommand<DragEventArgs>(e => CanvasDragDrop(e.OriginalSource, e));
             DragOverCommand = new ArgumentCommand<DragEventArgs>(e => CanvasDragOver(e.OriginalSource, e));
+            _productOverview = new Dictionary<Product, int>();
         }
 
         public void SetDesign(Design design)
         {
             Design = design;
             ProductPlacements = design.ProductPlacements;
+            Editor = new Canvas();
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(""));
         }
 
         public void PlaceProduct(int x, int y)
@@ -52,6 +59,10 @@ namespace Designer.ViewModel {
                 X = x,
                 Y = y
             });
+
+            // Add product to product overview
+            AddToOverview(SelectedProduct);
+
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("ProductPlacements"));
         }
 
@@ -134,6 +145,17 @@ namespace Designer.ViewModel {
         public static List<Product> LoadProducts() { 
             using var Context = new RoomDesignContext();
             return Context.Products.ToList();
+        }
+
+        private void AddToOverview(Product product)
+        {
+            if (_productOverview.ContainsKey(product))
+            {
+                _productOverview[product] = _productOverview[product] + 1;
+            } else
+            {
+                _productOverview.Add(product, 1);
+            }
         }
     }
 }

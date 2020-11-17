@@ -10,9 +10,9 @@
     xmlns:model1="clr-namespace:Designer.Model"
     xmlns:designer="clr-namespace:Designer"
     mc:Ignorable="d"
-    d:DesignHeight="450" d:DesignWidth="800"
+    d:DesignWidth="800"
     Title="ViewDesignPage"
-    Initialized="Page_Initialized">
+    Initialized="Page_Initialized" WindowHeight="-1">
     <Page.DataContext>
         <viewModel:ViewDesignViewModel x:Name="viewModel"/>
     </Page.DataContext>
@@ -20,9 +20,24 @@
         <designer:ImagePathConverter x:Key="ImagePathConverter"/>
     </Page.Resources>
     <Grid>
-        <TabControl x:Name="Tabs" Margin="540,0,0,0" HorizontalAlignment="Left" Width="260">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="1*" />
+            <ColumnDefinition Width="240" />
+        </Grid.ColumnDefinitions>
+        <Canvas Grid.Column="0" Name="Editor" AllowDrop="True" Background="Transparent" HorizontalAlignment="Stretch">
+            <ContentPresenter Content="{Binding Path=Editor}"></ContentPresenter>
+            <behaviors:Interaction.Triggers>
+                <behaviors:EventTrigger EventName="Drop" SourceObject="{Binding ElementName=Editor}">
+                    <behaviors:InvokeCommandAction Command="{Binding DragDropCommand}" PassEventArgsToCommand="True" />
+                </behaviors:EventTrigger>
+                <behaviors:EventTrigger EventName="DragOver" SourceObject="{Binding ElementName=Editor}">
+                    <behaviors:InvokeCommandAction Command="{Binding DragOverCommand}" PassEventArgsToCommand="True"/>
+                </behaviors:EventTrigger>
+            </behaviors:Interaction.Triggers>
+        </Canvas>
+        <TabControl x:Name="Tabs" HorizontalAlignment="Right" Grid.Column="1">
             <TabItem Header="Catalogus">
-                <Grid Background="#FFE5E5E5" Height="410">
+                <Grid Background="#FFE5E5E5" >
                     <ScrollViewer>
                         <ItemsControl
                             x:Name="CatalogusList"
@@ -82,19 +97,67 @@
                 </Grid>
             </TabItem>
             <TabItem Header="Overzicht">
-                <Grid Background="#FFE5E5E5" />
+                <Grid Background="#FFE5E5E5" >
+                    <Label Content="Financien" HorizontalAlignment="Center" VerticalAlignment="Top" Width="234"/>
+                    <ScrollViewer Margin="0,31,0,22">
+                        <ItemsControl
+                            x:Name="ProductOverview"
+                            ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                            ItemsSource="{Binding ProductOverview}" Width="237">
+
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <WrapPanel />
+                                </ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate DataType="model:Product">
+                                    <Border
+                                        Margin="5"
+                                        BorderThickness="0.2"
+                                        BorderBrush="Black">
+                                        <behaviors:Interaction.Triggers>
+                                            <behaviors:EventTrigger EventName="MouseDown">
+                                                <behaviors:InvokeCommandAction Command="{ Binding ElementName=viewModel, Path=MouseDownCommand}" PassEventArgsToCommand="True" />
+                                            </behaviors:EventTrigger>
+                                        </behaviors:Interaction.Triggers>
+                                        <StackPanel Orientation="Vertical" Width="108" Height="108">
+                                            <TextBlock
+                                                Text="{Binding Name}"
+                                                HorizontalAlignment="Center"
+                                                VerticalAlignment="Top"
+                                                FontSize="12"
+                                                TextWrapping="Wrap"
+                                                TextAlignment="Center"
+                                                FontWeight="DemiBold"
+                                                Width="108" Height="20" />
+                                            <Border
+                                                BorderThickness="0.2"
+                                                BorderBrush="Black"
+                                                Height="68"
+                                                Width="68">
+                                                <Image
+                                                    Source="{Binding Path=Photo, Converter={StaticResource ImagePathConverter}}"/>
+                                            </Border>
+                                            <TextBlock
+                                                Text="{Binding Price}"
+                                                HorizontalAlignment="Center"
+                                                VerticalAlignment="Top"
+                                                FontSize="12"
+                                                TextWrapping="Wrap"
+                                                TextAlignment="Center"
+                                                FontWeight="DemiBold"
+                                                Width="108" Height="20" />
+                                        </StackPanel>
+                                    </Border>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </ScrollViewer>
+                    <Button x:Name="Order" Content="Bestellen" HorizontalAlignment="Center" VerticalAlignment="Bottom" Width="234"/>
+                </Grid>
             </TabItem>
         </TabControl>
-        <Canvas Name="Editor" Margin="0,25,260,0" AllowDrop="True" Background="Transparent">
-            <ContentPresenter Content="{Binding Path=Editor}"></ContentPresenter>
-            <behaviors:Interaction.Triggers>
-                <behaviors:EventTrigger EventName="Drop" SourceObject="{Binding ElementName=Editor}">
-                    <behaviors:InvokeCommandAction Command="{Binding DragDropCommand}" PassEventArgsToCommand="True" />
-                </behaviors:EventTrigger>
-                <behaviors:EventTrigger EventName="DragOver" SourceObject="{Binding ElementName=Editor}">
-                    <behaviors:InvokeCommandAction Command="{Binding DragOverCommand}" PassEventArgsToCommand="True"/>
-                </behaviors:EventTrigger>
-            </behaviors:Interaction.Triggers>
-        </Canvas>
     </Grid>
 </Page>
