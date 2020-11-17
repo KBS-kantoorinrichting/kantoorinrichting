@@ -9,8 +9,6 @@ namespace Designer.ViewModel
 {
     public class ViewProductsViewModel
     {
-
-
         public event PropertyChangedEventHandler PropertyChanged;
 
         public List<Model.Product> Products { get; set; }
@@ -23,12 +21,7 @@ namespace Designer.ViewModel
             {
                 this.Products = context.Products.ToList();
             } 
-
         }
-
-
-
-
 
          public void FillDataBase()
          // Functie om snel de database te vullen met test producten.
