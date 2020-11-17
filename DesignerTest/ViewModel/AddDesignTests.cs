@@ -4,7 +4,7 @@ using Designer.Model;
 using Designer.ViewModel;
 using NUnit.Framework;
 
-namespace DesignerTest {
+namespace DesignerTest.ViewModel {
     public class AddDesignTestsStaticMethods {
         private static readonly Room Room1 = Room.FromDimensions("TestRoom1", 1, 1);
         private static readonly Room Room2 = Room.FromDimensions("TestRoom2", 2, 4);

@@ -2,7 +2,7 @@
 using Designer.ViewModel;
 using NUnit.Framework;
 
-namespace DesignerTest {
+namespace DesignerTest.ViewModel {
     class RoomEditorTests {
         [SetUp]
         public void Setup() {
