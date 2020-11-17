@@ -6,9 +6,9 @@ using NUnit.Framework;
 
 namespace DesignerTest {
     public class DesignCatalogTestsStaticMethod {
-        private static readonly Room Room1 = new Room("TestRoom1", 1, 1);
-        private static readonly Room Room2 = new Room("TestRoom2", 2, 4);
-        private static readonly Room Room3 = new Room("TestRoom3", 72, 4);
+        private static readonly Room Room1 = Room.FromDimensions("TestRoom1", 1, 1);
+        private static readonly Room Room2 = Room.FromDimensions("TestRoom2", 2, 4);
+        private static readonly Room Room3 = Room.FromDimensions("TestRoom3", 72, 4);
         
         private static readonly Design Design1 = new Design("TestDesign1", Room1, null);
         private static readonly Design Design2 = new Design("TestDesign2", Room1, null);
@@ -44,9 +44,9 @@ namespace DesignerTest {
     }
     
     public class DesignCatalogTestsInstance {
-        private static readonly Room Room1 = new Room("TestRoom1", 1, 1);
-        private static readonly Room Room2 = new Room("TestRoom2", 2, 4);
-        private static readonly Room Room3 = new Room("TestRoom3", 72, 4);
+        private static readonly Room Room1 = Room.FromDimensions("TestRoom1", 1, 1);
+        private static readonly Room Room2 = Room.FromDimensions("TestRoom2", 2, 4);
+        private static readonly Room Room3 = Room.FromDimensions("TestRoom3", 72, 4);
         
         private static readonly Design Design1 = new Design("TestDesign1", Room1, null);
         private static readonly Design Design2 = new Design("TestDesign2", Room1, null);
@@ -187,8 +187,8 @@ namespace DesignerTest {
     }
 
     public class DesignCatalogTestsAddDesignIntegration {
-        private static readonly Room Room1 = new Room("TestRoom1", 1, 1);
-        private static readonly Room Room2 = new Room("TestRoom2", 2, 4);
+        private static readonly Room Room1 = Room.FromDimensions("TestRoom1", 1, 1);
+        private static readonly Room Room2 = Room.FromDimensions("TestRoom2", 2, 4);
         
         private static readonly Design Design1 = new Design("TestDesign1", Room1, null);
         private static readonly Design Design2 = new Design("TestDesign2", Room1, null);

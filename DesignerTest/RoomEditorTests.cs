@@ -22,8 +22,8 @@ namespace DesignerTest {
             
             Assert.NotNull(room);
             Assert.AreEqual(room.Name, name);
-            Assert.AreEqual(room.Length, length);
-            Assert.AreEqual(room.Width, width);
+            // Assert.AreEqual(room.Positions, positions);
+            Assert.Fail("Fix test above");
             Assert.NotNull(room.RoomId);
         }
     }

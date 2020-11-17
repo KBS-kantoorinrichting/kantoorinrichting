@@ -11,16 +11,18 @@ namespace Designer.Model
         public int RoomId { get; set; }
         public string Name { get; set; }
 
-        public int Width { get; set; }
-
-        public int Length { get; set; }
+        public string Positions { get; set; }
 
         public Room() { }
 
-        public Room(string name, int width, int length) {
+        public Room(string name, string positions) {
             Name = name;
-            Width = width;
-            Length = length;
+            Positions = positions;
+        }
+
+        public static Room FromDimensions(string name, int width, int height) {
+            //TODO generate positionsd
+            return new Room(name, "");
         }
     }
 }

@@ -9,11 +9,16 @@ namespace Designer.Model {
         private static RoomDesignContext _instance;
 
         public static RoomDesignContext Instance {
-            get => _instance ??= new RoomDesignContext();
+            get => _instance ??= new RoomDesignContext(@"\..\..\..\..\.env");
             set => _instance = value;
         }
 
-        protected RoomDesignContext() { }
+        private readonly string _path;
+
+        //The path for entity framework
+        public RoomDesignContext(string path = @"\..\.env") {
+            _path = path;
+        }
 
         //Alternative constructor zodat er de db getest kan worden.
         public RoomDesignContext(DbContextOptions options) : base(options) { }
@@ -27,7 +32,7 @@ namespace Designer.Model {
             if (options.IsConfigured) return;
             Console.WriteLine("[RoomDesignContext] Currently running in: " + Environment.CurrentDirectory);
             //Load the .env file from the project root
-            DotEnv.Config(true, Environment.CurrentDirectory + @"\..\..\..\..\.env");
+            DotEnv.Config(true, Environment.CurrentDirectory + _path);
             var envReader = new EnvReader();
             //Use the CONNECTION_STRING from the .env file
             options.UseSqlServer(envReader.GetStringValue("CONNECTION_STRING"));

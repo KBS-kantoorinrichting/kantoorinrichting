@@ -35,7 +35,7 @@ namespace Designer.ViewModel {
         // methode om de kamer op te slaan
         public static Room SaveRoom(string name, int width, int length) {
             // voegt de specificaties van de kamer aan het object room toe
-            Room room = new Room(name, width, length);
+            Room room = Room.FromDimensions(name, width, length);
 
             // kamer opslaan
             var context = RoomDesignContext.Instance;

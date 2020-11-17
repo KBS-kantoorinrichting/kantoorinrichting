@@ -6,9 +6,9 @@ using NUnit.Framework;
 
 namespace DesignerTest {
     public class AddDesignTestsStaticMethods {
-        private static readonly Room Room1 = new Room("TestRoom1", 1, 1);
-        private static readonly Room Room2 = new Room("TestRoom2", 2, 4);
-        private static readonly Room Room3 = new Room("TestRoom3", 2, 5);
+        private static readonly Room Room1 = Room.FromDimensions("TestRoom1", 1, 1);
+        private static readonly Room Room2 = Room.FromDimensions("TestRoom2", 2, 4);
+        private static readonly Room Room3 = Room.FromDimensions("TestRoom3", 2, 5);
 
         [SetUp]
         public void Setup() {
@@ -45,8 +45,7 @@ namespace DesignerTest {
             Assert.AreEqual(name, design.Name);
             Assert.AreEqual(room.Name, design.Room.Name);
             Assert.AreEqual(room.RoomId, design.Room.RoomId);
-            Assert.AreEqual(room.Width, design.Room.Width);
-            Assert.AreEqual(room.Length, design.Room.Length);
+            Assert.AreEqual(room.Positions, design.Room.Positions);
             Assert.IsEmpty(design.ProductPlacements);
         }
 
@@ -103,9 +102,9 @@ namespace DesignerTest {
     }
 
     public class AddDesignTestsInstace {
-        private static readonly Room Room1 = new Room("TestRoom1", 1, 1);
-        private static readonly Room Room2 = new Room("TestRoom2", 2, 4);
-        private static readonly Room Room3 = new Room("TestRoom3", 2, 5);
+        private static readonly Room Room1 = Room.FromDimensions("TestRoom1", 1, 1);
+        private static readonly Room Room2 = Room.FromDimensions("TestRoom2", 2, 4);
+        private static readonly Room Room3 = Room.FromDimensions("TestRoom3", 2, 5);
         private static readonly string TestName = "TestDesign";
 
         private AddDesignModel _designModel;
