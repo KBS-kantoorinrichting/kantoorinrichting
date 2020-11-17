@@ -32,6 +32,13 @@ namespace Designer.ViewModel {
         public Canvas Editor { get; set; }
         private Point _previousPosition;
 
+        //Special constructor for unit tests
+        public ViewDesignViewModel(Design design)
+        {
+            SetDesign(design);
+            Products = LoadProducts();
+        }
+        
         public ViewDesignViewModel()
         {
             Products = LoadProducts(); 
@@ -137,14 +144,13 @@ namespace Designer.ViewModel {
                 
             Canvas.SetTop(image, Y);
             Canvas.SetLeft(image, X);
-                
             // Voeg product toe aan canvas
             Editor.Children.Add(image); 
         }
 
         public static List<Product> LoadProducts() { 
-            using var Context = new RoomDesignContext();
-            return Context.Products.ToList();
+            var context = RoomDesignContext.Instance;
+            return context.Products.ToList();
         }
 
         private void AddToOverview(Product product)
