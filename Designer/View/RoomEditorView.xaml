@@ -19,7 +19,9 @@
 
         <!--naam invoerveld-->
         <TextBox x:Name="Name" MaxLength="25" HorizontalAlignment="Left" Margin="666,346,0,0"
-                 TextWrapping="Wrap" VerticalAlignment="Top" Width="189" />
+                 TextWrapping="Wrap" VerticalAlignment="Top" Width="189" Text="{Binding Name, UpdateSourceTrigger = PropertyChanged}">
+        
+        </TextBox>
         <Label Content="Ruimte naam:" HorizontalAlignment="Left" Margin="661,309,0,0" VerticalAlignment="Top" />
         
         <!--Breedte invoerveld-->             
