@@ -36,6 +36,11 @@
                                         Margin="5"
                                         BorderThickness="0.2"
                                         BorderBrush="Black">
+                                        <behaviors:Interaction.Triggers>
+                                            <behaviors:EventTrigger EventName="MouseDown">
+                                                <behaviors:InvokeCommandAction Command="{ Binding MouseDownCommand }" PassEventArgsToCommand="True" />
+                                            </behaviors:EventTrigger>
+                                        </behaviors:Interaction.Triggers>
                                         <StackPanel Orientation="Vertical" Width="108" Height="108">
                                             <TextBlock
                                                 Text="{Binding Name}"

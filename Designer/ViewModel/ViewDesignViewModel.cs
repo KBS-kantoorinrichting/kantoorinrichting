@@ -21,6 +21,7 @@ namespace Designer.ViewModel {
         private Design Design { get; }
         public Canvas Editor { get; set; }
 
+        public ViewDesignViewModel() { }
 
         //Is not used
         public ViewDesignViewModel(Design design) {
