@@ -54,7 +54,7 @@
                                                 <Image Source="..\Resources\Images\placeholder.png"/>
                                             </Border>
                                             <TextBlock
-                                            Text="{Binding Price, StringFormat='€{0:C}'}"
+                                            Text="{Binding Price, StringFormat='C'}"
                                             HorizontalAlignment="Center"                               
                                             VerticalAlignment="Top"
                                             FontSize="12"
@@ -71,7 +71,31 @@
                 </Grid>
             </TabItem>
         </TabControl>
-        <Canvas x:Name="Editor" Margin="0,25,260,0"/>
+        <Canvas x:Name="Editor" Margin="0,25,260,0">
+            <Label Canvas.Left="21" Canvas.Top="33" Width="136"/>
+        </Canvas>
+        <Grid Background="White" HorizontalAlignment="Left" Height="430" Margin="0,20,0,0" VerticalAlignment="Top" Width="540">
 
+            <Expander Header="Naam" HorizontalAlignment="Left" Height="130" Margin="10,20,0,0" VerticalAlignment="Top" Width="96" IsExpanded="True">
+                <StackPanel>
+                    <Label Content="test"/>
+                </StackPanel>
+            </Expander>
+            <Expander Header="Dimensies" HorizontalAlignment="Left" Height="130" Margin="103,20,0,0" VerticalAlignment="Top" Width="95" IsExpanded="True">
+                <StackPanel>
+                    <Label Content="test"/>
+                </StackPanel>
+            </Expander>
+            <Expander Header="Prijs" HorizontalAlignment="Left" Height="130" Margin="203,20,0,0" VerticalAlignment="Top" Width="67" IsExpanded="True">
+                <StackPanel>
+                    <Label Content="test"/>
+                </StackPanel>
+            </Expander>
+            <Expander Header="Foto" HorizontalAlignment="Left" Height="227" Margin="270,20,0,0" VerticalAlignment="Top" Width="237" IsExpanded="True">
+                <StackPanel Height="199" VerticalAlignment="Top">
+                    <Image Source="C:\Users\bashe\Downloads\asdfasdfasdf.png" Width="200" Height="200"/>
+                </StackPanel>
+            </Expander>
+        </Grid>
     </Grid>
 </Page>
