@@ -8,6 +8,7 @@ namespace Designer.ViewModel {
         public event PropertyChangedEventHandler PropertyChanged;
 
         public BasicCommand GotoDesigns { get; set; }
+        public BasicCommand GotoRooms { get; set; }
         public BasicCommand GotoExample { get; set; }
         public BasicCommand GotoProducts { get; set; }
         public BasicCommand Exit { get; set; }
@@ -24,6 +25,8 @@ namespace Designer.ViewModel {
                 return DesignCatalog;
             });
             GotoProducts = new PageCommand(() => new ViewProductsView());
+            GotoDesigns = new PageCommand(() => new DesignCatalog());
+            GotoRooms = new PageCommand(() => new RoomEditorView());
             GotoExample = new PageCommand(() => new ExamplePage());
             Exit = new BasicCommand(() => Application.Current.Shutdown());
         }

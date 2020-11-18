@@ -6,9 +6,9 @@ using NUnit.Framework;
 
 namespace DesignerTest {
     public class AddDesignTestsStaticMethods {
-        private static readonly Room Room1 = new Room(1, "TestRoom1", 1, 1);
-        private static readonly Room Room2 = new Room(2, "TestRoom2", 2, 4);
-        private static readonly Room Room3 = new Room(3, "TestRoom3", 2, 5);
+        private static readonly Room Room1 = new Room("TestRoom1", 1, 1);
+        private static readonly Room Room2 = new Room("TestRoom2", 2, 4);
+        private static readonly Room Room3 = new Room("TestRoom3", 2, 5);
 
         [SetUp]
         public void Setup() {
@@ -103,9 +103,9 @@ namespace DesignerTest {
     }
 
     public class AddDesignTestsInstace {
-        private static readonly Room Room1 = new Room(1, "TestRoom1", 1, 1);
-        private static readonly Room Room2 = new Room(2, "TestRoom2", 2, 4);
-        private static readonly Room Room3 = new Room(3, "TestRoom3", 2, 5);
+        private static readonly Room Room1 = new Room("TestRoom1", 1, 1);
+        private static readonly Room Room2 = new Room("TestRoom2", 2, 4);
+        private static readonly Room Room3 = new Room("TestRoom3", 2, 5);
         private static readonly string TestName = "TestDesign";
 
         private AddDesignModel _designModel;

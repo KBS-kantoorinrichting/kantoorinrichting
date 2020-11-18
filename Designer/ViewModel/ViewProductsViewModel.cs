@@ -41,14 +41,13 @@ namespace Designer.ViewModel {
 
 
         public void CatalogusMouseDown(object sender, MouseButtonEventArgs e) {
-            Debug.WriteLine("pressed");
             // Linker muisknop moet ingdrukt zijn
             if (e.LeftButton == MouseButtonState.Pressed) {
                 if (sender.GetType() != typeof(Image)) return;
                 var obj = (Product)((Image)sender).DataContext;
                 //SelectedProduct = obj;
                 SelectProduct(obj.ProductId);
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(""));
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("SelectedProduct"));
             }
         }
 
