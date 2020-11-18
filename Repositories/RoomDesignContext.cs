@@ -25,8 +25,6 @@ namespace Repositories {
         public virtual DbSet<ProductPlacement> ProductPlacements { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder options) {
-            options.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
-            
             if (options.IsConfigured) return;
             Console.WriteLine("[RoomDesignContext] Currently running in: " + Environment.CurrentDirectory);
             //Load the .env file from the project root
@@ -34,6 +32,7 @@ namespace Repositories {
             var envReader = new EnvReader();
             //Use the CONNECTION_STRING from the .env file
             options.UseSqlServer(envReader.GetStringValue("CONNECTION_STRING"));
+            options.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
         }
     }
 }

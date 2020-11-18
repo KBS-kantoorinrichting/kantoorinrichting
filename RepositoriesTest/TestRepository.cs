@@ -14,7 +14,10 @@ namespace RepositoriesTest {
             List<ProductPlacement> productPlacements = null
         ) {
             RoomDesignContext context = new RoomDesignContext(
-                new DbContextOptionsBuilder<RoomDesignContext>().UseSqlite(CreateInMemoryDatabase()).Options
+                new DbContextOptionsBuilder<RoomDesignContext>()
+                   .UseSqlite(CreateInMemoryDatabase())
+                   .UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking)
+                   .Options
             );
 
             context.Database.EnsureCreated();
