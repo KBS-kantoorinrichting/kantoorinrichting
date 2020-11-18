@@ -182,7 +182,7 @@ namespace Designer.ViewModel {
             Editor.Children.Add(selectScreen);
         }
 
-        private void DrawProduct(Product product, int x, int y, int? placementIndex = null)
+        public void DrawProduct(Product product, int x, int y, int? placementIndex = null)
         {
             //Haal de bestandsnaam van de foto op of gebruik de default
             var photo = product.Photo ?? "placeholder.png";
@@ -197,10 +197,8 @@ namespace Designer.ViewModel {
             Canvas.SetLeft(image, x);
             // Voeg product toe aan canvas
             Editor.Children.Add(image);
-            if (placementIndex != null)
-            {
-                image.Uid = placementIndex.ToString();
-            }
+            // Voegt het id van het productplacement index in de productplacement list
+            image.Uid ??= placementIndex.ToString();
         }
 
         public static List<Product> LoadProducts() { 

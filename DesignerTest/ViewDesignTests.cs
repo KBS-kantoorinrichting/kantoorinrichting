@@ -9,6 +9,7 @@ using System.Windows.Input;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using System.Diagnostics;
 using System.Windows;
+using System.Windows.Media.Imaging;
 
 namespace DesignerTest
 {
@@ -85,7 +86,7 @@ namespace DesignerTest
         }
 
         [Test]
-        public void LoadProducts_Count()
+        public void ViewDesign_LoadProducts_Count()
         {
             List<Product> products = ViewDesignViewModel.LoadProducts();
             Assert.AreEqual(3, products.Count);
