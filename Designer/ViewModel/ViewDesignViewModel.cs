@@ -100,8 +100,6 @@ namespace Designer.ViewModel {
                 if(sender.GetType() != typeof(Image)) return;
                 // Cast datacontext naar product
                 var obj = (Product)((Image)sender).DataContext;
-                //SelectedProduct = obj;
-                //SelectProduct(obj.ProductId);
                 
                 // Init drag & drop voor geselecteerde product
                 DragDrop.DoDragDrop(Editor, obj, DragDropEffects.Link);
