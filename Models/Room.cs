@@ -1,4 +1,6 @@
-﻿namespace Models
+﻿using System.ComponentModel.DataAnnotations.Schema;
+
+namespace Models
 {
     public class Room : IEntity
     {
@@ -17,6 +19,7 @@
             Length = length;
         }
 
+        [NotMapped]
         public int Id => RoomId;
     }
 }
