@@ -9,5 +9,10 @@ namespace Designer.View {
             //pagina initializen
             InitializeComponent();
         }
+
+        private void RadioButton_Checked(object sender, System.Windows.RoutedEventArgs e)
+        {
+
+        }
     }
 }
