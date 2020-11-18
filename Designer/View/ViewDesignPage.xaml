@@ -99,7 +99,7 @@
             <TabItem Header="Overzicht">
                 <Grid Background="#FFE5E5E5" >
                     <Label Content="Financien" HorizontalAlignment="Center" VerticalAlignment="Top" Width="234"/>
-                    <ScrollViewer Margin="0,31,0,22">
+                    <ScrollViewer Margin="0,31,0,2">
                         <ItemsControl
                             x:Name="ProductOverview"
                             ScrollViewer.HorizontalScrollBarVisibility="Disabled"
@@ -163,6 +163,7 @@
                             </ItemsControl.ItemTemplate>
                         </ItemsControl>
                     </ScrollViewer>
+                    <TextBlock Text="{Binding TotalPrice, StringFormat='Totaal: €{0}'}" VerticalAlignment="Bottom" Margin="5,0,0,25"></TextBlock>
                     <Button x:Name="Order" Content="Bestellen" HorizontalAlignment="Center" VerticalAlignment="Bottom" Width="234"/>
                 </Grid>
             </TabItem>

@@ -20,11 +20,8 @@ namespace Designer.ViewModel {
         public List<Product> Products { get; set; }
         private Dictionary<Product, ProductData> _productOverview { get; set; }
 
-        public List<KeyValuePair<Product, ProductData>> ProductOverview 
-        {
-            get => _productOverview.ToList();
-        }
-        
+        public List<KeyValuePair<Product, ProductData>> ProductOverview => _productOverview.ToList();
+        public double TotalPrice => _productOverview.Sum(p => p.Value.TotalPrice);
         public List<ProductPlacement> ProductPlacements { get; set; }
         public ArgumentCommand<DragEventArgs> DragDropCommand { get; set; }
         public ArgumentCommand<DragEventArgs> DragOverCommand { get; set; }
@@ -71,8 +68,8 @@ namespace Designer.ViewModel {
 
             // Add product to product overview
             AddToOverview(SelectedProduct);
-
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("ProductPlacements"));
+            
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(""));
         }
 
         public void SelectProduct(int id) {
@@ -157,14 +154,15 @@ namespace Designer.ViewModel {
 
         private void AddToOverview(Product product)
         {
+            var price = product.Price ?? 0.0;
             if (_productOverview.ContainsKey(product))
             {
-                _productOverview[product].Total = _productOverview[product].Total + 1;
-                _productOverview[product].TotalPrice = (double)(_productOverview[product].TotalPrice + product.Price);
+                _productOverview[product].Total += 1;
+                _productOverview[product].TotalPrice = Math.Round(_productOverview[product].TotalPrice + price, 2);
             }
             else
             {
-                _productOverview.Add(product, new ProductData() { Total = 1, TotalPrice = (double)product.Price });
+                _productOverview.Add(product, new ProductData() { Total = 1, TotalPrice = price });
             }
         }
     }
