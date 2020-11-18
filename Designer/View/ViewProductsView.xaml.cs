@@ -18,9 +18,11 @@ namespace Designer.View
     /// </summary>
     public partial class ViewProductsView : Page
     {
+        public Model.Product SelectedProduct { get; set; }
         public ViewProductsView()
         {
             InitializeComponent();
         }
+
     }
 }

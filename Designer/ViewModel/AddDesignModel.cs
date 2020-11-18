@@ -107,4 +107,12 @@ namespace Designer.ViewModel {
 
         public DesignAddedArgs(Design design) { Design = design; }
     }
+
+    public void SelectProduct(int id)
+    {
+        // Zet het geselecteerde product op basis van het gegeven ID
+        var list = Products.Where(p => p.ProductId == id).ToList();
+        Product product = list.FirstOrDefault();
+        SelectedProduct = product;
+    }
 }

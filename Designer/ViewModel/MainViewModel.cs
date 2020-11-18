@@ -36,5 +36,8 @@ namespace Designer.ViewModel
                 PropertyChanged(this, new PropertyChangedEventArgs(propertyName));  
             }  
         }  
+
+
+
     }
 }

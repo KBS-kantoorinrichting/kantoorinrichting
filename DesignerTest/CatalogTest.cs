@@ -11,9 +11,9 @@ namespace DesignerTest
 {
     public class CatalogTest
     {
-        private static readonly Product product1 = new Product(1, "Bureaustoel", 51.40, "");
-        private static readonly Product product2 = new Product(2, "Tuintafel", 200, "");
-        private static readonly Product product3 = new Product(3, "Bureau", 140.40, "");
+        private static readonly Product product1 = new Product("Bureaustoel yaksva", 51.40, "");
+        private static readonly Product product2 = new Product("Tuintafel", 200, "");
+        private static readonly Product product3 = new Product("Bureau", 140.40, "");
         
         [SetUp]
         public void Setup()
