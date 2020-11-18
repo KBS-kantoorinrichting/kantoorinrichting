@@ -1,0 +1,163 @@
+﻿<Page
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:viewModel="clr-namespace:Designer.ViewModel"
+    xmlns:model="clr-namespace:Designer.Model"
+    x:Class="Designer.View.ViewDesignPage"
+    xmlns:behaviors="http://schemas.microsoft.com/xaml/behaviors"
+    xmlns:model1="clr-namespace:Designer.Model"
+    xmlns:designer="clr-namespace:Designer"
+    mc:Ignorable="d"
+    d:DesignWidth="800"
+    Title="ViewDesignPage"
+    Initialized="Page_Initialized" WindowHeight="-1">
+    <Page.DataContext>
+        <viewModel:ViewDesignViewModel x:Name="viewModel"/>
+    </Page.DataContext>
+    <Page.Resources>
+        <designer:ImagePathConverter x:Key="ImagePathConverter"/>
+    </Page.Resources>
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="1*" />
+            <ColumnDefinition Width="240" />
+        </Grid.ColumnDefinitions>
+        <Canvas Grid.Column="0" Name="Editor" AllowDrop="True" Background="Transparent" HorizontalAlignment="Stretch">
+            <ContentPresenter Content="{Binding Path=Editor}"></ContentPresenter>
+            <behaviors:Interaction.Triggers>
+                <behaviors:EventTrigger EventName="Drop" SourceObject="{Binding ElementName=Editor}">
+                    <behaviors:InvokeCommandAction Command="{Binding DragDropCommand}" PassEventArgsToCommand="True" />
+                </behaviors:EventTrigger>
+                <behaviors:EventTrigger EventName="DragOver" SourceObject="{Binding ElementName=Editor}">
+                    <behaviors:InvokeCommandAction Command="{Binding DragOverCommand}" PassEventArgsToCommand="True"/>
+                </behaviors:EventTrigger>
+            </behaviors:Interaction.Triggers>
+        </Canvas>
+        <TabControl x:Name="Tabs" HorizontalAlignment="Right" Grid.Column="1">
+            <TabItem Header="Catalogus">
+                <Grid Background="#FFE5E5E5" >
+                    <ScrollViewer>
+                        <ItemsControl
+                            x:Name="CatalogusList"
+                            ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                            ItemsSource="{Binding Products}" Width="237">
+
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <WrapPanel />
+                                </ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate DataType="model:Product">
+                                    <Border
+                                        Margin="5"
+                                        BorderThickness="0.2"
+                                        BorderBrush="Black">
+                                        <behaviors:Interaction.Triggers>
+                                            <behaviors:EventTrigger EventName="MouseDown">
+                                                <behaviors:InvokeCommandAction Command="{ Binding ElementName=viewModel, Path=MouseDownCommand}" PassEventArgsToCommand="True" />
+                                            </behaviors:EventTrigger>
+                                        </behaviors:Interaction.Triggers>
+                                        <StackPanel Orientation="Vertical" Width="108" Height="108">
+                                            <TextBlock
+                                                Text="{Binding Name}"
+                                                HorizontalAlignment="Center"
+                                                VerticalAlignment="Top"
+                                                FontSize="12"
+                                                TextWrapping="Wrap"
+                                                TextAlignment="Center"
+                                                FontWeight="DemiBold"
+                                                Width="108" Height="20" />
+                                            <Border
+                                                BorderThickness="0.2"
+                                                BorderBrush="Black"
+                                                Height="68"
+                                                Width="68">
+                                                <Image
+                                                    Source="{Binding Path=Photo, Converter={StaticResource ImagePathConverter}}"/>
+                                            </Border>
+                                            <TextBlock
+                                                Text="{Binding Price}"
+                                                HorizontalAlignment="Center"
+                                                VerticalAlignment="Top"
+                                                FontSize="12"
+                                                TextWrapping="Wrap"
+                                                TextAlignment="Center"
+                                                FontWeight="DemiBold"
+                                                Width="108" Height="20" />
+                                        </StackPanel>
+                                    </Border>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </ScrollViewer>
+                </Grid>
+            </TabItem>
+            <TabItem Header="Overzicht">
+                <Grid Background="#FFE5E5E5" >
+                    <Label Content="Financien" HorizontalAlignment="Center" VerticalAlignment="Top" Width="234"/>
+                    <ScrollViewer Margin="0,31,0,22">
+                        <ItemsControl
+                            x:Name="ProductOverview"
+                            ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                            ItemsSource="{Binding ProductOverview}" Width="237">
+
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <WrapPanel />
+                                </ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate DataType="model:Product">
+                                    <Border
+                                        Margin="5"
+                                        BorderThickness="0.2"
+                                        BorderBrush="Black">
+                                        <behaviors:Interaction.Triggers>
+                                            <behaviors:EventTrigger EventName="MouseDown">
+                                                <behaviors:InvokeCommandAction Command="{ Binding ElementName=viewModel, Path=MouseDownCommand}" PassEventArgsToCommand="True" />
+                                            </behaviors:EventTrigger>
+                                        </behaviors:Interaction.Triggers>
+                                        <StackPanel Orientation="Vertical" Width="108" Height="108">
+                                            <TextBlock
+                                                Text="{Binding Name}"
+                                                HorizontalAlignment="Center"
+                                                VerticalAlignment="Top"
+                                                FontSize="12"
+                                                TextWrapping="Wrap"
+                                                TextAlignment="Center"
+                                                FontWeight="DemiBold"
+                                                Width="108" Height="20" />
+                                            <Border
+                                                BorderThickness="0.2"
+                                                BorderBrush="Black"
+                                                Height="68"
+                                                Width="68">
+                                                <Image
+                                                    Source="{Binding Path=Photo, Converter={StaticResource ImagePathConverter}}"/>
+                                            </Border>
+                                            <TextBlock
+                                                Text="{Binding Price}"
+                                                HorizontalAlignment="Center"
+                                                VerticalAlignment="Top"
+                                                FontSize="12"
+                                                TextWrapping="Wrap"
+                                                TextAlignment="Center"
+                                                FontWeight="DemiBold"
+                                                Width="108" Height="20" />
+                                        </StackPanel>
+                                    </Border>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </ScrollViewer>
+                    <Button x:Name="Order" Content="Bestellen" HorizontalAlignment="Center" VerticalAlignment="Bottom" Width="234"/>
+                </Grid>
+            </TabItem>
+        </TabControl>
+    </Grid>
+</Page>

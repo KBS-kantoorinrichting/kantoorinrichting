@@ -3,22 +3,20 @@ using dotenv.net;
 using dotenv.net.Utilities;
 using Microsoft.EntityFrameworkCore;
 
-namespace Designer.Model
-{
+namespace Designer.Model {
     public class RoomDesignContext : DbContext {
         //Zorgt er voor dat er maar 1 instance van de context bestaat.
         private static RoomDesignContext _instance;
+
         public static RoomDesignContext Instance {
             get => _instance ??= new RoomDesignContext();
             set => _instance = value;
         }
 
-        protected RoomDesignContext() {
-        }
+        public RoomDesignContext() { }
 
         //Alternative constructor zodat er de db getest kan worden.
-        public RoomDesignContext(DbContextOptions options) : base(options) {
-        }
+        public RoomDesignContext(DbContextOptions options) : base(options) { }
 
         public virtual DbSet<Room> Rooms { get; set; }
         public virtual DbSet<Design> Designs { get; set; }
