@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Windows.Input;
 using Designer.Other;
+using System.Windows.Controls;
 
 namespace Designer.ViewModel {
     public class ViewProductsViewModel : INotifyPropertyChanged {
@@ -19,6 +20,9 @@ namespace Designer.ViewModel {
         // Property van een lijst om de informatie vanuit de database op te slaan.
 
         public ViewProductsViewModel() {
+            MouseDownCommand = new ArgumentCommand<MouseButtonEventArgs>(e => CatalogusMouseDown(e.OriginalSource, e));
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("SelectedProduct"));
+
             var context = RoomDesignContext.Instance;
             // Linq om te zorgen dat de lijst gevuld wordt met de database content.
 
@@ -30,26 +34,27 @@ namespace Designer.ViewModel {
                 n.ProductId = i;
                 i++;
             }
-
-            TestPrice = GetPrice(GetId("Bureau"));
-            TestName = GetName(GetId("Bureau"));
-            TestDimensions = GetDimensions(GetId("Bureau"));
-            MouseDownCommand =
-                new ArgumentCommand<MouseButtonEventArgs>(e => CatalogusMouseDown(e.OriginalSource, e));
+            
         }
+
 
         public void CatalogusMouseDown(object sender, MouseButtonEventArgs e) {
             // Linker muisknop moet ingdrukt zijn
             if (e.LeftButton == MouseButtonState.Pressed) {
-/*                if (sender.GetType() != typeof(Image)) return;
+               if (sender.GetType() != typeof(Image)) return;
                 // Cast datacontext naar int
                 var obj = (Product)((Image)sender).DataContext;
                 //SelectedProduct = obj;
                 SelectProduct(obj.ProductId);
-
-                // Init drag & drop voor geselecteerde product
-                DragDrop.DoDragDrop(Editor, obj, DragDropEffects.Link);*/
             }
+        }
+
+        public void SelectProduct(int id)
+        {
+            // Zet het geselecteerde product op basis van het gegeven ID
+            var list = Products.Where(p => p.ProductId == id).ToList();
+            Product product = list.FirstOrDefault();
+            SelectedProduct = product;
         }
 
         #region Database_Fill_Code
