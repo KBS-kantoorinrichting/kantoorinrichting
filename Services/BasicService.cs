@@ -13,9 +13,11 @@ namespace Services {
             _dbContext = dbContext;
         }
 
-        public T Get(int id) { return _dbSet.Find(id); }
+        public T Get(int id) { return _dbSet.AsNoTracking().First(v => v.Id == id); }
 
-        public List<T> GetAll() { return _dbSet.ToList(); }
+        public List<T> GetAll() {
+            return _dbSet.AsNoTracking().ToList();
+        }
 
         /**
          * <inheritdoc cref="IService{T}.Save"/>
