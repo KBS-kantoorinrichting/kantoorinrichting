@@ -11,10 +11,6 @@ namespace Designer.ViewModel {
     public class ViewProductsViewModel : INotifyPropertyChanged {
         public ArgumentCommand<MouseButtonEventArgs> MouseDownCommand { get; set; }
         public event PropertyChangedEventHandler PropertyChanged;
-        public int TestId { get; set; }
-        public string TestName { get; set; }
-        public double TestPrice { get; set; }
-        public string TestDimensions { get; set; }
         public Product SelectedProduct { get; set; }
 
         public List<Model.Product> Products { get; set; }
@@ -31,11 +27,6 @@ namespace Designer.ViewModel {
             this.Products = context.Products.ToList();
             // this.Products is de lijst met producten
             // context.Products is de table Products van de database 
-            int i = 0;
-            foreach (var n in Products) {
-                n.ProductId = i;
-                i++;
-            }
             
         }
 
@@ -79,62 +70,7 @@ namespace Designer.ViewModel {
 
         #endregion
 
-        public string GetName(int id) {
-            // Functie om naam op te halen met het ID
-            var Name = from n in Products
-                where n.ProductId == id
-                select n.Name;
-
-            return Name.First();
-        }
-
-        public int GetWidth(int id) {
-            // Functie om naam op te halen met het ID
-            var Width = from n in Products
-                where n.ProductId == id
-                select n.Width;
-
-            return Width.First();
-        }
-
-        public int GetLength(int id) {
-            // Functie om naam op te halen met het ID
-            var Length = from n in Products
-                where n.ProductId == id
-                select n.Length;
-
-            return Length.First();
-        }
-
-        public string GetDimensions(int id) { return ($"{GetLength(id)} x {GetWidth(id)}"); }
-
-        public int GetId(string name) {
-            // Functie om naam op te halen met het ID
-            var Id = from n in Products
-                where n.Name == name
-                select n.ProductId;
-
-            return Id.First();
-        }
-
-        public double GetPrice(int id)
-            // Functie om de prijs op te halen van de producten
-        {
-            var Price = from p in Products
-                where p.ProductId == id
-                select p.Price;
-
-            return Price.First().GetValueOrDefault(0);
-        }
-
-        public string GetPhoto(int id) {
-            // Functie om de string van waar de foto van de producten staat op te halen
-            var Photo = from p in Products
-                where p.ProductId == id
-                select p.Photo;
-
-            return Photo.First();
-        }
+      
 
         public void EmptyDataBase()
             // Functie om de database te legen.    
