@@ -46,7 +46,7 @@ namespace DesignerTest {
             Design design = AddDesignModel.CreateDesign(name, room);
             Assert.AreEqual(name, design.Name);
             Assert.AreEqual(room.Name, design.Room.Name);
-            Assert.AreEqual(room.RoomId, design.Room.RoomId);
+            Assert.AreEqual(room.Id, design.Room.Id);
             Assert.AreEqual(room.Width, design.Room.Width);
             Assert.AreEqual(room.Length, design.Room.Length);
             Assert.IsEmpty(design.ProductPlacements);
@@ -57,9 +57,9 @@ namespace DesignerTest {
             Design design = new Design("design4", Room1, new List<ProductPlacement>());
             Design returnedDesign = AddDesignModel.SaveDesign(design);
 
-            Assert.AreEqual(design.DesignId, returnedDesign.DesignId);
+            Assert.AreEqual(design.Id, returnedDesign.Id);
             Assert.AreEqual(design.Name, returnedDesign.Name);
-            Assert.AreEqual(design.RoomId, returnedDesign.RoomId);
+            Assert.AreEqual(design.Id, returnedDesign.Id);
             Assert.AreEqual(design.Room, returnedDesign.Room);
             Assert.AreEqual(design.ProductPlacements, returnedDesign.ProductPlacements);
         }
@@ -96,9 +96,9 @@ namespace DesignerTest {
             AddDesignModel.SaveDesign(design);
 
             Design dbDesign = RoomDesignContext.Instance.Designs.First();
-            Assert.AreEqual(design.DesignId, dbDesign.DesignId);
+            Assert.AreEqual(design.Id, dbDesign.Id);
             Assert.AreEqual(design.Name, dbDesign.Name);
-            Assert.AreEqual(design.RoomId, dbDesign.RoomId);
+            Assert.AreEqual(design.Id, dbDesign.Id);
             Assert.AreEqual(design.Room, dbDesign.Room);
             Assert.AreEqual(design.ProductPlacements, dbDesign.ProductPlacements);
         }

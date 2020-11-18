@@ -1,10 +1,12 @@
 ﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Models
 {
     public class Product : IEntity
     {
-        public int ProductId { get; set; }
+        [Column("ProductId")]
+        public int Id { get; set; }
         public string Name { get; set; }
         #nullable enable
         public double? Price { get; set; }
@@ -13,7 +15,5 @@ namespace Models
         public int Width { get; set; }
         public int Length { get; set; }
         public List<ProductPlacement> ProductPlacements { get; set; }
-        
-        public int Id => ProductId;
     }
 }

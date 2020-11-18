@@ -24,9 +24,10 @@ namespace Services {
          * <seealso cref="SaveChanges"/>
          */
         public T Save(T model) {
-            model = _dbSet.Add(model).Entity;
+            T nModel = _dbSet.Add(model).Entity;
+            model.Id = nModel.Id;
             _dbContext.SaveChanges();
-            return model;
+            return nModel;
         }
 
         public void SaveAll(IEnumerable<T> models) {

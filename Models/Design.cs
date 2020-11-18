@@ -1,10 +1,13 @@
 ﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Models
 {
     public class Design : IEntity
     {
-        public int DesignId { get; set; }
+        [Column("DesignId")]
+        public int Id { get; set; }
+        
         public string Name { get; set; }
 
         public int RoomId { get; set; }
@@ -19,7 +22,5 @@ namespace Models
             Room = room;
             ProductPlacements = productPlacements;
         }
-
-        public int Id => DesignId;
     }
 }

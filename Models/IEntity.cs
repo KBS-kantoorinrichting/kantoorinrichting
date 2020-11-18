@@ -5,7 +5,6 @@ namespace Models {
         /**
          * De primary key van de entity
          */
-        [NotMapped]
-        public int Id { get; }
+        public int Id { get; set; }
     }
 }

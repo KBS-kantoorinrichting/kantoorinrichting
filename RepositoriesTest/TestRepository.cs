@@ -18,7 +18,7 @@ namespace RepositoriesTest {
                    .UseSqlite(CreateInMemoryDatabase())
                    .Options
             );
-
+            
             context.Database.EnsureCreated();
             RoomDesignContext.Instance = context;
 
