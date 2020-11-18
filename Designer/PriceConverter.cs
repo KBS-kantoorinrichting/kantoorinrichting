@@ -4,13 +4,11 @@ using System.Windows.Data;
 
 namespace Designer
 {
-    public class ImagePathConverter : IValueConverter
+    public class PriceConverter : IValueConverter
     {
-        //Deze class wordt gebruikt overal om het de bestandsnaam in de database
-        //om te zetten naar een relatief pad voor o.a. de product-catalogus
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            return string.Format( "../Resources/Images/{0}", value ); 
+            return $"€{value:N2}";
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

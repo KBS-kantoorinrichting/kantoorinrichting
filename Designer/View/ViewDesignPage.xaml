@@ -33,11 +33,14 @@
                 <behaviors:EventTrigger EventName="DragOver" SourceObject="{Binding ElementName=Editor}">
                     <behaviors:InvokeCommandAction Command="{Binding DragOverCommand}" PassEventArgsToCommand="True"/>
                 </behaviors:EventTrigger>
+                <behaviors:EventTrigger EventName="MouseDown" SourceObject="{Binding ElementName=Editor}">
+                    <behaviors:InvokeCommandAction Command="{ Binding CanvasMouseDownCommand }" PassEventArgsToCommand="True" />
+                </behaviors:EventTrigger>
             </behaviors:Interaction.Triggers>
         </Canvas>
         <TabControl x:Name="Tabs" HorizontalAlignment="Right" Grid.Column="1">
             <TabItem Header="Catalogus">
-                <Grid Background="#FFE5E5E5" >
+                <Grid Background="#FFE5E5E5">
                     <ScrollViewer>
                         <ItemsControl
                             x:Name="CatalogusList"
@@ -58,7 +61,7 @@
                                         BorderBrush="Black">
                                         <behaviors:Interaction.Triggers>
                                             <behaviors:EventTrigger EventName="MouseDown">
-                                                <behaviors:InvokeCommandAction Command="{ Binding ElementName=viewModel, Path=MouseDownCommand}" PassEventArgsToCommand="True" />
+                                                <behaviors:InvokeCommandAction Command="{ Binding ElementName=viewModel, Path=CatalogusMouseDownCommand}" PassEventArgsToCommand="True" />
                                             </behaviors:EventTrigger>
                                         </behaviors:Interaction.Triggers>
                                         <StackPanel Orientation="Vertical" Width="108" Height="108">
@@ -117,6 +120,11 @@
                                         Margin="5"
                                         BorderThickness="0.2"
                                         BorderBrush="Black">
+                                        <behaviors:Interaction.Triggers>
+                                            <behaviors:EventTrigger EventName="MouseDown">
+                                                <behaviors:InvokeCommandAction Command="{ Binding ElementName=viewModel, Path=CatalogusMouseDownCommand}" PassEventArgsToCommand="True" />
+                                            </behaviors:EventTrigger>
+                                        </behaviors:Interaction.Triggers>
                                         <StackPanel Orientation="Vertical" Width="206" Height="50">
                                             <Grid>
                                                 <Border
