@@ -27,7 +27,7 @@ namespace Designer.ViewModel {
         public ArgumentCommand<DragEventArgs> DragOverCommand { get; set; }
         public ArgumentCommand<MouseButtonEventArgs> MouseDownCommand { get; set; }
         public Product SelectedProduct { get; set; }
-        private Design Design { get; set; }
+        public Design Design { get; set; }
         public Canvas Editor { get; set; }
         private Point _previousPosition;
 
@@ -37,22 +37,24 @@ namespace Designer.ViewModel {
             SetDesign(design);
             Products = LoadProducts();
         }
-        
+
         public ViewDesignViewModel()
         {
-            Products = LoadProducts(); 
+            Products = LoadProducts();
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("ProductPlacements"));
             MouseDownCommand = new ArgumentCommand<MouseButtonEventArgs>(e => CatalogusMouseDown(e.OriginalSource, e));
             DragDropCommand = new ArgumentCommand<DragEventArgs>(e => CanvasDragDrop(e.OriginalSource, e));
             DragOverCommand = new ArgumentCommand<DragEventArgs>(e => CanvasDragOver(e.OriginalSource, e));
             _productOverview = new Dictionary<Product, ProductData>();
+            Editor = new Canvas();
         }
 
         public void SetDesign(Design design)
         {
             Design = design;
+            ProductPlacements = new List<ProductPlacement>();
             ProductPlacements = design.ProductPlacements;
-            Editor = new Canvas();
+            _productOverview = new Dictionary<Product, ProductData>();
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(""));
         }
 
@@ -152,12 +154,12 @@ namespace Designer.ViewModel {
             return context.Products.ToList();
         }
 
-        private void AddToOverview(Product product)
+        public void AddToOverview(Product product)
         {
             var price = product.Price ?? 0.0;
             if (_productOverview.ContainsKey(product))
             {
-                _productOverview[product].Total += 1;
+                _productOverview[product].Total = _productOverview[product].Total + 1;
                 _productOverview[product].TotalPrice = Math.Round(_productOverview[product].TotalPrice + price, 2);
             }
             else
