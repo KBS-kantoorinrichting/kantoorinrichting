@@ -16,6 +16,7 @@ namespace RepositoriesTest {
             RoomDesignContext context = new RoomDesignContext(
                 new DbContextOptionsBuilder<RoomDesignContext>()
                    .UseSqlite(CreateInMemoryDatabase())
+                   .EnableSensitiveDataLogging()
                    .Options
             );
             
