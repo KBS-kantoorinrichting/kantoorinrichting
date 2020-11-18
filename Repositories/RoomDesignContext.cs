@@ -32,7 +32,6 @@ namespace Repositories {
             var envReader = new EnvReader();
             //Use the CONNECTION_STRING from the .env file
             options.UseSqlServer(envReader.GetStringValue("CONNECTION_STRING"));
-            options.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
         }
     }
 }
