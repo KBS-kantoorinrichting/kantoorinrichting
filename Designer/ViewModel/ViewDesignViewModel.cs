@@ -18,11 +18,13 @@ namespace Designer.ViewModel {
         public event PropertyChangedEventHandler PropertyChanged;
 
         public List<Product> Products { get; set; }
-        private Dictionary<Product, int> _productOverview { get; set; }
-        public List<Product> ProductOverview
+        private Dictionary<Product, ProductData> _productOverview { get; set; }
+
+        public List<KeyValuePair<Product, ProductData>> ProductOverview 
         {
-            get => _productOverview.Keys.ToList();
+            get => _productOverview.ToList();
         }
+        
         public List<ProductPlacement> ProductPlacements { get; set; }
         public ArgumentCommand<DragEventArgs> DragDropCommand { get; set; }
         public ArgumentCommand<DragEventArgs> DragOverCommand { get; set; }
@@ -46,7 +48,7 @@ namespace Designer.ViewModel {
             MouseDownCommand = new ArgumentCommand<MouseButtonEventArgs>(e => CatalogusMouseDown(e.OriginalSource, e));
             DragDropCommand = new ArgumentCommand<DragEventArgs>(e => CanvasDragDrop(e.OriginalSource, e));
             DragOverCommand = new ArgumentCommand<DragEventArgs>(e => CanvasDragOver(e.OriginalSource, e));
-            _productOverview = new Dictionary<Product, int>();
+            _productOverview = new Dictionary<Product, ProductData>();
         }
 
         public void SetDesign(Design design)
@@ -157,11 +159,19 @@ namespace Designer.ViewModel {
         {
             if (_productOverview.ContainsKey(product))
             {
-                _productOverview[product] = _productOverview[product] + 1;
-            } else
+                _productOverview[product].Total = _productOverview[product].Total + 1;
+                _productOverview[product].TotalPrice = (double)(_productOverview[product].TotalPrice + product.Price);
+            }
+            else
             {
-                _productOverview.Add(product, 1);
+                _productOverview.Add(product, new ProductData() { Total = 1, TotalPrice = (double)product.Price });
             }
         }
+    }
+
+    public class ProductData
+    {
+        public int Total { get; set; }
+        public double TotalPrice { get; set; }
     }
 }

@@ -117,38 +117,46 @@
                                         Margin="5"
                                         BorderThickness="0.2"
                                         BorderBrush="Black">
-                                        <behaviors:Interaction.Triggers>
-                                            <behaviors:EventTrigger EventName="MouseDown">
-                                                <behaviors:InvokeCommandAction Command="{ Binding ElementName=viewModel, Path=MouseDownCommand}" PassEventArgsToCommand="True" />
-                                            </behaviors:EventTrigger>
-                                        </behaviors:Interaction.Triggers>
-                                        <StackPanel Orientation="Vertical" Width="108" Height="108">
-                                            <TextBlock
-                                                Text="{Binding Name}"
-                                                HorizontalAlignment="Center"
-                                                VerticalAlignment="Top"
-                                                FontSize="12"
-                                                TextWrapping="Wrap"
-                                                TextAlignment="Center"
-                                                FontWeight="DemiBold"
-                                                Width="108" Height="20" />
-                                            <Border
+                                        <StackPanel Orientation="Vertical" Width="206" Height="50">
+                                            <Grid>
+                                                <Border
                                                 BorderThickness="0.2"
                                                 BorderBrush="Black"
-                                                Height="68"
-                                                Width="68">
-                                                <Image
-                                                    Source="{Binding Path=Photo, Converter={StaticResource ImagePathConverter}}"/>
-                                            </Border>
-                                            <TextBlock
-                                                Text="{Binding Price}"
-                                                HorizontalAlignment="Center"
+                                                Height="40"
+                                                Width="40"
+                                                Margin="5,5,0,0"
+                                                HorizontalAlignment="Left"
+                                                >
+                                                    <Image
+                                                    Source="{Binding Path=Key.Photo, Converter={StaticResource ImagePathConverter}}"/>
+                                                </Border>
+                                                <TextBlock
                                                 VerticalAlignment="Top"
                                                 FontSize="12"
                                                 TextWrapping="Wrap"
-                                                TextAlignment="Center"
+                                                TextAlignment="Left"
                                                 FontWeight="DemiBold"
-                                                Width="108" Height="20" />
+                                                Width="108" Height="20"
+                                                Margin="50,10,0,0"
+                                                HorizontalAlignment="Left">
+                                                    <TextBlock.Text>
+                                                        <MultiBinding StringFormat=" {0} (€{1} x {2})">
+                                                            <Binding Path="Key.Name"/>
+                                                            <Binding Path="Key.Price" />
+                                                            <Binding Path="Value.Total" />
+                                                        </MultiBinding>
+                                                    </TextBlock.Text>
+                                                </TextBlock>
+                                                <TextBlock
+                                                Text="{Binding Value.TotalPrice, StringFormat='€{0}'}"
+                                                VerticalAlignment="Top"
+                                                FontSize="12"
+                                                TextWrapping="Wrap"
+                                                TextAlignment="Left"
+                                                Width="108" Height="15"
+                                                Margin="50,25,0,0"
+                                                HorizontalAlignment="Left"/>
+                                            </Grid>
                                         </StackPanel>
                                     </Border>
                                 </DataTemplate>
