@@ -9,6 +9,7 @@ namespace Designer.ViewModel {
         public string Name { get; set; }
         public string Width { get; set; }
         public string Length { get; set; }
+        public int Position { get; set; }
 
         public BasicCommand Submit { get; set; }
 
@@ -17,15 +18,28 @@ namespace Designer.ViewModel {
         }
 
         public void SubmitRoom() {
-            if (int.TryParse(Width, out int width) && int.TryParse(Length, out int length)) {
-                // opslaan van de ruimte als het aan de condities voldoet
-                if (SaveRoom(Name, width, length) != null) {
-                    //opent successvol dialoog
-                    RoomEditorPopupView popup = new RoomEditorPopupView("De kamer is opgeslagen!");
-                    popup.ShowDialog();
-                    return;
+
+            if (Position == 0)
+            {
+                if (int.TryParse(Width, out int width) && int.TryParse(Length, out int length))
+                {
+                    // opslaan van de ruimte als het aan de condities voldoet
+                    if (SaveRoom(Name, width, length) != null)
+                    {
+                        //opent successvol dialoog
+                        RoomEditorPopupView popup = new RoomEditorPopupView("De kamer is opgeslagen!");
+                        popup.ShowDialog();
+                        return;
+                    }
                 }
+            } else
+            {
+
+
+
             }
+
+            
 
             //opent onsuccesvol dialoog
             RoomEditorPopupView popupError = new RoomEditorPopupView("Er is iets misgegaan! probeer opnieuw.");
