@@ -178,7 +178,7 @@ namespace DesignerTest {
         public void DesignSelected_DesignCorrect() {
             _designModel.DesignSelected += (sender, args) => {
                 Assert.NotNull(args.Value);
-                Assert.AreEqual(Design1.DesignId, args.Value.DesignId);
+                Assert.AreEqual(Design1.Id, args.Value.Id);
                 Assert.AreEqual(Design1.Name, args.Value.Name);
                 Assert.AreEqual(Design1.Room, args.Value.Room);
                 Assert.AreEqual(Design1.ProductPlacements, args.Value.ProductPlacements);
