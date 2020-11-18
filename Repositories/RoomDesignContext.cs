@@ -2,8 +2,9 @@
 using dotenv.net;
 using dotenv.net.Utilities;
 using Microsoft.EntityFrameworkCore;
+using Models;
 
-namespace Models {
+namespace Repositories {
     public class RoomDesignContext : DbContext {
         //Zorgt er voor dat er maar 1 instance van de context bestaat.
         private static RoomDesignContext _instance;
@@ -13,7 +14,7 @@ namespace Models {
             set => _instance = value;
         }
 
-        protected RoomDesignContext() { }
+        public RoomDesignContext() { }
 
         //Alternative constructor zodat er de db getest kan worden.
         public RoomDesignContext(DbContextOptions options) : base(options) { }
@@ -29,7 +30,7 @@ namespace Models {
             if (options.IsConfigured) return;
             Console.WriteLine("[RoomDesignContext] Currently running in: " + Environment.CurrentDirectory);
             //Load the .env file from the project root
-            DotEnv.Config(true, Environment.CurrentDirectory + @"\..\..\..\..\.env");
+            DotEnv.Config(true, Environment.CurrentDirectory + @"\.env");
             var envReader = new EnvReader();
             //Use the CONNECTION_STRING from the .env file
             options.UseSqlServer(envReader.GetStringValue("CONNECTION_STRING"));
