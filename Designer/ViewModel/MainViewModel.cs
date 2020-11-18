@@ -9,6 +9,7 @@ namespace Designer.ViewModel {
 
         public BasicCommand GotoDesigns { get; set; }
         public BasicCommand GotoExample { get; set; }
+        public BasicCommand GotoProducts { get; set; }
         public BasicCommand Exit { get; set; }
         public Navigator Navigator { get; set; }
 
@@ -22,6 +23,7 @@ namespace Designer.ViewModel {
                 };
                 return DesignCatalog;
             });
+            GotoProducts = new PageCommand(() => new ViewProductsView());
             GotoExample = new PageCommand(() => new ExamplePage());
             Exit = new BasicCommand(() => Application.Current.Shutdown());
         }

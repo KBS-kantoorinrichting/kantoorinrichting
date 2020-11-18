@@ -17,9 +17,9 @@
                     <MenuItem Header="TODO" />
                     <MenuItem Header="Afsluiten" Command="{Binding Exit}" />
                 </MenuItem>
-                <MenuItem Header="Product catalogus" Command="{Binding GotoExample}" />
+                <MenuItem Header="Product catalogus" Command="{Binding GotoProducts}" />
                 <MenuItem Header="Ontwerpen" Command="{Binding GotoDesigns}" />
-                <MenuItem Header="Product catalogus" Click="MenuItemNavigateViewProductPage" />
+                <MenuItem Header="Example" Command="{Binding GotoExample}" />
             </Menu>
         </DockPanel>
         <Frame NavigationUIVisibility="Hidden" Margin="0,20,0,0" 
