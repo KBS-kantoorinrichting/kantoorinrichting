@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Threading.Tasks;
-using Designer.Model;
 using Designer.Other;
+using Models;
+using Services;
 
 namespace Designer.ViewModel {
     public class AddDesignModel : INotifyPropertyChanged {
@@ -67,16 +68,16 @@ namespace Designer.ViewModel {
             );
         }
 
-        public static List<Room> LoadRooms() { return RoomDesignContext.Instance.Rooms.ToList(); }
+        public static List<Room> LoadRooms() {
+            return RoomService.Instance.GetAll();
+        }
 
         public static Design CreateDesign(string name, Room room) {
             return new Design(name, room, new List<ProductPlacement>());
         }
 
         public static Design SaveDesign(Design design) {
-            RoomDesignContext context = RoomDesignContext.Instance;
-            design = context.Add(design).Entity;
-            context.SaveChanges();
+            DesignService.Instance.Save(design);
             return design;
         }
     }

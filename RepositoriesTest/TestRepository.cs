@@ -1,11 +1,12 @@
 ﻿using System.Collections.Generic;
 using System.Data.Common;
-using Designer.Model;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
+using Models;
+using Repositories;
 
-namespace DesignerTest {
-    public class TestRoomDesignContext {
+namespace RepositoriesTest {
+    public class TestRepository {
         public static void Setup(
             List<Room> rooms = null,
             List<Design> designs = null,

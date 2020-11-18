@@ -1,8 +1,10 @@
 ﻿using System.Collections.Generic;
-using Designer.Model;
 using Designer.Other;
 using Designer.ViewModel;
+using Models;
 using NUnit.Framework;
+using Repositories;
+using RepositoriesTest;
 
 namespace DesignerTest {
     public class DesignCatalogTestsStaticMethod {
@@ -17,7 +19,7 @@ namespace DesignerTest {
 
         [SetUp]
         public void Setup() {
-            TestRoomDesignContext.Setup(
+            TestRepository.Setup(
                 new List<Room> {
                     Room1, Room2
                 },
@@ -57,7 +59,7 @@ namespace DesignerTest {
         
         [SetUp]
         public void Setup() {
-            TestRoomDesignContext.Setup(
+            TestRepository.Setup(
                 new List<Room> {
                     Room1, Room2
                 },
@@ -200,7 +202,7 @@ namespace DesignerTest {
         
         [SetUp]
         public void Setup() {
-            TestRoomDesignContext.Setup(
+            TestRepository.Setup(
                 new List<Room> {
                     Room1, Room2
                 },

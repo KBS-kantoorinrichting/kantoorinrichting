@@ -1,13 +1,14 @@
-﻿using Designer.Model;
-using Designer.ViewModel;
+﻿using Designer.ViewModel;
+using Models;
 using NUnit.Framework;
+using RepositoriesTest;
 
 namespace DesignerTest {
     class RoomEditorTests {
         [SetUp]
         public void Setup() {
             // maakt test database aan
-            TestRoomDesignContext.Setup();
+            TestRepository.Setup();
         }
 
         [Test]

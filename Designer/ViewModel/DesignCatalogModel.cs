@@ -2,9 +2,10 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
-using Designer.Model;
 using Designer.Other;
 using Designer.View;
+using Models;
+using Services;
 
 namespace Designer.ViewModel {
     public class DesignCatalogModel : INotifyPropertyChanged {
@@ -51,7 +52,9 @@ namespace Designer.ViewModel {
             DesignSelected?.Invoke(this, new BasicEventArgs<Design>(design));
         }
 
-        public static List<Design> LoadDesigns() { return RoomDesignContext.Instance.Designs.ToList(); }
+        public static List<Design> LoadDesigns() {
+            return DesignService.Instance.GetAll();
+        }
 
         protected virtual void OnPropertyChanged(string propertyName = "") {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));

@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Windows.Controls;
-using Designer.Model;
 using Designer.Other;
 using Designer.View;
+using Models;
+using Services;
 
 namespace Designer.ViewModel {
     public class RoomEditorViewModel {
@@ -37,12 +38,9 @@ namespace Designer.ViewModel {
             // voegt de specificaties van de kamer aan het object room toe
             Room room = new Room(name, width, length);
 
-            // kamer opslaan
-            var context = RoomDesignContext.Instance;
-            room = context.Rooms.Add(room).Entity;
-
             try {
-                context.SaveChanges();
+                // kamer opslaan
+                RoomService.Instance.Save(room);
                 return room;
             } catch (Exception e) {
                 Console.WriteLine(e);
