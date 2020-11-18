@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using Designer.Model;
 using Microsoft.EntityFrameworkCore;
+using Models;
 
-namespace Designer.Services {
+namespace Services {
     public class BasicService<T> : IService<T> where T : class, IEntity {
         private DbSet<T> _dbSet;
         private DbContext _dbContext;

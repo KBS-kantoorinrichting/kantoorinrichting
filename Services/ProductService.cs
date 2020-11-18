@@ -1,6 +1,7 @@
-﻿using Designer.Model;
+﻿using Models;
+using Repositories;
 
-namespace Designer.Services {
+namespace Services {
     public class ProductService : BasicService<Product> {
         private static ProductService _instance;
 

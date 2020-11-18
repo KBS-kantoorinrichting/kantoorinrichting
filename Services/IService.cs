@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
-using Designer.Model;
+using Models;
 
-namespace Designer.Services {
+namespace Services {
     public interface IService<T> where T : IEntity {
         /**
          * <param name="id">Het id van de entity wat je wilt.</param>
