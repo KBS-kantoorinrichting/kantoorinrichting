@@ -2,7 +2,7 @@
 
 namespace Designer.Model
 {
-    public class Design
+    public class Design : IEntity
     {
         public int DesignId { get; set; }
         public string Name { get; set; }
@@ -19,5 +19,7 @@ namespace Designer.Model
             Room = room;
             ProductPlacements = productPlacements;
         }
+
+        public int Id => DesignId;
     }
 }

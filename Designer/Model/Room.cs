@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Designer.Model
 {
-    public class Room
+    public class Room : IEntity
     {
         public int RoomId { get; set; }
         public string Name { get; set; }
@@ -22,5 +22,7 @@ namespace Designer.Model
             Width = width;
             Length = length;
         }
+
+        public int Id => RoomId;
     }
 }

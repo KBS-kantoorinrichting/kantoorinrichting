@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Designer.Model
 {
-    public class ProductPlacement
+    public class ProductPlacement : IEntity
     {
         public int ProductPlacementId { get; set; }
         public int X { get; set; }
@@ -15,5 +15,7 @@ namespace Designer.Model
 
         public int DesignId { get; set; }
         public Design Design { get; set; }
+
+        public int Id => ProductPlacementId;
     }
 }
