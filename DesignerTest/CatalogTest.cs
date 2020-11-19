@@ -87,8 +87,8 @@ namespace DesignerTest
         // Kijken of de string overeenkomt met de string uit de database.
             ViewProductsViewModel test = new ViewProductsViewModel();
             Assert.AreEqual(product1.Photo, test.Products[0].Photo);
-            Assert.AreEqual(product1.Photo, test.Products[1].Price);
-            Assert.AreEqual(product1.Photo, test.Products[2].Price);
+            Assert.AreEqual(product2.Photo, test.Products[1].Photo);
+            Assert.AreEqual(product3.Photo, test.Products[2].Photo);
         }
     }
 }
