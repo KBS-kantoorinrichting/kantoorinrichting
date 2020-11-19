@@ -9,13 +9,21 @@ using System.Windows.Controls;
 using System.Diagnostics;
 using System.Windows;
 using Designer.View;
+using Microsoft.Win32;
+using System.IO;
 
 namespace Designer.ViewModel {
     public class ViewProductsViewModel : INotifyPropertyChanged {
         public string Name { get; set; }
         public double Price { get; set; }
         public string Photo { get; set; }
+        public int Width { get; set; }
+        public int Length { get; set; }
+        public string txtEditor { get; set; }
         public BasicCommand Submit { get; set; }
+        public BasicCommand AddPhoto { get; set; }
+        
+        public BasicCommand ReloadCommand { get; set; }
         public ArgumentCommand<MouseButtonEventArgs> MouseDownCommand { get; set; }
         public event PropertyChangedEventHandler PropertyChanged;
         public Product SelectedProduct { get; set; }
@@ -28,16 +36,24 @@ namespace Designer.ViewModel {
         public ViewProductsViewModel() {
             MouseDownCommand = new ArgumentCommand<MouseButtonEventArgs>(e => CatalogusMouseDown(e.OriginalSource, e));
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("SelectedProduct"));
-
             Submit = new BasicCommand(SubmitItem);
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(""));
-            var context = RoomDesignContext.Instance;
-            // Linq om te zorgen dat de lijst gevuld wordt met de database content.
+            AddPhoto = new BasicCommand(SelectPhoto);
+            Products = LoadItems(Products);
+            ReloadCommand = new BasicCommand(Reload);
 
-            this.Products = context.Products.ToList();
-            // this.Products is de lijst met producten
-            // context.Products is de table Products van de database 
-            
+        }
+
+        public void Reload()
+        {
+            Products = LoadItems(Products);
+            OnPropertyChanged();
+        }
+
+        public void SelectPhoto()
+        {
+            OpenFileDialog openFileDialog = new OpenFileDialog();
+            if (openFileDialog.ShowDialog() == true)
+                txtEditor = File.ReadAllText(openFileDialog.FileName);
         }
 
 
@@ -50,6 +66,16 @@ namespace Designer.ViewModel {
                 SelectProduct(obj.ProductId);
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("SelectedProduct"));
             }
+        }
+
+        public List<Model.Product> LoadItems(List<Model.Product> products)
+        {
+            var context = RoomDesignContext.Instance;
+            // Linq om te zorgen dat de lijst gevuld wordt met de database content.
+            Products = context.Products.ToList();
+            // this.Products is de lijst met producten
+            // context.Products is de table Products van de database 
+            return Products;
         }
 
         public void SelectProduct(int id)
@@ -81,18 +107,18 @@ namespace Designer.ViewModel {
         #endregion
         private void SubmitItem()
         {
-            if (SaveProduct(Name, Price, Photo) != null)
+            if (SaveProduct(Name, Price, Photo, Width, Length) != null)
             {
                RoomEditorPopupView Popup = new RoomEditorPopupView("Het product is opgeslagen");
-               Popup.ShowDialog();
+                Popup.ShowDialog();
                return;
             }
         }
 
-        public static Product SaveProduct(string naam, double price, string photo)
+        public static Product SaveProduct(string naam, double price, string photo, int width, int length)
         {
             // Kamer opslaan
-            Product product = new Product(naam, price, photo);
+            Product product = new Product(naam, price, photo, width, length);
             var context = RoomDesignContext.Instance;
             product = context.Products.Add(product).Entity;
             try
@@ -119,6 +145,11 @@ namespace Designer.ViewModel {
 
                 context.SaveChanges();
             }
+        }
+
+        protected virtual void OnPropertyChanged(string propertyName = "")
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }
 }
