@@ -30,6 +30,7 @@ namespace Designer.ViewModel {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("SelectedProduct"));
 
             Submit = new BasicCommand(SubmitItem);
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(""));
             var context = RoomDesignContext.Instance;
             // Linq om te zorgen dat de lijst gevuld wordt met de database content.
 
