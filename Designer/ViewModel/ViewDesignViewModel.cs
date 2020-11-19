@@ -24,8 +24,7 @@ namespace Designer.ViewModel {
         public ArgumentCommand<DragEventArgs> DragOverCommand { get; set; }
         public ArgumentCommand<MouseButtonEventArgs> CatalogusMouseDownCommand { get; set; }
         public ArgumentCommand<MouseButtonEventArgs> CanvasMouseDownCommand { get; set; }
-
-        //public Product SelectedProduct { get; set; }
+        public Product SelectedProduct => _selectedPlacement.Product;
         public Design Design { get; set; }
         public Canvas Editor { get; set; }
         private Point _previousPosition;

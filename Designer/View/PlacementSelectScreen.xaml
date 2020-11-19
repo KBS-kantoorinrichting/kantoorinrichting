@@ -4,14 +4,14 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:local="clr-namespace:Designer.View"
-             xmlns:Model="clr-namespace:Designer.Model"
+             xmlns:viewModel="clr-namespace:Designer.ViewModel"
              xmlns:designer="clr-namespace:Designer"
              x:Class="Designer.View.PlacementSelectScreen"
              mc:Ignorable="d"
              d:DesignHeight="300" d:DesignWidth="300">
 
     <UserControl.DataContext>
-        <Model:Product/>
+        <viewModel:ViewDesignViewModel x:Name="viewModel"/>
     </UserControl.DataContext>
     <UserControl.Resources>
         <designer:ImagePathConverter x:Key="ImagePathConverter"/>
