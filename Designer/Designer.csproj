@@ -6,44 +6,45 @@
     <UseWPF>true</UseWPF>
   </PropertyGroup>
 
-  <ItemGroup>
-    <None Remove="Resources\Images\ernstig.jpg" />
-    <None Remove="Resources\Images\menko sticker.png" />
-    <None Remove="Resources\Images\placeholder.png" />
-    <None Remove="Resources\Images\test.jpg" />
-  </ItemGroup>
 
   <ItemGroup>
-    <Resource Include="Resources\Images\ernstig.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Resources\Images\placeholder.png" />
-    <Resource Include="Resources\Images\test.jpg" />
-    <None Remove="Resources\Images\bank.png" />
-    <Resource Include="Resources\Images\bank.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Resource>
-    <None Remove="Resources\Images\bureau_stoel.jpg" />
-    <None Remove="Resources\Images\lamp.jpg" />
-    <Resource Include="Resources\Images\lamp.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Resource>
-    <None Remove="Resources\Images\stoel.jpg" />
-    <None Remove="Resources\Images\tafel.jpg" />
-    <Resource Include="Resources\Images\tafel.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Resource>
-    <None Remove="Resources\Images\bureau_stoel.png" />
-    <Resource Include="Resources\Images\bureau_stoel.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Resource>
-    <None Remove="Resources\Images\stoel.png" />
-    <Resource Include="Resources\Images\stoel.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Resource>
-    
-    <None Remove="Resources\Images\tafel2.jpg" />
-    <Resource Include="Resources\Images\tafel2.jpg" />
+	  <Resource Include="Resources\Images\bank.png">
+		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </Resource>
+	  <Resource Include="Resources\Images\bureau_stoel.png">
+		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </Resource>
+	  <Resource Include="Resources\Images\ernstig.jpg">
+		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </Resource>
+	  <Resource Include="Resources\Images\lamp.jpg">
+		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </Resource>
+	  <Resource Include="Resources\Images\lamp2.jpg">
+		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </Resource>
+
+	  <Resource Include="Resources\Images\menko.jpg">
+		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </Resource>
+	  <Resource Include="Resources\Images\menko.png">
+		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </Resource>
+	  <Resource Include="Resources\Images\placeholder.png">
+		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </Resource>
+	  <Resource Include="Resources\Images\stoel.png">
+		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </Resource>
+	  <Resource Include="Resources\Images\tafel.jpg">
+		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </Resource>
+	  <Resource Include="Resources\Images\tafel2.jpg">
+		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </Resource>
+	  <Resource Include="Resources\Images\test.jpg">
+		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </Resource>
   </ItemGroup>
 
   <ItemGroup>

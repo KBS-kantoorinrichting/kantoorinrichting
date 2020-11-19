@@ -14,7 +14,7 @@ namespace Designer.ViewModel
     public class ViewProductsViewModel : INotifyPropertyChanged {
         public string Name { get; set; }
         public double Price { get; set; }
-        public string Photo { get; set; }
+        public string? Photo { get; set; }
         public int Width { get; set; }
         public int Length { get; set; } 
         public BasicCommand Submit { get; set; }
@@ -32,8 +32,8 @@ namespace Designer.ViewModel
         public ViewProductsViewModel() {
             MouseDownCommand = new ArgumentCommand<MouseButtonEventArgs>(e => CatalogusMouseDown(e.OriginalSource, e));
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("SelectedProduct"));
-            Submit = new BasicCommand(SubmitItem);
             AddPhoto = new BasicCommand(SelectPhoto);
+            Submit = new BasicCommand(SubmitItem);
             Products = LoadItems(Products);
             ReloadCommand = new BasicCommand(Reload);
 
