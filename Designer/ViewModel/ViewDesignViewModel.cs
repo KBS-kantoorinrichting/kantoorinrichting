@@ -9,6 +9,9 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media.Imaging;
 using Designer.View;
+using System.Windows.Shapes;
+using System.Windows.Media;
+using System.Diagnostics;
 
 namespace Designer.ViewModel {
     public class ViewDesignViewModel : INotifyPropertyChanged {
@@ -46,6 +49,9 @@ namespace Designer.ViewModel {
             DragDropCommand = new ArgumentCommand<DragEventArgs>(e => CanvasDragDrop(e.OriginalSource, e));
             DragOverCommand = new ArgumentCommand<DragEventArgs>(e => CanvasDragOver(e.OriginalSource, e));
             _productOverview = new Dictionary<Product, ProductData>();
+
+            // Sets the dimensions of the current room
+            SetRoomDimensions();
         }
 
         public void SetDesign(Design design)
@@ -138,7 +144,13 @@ namespace Designer.ViewModel {
         
         private void RenderRoom()
         {
-            Editor.Children.Clear();
+            for (int i = Editor.Children.Count - 1; i >= 0; i += -1)
+            {
+                UIElement Child = Editor.Children[i];
+                if (!(Child is Line))
+                    Editor.Children.Remove(Child);
+            }
+
             for(int i = 0; i < ProductPlacements.Count; i++)
             {
                 var placement = ProductPlacements[i];
@@ -216,11 +228,65 @@ namespace Designer.ViewModel {
                 _productOverview.Add(product, new ProductData() { Total = 1, TotalPrice = price });
             }
         }
+
+        public void SetRoomDimensions()
+        {
+            // TODO: Replace with room positions
+            var coordinates = ConvertPosititionsToCoordinates("0,0|500,0|500,500|0,500");
+
+            for (int i = 0; i < coordinates.Count; i++) {
+                Coordinate targetCoordinate;
+                
+                // Kijkt of de volgende coordinaten bestaan, zo niet pakt het de eerste waarde in de list
+                if(i + 1 < coordinates.Count) targetCoordinate = coordinates[i + 1];
+                else targetCoordinate = coordinates[0];
+
+                Line line = new Line
+                {
+                    Stroke = new SolidColorBrush(Colors.Black),
+                    StrokeThickness = 1.0,
+                    X1 = coordinates[i].X,
+                    X2 = targetCoordinate.X,
+                    Y1 = coordinates[i].Y,
+                    Y2 = targetCoordinate.Y
+                };
+                Editor.Children.Add(line);
+            }
+        }
+
+        private List<Coordinate> ConvertPosititionsToCoordinates(string positions)
+        {
+            List<Coordinate> values = new List<Coordinate>();
+
+            // Splits de posities per pipe
+            string[] coordinates = positions.Split("|");
+
+            // Loop door alle coordinaten en voeg deze vervolgens toe aan values variable
+            foreach(string coordinate in coordinates)
+            {
+                string[] val = coordinate.Split(",");
+                values.Add(new Coordinate(Convert.ToInt32(val[0]), Convert.ToInt32(val[1])));
+            }
+
+            return values;
+        } 
     }
 
     public class ProductData
     {
         public int Total { get; set; }
         public double TotalPrice { get; set; }
+    }
+
+    public class Coordinate
+    {
+        public int X;
+        public int Y;
+
+        public Coordinate(int x, int y)
+        {
+            X = x;
+            Y = y;
+        }
     }
 }
