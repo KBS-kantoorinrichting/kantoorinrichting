@@ -19,6 +19,7 @@ namespace Designer.ViewModel {
         public static int y;
         public static string Position;
 
+        // image toevoegen aan knop
         public string Image0
         {
             get; set;
@@ -33,35 +34,39 @@ namespace Designer.ViewModel {
        
 
         public RoomEditorViewModel() {
+            // submit command van submitknop
             Submit = new BasicCommand(SubmitRoom);
+            // bind het templatecommand van de templateknoppen
             TemplateButton = new ArgumentCommand<int>(SetTemplate);
-            // bind het command
         }
 
         private void OnPropertyChanged(string propertyName = "")
         {
+            // herlaad de hele pagina
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
         public void SetTemplate(int parameter)
         {
-           
+           // geeft de parameter waarde door aan template
             Template = parameter;
             if (parameter == 0)
             {
+                // image styling (welke ingedrukt is)
                 Image0 = "../Assets/Vierhoek_Clicked.jpg";
                 Image1 = "../Assets/Hoekvormig.jpg";
                
             }
             else
             {
+                // image styling (welke ingedrukt is)
                 Image0 = "../Assets/Vierhoek.jpg";
                 Image1 = "../Assets/Hoekvormig_Clicked.jpg";
                 
             }
+            // herlaad pagina
             OnPropertyChanged();
 
-           
         }
 
 
@@ -69,7 +74,8 @@ namespace Designer.ViewModel {
 
                 if (int.TryParse(Width, out int width) && int.TryParse(Length, out int length))
                 {
-                    // opslaan van de ruimte als het aan de condities voldoet
+                if (Template == 1)
+                {
                     if (SaveRoom(Name, width, length, Template) != null)
                     {
                         //opent successvol dialoog
@@ -77,7 +83,19 @@ namespace Designer.ViewModel {
                         popup.ShowDialog();
                         return;
                     }
+                    return;
                 }
+                if (SaveRoom(Name, width, length) != null)
+                {
+                    //opent successvol dialoog
+                    RoomEditorPopupView popup = new RoomEditorPopupView("De kamer is opgeslagen!");
+                    popup.ShowDialog();
+                    return;
+                }
+
+                // opslaan van de ruimte als het aan de condities voldoet
+
+            }
 
 
             //opent onsuccesvol dialoog
@@ -86,32 +104,25 @@ namespace Designer.ViewModel {
         }
 
         // methode om de kamer op te slaan
-        public static Room SaveRoom(string name, int width, int length, int template) {
+        public static Room SaveRoom(string name, int width, int length) {
             // voegt de specificaties van de kamer aan het object room toe
             Room room = Room.FromDimensions(name, width, length);
-            if (template == 1)
-            {
-                x = 0;
-                y = 0;
-                Position = x + "," + y + "|";
-                x = (width / 2);
-                Position += x + "," + y + "|";
-                y = (length / 2);
-                Position += x + "," + y + "|";
-                x = (width);
-                Position += x + "," + y + "|";
-                y = (length);
-                Position += x + "," + y + "|";
-                x = x - width;
-                Position += x + "," + y;
+            // kamer opslaan
+            var context = RoomDesignContext.Instance;
+            room = context.Rooms.Add(room).Entity;
 
-                // from deminetions variatie maken en de list ipv string
-
-                room.Positions = Position;
-
+            try {
+                context.SaveChanges();
+                return room;
+            } catch (Exception e) {
+                Console.WriteLine(e);
+                return null;
             }
-            
-            
+        }
+        public static Room SaveRoom(string name, int width, int length, int template) {
+            // voegt de specificaties van de kamer aan het object room toe
+            Room room = Room.FromTemplate(name, width, length, Template);
+
             // kamer opslaan
             var context = RoomDesignContext.Instance;
             room = context.Rooms.Add(room).Entity;

@@ -35,8 +35,10 @@ namespace Designer.Model {
         public static Room FromDimensions(string name, int width, int length) {
             return new Room(name, FromDimensions(width, length));
         }
+        
 
         public static string FromDimensions(int width, int length) {
+            // maakt een lijst posities aan van de gegeven breedte en lengte (vierhoek kamer)
             return FromList(
                 new[] {
                     new Position(0, 0),
@@ -45,6 +47,44 @@ namespace Designer.Model {
                     new Position(0, length),
                 }
             );
+        }
+
+        public static Room FromTemplate(string name, int width, int length, int template)
+        {
+            // returnt nieuwe kamer
+            return new Room(name, FromTemplate(width, length, template));
+        }
+
+        public static string FromTemplate(int width, int length, int template) {
+            if (template == 1)
+            {
+                // maakt een lijst posities aan van de gegeven breedte en lengte (Hoek kamer)
+                return FromList(
+                new[] {
+                    new Position(0, 0),
+                    new Position((width / 2), 0),
+                    new Position((width / 2), (length / 2)),
+                    new Position(width, (length / 2)),
+                    new Position(width, length),
+                    new Position(0, length),
+                }
+            );
+
+            }
+            else
+            {
+                // maakt een lijst posities aan van de gegeven breedte en lengte (vierhoek kamer)
+                return FromList(
+                new[] {
+                    new Position(0, 0),
+                    new Position(width, 0),
+                    new Position(width, length),
+                    new Position(0, length),
+                }
+            );
+            }
+
+            
         }
     }
 }

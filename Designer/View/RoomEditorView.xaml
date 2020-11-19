@@ -8,7 +8,7 @@
     mc:Ignorable="d"
     d:DesignHeight="720" d:DesignWidth="1280"
     Title="KantoorInrichting - Ruimte Editor">
-    
+
 
     <Page.DataContext>
         <viewModel:RoomEditorViewModel />
@@ -52,15 +52,6 @@
             </StackPanel>
         </Button>
 
-        <!--
-        <RadioButton Checked="Btn1_Checked" GroupName="Template" Width="253" Grid.RowSpan="2" Margin="363,254,664,-254" RenderTransformOrigin="0.5,0.5">
-            <Image Source="../Assets/Vierhoek.jpg" Height="228" Width="231"></Image>
-        </RadioButton>
-        <RadioButton Checked="Btn2_Checked" GroupName="Template" Grid.RowSpan="2" Margin="678,254,318,225">
-            <Image Source="../Assets/Hoekvormig.jpg" Height="216" Width="232"></Image>
-        </RadioButton>
-        -->
-
         <!--Breedte invoerveld-->
         <Label Content="Ruimte breedte:" HorizontalAlignment="Left" Margin="89,328,0,0" VerticalAlignment="Top" Grid.RowSpan="2" />
 
@@ -101,6 +92,7 @@
                 HorizontalAlignment="Left" VerticalAlignment="Top" Height="52" Width="190"
                 RenderTransformOrigin="0.906,0.372" Margin="698,240,0,0"
                 Command="{Binding Submit}" Grid.Row="1" />
+        <TextBlock HorizontalAlignment="Left" Margin="706,51,0,0" Text="Kies een Template" TextWrapping="Wrap" VerticalAlignment="Top"/>
 
     </Grid>
 </Page>
