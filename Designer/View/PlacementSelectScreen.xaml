@@ -1,0 +1,34 @@
+﻿<UserControl
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:local="clr-namespace:Designer.View"
+             xmlns:viewModel="clr-namespace:Designer.ViewModel"
+             xmlns:designer="clr-namespace:Designer"
+             x:Class="Designer.View.PlacementSelectScreen"
+             mc:Ignorable="d"
+             d:DesignHeight="300" d:DesignWidth="300">
+
+    <UserControl.DataContext>
+        <viewModel:ViewDesignViewModel x:Name="viewModel"/>
+    </UserControl.DataContext>
+    <UserControl.Resources>
+        <designer:ImagePathConverter x:Key="ImagePathConverter"/>
+        <designer:PriceConverter x:Key="PriceConverter"/>
+    </UserControl.Resources>
+    <Grid Background="White">
+        <Rectangle Height="45" Stroke="Black" VerticalAlignment="Bottom" Margin="0,0,0,255" Fill="#FF65EAEA"/>
+        <Label Content="{Binding Name}" HorizontalAlignment="Center" Height="45" VerticalAlignment="Top" Width="280" FontSize="22"/>
+        <Border BorderBrush="Black" BorderThickness="1">
+        <Image HorizontalAlignment="Left" Height="170" Margin="0,45,0,0" VerticalAlignment="Top" Width="295" Source="{Binding Path=Photo, Converter={StaticResource ImagePathConverter}}"/>
+        </Border>
+        <Border BorderBrush="Black" BorderThickness="1">
+        <Label Content="{Binding Price, Converter={StaticResource PriceConverter}}" HorizontalAlignment="Center" Height="35" Margin="0,210,0,0" VerticalAlignment="Top" Width="250" FontSize="22"/>
+        </Border>
+        <Border BorderBrush="Black" BorderThickness="1">
+        <Label Content="{Binding ProductId}" HorizontalAlignment="Center" Height="35" Margin="0,255,0,0" VerticalAlignment="Top" Width="250" FontSize="22"/>
+        </Border>
+        <Button x:Name="DeleteButton" Content="X" HorizontalAlignment="Left" Height="45" Margin="254,-1,0,0" VerticalAlignment="Top" Width="45" FontSize="22"/>
+    </Grid>
+</UserControl>

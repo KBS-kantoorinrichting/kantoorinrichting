@@ -238,7 +238,6 @@ namespace DesignerTest {
                 Assert.AreEqual(Room1, args.Value.Room);
                 Assert.IsEmpty(args.Value.ProductPlacements);
             };
-            
             _addDesignModel.AddDesign();
         }
         
