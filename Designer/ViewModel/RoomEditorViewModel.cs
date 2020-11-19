@@ -1,4 +1,6 @@
 ﻿using System;
+using System.ComponentModel;
+using System.Diagnostics;
 using System.Windows.Controls;
 using System.Windows.Data;
 using Designer.Model;
@@ -6,27 +8,60 @@ using Designer.Other;
 using Designer.View;
 
 namespace Designer.ViewModel {
-    public class RoomEditorViewModel {
+    public class RoomEditorViewModel : INotifyPropertyChanged  {
         public string Name { get; set; }
         public string Width { get; set; }
         public string Length { get; set; }
+        public event PropertyChangedEventHandler PropertyChanged;
+
         public static int Template { get; set; }
         public static int x;
         public static int y;
         public static string Position;
 
+        public string Image0
+        {
+            get; set;
+        } = "../Assets/Vierhoek_Clicked.jpg";
+        public string Image1
+        {
+            get; set;
+        } = "../Assets/Hoekvormig.jpg";
+
         public BasicCommand Submit { get; set; }
+        public BasicCommand TemplateButton { get; set; }
+       
 
         public RoomEditorViewModel() {
             Submit = new BasicCommand(SubmitRoom);
+            TemplateButton = new ArgumentCommand<int>(SetTemplate);
+            // bind het command
         }
-        public void Btn1_Checked()
+
+        private void OnPropertyChanged(string propertyName = "")
         {
-            Template = 0;
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
-         public void Btn2_Checked()
+
+        public void SetTemplate(int parameter)
         {
-            Template = 1;
+           
+            Template = parameter;
+            if (parameter == 0)
+            {
+                Image0 = "../Assets/Vierhoek_Clicked.jpg";
+                Image1 = "../Assets/Hoekvormig.jpg";
+               
+            }
+            else
+            {
+                Image0 = "../Assets/Vierhoek.jpg";
+                Image1 = "../Assets/Hoekvormig_Clicked.jpg";
+                
+            }
+            OnPropertyChanged();
+
+           
         }
 
 
@@ -70,6 +105,8 @@ namespace Designer.ViewModel {
                 x = x - width;
                 Position += x + "," + y;
 
+                // from deminetions variatie maken en de list ipv string
+
                 room.Positions = Position;
 
             }
@@ -101,25 +138,5 @@ namespace Designer.ViewModel {
         }
     }
 
-    public class BooleanToStringValueConverter : IValueConverter
-    {
-        public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
-        {
-            if (System.Convert.ToString(value).Equals(System.Convert.ToString(parameter)))
-            {
-                return true;
-            }
-            return false;
-        }
-
-        public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
-        {
-            if (System.Convert.ToBoolean(value))
-            {
-                return parameter;
-            }
-            return null;
-        }
-    }
 
 }

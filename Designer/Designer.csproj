@@ -8,7 +8,9 @@
 
   <ItemGroup>
     <None Remove="Assets\Hoekvormig.jpg" />
+    <None Remove="Assets\Hoekvormig_Clicked.jpg" />
     <None Remove="Assets\Vierhoek.jpg" />
+    <None Remove="Assets\Vierhoek_Clicked.jpg" />
     <None Remove="Resources\Images\placeholder.png" />
     <None Remove="Resources\Images\test.jpg" />
   </ItemGroup>
@@ -17,7 +19,13 @@
     <Resource Include="Assets\Hoekvormig.jpg">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
+    <Resource Include="Assets\Hoekvormig_Clicked.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
     <Resource Include="Assets\Vierhoek.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Assets\Vierhoek_Clicked.jpg">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
     <Resource Include="Resources\Images\placeholder.png" />

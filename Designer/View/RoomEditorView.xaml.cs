@@ -11,18 +11,6 @@ namespace Designer.View {
             InitializeComponent();
         }
 
-        private void RadioButton_Checked(object sender, System.Windows.RoutedEventArgs e)
-        {
 
-        }
-
-        private void Btn1_Checked(object sender, System.Windows.RoutedEventArgs e)
-        {
-            RoomEditorViewModel.Template = 0;
-        }
-        private void Btn2_Checked(object sender, System.Windows.RoutedEventArgs e)
-        {
-            RoomEditorViewModel.Template = 1;
-        }
     }
 }
