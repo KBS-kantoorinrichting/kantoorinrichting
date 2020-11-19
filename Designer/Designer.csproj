@@ -53,7 +53,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="View\asdfasdfasdf.png">
+    <None Update="View\Images\test.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>
