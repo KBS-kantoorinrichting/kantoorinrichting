@@ -1,6 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Models;
-using Repositories;
 
 namespace Services {
     public class ProductService : BasicService<Product> {

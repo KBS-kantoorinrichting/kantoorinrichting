@@ -4,14 +4,21 @@ using dotenv.net.Utilities;
 using Microsoft.EntityFrameworkCore;
 using Models;
 
-namespace Repositories {
-    public class RoomDesignContext : DbContext {
+namespace Services {
+    class RoomDesignContext : DbContext {
         //Zorgt er voor dat er maar 1 instance van de context bestaat.
         private static RoomDesignContext _instance;
 
         public static RoomDesignContext Instance {
-            get => _instance ??= new RoomDesignContext();
+            get => _instance ??= _create();
             set => _instance = value;
+        }
+
+        private static RoomDesignContext _create() {
+            RoomDesignContext context = new RoomDesignContext(RoomDesignOptions.Options);
+            if (RoomDesignOptions.EnsureCreated) context.Database.EnsureCreated();
+            else context.Database.Migrate();
+            return context;
         }
 
         public RoomDesignContext() { }
@@ -25,7 +32,7 @@ namespace Repositories {
         public virtual DbSet<ProductPlacement> ProductPlacements { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder options) {
-            // options.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
+            // todo options.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
             if (options.IsConfigured) return;
             Console.WriteLine("[RoomDesignContext] Currently running in: " + Environment.CurrentDirectory);
             //Load the .env file from the project root

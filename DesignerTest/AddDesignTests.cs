@@ -2,8 +2,8 @@ using System.Collections.Generic;
 using Designer.ViewModel;
 using Models;
 using NUnit.Framework;
-using RepositoriesTest;
 using Services;
+using ServicesRest;
 
 namespace DesignerTest {
     public class AddDesignDatabaseTestsStaticMethods : DatabaseTest {

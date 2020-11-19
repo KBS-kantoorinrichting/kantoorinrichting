@@ -3,9 +3,8 @@ using Designer.Other;
 using Designer.ViewModel;
 using Models;
 using NUnit.Framework;
-using Repositories;
-using RepositoriesTest;
 using Services;
+using ServicesRest;
 
 namespace DesignerTest {
     public class DesignCatalogTestsStaticMethod : DatabaseTest {
