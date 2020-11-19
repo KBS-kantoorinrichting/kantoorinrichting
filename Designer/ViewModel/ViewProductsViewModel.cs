@@ -16,8 +16,7 @@ namespace Designer.ViewModel
         public double Price { get; set; }
         public string Photo { get; set; }
         public int Width { get; set; }
-        public int Length { get; set; }
-        public string ImageAdress { get; set; }
+        public int Length { get; set; } 
         public BasicCommand Submit { get; set; }
         public BasicCommand AddPhoto { get; set; }
 
@@ -53,8 +52,8 @@ namespace Designer.ViewModel
             {
                 openFileDialog.InitialDirectory = @"C:\Users\bashe\source\repos\kantoorinrichting\Designer\Resources\Images";
                 openFileDialog.Filter = "Image files (*.png;*.jpeg)|*.png;*.jpeg|All files (*.*)|*.*";
-                ImageAdress = openFileDialog.FileName.Substring(openFileDialog.InitialDirectory.Length+1);
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("ImageAdress"));
+                Photo = $"{openFileDialog.FileName.Substring(openFileDialog.InitialDirectory.Length+1)}";
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("Photo"));
                 
             }
 
@@ -79,6 +78,7 @@ namespace Designer.ViewModel
             var context = RoomDesignContext.Instance;
             // Linq om te zorgen dat de lijst gevuld wordt met de database content.
             Products = context.Products.ToList();
+           
             // this.Products is de lijst met producten
             // context.Products is de table Products van de database 
             return Products;
@@ -113,7 +113,7 @@ namespace Designer.ViewModel
         #endregion
         private void SubmitItem()
         {
-            if (SaveProduct(Name, Price, Photo, Width, Length, ImageAdress) != null)
+            if (SaveProduct(Name, Price, Photo, Width, Length) != null)
             {
                RoomEditorPopupView Popup = new RoomEditorPopupView("Het product is opgeslagen");
                 Popup.ShowDialog();
@@ -121,10 +121,10 @@ namespace Designer.ViewModel
             }
         }
 
-        public static Product SaveProduct(string naam, double price, string photo, int width, int length, string ImageAdress)
+        public static Product SaveProduct(string naam, double price, string photo, int width, int length)
         {
             // Kamer opslaan
-            Product product = new Product(naam, price, photo, width, length, ImageAdress);
+            Product product = new Product(naam, price, photo, width, length);
             var context = RoomDesignContext.Instance;
             product = context.Products.Add(product).Entity;
             try

@@ -28,7 +28,7 @@ namespace Designer.Model
             Photo = photo;
         }
 
-        public Product(string name, double price, string photo, int width, int length, string ImageAdress)
+        public Product(string name, double price, string photo, int width, int length)
         // Alternatieve constructor voor Product
         {
             Name = name;
@@ -36,7 +36,6 @@ namespace Designer.Model
             Photo = photo;
             Width = width;
             Length = length;
-            Photo = ImageAdress;
         }
     }
 }

@@ -99,10 +99,9 @@
 
                     <Label Content="Foto:" Height="26" Width="52" RenderTransformOrigin="0.49,0.577" HorizontalAlignment="Left" />
                     <Button Name="AddPhoto" Command="{Binding AddPhoto}" Content="Foto Toevoegen" Height="26" Width="122"/>
-                    <TextBox Name="txtEditor" Text="{Binding ImageAdress}" Height="75"/>
+                    <TextBox Name="txtEditor" Text="{Binding Photo, Converter={StaticResource ImagePathConverter}}" Height="75"/>
 
                     <Border/>
-                    <TextBox Visibility="hidden" Text="{Binding Photo, UpdateSourceTrigger=PropertyChanged}" Background="#FFFFFEFE" RenderTransformOrigin="0.507,0.562" Height="30" Width="80" BorderBrush="Black" BorderThickness="1px"/>
                     <Label Height="50" Visibility="Hidden"/>
                     <Button Content="Toevoegen" Height="74" Width="184" x:Name="Toevoegen_Button" Command="{Binding Submit}" HorizontalAlignment="Center"/>
                 </StackPanel>
