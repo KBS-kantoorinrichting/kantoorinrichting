@@ -21,22 +21,21 @@
         <Label Content="Ruimte Toevoegen" HorizontalAlignment="Left" FontSize="35" Margin="10,10,0,0"
                VerticalAlignment="Top" />
 
-        <!--naam invoerveld-->
-        <TextBox MaxLength="25" HorizontalAlignment="Left" Margin="363,130,0,0"
+        <!--naam invoerveld -->
+        <TextBox MaxLength="25" HorizontalAlignment="Left" Margin="40,156,0,0"
                  TextWrapping="Wrap" VerticalAlignment="Top" Width="190"
                  Text="{Binding Name, UpdateSourceTrigger = PropertyChanged}"/>
 
-        <Label Content="Ruimte naam:" HorizontalAlignment="Left" Margin="358,92,0,0" VerticalAlignment="Top" />
+        <Label Content="Ruimte naam:" HorizontalAlignment="Left" Margin="35,118,0,0" VerticalAlignment="Top" />
+
         <!-- template knoppen -->
 
-        <RadioButton Checked="Btn1_Checked" GroupName="Template" Width="253" Grid.RowSpan="2" Margin="720,251,307,-251" RenderTransformOrigin="0.5,0.5">
+        <RadioButton Checked="Btn1_Checked" GroupName="Template" Width="253" Grid.RowSpan="2" Margin="363,254,664,-254" RenderTransformOrigin="0.5,0.5">
             <Image Source="../Assets/Vierhoek.jpg" Height="228" Width="231"></Image>
         </RadioButton>
-        <RadioButton Checked="Btn2_Checked" GroupName="Template" Grid.RowSpan="2" Checked="RadioButton_Checked" Margin="396,254,600,225">
+        <RadioButton Checked="Btn2_Checked" GroupName="Template" Grid.RowSpan="2" Margin="678,254,318,225">
             <Image Source="../Assets/Hoekvormig.jpg" Height="216" Width="232"></Image>
         </RadioButton>
-
-
 
         <!--Breedte invoerveld-->
         <Label Content="Ruimte breedte:" HorizontalAlignment="Left" Margin="88,300,0,0" VerticalAlignment="Top" />
@@ -73,16 +72,11 @@
         <TextBlock Foreground="Red" Text="{Binding (Validation.Errors)[0].ErrorContent, ElementName=Length}"
                    Margin="93,116,955,40" Grid.Row="1" />
 
-
-
         <!--Opslaan knop-->
         <Button Content="Opslaan" Background="Bisque" FontFamily="Verdana" FontSize="30"
                 HorizontalAlignment="Center" VerticalAlignment="Top" Height="52" Width="190"
                 RenderTransformOrigin="0.906,0.372" Margin="0,240,0,0"
                 Command="{Binding Submit}" Grid.Row="1" />
-
-
-
 
     </Grid>
 </Page>

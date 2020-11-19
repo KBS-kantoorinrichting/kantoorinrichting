@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Windows.Controls;
+using System.Windows.Data;
 using Designer.Model;
 using Designer.Other;
 using Designer.View;
@@ -9,7 +10,7 @@ namespace Designer.ViewModel {
         public string Name { get; set; }
         public string Width { get; set; }
         public string Length { get; set; }
-        public int Template { get; set; }
+        public static int Template { get; set; }
         public static int x;
         public static int y;
         public static string Position;
@@ -52,6 +53,7 @@ namespace Designer.ViewModel {
         // methode om de kamer op te slaan
         public static Room SaveRoom(string name, int width, int length, int template) {
             // voegt de specificaties van de kamer aan het object room toe
+            Room room = Room.FromDimensions(name, width, length);
             if (template == 1)
             {
                 x = 0;
@@ -66,16 +68,13 @@ namespace Designer.ViewModel {
                 y = (length);
                 Position += x + "," + y + "|";
                 x = x - width;
-                Position += x + "," + y + "|";
+                Position += x + "," + y;
 
-                Room room = Room(name, Position);
-            }
-            else
-            {
-                Room room = Room.FromDimensions(name, width, length);
+                room.Positions = Position;
+
             }
             
-
+            
             // kamer opslaan
             var context = RoomDesignContext.Instance;
             room = context.Rooms.Add(room).Entity;
@@ -101,4 +100,26 @@ namespace Designer.ViewModel {
             return new ValidationResult(isInt, isInt ? null : "Dit veld mag alleen cijfers bevatten.");
         }
     }
+
+    public class BooleanToStringValueConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            if (System.Convert.ToString(value).Equals(System.Convert.ToString(parameter)))
+            {
+                return true;
+            }
+            return false;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            if (System.Convert.ToBoolean(value))
+            {
+                return parameter;
+            }
+            return null;
+        }
+    }
+
 }
