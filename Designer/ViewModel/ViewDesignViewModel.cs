@@ -32,6 +32,7 @@ namespace Designer.ViewModel {
         public Canvas Editor { get; set; }
         private Point _previousPosition;
         private ProductPlacement _selectedPlacement;
+        public Polygon RoomPoly = new Polygon();
 
         //Special constructor for unit tests
         public ViewDesignViewModel(Design design)
@@ -134,6 +135,10 @@ namespace Designer.ViewModel {
             //Als de muis niet bewogen is hoeft het niet opnieuw getekend te worden
             if (position == _previousPosition) return;
             _previousPosition = position;
+
+            // Check of het product in de ruimte wordt geplaatst
+            CheckCollisions(position);
+
             //Teken de ruimte en de al geplaatste producten
             RenderRoom();
             DrawProduct(selectedProduct, 
@@ -147,7 +152,7 @@ namespace Designer.ViewModel {
             for (int i = Editor.Children.Count - 1; i >= 0; i += -1)
             {
                 UIElement Child = Editor.Children[i];
-                if (!(Child is Line))
+                if (!(Child is Polygon))
                     Editor.Children.Remove(Child);
             }
 
@@ -232,26 +237,22 @@ namespace Designer.ViewModel {
         public void SetRoomDimensions()
         {
             // TODO: Replace with room positions
-            var coordinates = ConvertPosititionsToCoordinates("0,0|500,0|500,500|0,500");
+            var coordinates = ConvertPosititionsToCoordinates("0,0|250,0|250,250|500,250|500,500|0,500");
 
+
+            PointCollection points = new PointCollection();
+            // Voeg de punten toe aan een punten collectie
             for (int i = 0; i < coordinates.Count; i++) {
-                Coordinate targetCoordinate;
-                
-                // Kijkt of de volgende coordinaten bestaan, zo niet pakt het de eerste waarde in de list
-                if(i + 1 < coordinates.Count) targetCoordinate = coordinates[i + 1];
-                else targetCoordinate = coordinates[0];
-
-                Line line = new Line
-                {
-                    Stroke = new SolidColorBrush(Colors.Black),
-                    StrokeThickness = 1.0,
-                    X1 = coordinates[i].X,
-                    X2 = targetCoordinate.X,
-                    Y1 = coordinates[i].Y,
-                    Y2 = targetCoordinate.Y
-                };
-                Editor.Children.Add(line);
+                points.Add(new Point(coordinates[i].X, coordinates[i].Y));
             }
+
+            RoomPoly.Stroke = Brushes.Black;
+            RoomPoly.Fill = Brushes.LightGray;
+            RoomPoly.StrokeThickness = 1;
+            RoomPoly.HorizontalAlignment = HorizontalAlignment.Left;
+            RoomPoly.VerticalAlignment = VerticalAlignment.Center;
+            RoomPoly.Points = points;
+            Editor.Children.Add(RoomPoly);
         }
 
         private List<Coordinate> ConvertPosititionsToCoordinates(string positions)
@@ -269,7 +270,28 @@ namespace Designer.ViewModel {
             }
 
             return values;
-        } 
+        }
+
+        private void CheckCollisions(Point point)
+        {
+            bool result = false;
+            int j = RoomPoly.Points.Count() - 1;
+
+            // Loopt door alle punten in de polygon
+            for (int i = 0; i < RoomPoly.Points.Count(); i++)
+            {
+                // Kijkt of de gegeven point in de polygon ligt qua coordinaten
+                if (RoomPoly.Points[i].Y < point.Y && RoomPoly.Points[j].Y >= point.Y || RoomPoly.Points[j].Y < point.Y && RoomPoly.Points[i].Y >= point.Y)
+                {
+                    if (RoomPoly.Points[i].X + (point.Y - RoomPoly.Points[i].Y) / (RoomPoly.Points[j].Y - RoomPoly.Points[i].Y) * (RoomPoly.Points[j].X - RoomPoly.Points[i].X) < point.X)
+                    {
+                        result = !result;
+                    }
+                }
+                j = i;
+            }
+            Editor.AllowDrop = result;
+        }
     }
 
     public class ProductData
@@ -287,6 +309,12 @@ namespace Designer.ViewModel {
         {
             X = x;
             Y = y;
+        }
+
+        public Coordinate(Point point)
+        {
+            X = Convert.ToInt32(point.X);
+            Y = Convert.ToInt32(point.Y);
         }
     }
 }
