@@ -15,7 +15,7 @@ namespace DesignerTest
 {
     public class ViewDesignTests
     {
-        private static readonly Room Room = new Room(1, "TestRoom", 1, 1);
+        private static readonly Room Room = new Room("TestRoom", 1, 1);
         private static readonly Design Design = new Design("TestDesign", Room, new List<ProductPlacement>());
         private static readonly ViewDesignViewModel ViewModel = new ViewDesignViewModel(Design);
         private static readonly Product Product1 = new Product() { ProductId = 1, Name = "Product1" };
