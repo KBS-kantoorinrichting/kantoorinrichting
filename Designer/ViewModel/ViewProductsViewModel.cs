@@ -14,6 +14,7 @@ namespace Designer.ViewModel {
         public Product SelectedProduct { get; set; }
 
         public Image image { get; set; }
+
         public List<Model.Product> Products { get; set; }
         // Property van een lijst om de informatie vanuit de database op te slaan.
 
