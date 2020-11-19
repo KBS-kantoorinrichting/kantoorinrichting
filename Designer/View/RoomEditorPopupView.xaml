@@ -1,0 +1,16 @@
+﻿<Window x:Class="Designer.View.RoomEditorPopupView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d"
+        Title="RoomEditorPopupView" Height="200" Width="400">
+    <Grid>
+        <Label Name="TextLabel" Content="De kamer is opgeslagen!" HorizontalAlignment="Center" Margin="0,34,0,0"
+               VerticalAlignment="Top" />
+        <Button Background="Bisque" FontFamily="Verdana" FontSize="10" Content="Verdergaan"
+                HorizontalAlignment="Center" Margin="0,114,0,0" VerticalAlignment="Top" Click="Continue_Button_Click"
+                Height="24" Width="74" />
+
+    </Grid>
+</Window>

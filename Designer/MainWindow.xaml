@@ -5,20 +5,21 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:viewModel="clr-namespace:Designer.ViewModel"
         mc:Ignorable="d"
-        Title="Kantoor Ontwerper" Height="450" Width="800">
+        Title="Kantoor Ontwerper" Width="1280" Height="720" FontFamily="Verdana">
 
     <Window.DataContext>
         <viewModel:MainViewModel />
     </Window.DataContext>
     <Grid>
         <DockPanel LastChildFill="False">
-            <Menu DockPanel.Dock="Top" Height="20" VerticalAlignment="Top">
+            <Menu DockPanel.Dock="Top" FontFamily="Verdana" Height="20" VerticalAlignment="Top">
                 <MenuItem Header="Application">
                     <MenuItem Header="TODO" />
                     <MenuItem Header="Afsluiten" Command="{Binding Exit}" />
                 </MenuItem>
                 <MenuItem Header="Product catalogus" Command="{Binding GotoExample}" />
                 <MenuItem Header="Ontwerpen" Command="{Binding GotoDesigns}" />
+                <MenuItem Header="Ruimtes" Command="{Binding GotoRooms}" />
             </Menu>
         </DockPanel>
         <Frame NavigationUIVisibility="Hidden" Margin="0,20,0,0" 
