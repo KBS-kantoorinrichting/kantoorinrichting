@@ -1,7 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
+using System.Runtime.CompilerServices;
 
 namespace Models {
-    public class Room : IEntity {
+    public class Room : Data, IEntity {
         [Column("RoomId")] 
         public int Id { get; set; }
 
@@ -19,5 +20,7 @@ namespace Models {
             Width = width;
             Length = length;
         }
+
+        protected override ITuple Variables => (Id, Name, Width, Length);
     }
 }

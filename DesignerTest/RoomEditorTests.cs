@@ -4,13 +4,7 @@ using NUnit.Framework;
 using RepositoriesTest;
 
 namespace DesignerTest {
-    class RoomEditorTests {
-        [SetUp]
-        public void Setup() {
-            // maakt test database aan
-            TestRepository.Setup();
-        }
-
+    class RoomEditorTests : DatabaseTest {
         [Test]
         [TestCase("kamernaam_test", 40, 1000)]
         [TestCase("kamernaam_test1", 230, 1210)]

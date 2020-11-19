@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Designer.ViewModel;
@@ -5,21 +6,15 @@ using Models;
 using NUnit.Framework;
 using Repositories;
 using RepositoriesTest;
+using Services;
 
 namespace DesignerTest {
-    public class AddDesignTestsStaticMethods {
+    public class AddDesignDatabaseTestsStaticMethods : DatabaseTest {
         private static readonly Room Room1 = new Room("TestRoom1", 1, 1);
         private static readonly Room Room2 = new Room("TestRoom2", 2, 4);
         private static readonly Room Room3 = new Room("TestRoom3", 2, 5);
-
-        [SetUp]
-        public void Setup() {
-            TestRepository.Setup(
-                new List<Room> {
-                    Room1, Room2, Room3
-                }
-            );
-        }
+        
+        protected override List<Room> Rooms => new List<Room> {Room1, Room2, Room3};
 
         [Test]
         public void LoadRooms_Count() {
@@ -95,30 +90,27 @@ namespace DesignerTest {
             Design design = new Design("design4", Room1, new List<ProductPlacement>());
             AddDesignModel.SaveDesign(design);
 
-            Design dbDesign = RoomDesignContext.Instance.Designs.First();
-            Assert.AreEqual(design.Id, dbDesign.Id);
-            Assert.AreEqual(design.Name, dbDesign.Name);
-            Assert.AreEqual(design.Id, dbDesign.Id);
-            Assert.AreEqual(design.Room, dbDesign.Room);
-            Assert.AreEqual(design.ProductPlacements, dbDesign.ProductPlacements);
+            Design dbDesign = DesignService.Instance.First();
+            Console.Error.WriteLine(dbDesign);
+            Assert.AreEqual(dbDesign.Id, design.Id);
+            Assert.AreEqual(dbDesign.Name, design.Name);
+            Assert.AreEqual(dbDesign.Room, design.Room);
+            Assert.AreEqual(dbDesign.ProductPlacements, design.ProductPlacements);
         }
     }
 
-    public class AddDesignTestsInstace {
+    public class AddDesignTestsInstace : DatabaseTest {
         private static readonly Room Room1 = new Room("TestRoom1", 1, 1);
         private static readonly Room Room2 = new Room("TestRoom2", 2, 4);
         private static readonly Room Room3 = new Room("TestRoom3", 2, 5);
-        private static readonly string TestName = "TestDesign";
+        private const string TestName = "TestDesign";
+
+        protected override List<Room> Rooms => new List<Room> {Room1, Room2, Room3};
 
         private AddDesignModel _designModel;
 
         [SetUp]
         public void Setup() {
-            TestRepository.Setup(
-                new List<Room> {
-                    Room1, Room2, Room3
-                }
-            );
             _designModel = new AddDesignModel();
         }
 
@@ -134,7 +126,7 @@ namespace DesignerTest {
         public void AddDesign_IsAdded() {
             _designModel.Name = TestName;
             _designModel.Selected = Room1;
-            
+
             _designModel.AddDesign();
 
             Design design = RoomDesignContext.Instance.Designs.First();
@@ -148,7 +140,7 @@ namespace DesignerTest {
         public void AddDesign_IsCorrect() {
             _designModel.Name = TestName;
             _designModel.Selected = Room1;
-            
+
             _designModel.AddDesign();
 
             int count = RoomDesignContext.Instance.Designs.Count();
@@ -179,7 +171,7 @@ namespace DesignerTest {
                 Assert.AreEqual(Room1, args.Value.Room);
                 Assert.IsEmpty(args.Value.ProductPlacements);
             };
-            
+
             _designModel.AddDesign();
         }
     }

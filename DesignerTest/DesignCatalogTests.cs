@@ -7,27 +7,18 @@ using Repositories;
 using RepositoriesTest;
 
 namespace DesignerTest {
-    public class DesignCatalogTestsStaticMethod {
+    public class DesignCatalogTestsStaticMethod : DatabaseTest {
         private static readonly Room Room1 = new Room("TestRoom1", 1, 1);
         private static readonly Room Room2 = new Room("TestRoom2", 2, 4);
         private static readonly Room Room3 = new Room("TestRoom3", 72, 4);
-        
+
         private static readonly Design Design1 = new Design("TestDesign1", Room1, null);
         private static readonly Design Design2 = new Design("TestDesign2", Room1, null);
         private static readonly Design Design3 = new Design("TestDesign3", Room2, null);
         private static readonly Design Design4 = new Design("TestDesign4", Room3, null);
 
-        [SetUp]
-        public void Setup() {
-            TestRepository.Setup(
-                new List<Room> {
-                    Room1, Room2
-                },
-                new List<Design> {
-                    Design1, Design2, Design3, Design4
-                }
-            );
-        }
+        protected override List<Room> Rooms => new List<Room> {Room1, Room2};
+        protected override List<Design> Designs => new List<Design> {Design1, Design2, Design3, Design4};
 
         [Test]
         public void LoadDesigns_Count() {
@@ -44,36 +35,29 @@ namespace DesignerTest {
             Assert.Contains(Design4, designs);
         }
     }
-    
-    public class DesignCatalogTestsInstance {
+
+    public class DesignCatalogTestsInstance : DatabaseTest {
         private static readonly Room Room1 = new Room("TestRoom1", 1, 1);
         private static readonly Room Room2 = new Room("TestRoom2", 2, 4);
         private static readonly Room Room3 = new Room("TestRoom3", 72, 4);
-        
+
         private static readonly Design Design1 = new Design("TestDesign1", Room1, null);
         private static readonly Design Design2 = new Design("TestDesign2", Room1, null);
         private static readonly Design Design3 = new Design("TestDesign3", Room2, null);
         private static readonly Design Design4 = new Design("TestDesign4", Room3, null);
         
-        private DesignCatalogModel _designModel;
+        protected override List<Room> Rooms => new List<Room> {Room1, Room2};
+        protected override List<Design> Designs => new List<Design> {Design1, Design2};
         
+        private DesignCatalogModel _designModel;
+
         [SetUp]
         public void Setup() {
-            TestRepository.Setup(
-                new List<Room> {
-                    Room1, Room2
-                },
-                new List<Design> {
-                    Design1, Design2
-                }
-            );
             _designModel = new DesignCatalogModel();
         }
 
         [Test]
-        public void Loads_Count() {
-            Assert.AreEqual(2, _designModel.Designs.Count);
-        }
+        public void Loads_Count() { Assert.AreEqual(2, _designModel.Designs.Count); }
 
         [Test]
         public void Loads_Contains() {
@@ -85,7 +69,7 @@ namespace DesignerTest {
         [Test]
         public void NeedsReload_Count() {
             RoomDesignContext.Instance.Designs.Add(Design3);
-            
+
             List<Design> designs = _designModel.Designs;
             Assert.AreEqual(2, designs.Count);
         }
@@ -93,7 +77,7 @@ namespace DesignerTest {
         [Test]
         public void NeedsReload_Contains() {
             RoomDesignContext.Instance.Designs.Add(Design3);
-            
+
             List<Design> designs = _designModel.Designs;
             Assert.Contains(Design1, designs);
             Assert.Contains(Design2, designs);
@@ -105,7 +89,7 @@ namespace DesignerTest {
             RoomDesignContext.Instance.Designs.Add(Design3);
             RoomDesignContext.Instance.SaveChanges();
             _designModel.Reload();
-            
+
             List<Design> designs = _designModel.Designs;
             Assert.AreEqual(3, designs.Count);
         }
@@ -115,7 +99,7 @@ namespace DesignerTest {
             RoomDesignContext.Instance.Designs.Add(Design3);
             RoomDesignContext.Instance.SaveChanges();
             _designModel.Reload();
-            
+
             List<Design> designs = _designModel.Designs;
             Assert.Contains(Design1, designs);
             Assert.Contains(Design2, designs);
@@ -127,7 +111,7 @@ namespace DesignerTest {
             RoomDesignContext.Instance.Designs.Add(Design3);
             RoomDesignContext.Instance.SaveChanges();
             _designModel.ReloadCommand.Execute(null);
-            
+
             List<Design> designs = _designModel.Designs;
             Assert.AreEqual(3, designs.Count);
         }
@@ -137,7 +121,7 @@ namespace DesignerTest {
             RoomDesignContext.Instance.Designs.Add(Design3);
             RoomDesignContext.Instance.SaveChanges();
             _designModel.ReloadCommand.Execute(null);
-            
+
             List<Design> designs = _designModel.Designs;
             Assert.Contains(Design1, designs);
             Assert.Contains(Design2, designs);
@@ -183,39 +167,34 @@ namespace DesignerTest {
                 Assert.AreEqual(Design1.Room, args.Value.Room);
                 Assert.AreEqual(Design1.ProductPlacements, args.Value.ProductPlacements);
             };
-            
+
             _designModel.GotoDesign(Design1);
         }
     }
 
-    public class DesignCatalogTestsAddDesignIntegration {
+    public class DesignCatalogTestsAddDesignIntegration : DatabaseTest {
         private static readonly Room Room1 = new Room("TestRoom1", 1, 1);
         private static readonly Room Room2 = new Room("TestRoom2", 2, 4);
-        
+
         private static readonly Design Design1 = new Design("TestDesign1", Room1, null);
         private static readonly Design Design2 = new Design("TestDesign2", Room1, null);
-        
-        private static readonly string TestName = "TestDesign";
-        
+
+        private const string TestName = "TestDesign";
+
+        protected override List<Room> Rooms => new List<Room> {Room1, Room2};
+        protected override List<Design> Designs => new List<Design> {Design1, Design2};
+
         private AddDesignModel _addDesignModel;
         private DesignCatalogModel _designCatalogModel;
-        
+
         [SetUp]
         public void Setup() {
-            TestRepository.Setup(
-                new List<Room> {
-                    Room1, Room2
-                },
-                new List<Design> {
-                    Design1, Design2
-                }
-            );
             _addDesignModel = new AddDesignModel();
             _designCatalogModel = new DesignCatalogModel();
 
             _addDesignModel.DesignAdded += _designCatalogModel.PageOnDesignAdded;
         }
-        
+
         [Test]
         public void DesignAdded_TriggersSelectedEvent() {
             _addDesignModel.Name = TestName;
@@ -228,7 +207,7 @@ namespace DesignerTest {
 
             Assert.IsTrue(triggered);
         }
-        
+
         [Test]
         public void DesignAdded_DesignCorrect() {
             _addDesignModel.Name = TestName;
@@ -240,10 +219,10 @@ namespace DesignerTest {
                 Assert.AreEqual(Room1, args.Value.Room);
                 Assert.IsEmpty(args.Value.ProductPlacements);
             };
-            
+
             _addDesignModel.AddDesign();
         }
-        
+
         [Test]
         public void DesignAdded_DesignsUpdates() {
             _addDesignModel.Name = TestName;
@@ -252,7 +231,7 @@ namespace DesignerTest {
             _designCatalogModel.DesignSelected += (sender, args) => {
                 Assert.Contains(args.Value, _designCatalogModel.Designs);
             };
-            
+
             _addDesignModel.AddDesign();
         }
     }

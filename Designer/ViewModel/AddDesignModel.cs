@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
 using System.Threading.Tasks;
 using Designer.Other;
 using Models;
@@ -53,7 +52,7 @@ namespace Designer.ViewModel {
             }
 
             Design design = CreateDesign(Name, Selected);
-            design = SaveDesign(design);
+            SaveDesign(design);
             DesignAdded?.Invoke(this, new BasicEventArgs<Design>(design));
         }
 
@@ -77,7 +76,7 @@ namespace Designer.ViewModel {
         }
 
         public static Design SaveDesign(Design design) {
-            DesignService.Instance.Save(design);
+            design = DesignService.Instance.Save(design);
             return design;
         }
     }

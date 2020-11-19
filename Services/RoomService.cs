@@ -1,4 +1,5 @@
-﻿using Models;
+﻿using Microsoft.EntityFrameworkCore;
+using Models;
 using Repositories;
 
 namespace Services {
@@ -9,7 +10,8 @@ namespace Services {
             get => _instance ??= new RoomService();
             set => _instance = value;
         }
-        
-        private RoomService() : base(RoomDesignContext.Instance.Rooms, RoomDesignContext.Instance) { }
+
+        protected override DbSet<Room> DbSet => RoomDesignContext.Instance.Rooms;
+        protected override DbContext DbContext => RoomDesignContext.Instance;
     }
 }

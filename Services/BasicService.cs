@@ -4,19 +4,14 @@ using Microsoft.EntityFrameworkCore;
 using Models;
 
 namespace Services {
-    public class BasicService<T> : IService<T> where T : class, IEntity {
-        private DbSet<T> _dbSet;
-        private DbContext _dbContext;
+    public abstract class BasicService<T> : IService<T> where T : class, IEntity {
+        protected abstract DbSet<T> DbSet { get; }
+        protected abstract DbContext DbContext { get; }
 
-        public BasicService(DbSet<T> dbSet, DbContext dbContext) {
-            _dbSet = dbSet;
-            _dbContext = dbContext;
-        }
-
-        public T Get(int id) { return _dbSet.AsNoTracking().First(v => v.Id == id); }
+        public T Get(int id) { return DbSet.First(v => v.Id == id); }
 
         public List<T> GetAll() {
-            return _dbSet.AsNoTracking().ToList();
+            return DbSet.ToList();
         }
 
         /**
@@ -26,15 +21,14 @@ namespace Services {
          * <seealso cref="SaveChanges"/>
          */
         public T Save(T model) {
-            T nModel = _dbSet.Add(model).Entity;
-            model.Id = nModel.Id;
-            _dbContext.SaveChanges();
+            T nModel = DbSet.Add(model).Entity;
+            DbContext.SaveChanges();
             return nModel;
         }
 
         public void SaveAll(IEnumerable<T> models) {
-            _dbSet.AddRange(models);
-            _dbContext.SaveChanges();
+            DbContext.AddRange(models);
+            DbContext.SaveChanges();
         }
         
         /**
@@ -44,23 +38,23 @@ namespace Services {
          * <seealso cref="SaveChanges"/>
          */
         public T Update(T model) {
-            model = _dbSet.Update(model).Entity;
-            _dbContext.SaveChanges();
+            model = DbSet.Update(model).Entity;
+            DbContext.SaveChanges();
             return model;
         }
 
         public T Delete(T model) { 
-            model = _dbSet.Remove(model).Entity;
-            _dbContext.SaveChanges();
+            model = DbSet.Remove(model).Entity;
+            DbContext.SaveChanges();
             return model;
         }
 
         public void DeleteAll(IEnumerable<T> models) {
-            _dbSet.RemoveRange(models);
+            DbSet.RemoveRange(models);
         }
         
         public int Count() {
-            return _dbSet.Count();
+            return DbSet.Count();
         }
 
         /**
@@ -68,8 +62,15 @@ namespace Services {
          * <returns>De getrackde model gebruik dit alleen als je zeker bent dat dit niet ergens wordt door gestuurd</returns>
          */
         public T Track(T model) {
-            model = _dbSet.Attach(model).Entity;
+            model = DbSet.Attach(model).Entity;
             return model;
+        }
+
+        /**
+         * <returns>Het eerste element in de database</returns>
+         */
+        public T First() {
+            return DbSet.First();
         }
 
         /**
@@ -80,7 +81,7 @@ namespace Services {
          * <seealso cref="Track"/>
          */
         public int SaveChanges() {
-            return _dbContext.SaveChanges();
+            return DbContext.SaveChanges();
         }
     }
 }

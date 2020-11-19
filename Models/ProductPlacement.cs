@@ -1,7 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
+using System.Runtime.CompilerServices;
 
 namespace Models {
-    public class ProductPlacement : IEntity {
+    public class ProductPlacement : Data, IEntity {
         [Column("ProductPlacementId")] 
         public int Id { get; set; }
 
@@ -13,5 +14,7 @@ namespace Models {
 
         public int DesignId { get; set; }
         public Design Design { get; set; }
+
+        protected override ITuple Variables => (Id, X, Y, ProductId, Product, DesignId, Design);
     }
 }

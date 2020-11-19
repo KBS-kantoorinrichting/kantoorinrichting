@@ -1,4 +1,5 @@
-﻿using Models;
+﻿using Microsoft.EntityFrameworkCore;
+using Models;
 using Repositories;
 
 namespace Services {
@@ -10,6 +11,7 @@ namespace Services {
             set => _instance = value;
         }
         
-        private ProductPlacementService() : base(RoomDesignContext.Instance.ProductPlacements, RoomDesignContext.Instance) { }
+        protected override DbSet<ProductPlacement> DbSet => RoomDesignContext.Instance.ProductPlacements;
+        protected override DbContext DbContext => RoomDesignContext.Instance;
     }
 }
