@@ -20,7 +20,6 @@ namespace Designer.ViewModel {
             MouseDownCommand = new ArgumentCommand<MouseButtonEventArgs>(e => CatalogusMouseDown(e.OriginalSource, e));
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("SelectedProduct"));
 
-
             var context = RoomDesignContext.Instance;
             // Linq om te zorgen dat de lijst gevuld wordt met de database content.
 

@@ -8,23 +8,22 @@
     x:Class="Designer.View.ViewProductsView"
     xmlns:behaviors="http://schemas.microsoft.com/xaml/behaviors"
     mc:Ignorable="d"
-    d:DesignWidth="800"
     Title="ViewDesignPage"
-    WindowHeight="-1">
+    WindowHeight="-1" Height="654" Width="1154">
 
     <Page.DataContext>
         <viewModel:ViewProductsViewModel x:Name="viewModel"/>
     </Page.DataContext>
 
     <Grid>
-        <TabControl x:Name="Tabs" Margin="540,20,0,0" HorizontalAlignment="Left" Width="260">
+        <TabControl x:Name="Tabs" Margin="884,20,0,0" HorizontalAlignment="Left" Width="260">
             <TabItem Header="Catalogus">
-                <Grid Background="#FFE5E5E5" Height="410">
+                <Grid Background="#FFE5E5E5" Height="603">
                     <ScrollViewer>
                         <ItemsControl
                             x:Name="CatalogusList" 
                             ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-                            ItemsSource="{Binding Products}"  Width="237" Height="579">
+                            ItemsSource="{Binding Products}"  Width="237" Height="596">
 
                             <ItemsControl.ItemsPanel>
                                 <ItemsPanelTemplate>
@@ -62,7 +61,7 @@
                                                 <Image Source="..\Resources\Images\placeholder.png"/>
                                             </Border>
                                             <TextBlock
-                                            Text="{Binding Price, StringFormat='C'}"
+                                            Text="{Binding Price, StringFormat='€{0}'}"
                                             HorizontalAlignment="Center"                               
                                             VerticalAlignment="Top"
                                             FontSize="12"
@@ -82,28 +81,27 @@
         <Canvas x:Name="Editor" Margin="0,25,260,0">
             <Label Canvas.Left="21" Canvas.Top="33" Width="136"/>
         </Canvas>
-        <Grid Background="White" HorizontalAlignment="Left" Height="430" Margin="0,20,0,0" VerticalAlignment="Top" Width="540">
+        <Grid Background="White" HorizontalAlignment="Left" Height="634" Margin="0,20,0,0" VerticalAlignment="Top" Width="879">
 
-            <Expander Header="Naam" HorizontalAlignment="Left" Height="130" Margin="10,20,0,0" VerticalAlignment="Top" Width="96" IsExpanded="True">
-                <StackPanel>
-                    <Label Content="{Binding SelectedProduct.Name  }" />
+            <Border HorizontalAlignment="Center" Height="610" Margin="0,14,0,0" VerticalAlignment="Top" Width="520" Background="White" BorderThickness="1px" BorderBrush="Black">
+                <StackPanel Margin="0,0,132,28">
+                    <Label Content="Naam:" Height="26" Width="109" RenderTransformOrigin="0.49,0.577" HorizontalAlignment="Left"/>
+                    <Label Content="{Binding SelectedProduct.Name}" Background="#FFFFFEFE" RenderTransformOrigin="0.507,0.562" Height="30" Width="110" HorizontalAlignment="Left" BorderBrush="Black" BorderThickness="1px" Margin="10,0,0,0"/>
+
+                    <Label Content="Prijs:" Height="26" Width="110" RenderTransformOrigin="0.49,0.577" HorizontalAlignment="Left"/>
+                    <Label Content="{Binding SelectedProduct.Price, StringFormat ='€{0}'}" Background="#FFFFFEFE" RenderTransformOrigin="0.507,0.562" Height="30" Width="110" HorizontalAlignment="Left" BorderBrush="Black" BorderThickness="1px" Margin="10,0,0,0"/>
+
+                    <Label Content="Dimensies:" Height="23" Width="107" RenderTransformOrigin="0.49,0.577" HorizontalAlignment="Left" Margin="0,10,0,0"/>
+                    <Label Content="Lengte:" Height="28" Width="107" RenderTransformOrigin="0.49,0.577" HorizontalAlignment="Left" Margin="10,0,0,0"/>
+
+                    <Label Content="{Binding SelectedProduct.Length}" Background="#FFFFFEFE" RenderTransformOrigin="0.507,0.562" Height="28" Width="30" HorizontalAlignment="Left" BorderBrush="Black" BorderThickness="1px" Margin="30,0,0,0"/>
+                    <Label Content="Breedte:" Height="28" Width="107" RenderTransformOrigin="0.49,0.577" HorizontalAlignment="Left" Margin="10,0,0,0"/>
+                    <Label Content="{Binding SelectedProduct.Width}" Background="#FFFFFEFE" RenderTransformOrigin="0.507,0.562" Height="28" Width="30" HorizontalAlignment="Left" BorderBrush="Black" BorderThickness="1px" Margin="30,0,0,0"/>
+
+                    <Label Content="Foto:" Height="26" Width="52" RenderTransformOrigin="0.49,0.577" HorizontalAlignment="Left" Margin="0,10,0,0"/>
+                    <Image Source="{Binding SelectedProduct.Photo}" Height="237" Width="245" HorizontalAlignment="Left" Margin="10,0,0,0"/>
                 </StackPanel>
-            </Expander>
-            <Expander Header="Dimensies" HorizontalAlignment="Left" Height="130" Margin="103,20,0,0" VerticalAlignment="Top" Width="95" IsExpanded="True">
-                <StackPanel>
-                    <Label Content="{Binding SelectedProduct.Length  }"/>
-                </StackPanel>
-            </Expander>
-            <Expander Header="Prijs" HorizontalAlignment="Left" Height="130" Margin="203,20,0,0" VerticalAlignment="Top" Width="67" IsExpanded="True">
-                <StackPanel>
-                    <Label Content="{Binding SelectedProduct.Price}"/>
-                </StackPanel>
-            </Expander>
-            <Expander Header="Foto" HorizontalAlignment="Left" Height="227" Margin="270,20,0,0" VerticalAlignment="Top" Width="237" >
-                <StackPanel >
-                    <Image Source="/View/asdfasdfasdf.png" Width="200" Height="200" />
-                </StackPanel>
-            </Expander>
+            </Border>
         </Grid>
     </Grid>
 </Page>
