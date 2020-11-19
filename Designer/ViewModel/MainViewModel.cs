@@ -1,6 +1,5 @@
 ﻿using System.ComponentModel;
 using System.Windows;
-using Designer.Model;
 using Designer.Other;
 using Designer.View;
 
