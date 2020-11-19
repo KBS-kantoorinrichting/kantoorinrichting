@@ -1,10 +1,7 @@
-using System;
 using System.Collections.Generic;
-using System.Linq;
 using Designer.ViewModel;
 using Models;
 using NUnit.Framework;
-using Repositories;
 using RepositoriesTest;
 using Services;
 
@@ -64,7 +61,7 @@ namespace DesignerTest {
             Design design = new Design("design4", Room1, new List<ProductPlacement>());
             AddDesignModel.SaveDesign(design);
 
-            int count = RoomDesignContext.Instance.Designs.Count();
+            int count = DesignService.Instance.Count();
 
             Assert.AreEqual(1, count);
         }
@@ -80,7 +77,7 @@ namespace DesignerTest {
                 AddDesignModel.SaveDesign(design);
             }
 
-            int count = RoomDesignContext.Instance.Designs.Count();
+            int count = DesignService.Instance.Count();
 
             Assert.AreEqual(times, count);
         }
@@ -91,7 +88,6 @@ namespace DesignerTest {
             AddDesignModel.SaveDesign(design);
 
             Design dbDesign = DesignService.Instance.First();
-            Console.Error.WriteLine(dbDesign);
             Assert.AreEqual(dbDesign.Id, design.Id);
             Assert.AreEqual(dbDesign.Name, design.Name);
             Assert.AreEqual(dbDesign.Room, design.Room);
@@ -118,7 +114,7 @@ namespace DesignerTest {
         public void AddDesign_NeedsAll() {
             _designModel.AddDesign();
 
-            int count = RoomDesignContext.Instance.Designs.Count();
+            int count = DesignService.Instance.Count();
             Assert.AreEqual(0, count);
         }
 
@@ -129,7 +125,7 @@ namespace DesignerTest {
 
             _designModel.AddDesign();
 
-            Design design = RoomDesignContext.Instance.Designs.First();
+            Design design = DesignService.Instance.First();
             Assert.NotNull(design);
             Assert.AreEqual(TestName, design.Name);
             Assert.AreEqual(Room1, design.Room);
@@ -143,7 +139,7 @@ namespace DesignerTest {
 
             _designModel.AddDesign();
 
-            int count = RoomDesignContext.Instance.Designs.Count();
+            int count = DesignService.Instance.Count();
             Assert.AreEqual(1, count);
         }
 

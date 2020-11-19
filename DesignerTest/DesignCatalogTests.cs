@@ -5,6 +5,7 @@ using Models;
 using NUnit.Framework;
 using Repositories;
 using RepositoriesTest;
+using Services;
 
 namespace DesignerTest {
     public class DesignCatalogTestsStaticMethod : DatabaseTest {
@@ -68,7 +69,7 @@ namespace DesignerTest {
 
         [Test]
         public void NeedsReload_Count() {
-            RoomDesignContext.Instance.Designs.Add(Design3);
+            DesignService.Instance.Save(Design3);
 
             List<Design> designs = _designModel.Designs;
             Assert.AreEqual(2, designs.Count);
@@ -76,7 +77,7 @@ namespace DesignerTest {
 
         [Test]
         public void NeedsReload_Contains() {
-            RoomDesignContext.Instance.Designs.Add(Design3);
+            DesignService.Instance.Save(Design3);
 
             List<Design> designs = _designModel.Designs;
             Assert.Contains(Design1, designs);
@@ -86,8 +87,7 @@ namespace DesignerTest {
 
         [Test]
         public void Reload_Count() {
-            RoomDesignContext.Instance.Designs.Add(Design3);
-            RoomDesignContext.Instance.SaveChanges();
+            DesignService.Instance.Save(Design3);
             _designModel.Reload();
 
             List<Design> designs = _designModel.Designs;
@@ -96,8 +96,7 @@ namespace DesignerTest {
 
         [Test]
         public void Reload_Contains() {
-            RoomDesignContext.Instance.Designs.Add(Design3);
-            RoomDesignContext.Instance.SaveChanges();
+            DesignService.Instance.Save(Design3);
             _designModel.Reload();
 
             List<Design> designs = _designModel.Designs;
@@ -108,8 +107,7 @@ namespace DesignerTest {
 
         [Test]
         public void ReloadCommand_Count() {
-            RoomDesignContext.Instance.Designs.Add(Design3);
-            RoomDesignContext.Instance.SaveChanges();
+            DesignService.Instance.Save(Design3);
             _designModel.ReloadCommand.Execute(null);
 
             List<Design> designs = _designModel.Designs;
@@ -118,8 +116,7 @@ namespace DesignerTest {
 
         [Test]
         public void ReloadCommand_Contains() {
-            RoomDesignContext.Instance.Designs.Add(Design3);
-            RoomDesignContext.Instance.SaveChanges();
+            DesignService.Instance.Save(Design3);
             _designModel.ReloadCommand.Execute(null);
 
             List<Design> designs = _designModel.Designs;
