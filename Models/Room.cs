@@ -12,10 +12,8 @@ namespace Models {
 
         public int Length { get; set; }
 
-        public Room() {
-        }
-
-        public Room(string name, int width, int length) {
+        public Room(string name = default, int width = default, int length = default, int id = default) {
+            Id = id;
             Name = name;
             Width = width;
             Length = length;
