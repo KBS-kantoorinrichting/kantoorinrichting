@@ -33,11 +33,14 @@
                 <behaviors:EventTrigger EventName="DragOver" SourceObject="{Binding ElementName=Editor}">
                     <behaviors:InvokeCommandAction Command="{Binding DragOverCommand}" PassEventArgsToCommand="True"/>
                 </behaviors:EventTrigger>
+                <behaviors:EventTrigger EventName="MouseDown" SourceObject="{Binding ElementName=Editor}">
+                    <behaviors:InvokeCommandAction Command="{ Binding CanvasMouseDownCommand }" PassEventArgsToCommand="True" />
+                </behaviors:EventTrigger>
             </behaviors:Interaction.Triggers>
         </Canvas>
         <TabControl x:Name="Tabs" HorizontalAlignment="Right" Grid.Column="1">
             <TabItem Header="Catalogus">
-                <Grid Background="#FFE5E5E5" >
+                <Grid Background="#FFE5E5E5">
                     <ScrollViewer>
                         <ItemsControl
                             x:Name="CatalogusList"
@@ -58,7 +61,7 @@
                                         BorderBrush="Black">
                                         <behaviors:Interaction.Triggers>
                                             <behaviors:EventTrigger EventName="MouseDown">
-                                                <behaviors:InvokeCommandAction Command="{ Binding ElementName=viewModel, Path=MouseDownCommand}" PassEventArgsToCommand="True" />
+                                                <behaviors:InvokeCommandAction Command="{ Binding ElementName=viewModel, Path=CatalogusMouseDownCommand}" PassEventArgsToCommand="True" />
                                             </behaviors:EventTrigger>
                                         </behaviors:Interaction.Triggers>
                                         <StackPanel Orientation="Vertical" Width="108" Height="108">
@@ -99,7 +102,7 @@
             <TabItem Header="Overzicht">
                 <Grid Background="#FFE5E5E5" >
                     <Label Content="Financien" HorizontalAlignment="Center" VerticalAlignment="Top" Width="234"/>
-                    <ScrollViewer Margin="0,31,0,22">
+                    <ScrollViewer Margin="0,31,0,2">
                         <ItemsControl
                             x:Name="ProductOverview"
                             ScrollViewer.HorizontalScrollBarVisibility="Disabled"
@@ -117,44 +120,53 @@
                                         Margin="5"
                                         BorderThickness="0.2"
                                         BorderBrush="Black">
-                                        <behaviors:Interaction.Triggers>
-                                            <behaviors:EventTrigger EventName="MouseDown">
-                                                <behaviors:InvokeCommandAction Command="{ Binding ElementName=viewModel, Path=MouseDownCommand}" PassEventArgsToCommand="True" />
-                                            </behaviors:EventTrigger>
-                                        </behaviors:Interaction.Triggers>
-                                        <StackPanel Orientation="Vertical" Width="108" Height="108">
-                                            <TextBlock
-                                                Text="{Binding Name}"
-                                                HorizontalAlignment="Center"
-                                                VerticalAlignment="Top"
-                                                FontSize="12"
-                                                TextWrapping="Wrap"
-                                                TextAlignment="Center"
-                                                FontWeight="DemiBold"
-                                                Width="108" Height="20" />
-                                            <Border
+                                        <StackPanel Orientation="Vertical" Width="206" Height="50">
+                                            <Grid>
+                                                <Border
                                                 BorderThickness="0.2"
                                                 BorderBrush="Black"
-                                                Height="68"
-                                                Width="68">
-                                                <Image
-                                                    Source="{Binding Path=Photo, Converter={StaticResource ImagePathConverter}}"/>
-                                            </Border>
-                                            <TextBlock
-                                                Text="{Binding Price}"
-                                                HorizontalAlignment="Center"
+                                                Height="40"
+                                                Width="40"
+                                                Margin="5,5,0,0"
+                                                HorizontalAlignment="Left"
+                                                >
+                                                    <Image
+                                                    Source="{Binding Path=Key.Photo, Converter={StaticResource ImagePathConverter}}"/>
+                                                </Border>
+                                                <TextBlock
                                                 VerticalAlignment="Top"
                                                 FontSize="12"
                                                 TextWrapping="Wrap"
-                                                TextAlignment="Center"
+                                                TextAlignment="Left"
                                                 FontWeight="DemiBold"
-                                                Width="108" Height="20" />
+                                                Width="108" Height="20"
+                                                Margin="50,10,0,0"
+                                                HorizontalAlignment="Left">
+                                                    <TextBlock.Text>
+                                                        <MultiBinding StringFormat=" {0} (€{1} x {2})">
+                                                            <Binding Path="Key.Name"/>
+                                                            <Binding Path="Key.Price" />
+                                                            <Binding Path="Value.Total" />
+                                                        </MultiBinding>
+                                                    </TextBlock.Text>
+                                                </TextBlock>
+                                                <TextBlock
+                                                Text="{Binding Value.TotalPrice, StringFormat='€{0}'}"
+                                                VerticalAlignment="Top"
+                                                FontSize="12"
+                                                TextWrapping="Wrap"
+                                                TextAlignment="Left"
+                                                Width="108" Height="15"
+                                                Margin="50,25,0,0"
+                                                HorizontalAlignment="Left"/>
+                                            </Grid>
                                         </StackPanel>
                                     </Border>
                                 </DataTemplate>
                             </ItemsControl.ItemTemplate>
                         </ItemsControl>
                     </ScrollViewer>
+                    <TextBlock Text="{Binding TotalPrice, StringFormat='Totaal: €{0}'}" VerticalAlignment="Bottom" Margin="5,0,0,25"></TextBlock>
                     <Button x:Name="Order" Content="Bestellen" HorizontalAlignment="Center" VerticalAlignment="Bottom" Width="234"/>
                 </Grid>
             </TabItem>
