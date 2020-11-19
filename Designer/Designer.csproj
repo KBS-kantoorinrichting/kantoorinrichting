@@ -8,12 +8,16 @@
 
   <ItemGroup>
     <None Remove="Resources\Images\ernstig.jpg" />
+    <None Remove="Resources\Images\menko sticker.png" />
     <None Remove="Resources\Images\placeholder.png" />
     <None Remove="Resources\Images\test.jpg" />
   </ItemGroup>
 
   <ItemGroup>
     <Resource Include="Resources\Images\ernstig.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Images\menko sticker.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
     <Resource Include="Resources\Images\placeholder.png" />
