@@ -1,4 +1,5 @@
-﻿using Designer.Model;
+﻿using System;
+using Designer.Model;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
@@ -6,9 +7,15 @@ using System.Windows.Input;
 using Designer.Other;
 using System.Windows.Controls;
 using System.Diagnostics;
+using System.Windows;
+using Designer.View;
 
 namespace Designer.ViewModel {
     public class ViewProductsViewModel : INotifyPropertyChanged {
+        public string Name { get; set; }
+        public double Price { get; set; }
+        public string Photo { get; set; }
+        public BasicCommand Submit { get; set; }
         public ArgumentCommand<MouseButtonEventArgs> MouseDownCommand { get; set; }
         public event PropertyChangedEventHandler PropertyChanged;
         public Product SelectedProduct { get; set; }
@@ -22,6 +29,7 @@ namespace Designer.ViewModel {
             MouseDownCommand = new ArgumentCommand<MouseButtonEventArgs>(e => CatalogusMouseDown(e.OriginalSource, e));
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("SelectedProduct"));
 
+            Submit = new BasicCommand(SubmitItem);
             var context = RoomDesignContext.Instance;
             // Linq om te zorgen dat de lijst gevuld wordt met de database content.
 
@@ -70,8 +78,35 @@ namespace Designer.ViewModel {
         }
 
         #endregion
+        private void SubmitItem()
+        {
+            if (SaveProduct(Name, Price, Photo) != null)
+            {
+               RoomEditorPopupView Popup = new RoomEditorPopupView("Het product is opgeslagen");
+               Popup.ShowDialog();
+               return;
+            }
+        }
 
-      
+        public static Product SaveProduct(string naam, double price, string photo)
+        {
+            // Kamer opslaan
+            Product product = new Product(naam, price, photo);
+            var context = RoomDesignContext.Instance;
+            product = context.Products.Add(product).Entity;
+            try
+            {
+                context.SaveChanges();
+                return product;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                return null;
+            }
+        }
+            
+        
 
         public void EmptyDataBase()
             // Functie om de database te legen.    
