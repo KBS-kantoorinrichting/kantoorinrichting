@@ -17,9 +17,6 @@
     <Resource Include="Resources\Images\ernstig.jpg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
-    <Resource Include="Resources\Images\menko sticker.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Resource>
     <Resource Include="Resources\Images\placeholder.png" />
     <Resource Include="Resources\Images\test.jpg" />
     <None Remove="Resources\Images\bank.png" />
