@@ -48,7 +48,6 @@ namespace Designer.ViewModel {
         }
 
         public void GotoDesign(Design design) {
-            Navigator.Push(new ViewDesignPage(design));
             DesignSelected?.Invoke(this, new BasicEventArgs<Design>(design));
         }
 
