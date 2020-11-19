@@ -6,29 +6,26 @@ using System.Linq;
 using System.Windows.Input;
 using Designer.Other;
 using System.Windows.Controls;
-using System.Diagnostics;
-using System.Windows;
 using Designer.View;
 using Microsoft.Win32;
-using System.IO;
-
-namespace Designer.ViewModel {
+using Designer;
+namespace Designer.ViewModel
+{
     public class ViewProductsViewModel : INotifyPropertyChanged {
         public string Name { get; set; }
         public double Price { get; set; }
         public string Photo { get; set; }
         public int Width { get; set; }
         public int Length { get; set; }
-        public string txtEditor { get; set; }
+        public string ImageAdress { get; set; }
         public BasicCommand Submit { get; set; }
         public BasicCommand AddPhoto { get; set; }
-        
+
         public BasicCommand ReloadCommand { get; set; }
         public ArgumentCommand<MouseButtonEventArgs> MouseDownCommand { get; set; }
         public event PropertyChangedEventHandler PropertyChanged;
         public Product SelectedProduct { get; set; }
 
-        public Image image { get; set; }
 
         public List<Model.Product> Products { get; set; }
         // Property van een lijst om de informatie vanuit de database op te slaan.
@@ -53,7 +50,16 @@ namespace Designer.ViewModel {
         {
             OpenFileDialog openFileDialog = new OpenFileDialog();
             if (openFileDialog.ShowDialog() == true)
-                txtEditor = File.ReadAllText(openFileDialog.FileName);
+            {
+                openFileDialog.InitialDirectory = @"C:\Users\bashe\source\repos\kantoorinrichting\Designer\Resources\Images";
+                openFileDialog.Filter = "Image files (*.png;*.jpeg)|*.png;*.jpeg|All files (*.*)|*.*";
+                ImageAdress = openFileDialog.FileName.Substring(openFileDialog.InitialDirectory.Length+1);
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("ImageAdress"));
+                
+            }
+
+
+
         }
 
 
@@ -107,7 +113,7 @@ namespace Designer.ViewModel {
         #endregion
         private void SubmitItem()
         {
-            if (SaveProduct(Name, Price, Photo, Width, Length) != null)
+            if (SaveProduct(Name, Price, Photo, Width, Length, ImageAdress) != null)
             {
                RoomEditorPopupView Popup = new RoomEditorPopupView("Het product is opgeslagen");
                 Popup.ShowDialog();
@@ -115,10 +121,10 @@ namespace Designer.ViewModel {
             }
         }
 
-        public static Product SaveProduct(string naam, double price, string photo, int width, int length)
+        public static Product SaveProduct(string naam, double price, string photo, int width, int length, string ImageAdress)
         {
             // Kamer opslaan
-            Product product = new Product(naam, price, photo, width, length);
+            Product product = new Product(naam, price, photo, width, length, ImageAdress);
             var context = RoomDesignContext.Instance;
             product = context.Products.Add(product).Entity;
             try
