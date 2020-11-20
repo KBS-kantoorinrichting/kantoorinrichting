@@ -33,6 +33,7 @@ namespace Designer.ViewModel {
         private Point _previousPosition;
         private ProductPlacement _selectedPlacement;
         public Polygon RoomPoly = new Polygon();
+        public bool AllowDrop = false;
 
         //Special constructor for unit tests
         public ViewDesignViewModel(Design design)
@@ -66,7 +67,8 @@ namespace Designer.ViewModel {
 
         public void PlaceProduct(Product product, int x, int y)
         {
-            if (product == null) return;
+            // Checkt of het product niet null is en of de foto geplaatst mag worden
+            if (product == null || !AllowDrop) return;
             ProductPlacements.Add(new ProductPlacement()
             {
                 Product = product,
@@ -137,14 +139,16 @@ namespace Designer.ViewModel {
             _previousPosition = position;
 
             // Check of het product in de ruimte wordt geplaatst
-            CheckCollisions(position);
+            CheckRoomCollisions(position);
 
             //Teken de ruimte en de al geplaatste producten
             RenderRoom();
-            DrawProduct(selectedProduct, 
-                (int)position.X - (selectedProduct.Width / 2),
-                (int)position.Y - (selectedProduct.Length / 2)
-                );
+            // Render het plaatje vna het product als de cursor binnen de polygon zit
+            if(AllowDrop)
+                DrawProduct(selectedProduct, 
+                    (int)position.X - (selectedProduct.Width / 2),
+                    (int)position.Y - (selectedProduct.Length / 2)
+                    );
         }
         
         private void RenderRoom()
@@ -272,7 +276,7 @@ namespace Designer.ViewModel {
             return values;
         }
 
-        private void CheckCollisions(Point point)
+        private void CheckRoomCollisions(Point point)
         {
             bool result = false;
             int j = RoomPoly.Points.Count() - 1;
@@ -290,7 +294,7 @@ namespace Designer.ViewModel {
                 }
                 j = i;
             }
-            Editor.AllowDrop = result;
+            AllowDrop = result;
         }
     }
 
