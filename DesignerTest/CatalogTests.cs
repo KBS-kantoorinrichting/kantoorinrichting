@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace DesignerTest
 {
-    public class CatalogTest
+    public class CatalogTests
     {
         private static readonly Product product1 = new Product("Bureaustoel yaksva", 51.40, "");
         private static readonly Product product2 = new Product("Tuintafel", 200, "");
@@ -46,20 +46,6 @@ namespace DesignerTest
             Assert.AreEqual(product3.Name, test.Products[2].Name);
         }
 
-        /*[Test]
-        public void IdIsUnique()
-        {
-            ViewProductsViewModel test = new ViewProductsViewModel();
-        // Eerst kijken of de ID's wel kloppen.
-            Assert.AreEqual(product1.ProductId, test.Products[0].ProductId);
-            Assert.AreEqual(product2.ProductId, test.Products[1].ProductId);
-            Assert.AreEqual(product3.ProductId, test.Products[2].ProductId);
-
-        // Daarna kijken of de ID's niet gelijk zijn.
-            Assert.AreNotEqual(product1.ProductId, product2.ProductId);
-            Assert.AreNotEqual(product2.ProductId, product3.ProductId);
-            Assert.AreNotEqual(product1.ProductId, product3.ProductId);
-        }*/
 
         [Test]
         public void GetPrice_PriceIsCorrectPrice()

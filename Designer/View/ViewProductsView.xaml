@@ -27,7 +27,7 @@
                         <ItemsControl
                             x:Name="CatalogusList" 
                             ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-                            ItemsSource="{Binding Products}"  Width="237" Height="596">
+                            ItemsSource="{Binding Products}"  Width="237" Height="1136">
 
                             <ItemsControl.ItemsPanel>
                                 <ItemsPanelTemplate>
