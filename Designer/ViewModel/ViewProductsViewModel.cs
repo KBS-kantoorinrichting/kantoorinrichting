@@ -69,19 +69,13 @@ namespace Designer.ViewModel
                 try
                 {
                     context.Products.Remove(SelectedProduct);
-                }
+                    context.SaveChanges();
+            }
                 catch(Exception e)
                 {
                     Debug.WriteLine(e);
                 }
-
-                context.SaveChanges();
-                
                 Reload();
-            
-
-
-           
         }
 
 
@@ -146,7 +140,7 @@ namespace Designer.ViewModel
             }
         }
 
-        public static Product SaveProduct(string naam, double price, string photo, int width, int length)
+        public static Product SaveProduct(string naam, double? price, string photo, int width, int length)
         {
             // Kamer opslaan
             Product product = new Product(naam, price, photo, width, length);

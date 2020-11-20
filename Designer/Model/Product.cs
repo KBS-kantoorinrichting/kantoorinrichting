@@ -28,7 +28,7 @@ namespace Designer.Model
             Photo = photo;
         }
 
-        public Product(string name, double price, string? photo, int width, int length)
+        public Product(string name, double? price, string? photo, int width, int length)
         // Alternatieve constructor voor Product
         {
             Name = name;
