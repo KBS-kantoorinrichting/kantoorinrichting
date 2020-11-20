@@ -18,6 +18,7 @@
 
 	<ItemGroup>
 	  <None Remove="Resources\Images\cursedtrollface.png" />
+	  <None Remove="Resources\Images\image0-24-1.gif" />
 	</ItemGroup>
 	
   <ItemGroup>
@@ -35,6 +36,9 @@
 	  </Resource>
 	  <Resource Include="Resources\Images\ernstig.jpg">
 		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </Resource>
+	  <Resource Include="Resources\Images\image0-24-1.gif">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
 	  </Resource>
 	  <Resource Include="Resources\Images\kf8umo9p3ey51.png">
 	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>

@@ -56,7 +56,7 @@ namespace Designer.ViewModel
             if (openFileDialog.ShowDialog() == true)
                 // Als deze open is dan:
             {
-                openFileDialog.Filter = "Image files (*.png;*.jpeg)|*.png;*.jpeg|All files (*.*)|*.*";
+                openFileDialog.Filter = "Image files (*.png;*.jpeg;*.gif)|*.png;*.jpeg;*.gif|All files (*.*)|*.*";
                 Photo = openFileDialog.FileName.Split(@"\").Last();
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("Photo"));
                 // De foto wordt veranderd in de applicatie
