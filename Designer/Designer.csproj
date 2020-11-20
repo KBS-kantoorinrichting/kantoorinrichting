@@ -7,6 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Resources\Images\boef profielfoto.jpg" />
     <None Remove="Resources\Images\kf8umo9p3ey51.png" />
     <None Remove="Resources\Images\logo_windesheim.png" />
   </ItemGroup>
@@ -18,6 +19,9 @@
   <ItemGroup>
 	  <Resource Include="Resources\Images\bank.png">
 		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </Resource>
+	  <Resource Include="Resources\Images\boef profielfoto.jpg">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
 	  </Resource>
 	  <Resource Include="Resources\Images\bureau_stoel.png">
 		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>

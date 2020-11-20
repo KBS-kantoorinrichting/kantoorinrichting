@@ -38,11 +38,10 @@ namespace Designer.ViewModel
             Submit = new BasicCommand(SubmitItem);
             Products = LoadItems(Products);
             ReloadCommand = new BasicCommand(Reload);
-
         }
 
         public void Reload()
-        {
+        { // Reload de items zodat de juiste te zien zijn
             Products = LoadItems(Products);
             OnPropertyChanged();
         }
@@ -52,6 +51,7 @@ namespace Designer.ViewModel
             OpenFileDialog openFileDialog = new OpenFileDialog();
             openFileDialog.InitialDirectory = Environment.CurrentDirectory;
             if (openFileDialog.ShowDialog() == true)
+                // Als deze open is dan:
             {
                 //openFileDialog.InitialDirectory = @"C:\Users\bashe\source\repos\kantoorinrichting\Designer\Resources\Images";
                 
@@ -61,11 +61,9 @@ namespace Designer.ViewModel
                 Debug.WriteLine(openFileDialog.FileName);
                
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("Photo"));
+                // De foto wordt veranderd in de applicatie
                 
             }
-
-
-
         }
 
 
@@ -121,9 +119,10 @@ namespace Designer.ViewModel
         private void SubmitItem()
         {
             if (SaveProduct(Name, Price, Photo, Width, Length) != null)
-            {
+            { // Als de parameters niet null zijn dan:
                RoomEditorPopupView Popup = new RoomEditorPopupView("Het product is opgeslagen");
-                Popup.ShowDialog();
+               Popup.ShowDialog();
+               // Popup dialog met "Het product is opgeslagen"
                return;
             }
         }
@@ -132,15 +131,17 @@ namespace Designer.ViewModel
         {
             // Kamer opslaan
             Product product = new Product(naam, price, photo, width, length);
+            // product = de waarde van de paramters
             var context = RoomDesignContext.Instance;
             product = context.Products.Add(product).Entity;
+            // Zorgen dan het in de database komt
             try
-            {
+            { // Proberen op te slaan, dan product returnen
                 context.SaveChanges();
                 return product;
             }
             catch (Exception e)
-            {
+            { // Anders de exceptie opvangen en tonen, null returnen
                 Console.WriteLine(e);
                 return null;
             }
