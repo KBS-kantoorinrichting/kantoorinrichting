@@ -10,9 +10,9 @@ namespace DesignerTest
 {
     public static class AddProduct
     {
-        private static readonly Product product1 = new Product("Bureaustoel", 51.40, "");
-        private static readonly Product product2 = new Product("Tafel", 200, "", 30, 20);
-        private static readonly Product product3 = new Product("Bureau", 140.40, "");
+        private static readonly Product product1 = new Product("Bureaustoel", 51.40, "ernstig.png");
+        private static readonly Product product2 = new Product("Tafel", 200, "ernstig.png", 30, 20);
+        private static readonly Product product3 = new Product("Bureau", 140.40, "ernstig.png");
 
         [SetUp]
         public static void Setup()
@@ -31,9 +31,10 @@ namespace DesignerTest
             Product productTest = ViewProductsViewModel.SaveProduct(product2.Name, product2.Price, product2.Photo, product2.Width, product2.Length);
             Assert.IsNotNull(productTest);
             var context = RoomDesignContext.Instance;
-            var products = context.Products.ToList();
-            
-            Assert.AreEqual(products, productTest);
+            List<Product> products = context.Products.ToList();
+
+
+            Assert.AreEqual(products[products.Count-1], productTest);
         }
     }
 }
