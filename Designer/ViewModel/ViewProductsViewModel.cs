@@ -50,7 +50,7 @@ namespace Designer.ViewModel
             OpenFileDialog openFileDialog = new OpenFileDialog();
             if (openFileDialog.ShowDialog() == true)
             {
-                openFileDialog.InitialDirectory = @"C:\Users\bashe\source\repos\kantoorinrichting\Designer\Resources\Images";
+                openFileDialog.InitialDirectory = @"C:\Users\julia\source\repos\KBS-kantoorinrichting\kantoorinrichting\Designer\Resources\Images";
                 openFileDialog.Filter = "Image files (*.png;*.jpeg)|*.png;*.jpeg|All files (*.*)|*.*";
                 Photo = $"{openFileDialog.FileName.Substring(openFileDialog.InitialDirectory.Length+1)}";
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("Photo"));
