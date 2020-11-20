@@ -112,7 +112,8 @@
             <Label Canvas.Left="21" Canvas.Top="33" Width="136"/>
         </Canvas>
         <Grid Background="White" HorizontalAlignment="Left" Height="634" Margin="0,20,0,0" VerticalAlignment="Top" Width="879" >
-            <Button Content="Herladen" Height="74" Width="170" HorizontalAlignment="Right" Margin="0,15,5,545" Command="{Binding ReloadCommand}">
+
+            <Button Content="Delete" Height="74" Width="170" HorizontalAlignment="Right" Margin="0,15,5,545" Command="{Binding DeleteCommand}">
 
             </Button>
             <Border HorizontalAlignment="Center" Height="610" Margin="0,14,0,0" VerticalAlignment="Top" Width="520" Background="White" BorderThickness="1px" BorderBrush="Black">

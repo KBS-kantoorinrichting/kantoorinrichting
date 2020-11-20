@@ -20,6 +20,7 @@ namespace Designer.ViewModel
         public int Width { get; set; }
         public int Length { get; set; } 
         public BasicCommand Submit { get; set; }
+        public BasicCommand DeleteCommand { get; set; }
         public BasicCommand AddPhoto { get; set; }
 
         public BasicCommand ReloadCommand { get; set; }
@@ -32,12 +33,13 @@ namespace Designer.ViewModel
         // Property van een lijst om de informatie vanuit de database op te slaan.
 
         public ViewProductsViewModel() {
+            Reload();
             MouseDownCommand = new ArgumentCommand<MouseButtonEventArgs>(e => CatalogusMouseDown(e.OriginalSource, e));
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("SelectedProduct"));
             AddPhoto = new BasicCommand(SelectPhoto);
             Submit = new BasicCommand(SubmitItem);
-            Products = LoadItems(Products);
             ReloadCommand = new BasicCommand(Reload);
+            DeleteCommand = new BasicCommand(Delete);
         }
 
         public void Reload()
@@ -59,6 +61,27 @@ namespace Designer.ViewModel
                 // De foto wordt veranderd in de applicatie
                 
             }
+        }
+        public void Delete()
+        {
+            var context = RoomDesignContext.Instance;
+            
+                try
+                {
+                    context.Products.Remove(SelectedProduct);
+                }
+                catch(Exception e)
+                {
+                    Debug.WriteLine(e);
+                }
+
+                context.SaveChanges();
+                
+                Reload();
+            
+
+
+           
         }
 
 
@@ -117,6 +140,7 @@ namespace Designer.ViewModel
             { // Als de parameters niet null zijn dan:
                RoomEditorPopupView Popup = new RoomEditorPopupView("Het product is opgeslagen");
                Popup.ShowDialog();
+                Reload();
                // Popup dialog met "Het product is opgeslagen"
                return;
             }
@@ -129,6 +153,8 @@ namespace Designer.ViewModel
             // product = de waarde van de paramters
             var context = RoomDesignContext.Instance;
             product = context.Products.Add(product).Entity;
+
+            
             // Zorgen dan het in de database komt
             try
             { // Proberen op te slaan, dan product returnen

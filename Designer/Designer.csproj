@@ -15,6 +15,10 @@
 	<ItemGroup>
 		<None Include="Resources\Images\**" CopyToOutputDirectory="PreserveNewest" />
 	</ItemGroup>
+
+	<ItemGroup>
+	  <None Remove="Resources\Images\cursedtrollface.png" />
+	</ItemGroup>
 	
   <ItemGroup>
 	  <Resource Include="Resources\Images\bank.png">
@@ -25,6 +29,9 @@
 	  </Resource>
 	  <Resource Include="Resources\Images\bureau_stoel.png">
 		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </Resource>
+	  <Resource Include="Resources\Images\cursedtrollface.png">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
 	  </Resource>
 	  <Resource Include="Resources\Images\ernstig.jpg">
 		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
