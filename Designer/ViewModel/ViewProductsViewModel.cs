@@ -52,6 +52,7 @@ namespace Designer.ViewModel
         {
             OpenFileDialog openFileDialog = new OpenFileDialog();
             openFileDialog.InitialDirectory = @"{Environment.CurrentDirectory}\Resources\Images\";
+            Debug.WriteLine(openFileDialog.InitialDirectory);
             if (openFileDialog.ShowDialog() == true)
                 // Als deze open is dan:
             {
@@ -99,6 +100,7 @@ namespace Designer.ViewModel
         public List<Model.Product> LoadItems(List<Model.Product> products)
         {
             var context = RoomDesignContext.Instance;
+
             // Linq om te zorgen dat de lijst gevuld wordt met de database content.
             Products = context.Products.ToList();
            
@@ -148,6 +150,11 @@ namespace Designer.ViewModel
 
         public static Product SaveProduct(string naam, double price, string photo, int width, int length)
         {
+            // als er geen foto wordt toegevoegd, dan krijgt foto een standaard waarde. 
+            if (photo == null)
+            {
+                photo = "placeholder.png";
+            }
             // Kamer opslaan
             Product product = new Product(naam, price, photo, width, length);
             // product = de waarde van de paramters
