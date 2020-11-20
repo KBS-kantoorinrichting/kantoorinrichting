@@ -3,12 +3,13 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Windows;
-using Designer.Model;
 using Designer.Other;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media.Imaging;
 using Designer.View;
+using Models;
+using Services;
 
 namespace Designer.ViewModel {
     public class ViewDesignViewModel : INotifyPropertyChanged {
@@ -198,9 +199,8 @@ namespace Designer.ViewModel {
             image.Uid ??= placementIndex.ToString();
         }
 
-        public static List<Product> LoadProducts() { 
-            var context = RoomDesignContext.Instance;
-            return context.Products.ToList();
+        public static List<Product> LoadProducts() {
+            return ProductService.Instance.GetAll();
         }
 
         public void AddToOverview(Product product)

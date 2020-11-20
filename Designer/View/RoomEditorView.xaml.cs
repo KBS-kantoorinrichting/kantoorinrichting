@@ -1,4 +1,5 @@
-﻿using System.Windows.Controls;
+﻿using Designer.ViewModel;
+using System.Windows.Controls;
 
 namespace Designer.View {
     /// <summary>
@@ -9,5 +10,7 @@ namespace Designer.View {
             //pagina initializen
             InitializeComponent();
         }
+
+
     }
 }

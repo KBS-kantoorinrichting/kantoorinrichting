@@ -1,37 +1,20 @@
-﻿using Designer.Model;
-using Designer.ViewModel;
+﻿using Designer.ViewModel;
 using NUnit.Framework;
-using System;
 using System.Collections.Generic;
-using System.Text;
-using System.Windows.Controls;
-using System.Windows.Input;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
-using System.Diagnostics;
-using System.Windows;
-using System.Windows.Media.Imaging;
+using Models;
+using ServicesTest;
 
 namespace DesignerTest
 {
-    public class ViewDesignTests
-    {
-        private static readonly Room Room = new Room("TestRoom", 1, 1);
+    public class ViewDesignTests : DatabaseTest {
+        private static readonly Room Room = Room.FromDimensions("TestRoom", 1, 1);
         private static readonly Design Design = new Design("TestDesign", Room, new List<ProductPlacement>());
         private static readonly ViewDesignViewModel ViewModel = new ViewDesignViewModel(Design);
-        private static readonly Product Product1 = new Product() { ProductId = 1, Name = "Product1" };
-        private static readonly Product Product2 = new Product() { ProductId = 2, Name = "Product2" };
-        private static readonly Product Product3 = new Product() { ProductId = 3, Name = "Product3" };
+        private static readonly Product Product1 = new Product() { Id = 1, Name = "Product1" };
+        private static readonly Product Product2 = new Product() { Id = 2, Name = "Product2" };
+        private static readonly Product Product3 = new Product() { Id = 3, Name = "Product3" };
 
-        [SetUp]
-        public void Setup()
-        {
-            TestRoomDesignContext.Setup(
-                products: new List<Product>
-                {
-                    Product1, Product2, Product3
-                }
-            );
-        }
+        protected override List<Product> Products => new List<Product> {Product1, Product2, Product3};
 
         [Test]
         public void ViewDesign_SetDesign_ShouldSetDesign()
@@ -47,7 +30,7 @@ namespace DesignerTest
         {
             Product product = new Product
             {
-                ProductId = 1,
+                Id = 1,
                 Name = "test"
             };
             ViewModel.Products = new List<Product>(){product};
@@ -60,7 +43,7 @@ namespace DesignerTest
         {
             Product product = new Product
             {
-                ProductId = 1,
+                Id = 1,
                 Name = "test"
             };
             ViewModel.AddToOverview(product);
@@ -76,13 +59,13 @@ namespace DesignerTest
             //ViewDesign_MouseDown_ShouldSetSelectedProduct();
             Product product = new Product
             {
-                ProductId = 1,
+                Id = 1,
                 Name = "test"
             };
             ViewModel.PlaceProduct(product, 4,20);
             Assert.AreEqual(ViewModel.ProductPlacements[0].X, 4);
             Assert.AreEqual(ViewModel.ProductPlacements[0].Y, 20);
-            Assert.AreEqual(ViewModel.ProductPlacements[0].Product.ProductId, 1);
+            Assert.AreEqual(ViewModel.ProductPlacements[0].Product.Id, 1);
         }
 
         [Test]
