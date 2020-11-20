@@ -7,9 +7,9 @@ using ServicesTest;
 
 namespace DesignerTest {
     public class AddDesignDatabaseTestsStaticMethods : DatabaseTest {
-        private static readonly Room Room1 = new Room("TestRoom1", 1, 1);
-        private static readonly Room Room2 = new Room("TestRoom2", 2, 4);
-        private static readonly Room Room3 = new Room("TestRoom3", 2, 5);
+        private static readonly Room Room1 = new Room.FromDimensions("TestRoom1", 1, 1);
+        private static readonly Room Room2 = new Room.FromDimensions("TestRoom2", 2, 4);
+        private static readonly Room Room3 = new Room.FromDimensions("TestRoom3", 2, 5);
         
         protected override List<Room> Rooms => new List<Room> {Room1, Room2, Room3};
 
@@ -39,8 +39,7 @@ namespace DesignerTest {
             Assert.AreEqual(name, design.Name);
             Assert.AreEqual(room.Name, design.Room.Name);
             Assert.AreEqual(room.Id, design.Room.Id);
-            Assert.AreEqual(room.Width, design.Room.Width);
-            Assert.AreEqual(room.Length, design.Room.Length);
+            Assert.AreEqual(room.Positions, design.Room.Positions);
             Assert.IsEmpty(design.ProductPlacements);
         }
 
@@ -95,12 +94,13 @@ namespace DesignerTest {
         }
     }
 
-    public class AddDesignTestsInstace : DatabaseTest {
-        private static readonly Room Room1 = new Room("TestRoom1", 1, 1);
-        private static readonly Room Room2 = new Room("TestRoom2", 2, 4);
-        private static readonly Room Room3 = new Room("TestRoom3", 2, 5);
-        private const string TestName = "TestDesign";
+    public class AddDesignTestsInstace {
+        private static readonly Room Room1 = new Room.FromDimensions("TestRoom1", 1, 1);
+        private static readonly Room Room2 = new Room.FromDimensions("TestRoom2", 2, 4);
+        private static readonly Room Room3 = new Room.FromDimensions("TestRoom3", 2, 5);
 
+        private static readonly string TestName = "TestDesign";
+        
         protected override List<Room> Rooms => new List<Room> {Room1, Room2, Room3};
 
         private AddDesignModel _designModel;
