@@ -121,7 +121,7 @@ namespace Designer.ViewModel {
         }
         public static Room SaveRoom(string name, int width, int length, int template) {
             // voegt de specificaties van de kamer aan het object room toe
-            Room room = Room.FromTemplate(name, width, length, Template);
+            Room room = Room.FromTemplate(name, width, length, template);
 
             // kamer opslaan
             var context = RoomDesignContext.Instance;
