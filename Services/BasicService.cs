@@ -8,7 +8,9 @@ namespace Services {
         protected abstract DbSet<T> DbSet { get; }
         protected abstract DbContext DbContext { get; }
 
-        public T Get(int id) { return DbSet.First(v => v.Id == id); }
+        public T Get(int id) {
+            return GetAll().Find(m => m.Id >= id);
+        }
 
         public List<T> GetAll() {
             return DbSet.ToList();
@@ -21,14 +23,14 @@ namespace Services {
          * <seealso cref="SaveChanges"/>
          */
         public T Save(T model) {
-            T nModel = DbSet.Add(model).Entity;
-            DbContext.SaveChanges();
+            T nModel = Add(model);
+            SaveChanges();
             return nModel;
         }
 
         public void SaveAll(IEnumerable<T> models) {
-            DbContext.AddRange(models);
-            DbContext.SaveChanges();
+            AddAll(models);
+            SaveChanges();
         }
         
         /**
@@ -39,13 +41,13 @@ namespace Services {
          */
         public T Update(T model) {
             model = DbSet.Update(model).Entity;
-            DbContext.SaveChanges();
+            SaveChanges();
             return model;
         }
 
         public T Delete(T model) { 
             model = DbSet.Remove(model).Entity;
-            DbContext.SaveChanges();
+            SaveChanges();
             return model;
         }
 
@@ -81,7 +83,17 @@ namespace Services {
          * <seealso cref="Track"/>
          */
         public int SaveChanges() {
-            return DbContext.SaveChanges();
+            int i = DbContext.SaveChanges();
+            return i;
+        }
+        
+        public T Add(T model) {
+            T nModel = DbSet.Add(model).Entity;
+            return nModel;
+        }
+
+        public void AddAll(IEnumerable<T> models) {
+            DbSet.AddRange(models);
         }
     }
 }

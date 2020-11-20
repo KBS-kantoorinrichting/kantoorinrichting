@@ -1,7 +1,7 @@
 ﻿using Designer.ViewModel;
 using Models;
 using NUnit.Framework;
-using ServicesRest;
+using ServicesTest;
 
 namespace DesignerTest {
     class RoomEditorTests : DatabaseTest {

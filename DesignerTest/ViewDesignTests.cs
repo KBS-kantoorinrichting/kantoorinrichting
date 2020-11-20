@@ -2,7 +2,7 @@
 using NUnit.Framework;
 using System.Collections.Generic;
 using Models;
-using ServicesRest;
+using ServicesTest;
 
 namespace DesignerTest
 {

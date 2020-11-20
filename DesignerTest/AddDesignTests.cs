@@ -3,7 +3,7 @@ using Designer.ViewModel;
 using Models;
 using NUnit.Framework;
 using Services;
-using ServicesRest;
+using ServicesTest;
 
 namespace DesignerTest {
     public class AddDesignDatabaseTestsStaticMethods : DatabaseTest {

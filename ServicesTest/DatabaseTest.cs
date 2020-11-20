@@ -6,7 +6,7 @@ using Models;
 using NUnit.Framework;
 using Services;
 
-namespace ServicesRest {
+namespace ServicesTest {
     public class DatabaseTest {
         protected virtual List<Room> Rooms { get; set; }
         protected virtual List<Design> Designs { get; set; }
@@ -21,10 +21,13 @@ namespace ServicesRest {
                 .EnableSensitiveDataLogging()
                 .Options;
 
-            if (Rooms != null) RoomService.Instance.SaveAll(Rooms);
-            if (Products != null) ProductService.Instance.SaveAll(Products);
-            if (Designs != null) DesignService.Instance.SaveAll(Designs);
-            if (ProductPlacements != null) ProductPlacementService.Instance.SaveAll(ProductPlacements);
+            Rooms?.ForEach(m => RoomService.Instance.Add(m));
+            Products?.ForEach(m => ProductService.Instance.Add(m));
+            Designs?.ForEach(m => DesignService.Instance.Add(m));
+            ProductPlacements?.ForEach(m => ProductPlacementService.Instance.Add(m));
+
+            //Just calls context save changes
+            RoomService.Instance.SaveChanges();
         }
 
         private static DbConnection CreateInMemoryDatabase() {

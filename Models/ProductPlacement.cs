@@ -16,5 +16,15 @@ namespace Models {
         public Design Design { get; set; }
 
         protected override ITuple Variables => (Id, X, Y, ProductId, Product, DesignId, Design);
+
+        public ProductPlacement() {
+        }
+
+        public ProductPlacement(int x, int y, Product product, Design design) {
+            X = x;
+            Y = y;
+            Product = product;
+            Design = design;
+        }
     }
 }
