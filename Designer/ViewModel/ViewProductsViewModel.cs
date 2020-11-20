@@ -49,17 +49,12 @@ namespace Designer.ViewModel
         public void SelectPhoto()
         {
             OpenFileDialog openFileDialog = new OpenFileDialog();
-            openFileDialog.InitialDirectory = Environment.CurrentDirectory;
+            openFileDialog.InitialDirectory = @"{Environment.CurrentDirectory}\Resources\Images\";
             if (openFileDialog.ShowDialog() == true)
                 // Als deze open is dan:
             {
-                //openFileDialog.InitialDirectory = @"C:\Users\bashe\source\repos\kantoorinrichting\Designer\Resources\Images";
-                
                 openFileDialog.Filter = "Image files (*.png;*.jpeg)|*.png;*.jpeg|All files (*.*)|*.*";
-                Photo = openFileDialog.FileName.Replace(Environment.CurrentDirectory, "");
-                Debug.WriteLine(Environment.CurrentDirectory);
-                Debug.WriteLine(openFileDialog.FileName);
-               
+                Photo = openFileDialog.FileName.Split(@"\").Last();
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("Photo"));
                 // De foto wordt veranderd in de applicatie
                 
