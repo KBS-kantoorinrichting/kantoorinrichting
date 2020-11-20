@@ -32,6 +32,7 @@ namespace Designer.ViewModel {
         public Canvas Editor { get; set; }
         private Point _previousPosition;
         private ProductPlacement _selectedPlacement;
+        private Polygon _selectedPoly;
         public Polygon RoomPoly { get; set; }
         public bool AllowDrop = false;
 
@@ -98,6 +99,16 @@ namespace Designer.ViewModel {
             if (placement.Count() > 0)
             {
                 _selectedPlacement = placement.First();
+                // Create new polygon that's representing the dimensions of the selected product
+                _selectedPoly = new Polygon()
+                {
+                    Points = new PointCollection() { 
+                        new Point(_selectedPlacement.X, _selectedPlacement.Y),
+                        new Point(_selectedPlacement.Y, _selectedPlacement.X),
+                        new Point(_selectedPlacement.Y, _selectedPlacement.Y),
+                        new Point(_selectedPlacement.X, _selectedPlacement.X)
+                    }
+                };
             }
             RenderRoom();
         }
@@ -141,7 +152,7 @@ namespace Designer.ViewModel {
             _previousPosition = position;
 
             // Check of het product in de ruimte wordt geplaatst
-            AllowDrop = CheckRoomCollisions(RoomPoly.Points, position);
+            AllowDrop = CheckRoomCollisions(RoomPoly.Points, position, _selectedPoly);
 
             //Teken de ruimte en de al geplaatste producten
             RenderRoom();
@@ -278,7 +289,7 @@ namespace Designer.ViewModel {
             return values;
         }
 
-        public bool CheckRoomCollisions(PointCollection vertices, Point point)
+        public bool CheckRoomCollisions(PointCollection vertices, Point point, Polygon product)
         {
             bool result = false;
             int j = vertices.Count() - 1;
