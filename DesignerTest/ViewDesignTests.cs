@@ -18,7 +18,7 @@ namespace DesignerTest
     {
         private static readonly Room Room = new Room("TestRoom", 1, 1);
         private static readonly Design Design = new Design("TestDesign", Room, new List<ProductPlacement>());
-        private static readonly ViewDesignViewModel ViewModel = new ViewDesignViewModel(Design);
+        private ViewDesignViewModel ViewModel = new ViewDesignViewModel(Design);
         private static readonly Product Product1 = new Product() { ProductId = 1, Name = "Product1" };
         private static readonly Product Product2 = new Product() { ProductId = 2, Name = "Product2" };
         private static readonly Product Product3 = new Product() { ProductId = 3, Name = "Product3" };
@@ -32,6 +32,7 @@ namespace DesignerTest
                     Product1, Product2, Product3
                 }
             );
+            ViewModel = new ViewDesignViewModel(Design);
         }
 
         [Test]
@@ -75,6 +76,8 @@ namespace DesignerTest
         public void ViewDesign_PlaceProduct_ShouldAddToProductPlacements()
         {
             //ViewDesign_MouseDown_ShouldSetSelectedProduct();
+            // Zet de variable die bepaald of er iets geplaatst mag worden of niet
+            ViewModel.AllowDrop = true;
             Product product = new Product
             {
                 ProductId = 1,
@@ -148,7 +151,7 @@ namespace DesignerTest
                     Price = price
                 });
             }
-            Assert.AreEqual(ViewModel.TotalPrice, price * increment);
+            Assert.AreEqual(price * increment, ViewModel.TotalPrice);
         }
     }
 }
