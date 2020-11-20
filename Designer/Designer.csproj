@@ -6,6 +6,11 @@
     <UseWPF>true</UseWPF>
   </PropertyGroup>
 
+  <ItemGroup>
+    <None Remove="Resources\Images\kf8umo9p3ey51.png" />
+    <None Remove="Resources\Images\logo_windesheim.png" />
+  </ItemGroup>
+
 
   <ItemGroup>
 	  <Resource Include="Resources\Images\bank.png">
@@ -17,11 +22,17 @@
 	  <Resource Include="Resources\Images\ernstig.jpg">
 		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
 	  </Resource>
+	  <Resource Include="Resources\Images\kf8umo9p3ey51.png">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </Resource>
 	  <Resource Include="Resources\Images\lamp.jpg">
 		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
 	  </Resource>
 	  <Resource Include="Resources\Images\lamp2.jpg">
 		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </Resource>
+	  <Resource Include="Resources\Images\logo_windesheim.png">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
 	  </Resource>
 
 	  <Resource Include="Resources\Images\menko.jpg">
@@ -60,9 +71,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="Resources\Images\logo_windesheim.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
     <None Update="View\Images\test.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
