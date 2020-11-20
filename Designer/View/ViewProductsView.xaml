@@ -113,7 +113,16 @@
         </Canvas>
         <Grid Background="White" HorizontalAlignment="Left" Height="634" Margin="0,20,0,0" VerticalAlignment="Top" Width="879" >
 
-            <Button Content="Delete" Height="74" Width="170" HorizontalAlignment="Right" Margin="0,15,5,545" Command="{Binding DeleteCommand}">
+            <Button Content="Verwijder product" Height="74" Width="170" HorizontalAlignment="Right" Margin="0,15,5,545" Command="{Binding DeleteCommand}" BorderThickness="0px" >
+                <Button.Effect>
+                    <DropShadowEffect BlurRadius="10" ShadowDepth="5"/>
+                </Button.Effect>
+                <Button.Background>
+                    <RadialGradientBrush>
+                        <GradientStop Color="White" Offset="1"/>
+                        <GradientStop Color="Red" Offset="0"/>
+                    </RadialGradientBrush>
+                </Button.Background>
 
             </Button>
             <Border HorizontalAlignment="Center" Height="610" Margin="0,14,0,0" VerticalAlignment="Top" Width="520" Background="White" BorderThickness="1px" BorderBrush="Black">
