@@ -10,6 +10,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using System.Diagnostics;
 using System.Windows;
 using System.Windows.Media.Imaging;
+using System.Windows.Media;
 
 namespace DesignerTest
 {
@@ -90,6 +91,64 @@ namespace DesignerTest
         {
             List<Product> products = ViewDesignViewModel.LoadProducts();
             Assert.AreEqual(3, products.Count);
+        }
+
+        [Test]
+        [TestCase("0,0|500,0|500,500|0,500", ExpectedResult = 4)]
+        [TestCase("0,0|250,0|250,250|500,250|500,500|0,500", ExpectedResult = 6)]
+        public int ViewDesign_ConvertPosititionsToCoordinates_ShouldReturnList(string positions)
+        {
+            List<Coordinate> coordinates = ViewModel.ConvertPosititionsToCoordinates(positions);
+
+            foreach(Coordinate coordinate in coordinates)
+            {
+                Assert.IsNotNull(coordinate.X);
+                Assert.IsNotNull(coordinate.Y);
+            }
+
+            return coordinates.Count;
+        }
+
+        [Test]
+        [TestCase(10, 10, ExpectedResult = true)]
+        [TestCase(100, 100, ExpectedResult = true)]
+        [TestCase(510, 500, ExpectedResult = false)]
+        [TestCase(150, 270, ExpectedResult = true)]
+        [TestCase(270, 150, ExpectedResult = false)]
+        [TestCase(270, 270, ExpectedResult = true)]
+        public bool ViewDesign_CheckRoomCollisions_ReturnBoolean(int x, int y)
+        {
+            List<Coordinate> coordinates = ViewModel.ConvertPosititionsToCoordinates("0,0|250,0|250,250|500,250|500,500|0,500");
+
+            Point point = new Point(x, y);
+
+            PointCollection points = new PointCollection();
+            // Voeg de punten toe aan een punten collectie
+            for (int i = 0; i < coordinates.Count; i++)
+            {
+                points.Add(new Point(coordinates[i].X, coordinates[i].Y));
+            }
+
+            return ViewModel.CheckRoomCollisions(points, point);
+        }
+
+        [Test]
+        [TestCase(12.55)]
+        [TestCase(78.95)]
+        [TestCase(0.05)]
+        [TestCase(1202.0)]
+        public void ViewDesign_TotalPrice_ShouldReturnSum(double price)
+        {
+            // TODO: needs fixing
+            int increment = 5;
+            for (int i = 0; i < increment; i++) {
+                ViewModel.AddToOverview(new Product()
+                {
+                    ProductId = i,
+                    Price = price
+                });
+            }
+            Assert.AreEqual(ViewModel.TotalPrice, price * increment);
         }
     }
 }

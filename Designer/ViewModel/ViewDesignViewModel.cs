@@ -32,7 +32,7 @@ namespace Designer.ViewModel {
         public Canvas Editor { get; set; }
         private Point _previousPosition;
         private ProductPlacement _selectedPlacement;
-        public Polygon RoomPoly = new Polygon();
+        public Polygon RoomPoly { get; set; }
         public bool AllowDrop = false;
 
         //Special constructor for unit tests
@@ -46,6 +46,7 @@ namespace Designer.ViewModel {
         {
             Products = LoadProducts(); 
             Editor = new Canvas();
+            RoomPoly = new Polygon();
             CatalogusMouseDownCommand = new ArgumentCommand<MouseButtonEventArgs>(e => CatalogusMouseDown(e.OriginalSource, e));
             CanvasMouseDownCommand = new ArgumentCommand<MouseButtonEventArgs>(e => CanvasMouseDown(e.OriginalSource, e));
             DragDropCommand = new ArgumentCommand<DragEventArgs>(e => CanvasDragDrop(e.OriginalSource, e));
@@ -78,6 +79,7 @@ namespace Designer.ViewModel {
             
             // Add product to product overview
             AddToOverview(product);
+
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(""));
         }
 
@@ -139,7 +141,7 @@ namespace Designer.ViewModel {
             _previousPosition = position;
 
             // Check of het product in de ruimte wordt geplaatst
-            CheckRoomCollisions(position);
+            AllowDrop = CheckRoomCollisions(RoomPoly.Points, position);
 
             //Teken de ruimte en de al geplaatste producten
             RenderRoom();
@@ -259,7 +261,7 @@ namespace Designer.ViewModel {
             Editor.Children.Add(RoomPoly);
         }
 
-        private List<Coordinate> ConvertPosititionsToCoordinates(string positions)
+        public List<Coordinate> ConvertPosititionsToCoordinates(string positions)
         {
             List<Coordinate> values = new List<Coordinate>();
 
@@ -276,25 +278,25 @@ namespace Designer.ViewModel {
             return values;
         }
 
-        private void CheckRoomCollisions(Point point)
+        public bool CheckRoomCollisions(PointCollection vertices, Point point)
         {
             bool result = false;
-            int j = RoomPoly.Points.Count() - 1;
+            int j = vertices.Count() - 1;
 
             // Loopt door alle punten in de polygon
-            for (int i = 0; i < RoomPoly.Points.Count(); i++)
+            for (int i = 0; i < vertices.Count(); i++)
             {
                 // Kijkt of de gegeven point in de polygon ligt qua coordinaten
-                if (RoomPoly.Points[i].Y < point.Y && RoomPoly.Points[j].Y >= point.Y || RoomPoly.Points[j].Y < point.Y && RoomPoly.Points[i].Y >= point.Y)
+                if (vertices[i].Y < point.Y && vertices[j].Y >= point.Y || vertices[j].Y < point.Y && vertices[i].Y >= point.Y)
                 {
-                    if (RoomPoly.Points[i].X + (point.Y - RoomPoly.Points[i].Y) / (RoomPoly.Points[j].Y - RoomPoly.Points[i].Y) * (RoomPoly.Points[j].X - RoomPoly.Points[i].X) < point.X)
+                    if (vertices[i].X + (point.Y - vertices[i].Y) / (vertices[j].Y - vertices[i].Y) * (vertices[j].X - vertices[i].X) < point.X)
                     {
                         result = !result;
                     }
                 }
                 j = i;
             }
-            AllowDrop = result;
+            return result;
         }
     }
 
