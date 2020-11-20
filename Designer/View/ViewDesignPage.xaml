@@ -4,15 +4,14 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:viewModel="clr-namespace:Designer.ViewModel"
-    xmlns:model="clr-namespace:Designer.Model"
+    xmlns:model="clr-namespace:Models;assembly=Models"
     x:Class="Designer.View.ViewDesignPage"
     xmlns:behaviors="http://schemas.microsoft.com/xaml/behaviors"
-    xmlns:model1="clr-namespace:Designer.Model"
     xmlns:designer="clr-namespace:Designer"
     mc:Ignorable="d"
     d:DesignWidth="800"
     Title="ViewDesignPage"
-    Initialized="Page_Initialized" WindowHeight="-1">
+    WindowHeight="-1">
     <Page.DataContext>
         <viewModel:ViewDesignViewModel x:Name="viewModel"/>
     </Page.DataContext>

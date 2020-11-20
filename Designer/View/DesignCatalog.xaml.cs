@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Windows.Controls;
-using Designer.Model;
 using Designer.Other;
 using Designer.ViewModel;
+using Models;
 
 namespace Designer.View {
     public partial class DesignCatalog : Page {

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Windows.Input;
 
 namespace Designer.Other {
@@ -38,7 +39,7 @@ namespace Designer.Other {
 
         public override void Execute(object parameter) {
             if (parameter is T o) _action?.Invoke(o);
-            else Console.WriteLine("Recieved wrong parameter for this command");
+            else Debug.WriteLine("Recieved wrong parameter for this command" + parameter?.GetType());
         }
     }
 }
