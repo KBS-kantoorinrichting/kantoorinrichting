@@ -11,7 +11,7 @@ namespace DesignerTest
     public class ViewProductTests
     {
         private static readonly Product product1 = new Product("Stoel", 51.40, "test");
-        private static readonly Product product2 = new Product("Tafel", 200, "");
+        private static readonly Product product2 = new Product("Tafel", 200, "", 30, 20);
         private static readonly Product product3 = new Product("Bureau", 140.40, "");
 
         [SetUp]
@@ -38,9 +38,15 @@ namespace DesignerTest
             Assert.AreEqual(product1.Name, Test.SelectedProduct.Name);
             Assert.AreEqual(product1.Price, Test.SelectedProduct.Price);
             Assert.AreEqual(product1.Photo, Test.SelectedProduct.Photo);
-            Assert.AreEqual(product1.Length, Test.SelectedProduct.Length);
-            Assert.AreEqual(product1.Width, Test.SelectedProduct.Width);
-            // Alle waarden van het geselecteerde product vergelijken met product1
+            // Alle waarden van het geselecteerde product vergelijken met product1 met constructor zonder length en width
+
+            Test.SelectProduct(product2.ProductId);
+            Assert.AreEqual(product2.Name, Test.SelectedProduct.Name);
+            Assert.AreEqual(product2.Price, Test.SelectedProduct.Price);
+            Assert.AreEqual(product2.Photo, Test.SelectedProduct.Photo);
+            Assert.AreEqual(product2.Length, Test.SelectedProduct.Length);
+            Assert.AreEqual(product2.Width, Test.SelectedProduct.Width);
+            // Alle waarden van het geselecteerde product vergelijken met product2 met length en width
         }
     }
 }
