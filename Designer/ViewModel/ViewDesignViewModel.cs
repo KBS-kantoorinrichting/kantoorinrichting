@@ -11,8 +11,10 @@ using Designer.View;
 using Models;
 using Services;
 
-namespace Designer.ViewModel {
-    public class ViewDesignViewModel : INotifyPropertyChanged {
+namespace Designer.ViewModel
+{
+    public class ViewDesignViewModel : INotifyPropertyChanged
+    {
         public event PropertyChangedEventHandler PropertyChanged;
 
         public List<Product> Products { get; set; }
@@ -30,6 +32,7 @@ namespace Designer.ViewModel {
         public Canvas Editor { get; set; }
         private Point _previousPosition;
         private ProductPlacement _selectedPlacement;
+        private ProductPlacement _draggingPlacement;
 
         //Special constructor for unit tests
         public ViewDesignViewModel(Design design)
@@ -37,13 +40,15 @@ namespace Designer.ViewModel {
             SetDesign(design);
             Products = LoadProducts();
         }
-        
+
         public ViewDesignViewModel()
         {
-            Products = LoadProducts(); 
+            Products = LoadProducts();
             Editor = new Canvas();
-            CatalogusMouseDownCommand = new ArgumentCommand<MouseButtonEventArgs>(e => CatalogusMouseDown(e.OriginalSource, e));
-            CanvasMouseDownCommand = new ArgumentCommand<MouseButtonEventArgs>(e => CanvasMouseDown(e.OriginalSource, e));
+            CatalogusMouseDownCommand =
+                new ArgumentCommand<MouseButtonEventArgs>(e => CatalogusMouseDown(e.OriginalSource, e));
+            CanvasMouseDownCommand =
+                new ArgumentCommand<MouseButtonEventArgs>(e => CanvasMouseDown(e.OriginalSource, e));
             DragDropCommand = new ArgumentCommand<DragEventArgs>(e => CanvasDragDrop(e.OriginalSource, e));
             DragOverCommand = new ArgumentCommand<DragEventArgs>(e => CanvasDragOver(e.OriginalSource, e));
             _productOverview = new Dictionary<Product, ProductData>();
@@ -67,7 +72,7 @@ namespace Designer.ViewModel {
                 X = x,
                 Y = y
             });
-            
+
             // Add product to product overview
             AddToOverview(product);
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(""));
@@ -75,32 +80,48 @@ namespace Designer.ViewModel {
 
         public void CanvasMouseDown(object sender, MouseButtonEventArgs e)
         {
-            if (e.ChangedButton != MouseButton.Left) return;
-            if (sender.GetType() == typeof(Canvas))
+            if (e.ChangedButton == MouseButton.Right)
             {
-                _selectedPlacement = null;
+                if (sender.GetType() == typeof(Canvas))
+                {
+                    _selectedPlacement = null;
+                    RenderRoom();
+                }
+
+                if (sender.GetType() != typeof(Image)) return;
+                var image = sender as Image;
+                var placement = ProductPlacements.Where(placement =>
+                    placement.X == Canvas.GetLeft(image) && placement.Y == Canvas.GetTop(image));
+                if (placement.Count() > 0)
+                {
+                    _selectedPlacement = placement.First();
+                }
+
                 RenderRoom();
             }
-            if (sender.GetType() != typeof(Image)) return;
-            var image = sender as Image;
-            var placement = ProductPlacements.Where(placement =>
-                placement.X == Canvas.GetLeft(image) && placement.Y == Canvas.GetTop(image));
-            if (placement.Count() > 0)
+            else
             {
-                _selectedPlacement = placement.First();
-            }
-            RenderRoom();
+                if (sender.GetType() != typeof(Image)) return;
+                var image = sender as Image;
+                var placement = ProductPlacements.Where(placement =>
+                    placement.X == Canvas.GetLeft(image) && placement.Y == Canvas.GetTop(image));
+                if (placement.Count() > 0)
+                {
+                    _draggingPlacement = placement.First();
+                    DragDrop.DoDragDrop(Editor, _draggingPlacement, DragDropEffects.Move);
+                }
+            };
         }
-        
+
         public void CatalogusMouseDown(object sender, MouseButtonEventArgs e)
         {
             // Linker muisknop moet ingdrukt zijn
             if (e.LeftButton == MouseButtonState.Pressed)
             {
-                if(sender.GetType() != typeof(Image)) return;
+                if (sender.GetType() != typeof(Image)) return;
                 // Cast datacontext naar product
-                var obj = (Product)((Image)sender).DataContext;
-                
+                var obj = (Product) ((Image) sender).DataContext;
+
                 // Init drag & drop voor geselecteerde product
                 DragDrop.DoDragDrop(Editor, obj, DragDropEffects.Link);
             }
@@ -110,20 +131,43 @@ namespace Designer.ViewModel {
         {
             //Als er geen product is geselecteerd, doe niks
             if (e.Data == null) return;
-            var selectedProduct = (Product)e.Data.GetData(typeof(Product));
-            Point position = e.GetPosition(Editor);
-            //Trek de helft van de hoogte en breedte van het product eraf
-            //Zodat het product in het midden van de cursor staat
-            PlaceProduct(selectedProduct,
-                (int)(position.X - (selectedProduct.Width / 2)), 
-                (int)(position.Y - (selectedProduct.Length / 2)));
+            if (e.Data.GetDataPresent(typeof(Product)))
+            {
+                var selectedProduct = (Product) e.Data.GetData(typeof(Product));
+                Point position = e.GetPosition(Editor);
+                //Trek de helft van de hoogte en breedte van het product eraf
+                //Zodat het product in het midden van de cursor staat
+                PlaceProduct(selectedProduct,
+                    (int) (position.X - (selectedProduct.Width / 2)),
+                    (int) (position.Y - (selectedProduct.Length / 2)));
+                RenderRoom();
+            }
+            else if(e.Data.GetDataPresent(typeof(ProductPlacement)))
+            {
+                var placement = (ProductPlacement) e.Data.GetData(typeof(ProductPlacement));
+                Point position = e.GetPosition(Editor);
+                ProductPlacements.Remove(placement);
+                placement.X = (int)position.X - (placement.Product.Width / 2);
+                placement.Y = (int) position.Y - (placement.Product.Length / 2);
+                ProductPlacements.Add(placement);
+                _draggingPlacement = null;
+                RenderRoom();
+            }
         }
-        
+
         public void CanvasDragOver(object sender, DragEventArgs e)
         {
             //Controleer of er een product is geselecteerd
             if (e.Data == null) return;
-            var selectedProduct = (Product)e.Data.GetData(typeof(Product)); 
+            Product selectedProduct = null;
+            if (e.Data.GetDataPresent(typeof(Product)))
+            {
+                selectedProduct = (Product) e.Data.GetData(typeof(Product));
+            }
+            else if (e.Data.GetDataPresent(typeof(ProductPlacement)))
+            {
+                selectedProduct = (e.Data.GetData(typeof(ProductPlacement)) as ProductPlacement)?.Product;
+            }
             //Haal de positie van de cursor op
             Point position = e.GetPosition(Editor);
             //Als de muis niet bewogen is hoeft het niet opnieuw getekend te worden
@@ -131,19 +175,19 @@ namespace Designer.ViewModel {
             _previousPosition = position;
             //Teken de ruimte en de al geplaatste producten
             RenderRoom();
-            DrawProduct(selectedProduct, 
-                (int)position.X - (selectedProduct.Width / 2),
-                (int)position.Y - (selectedProduct.Length / 2)
-                );
+            DrawProduct(selectedProduct,
+                (int) position.X - (selectedProduct.Width / 2),
+                (int) position.Y - (selectedProduct.Length / 2)
+            );
         }
-        
+
         private void RenderRoom()
         {
             Editor.Children.Clear();
-            for(int i = 0; i < ProductPlacements.Count; i++)
+            for (int i = 0; i < ProductPlacements.Count; i++)
             {
                 var placement = ProductPlacements[i];
-                DrawProduct(placement.Product, placement.X, placement.Y, i);
+                DrawProduct(placement.Product, placement.X, placement.Y, i, _draggingPlacement == placement);
             }
 
             if (_selectedPlacement != null)
@@ -180,7 +224,7 @@ namespace Designer.ViewModel {
             Editor.Children.Add(selectScreen);
         }
 
-        public void DrawProduct(Product product, int x, int y, int? placementIndex = null)
+        public void DrawProduct(Product product, int x, int y, int? placementIndex = null, bool transparent = false)
         {
             //Haal de bestandsnaam van de foto op of gebruik de default
             var photo = product.Photo ?? "placeholder.png";
@@ -190,7 +234,11 @@ namespace Designer.ViewModel {
                 Height = product.Length,
                 Width = product.Width
             };
-           
+
+            if (transparent)
+                image.Opacity = 0.5;
+            
+            
             Canvas.SetTop(image, y);
             Canvas.SetLeft(image, x);
             // Voeg product toe aan canvas
@@ -213,7 +261,7 @@ namespace Designer.ViewModel {
             }
             else
             {
-                _productOverview.Add(product, new ProductData() { Total = 1, TotalPrice = price });
+                _productOverview.Add(product, new ProductData() {Total = 1, TotalPrice = price});
             }
         }
     }
