@@ -9,6 +9,8 @@ using System.Windows.Controls;
 using Designer.View;
 using Microsoft.Win32;
 using Designer;
+using System.Diagnostics;
+
 namespace Designer.ViewModel
 {
     public class ViewProductsViewModel : INotifyPropertyChanged {
@@ -48,11 +50,16 @@ namespace Designer.ViewModel
         public void SelectPhoto()
         {
             OpenFileDialog openFileDialog = new OpenFileDialog();
+            openFileDialog.InitialDirectory = Environment.CurrentDirectory;
             if (openFileDialog.ShowDialog() == true)
             {
-                openFileDialog.InitialDirectory = @"C:\Users\bashe\source\repos\kantoorinrichting\Designer\Resources\Images";
+                //openFileDialog.InitialDirectory = @"C:\Users\bashe\source\repos\kantoorinrichting\Designer\Resources\Images";
+                
                 openFileDialog.Filter = "Image files (*.png;*.jpeg)|*.png;*.jpeg|All files (*.*)|*.*";
-                Photo = $"{openFileDialog.FileName.Substring(openFileDialog.InitialDirectory.Length+1)}";
+                Photo = openFileDialog.FileName.Replace(Environment.CurrentDirectory, "");
+                Debug.WriteLine(Environment.CurrentDirectory);
+                Debug.WriteLine(openFileDialog.FileName);
+               
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("Photo"));
                 
             }
