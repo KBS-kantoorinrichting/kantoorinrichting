@@ -60,6 +60,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Update="Resources\Images\logo_windesheim.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="View\Images\test.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
