@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore.Migrations;
 
-namespace Designer.Migrations
+namespace Services.Migrations
 {
     public partial class RoomPositionsAdded : Migration
     {

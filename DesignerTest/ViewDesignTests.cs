@@ -7,7 +7,7 @@ using ServicesTest;
 namespace DesignerTest
 {
     public class ViewDesignTests : DatabaseTest {
-        private static readonly Room Room = new Room.FromDimensions("TestRoom", 1, 1);
+        private static readonly Room Room = Room.FromDimensions("TestRoom", 1, 1);
         private static readonly Design Design = new Design("TestDesign", Room, new List<ProductPlacement>());
         private static readonly ViewDesignViewModel ViewModel = new ViewDesignViewModel(Design);
         private static readonly Product Product1 = new Product() { Id = 1, Name = "Product1" };

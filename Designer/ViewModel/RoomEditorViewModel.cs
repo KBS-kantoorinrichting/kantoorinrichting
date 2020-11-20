@@ -1,7 +1,7 @@
 ﻿using System;
 using System.ComponentModel;
+using System.Configuration;
 using System.Windows.Controls;
-using Designer.Model;
 using Designer.Other;
 using Designer.View;
 using Models;
@@ -108,11 +108,9 @@ namespace Designer.ViewModel {
             // voegt de specificaties van de kamer aan het object room toe
             Room room = Room.FromDimensions(name, width, length);
             // kamer opslaan
-            var context = RoomDesignContext.Instance;
-            room = context.Rooms.Add(room).Entity;
 
             try {
-                context.SaveChanges();
+                room = RoomService.Instance.Save(room);
                 return room;
             } catch (Exception e) {
                 Console.WriteLine(e);

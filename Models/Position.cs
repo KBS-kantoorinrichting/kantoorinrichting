@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Designer.Model {
+namespace Models {
     public class Position {
         public int X { get; }
         public int Y { get; }

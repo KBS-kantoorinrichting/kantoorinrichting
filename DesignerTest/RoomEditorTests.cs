@@ -1,14 +1,10 @@
-﻿using Designer.Model;
-using Designer.ViewModel;
+﻿using Designer.ViewModel;
+using Models;
 using NUnit.Framework;
+using ServicesTest;
 
-namespace DesignerTest.ViewModel {
-    class RoomEditorTests {
-        [SetUp]
-        public void Setup() {
-            // maakt test database aan
-            TestRoomDesignContext.Setup();
-        }
+namespace DesignerTest {
+    class RoomEditorTests : DatabaseTest {
 
         [Test]
         [TestCase("kamernaam_test", 40, 1000)]
@@ -23,7 +19,7 @@ namespace DesignerTest.ViewModel {
             Assert.NotNull(room);
             Assert.AreEqual(room.Name, name);
             Assert.AreEqual(room.Positions, Room.FromDimensions(width, length));
-            Assert.NotNull(room.RoomId);
+            Assert.NotNull(room.Id);
         }
 
         [Test]
@@ -45,7 +41,7 @@ namespace DesignerTest.ViewModel {
             Assert.NotNull(room);
             Assert.AreEqual(room.Name, name);
             Assert.AreEqual(room.Positions, Room.FromTemplate(width, length, template));
-            Assert.NotNull(room.RoomId);
+            Assert.NotNull(room.Id);
         }
     }
 }

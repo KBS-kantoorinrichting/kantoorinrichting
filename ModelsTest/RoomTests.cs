@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
-using Designer.Model;
+using Models;
 using NUnit.Framework;
 
-namespace DesignerTest.Model {
+namespace ModelsTest {
     public class RoomTests {
         [Test]
         [TestCase("", 0)]
