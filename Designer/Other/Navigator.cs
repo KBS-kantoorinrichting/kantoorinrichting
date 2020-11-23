@@ -14,7 +14,6 @@ namespace Designer.Other {
         }
 
         private Navigator() {
-            _stack.Push(new HomeView());
         }
 
         //De stack houdt bij welke pagina open staan

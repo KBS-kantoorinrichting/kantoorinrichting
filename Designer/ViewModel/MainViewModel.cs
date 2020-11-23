@@ -20,6 +20,7 @@ namespace Designer.ViewModel {
             RoomService.Instance.Get(0);
             
             Navigator = Navigator.Instance;
+            Navigator.Push(new HomeView());
             GotoDesigns = new PageCommand(() => {
                 DesignCatalog DesignCatalog = new DesignCatalog();
                 DesignCatalog.DesignSelected += (o, e) =>
