@@ -26,20 +26,20 @@
                 <StackPanel>
                     <Label Content="{Binding TotalProducts}" FontSize="30" Height="50" HorizontalAlignment="Center" />
                     <Label Content="Producten" HorizontalAlignment="Center" FontSize="20" />
-                    <Button Content="Overzicht" HorizontalAlignment="Stretch" Height="40" VerticalAlignment="Bottom" Margin="5,15,5,0" Background="#495464" BorderBrush="Gray" FontSize="14" Foreground="White"/>
+                    <Button Content="Overzicht" Command="{Binding GotoProducts}" HorizontalAlignment="Stretch" Height="40" VerticalAlignment="Bottom" Margin="5,15,5,0" Background="#495464" BorderBrush="Gray" FontSize="14" Foreground="White"/>
                 </StackPanel>
             </Border>
             <Border Grid.Column="1" Margin="50" BorderThickness="0.2" BorderBrush="Black" Background="#f4f4f2">
                 <StackPanel>
                     <Label Content="{Binding TotalDesigns}" FontSize="30" Height="50" HorizontalAlignment="Center" />
                     <Label Content="Ontwerpen" HorizontalAlignment="Center" FontSize="20" />
+                    <Button Content="Overzicht" Command="{Binding GotoDesigns}" HorizontalAlignment="Stretch" Height="40" VerticalAlignment="Bottom" Margin="5,15,5,0" Background="#495464" BorderBrush="Gray" FontSize="14" Foreground="White"/>
                 </StackPanel>
             </Border>
             <Border Grid.Column="2" Margin="50" BorderThickness="0.2" BorderBrush="Black" Background="#f4f4f2">
                 <StackPanel>
                     <Label Content="{Binding TotalRooms}" FontSize="30" Height="50" HorizontalAlignment="Center" />
                     <Label Content="Ruimtes" HorizontalAlignment="Center" FontSize="20" />
-                    <Button Content="Overzicht" Command="{Binding GotoRooms}" HorizontalAlignment="Stretch" Height="40" VerticalAlignment="Bottom" Margin="5,15,5,0" Background="#495464" BorderBrush="Gray" FontSize="14" Foreground="White"/>
                 </StackPanel>
             </Border>
         </Grid>

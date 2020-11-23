@@ -14,15 +14,12 @@ namespace Designer.ViewModel
         public string TotalProducts => ProductService.Instance.Count().ToString();
         public string TotalDesigns => DesignService.Instance.Count().ToString();
         public string TotalRooms => RoomService.Instance.Count().ToString();
-        public BasicCommand GotoRooms { get; set; }
+        public BasicCommand GotoDesigns { get; set; }
+        public BasicCommand GotoProducts { get; set; }
 
         public HomeViewModel() {
-            GotoRooms = new BasicCommand(NavigateToRooms);
-        }
-
-        public void NavigateToRooms() {
-            Debug.WriteLine("test");
-            Navigator.Instance.Push(new DesignCatalog());
+            GotoDesigns = new PageCommand(() => new DesignCatalog());
+            GotoProducts = new PageCommand(() => new ViewProductsView());
         }
     }
 }
