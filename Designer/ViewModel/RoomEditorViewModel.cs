@@ -8,7 +8,7 @@ using Models;
 using Services;
 
 namespace Designer.ViewModel {
-    public class RoomEditorViewModel : INotifyPropertyChanged  {
+    public class RoomEditorViewModel : INotifyPropertyChanged {
         public string Name { get; set; }
         public string Width { get; set; }
         public string Length { get; set; }
@@ -20,18 +20,11 @@ namespace Designer.ViewModel {
         public static string Position;
 
         // image toevoegen aan knop
-        public string Image0
-        {
-            get; set;
-        } = "../Assets/Vierhoek_Clicked.jpg";
-        public string Image1
-        {
-            get; set;
-        } = "../Assets/Hoekvormig.jpg";
+        public string Image0 { get; set; } = "Assets/Vierhoek_Clicked.jpg";
+        public string Image1 { get; set; } = "Assets/Hoekvormig.jpg";
 
         public BasicCommand Submit { get; set; }
         public BasicCommand TemplateButton { get; set; }
-       
 
         public RoomEditorViewModel() {
             // submit command van submitknop
@@ -40,53 +33,42 @@ namespace Designer.ViewModel {
             TemplateButton = new ArgumentCommand<int>(SetTemplate);
         }
 
-        private void OnPropertyChanged(string propertyName = "")
-        {
+        private void OnPropertyChanged(string propertyName = "") {
             // herlaad de hele pagina
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
-        public void SetTemplate(int parameter)
-        {
-           // geeft de parameter waarde door aan template
+        public void SetTemplate(int parameter) {
+            // geeft de parameter waarde door aan template
             Template = parameter;
-            if (parameter == 0)
-            {
+            if (parameter == 0) {
                 // image styling (welke ingedrukt is)
-                Image0 = "../Assets/Vierhoek_Clicked.jpg";
-                Image1 = "../Assets/Hoekvormig.jpg";
-               
-            }
-            else
-            {
+                Image0 = "Assets/Vierhoek_Clicked.jpg";
+                Image1 = "Assets/Hoekvormig.jpg";
+            } else {
                 // image styling (welke ingedrukt is)
-                Image0 = "../Assets/Vierhoek.jpg";
-                Image1 = "../Assets/Hoekvormig_Clicked.jpg";
-                
+                Image0 = "Assets/Vierhoek.jpg";
+                Image1 = "Assets/Hoekvormig_Clicked.jpg";
             }
+
             // herlaad pagina
             OnPropertyChanged();
-
         }
 
-
         public void SubmitRoom() {
-
-                if (int.TryParse(Width, out int width) && int.TryParse(Length, out int length))
-                {
-                if (Template == 1)
-                {
-                    if (SaveRoom(Name, width, length, Template) != null)
-                    {
+            if (int.TryParse(Width, out int width) && int.TryParse(Length, out int length)) {
+                if (Template == 1) {
+                    if (SaveRoom(Name, width, length, Template) != null) {
                         //opent successvol dialoog
                         GeneralPopup popup = new GeneralPopup("De kamer is opgeslagen!");
                         popup.ShowDialog();
                         return;
                     }
+
                     return;
                 }
-                if (SaveRoom(Name, width, length) != null)
-                {
+
+                if (SaveRoom(Name, width, length) != null) {
                     //opent successvol dialoog
                     GeneralPopup popup = new GeneralPopup("De kamer is opgeslagen!");
                     popup.ShowDialog();
@@ -94,7 +76,6 @@ namespace Designer.ViewModel {
                 }
 
                 // opslaan van de ruimte als het aan de condities voldoet
-
             }
 
 
@@ -117,6 +98,7 @@ namespace Designer.ViewModel {
                 return null;
             }
         }
+
         public static Room SaveRoom(string name, int width, int length, int template) {
             // voegt de specificaties van de kamer aan het object room toe
             Room room = Room.FromTemplate(name, width, length, template);
@@ -135,7 +117,7 @@ namespace Designer.ViewModel {
     // data type validatie voor de lengte
     public class StringToIntValidationRule : ValidationRule {
         public override ValidationResult Validate(object value, System.Globalization.CultureInfo cultureInfo) {
-            if (value?.ToString() == null || value.ToString().Equals("") ) {
+            if (value?.ToString() == null || value.ToString().Equals("")) {
                 return new ValidationResult(false, "Dit veld is verplicht");
             }
 
@@ -143,6 +125,4 @@ namespace Designer.ViewModel {
             return new ValidationResult(isInt, isInt ? null : "Dit veld mag alleen cijfers bevatten.");
         }
     }
-
-
 }

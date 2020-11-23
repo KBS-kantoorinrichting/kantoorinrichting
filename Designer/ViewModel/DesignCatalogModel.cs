@@ -53,6 +53,8 @@ namespace Designer.ViewModel {
         }
 
         public static List<Design> LoadDesigns() {
+            //Doesn't load productplacements without this, it's weird
+            ProductPlacementService.Instance.GetAll();
             return DesignService.Instance.GetAll();
         }
 

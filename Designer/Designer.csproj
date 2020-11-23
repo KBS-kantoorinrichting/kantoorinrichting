@@ -1,69 +1,29 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
+    <PropertyGroup>
+        <OutputType>WinExe</OutputType>
+        <TargetFramework>netcoreapp3.1</TargetFramework>
+        <UseWPF>true</UseWPF>
+    </PropertyGroup>
 
-  <PropertyGroup>
-    <OutputType>WinExe</OutputType>
-    <TargetFramework>netcoreapp3.1</TargetFramework>
-    <UseWPF>true</UseWPF>
-  </PropertyGroup>
+    <ItemGroup>
+        <None Remove="Assets\Hoekvormig.jpg" />
+        <None Remove="Assets\Hoekvormig_Clicked.jpg" />
+        <None Remove="Assets\Vierhoek.jpg" />
+        <None Remove="Assets\Vierhoek_Clicked.jpg" />
+    </ItemGroup>
 
-  <ItemGroup>
-    <None Remove="Assets\Hoekvormig.jpg" />
-    <None Remove="Assets\Hoekvormig_Clicked.jpg" />
-    <None Remove="Assets\Vierhoek.jpg" />
-    <None Remove="Assets\Vierhoek_Clicked.jpg" />
-    <None Remove="Resources\Images\placeholder.png" />
-    <None Remove="Resources\Images\test.jpg" />
-  </ItemGroup>
+    <ItemGroup>
+        <None Include="Resources\**" CopyToOutputDirectory="Always" />
+    </ItemGroup>
 
-  <ItemGroup>
-    <Resource Include="Assets\Hoekvormig.jpg">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Assets\Hoekvormig_Clicked.jpg">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Assets\Vierhoek.jpg">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Assets\Vierhoek_Clicked.jpg">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Resources\Images\placeholder.png" />
-    <Resource Include="Resources\Images\test.jpg" />
-    <None Remove="Resources\Images\bank.png" />
-    <Resource Include="Resources\Images\bank.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Resource>
-    <None Remove="Resources\Images\bureau_stoel.jpg" />
-    <None Remove="Resources\Images\lamp.jpg" />
-    <Resource Include="Resources\Images\lamp.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Resource>
-    <None Remove="Resources\Images\stoel.jpg" />
-    <None Remove="Resources\Images\tafel.jpg" />
-    <Resource Include="Resources\Images\tafel.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Resource>
-    <None Remove="Resources\Images\bureau_stoel.png" />
-    <Resource Include="Resources\Images\bureau_stoel.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Resource>
-    <None Remove="Resources\Images\stoel.png" />
-    <Resource Include="Resources\Images\stoel.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Resource>
-    
-    <None Remove="Resources\Images\tafel2.jpg" />
-    <Resource Include="Resources\Images\tafel2.jpg" />
-  </ItemGroup>
+    <ItemGroup>
+        <ProjectReference Include="..\Models\Models.csproj" />
+        <ProjectReference Include="..\Services\Services.csproj" />
+    </ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\Models\Models.csproj" />
-    <ProjectReference Include="..\Services\Services.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" Version="1.1.19" />
-  </ItemGroup>
-  
+    <ItemGroup>
+        <PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" Version="1.1.19" />
+        <PackageReference Include="System.Drawing.Common" Version="5.0.0" />
+        <PackageReference Include="WpfAnimatedGif" Version="2.0.0" />
+    </ItemGroup>
 </Project>

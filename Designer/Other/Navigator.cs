@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Designer.View;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Windows.Controls;

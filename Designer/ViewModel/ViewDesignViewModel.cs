@@ -8,6 +8,9 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media.Imaging;
 using Designer.View;
+using System.Windows.Shapes;
+using System.Windows.Media;
+using System.Diagnostics;
 using Models;
 using Services;
 
@@ -33,6 +36,8 @@ namespace Designer.ViewModel
         private Point _previousPosition;
         private ProductPlacement _selectedPlacement;
         private ProductPlacement _draggingPlacement;
+        public Polygon RoomPoly { get; set; }
+        public bool AllowDrop = false;
 
         //Special constructor for unit tests
         public ViewDesignViewModel(Design design)
@@ -45,6 +50,7 @@ namespace Designer.ViewModel
         {
             Products = LoadProducts();
             Editor = new Canvas();
+            RoomPoly = new Polygon();
             CatalogusMouseDownCommand =
                 new ArgumentCommand<MouseButtonEventArgs>(e => CatalogusMouseDown(e.OriginalSource, e));
             CanvasMouseDownCommand =
@@ -52,20 +58,30 @@ namespace Designer.ViewModel
             DragDropCommand = new ArgumentCommand<DragEventArgs>(e => CanvasDragDrop(e.OriginalSource, e));
             DragOverCommand = new ArgumentCommand<DragEventArgs>(e => CanvasDragOver(e.OriginalSource, e));
             _productOverview = new Dictionary<Product, ProductData>();
+
+            
         }
 
         public void SetDesign(Design design)
         {
             Design = design;
-            ProductPlacements = new List<ProductPlacement>();
             ProductPlacements = design.ProductPlacements;
+            ProductPlacements ??= new List<ProductPlacement>();
             _productOverview = new Dictionary<Product, ProductData>();
+            //Wanneer niet in test env render die de ruimte
+            if (Editor != null)
+            {
+                // Sets the dimensions of the current room
+                SetRoomDimensions();
+                RenderRoom();
+            }
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(""));
         }
 
         public void PlaceProduct(Product product, int x, int y)
         {
-            if (product == null) return;
+            // Checkt of het product niet null is en of de foto geplaatst mag worden
+            if (product == null || !AllowDrop) return;
             ProductPlacements.Add(new ProductPlacement()
             {
                 Product = product,
@@ -75,6 +91,7 @@ namespace Designer.ViewModel
 
             // Add product to product overview
             AddToOverview(product);
+
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(""));
         }
 
@@ -112,7 +129,7 @@ namespace Designer.ViewModel
                     _draggingPlacement = placement.First();
                     DragDrop.DoDragDrop(Editor, _draggingPlacement, DragDropEffects.Move);
                 }
-            };
+            }
         }
 
         public void CatalogusMouseDown(object sender, MouseButtonEventArgs e)
@@ -123,7 +140,6 @@ namespace Designer.ViewModel
                 if (sender.GetType() != typeof(Image)) return;
                 // Cast datacontext naar product
                 var obj = (Product) ((Image) sender).DataContext;
-
                 // Init drag & drop voor geselecteerde product
                 DragDrop.DoDragDrop(Editor, obj, DragDropEffects.Link);
             }
@@ -146,7 +162,7 @@ namespace Designer.ViewModel
                 RenderRoom();
             }
             //Hier wordt een product dat al in het design zit verplaatst
-            else if(e.Data.GetDataPresent(typeof(ProductPlacement)))
+            else if (e.Data.GetDataPresent(typeof(ProductPlacement)))
             {
                 var placement = (ProductPlacement) e.Data.GetData(typeof(ProductPlacement));
                 Point position = e.GetPosition(Editor);
@@ -154,7 +170,7 @@ namespace Designer.ViewModel
                 ProductPlacements.Remove(placement);
                 //Trek de helft van de hoogte en breedte van het product eraf
                 //Zodat het product in het midden van de cursor staat
-                placement.X = (int)position.X - (placement.Product.Width / 2);
+                placement.X = (int) position.X - (placement.Product.Width / 2);
                 placement.Y = (int) position.Y - (placement.Product.Length / 2);
                 //Na het aanpassen wordt het weer toegevoegd om de illusie te geven dat het in de lijst wordt aangepast
                 ProductPlacements.Add(placement);
@@ -177,22 +193,33 @@ namespace Designer.ViewModel
             {
                 selectedProduct = (e.Data.GetData(typeof(ProductPlacement)) as ProductPlacement)?.Product;
             }
+
             //Haal de positie van de cursor op
             Point position = e.GetPosition(Editor);
             //Als de muis niet bewogen is hoeft het niet opnieuw getekend te worden
             if (position == _previousPosition) return;
             _previousPosition = position;
+
+            // Check of het product in de ruimte wordt geplaatst
+            AllowDrop = CheckRoomCollisions(RoomPoly.Points, position, selectedProduct);
+
             //Teken de ruimte en de al geplaatste producten
             RenderRoom();
+            // Render het plaatje vna het product als de cursor binnen de polygon zit
             DrawProduct(selectedProduct,
                 (int) position.X - (selectedProduct.Width / 2),
-                (int) position.Y - (selectedProduct.Length / 2)
-            );
+                (int) position.Y - (selectedProduct.Length / 2), transparent: !AllowDrop);
         }
 
         private void RenderRoom()
         {
-            Editor.Children.Clear();
+            for (int i = Editor.Children.Count - 1; i >= 0; i += -1)
+            {
+                UIElement Child = Editor.Children[i];
+                if (!(Child is Polygon))
+                    Editor.Children.Remove(Child);
+            }
+
             for (int i = 0; i < ProductPlacements.Count; i++)
             {
                 var placement = ProductPlacements[i];
@@ -228,16 +255,16 @@ namespace Designer.ViewModel
             var photo = product.Photo ?? "placeholder.png";
             var image = new Image()
             {
-                Source = new BitmapImage(new Uri(@"pack://application:,,,/" + $"Resources/Images/{photo}")),
+                Source = new BitmapImage(new Uri(Environment.CurrentDirectory + $"/Resources/Images/{photo}")),
                 Height = product.Length,
                 Width = product.Width
             };
-            
+
             //Als transparent in als parameter naar true wordt gezet wordt de afbeelding doorzichtig
             if (transparent)
                 image.Opacity = 0.5;
-            
-            
+
+
             Canvas.SetTop(image, y);
             Canvas.SetLeft(image, x);
             // Voeg product toe aan canvas
@@ -246,7 +273,8 @@ namespace Designer.ViewModel
             image.Uid ??= placementIndex.ToString();
         }
 
-        public static List<Product> LoadProducts() {
+        public static List<Product> LoadProducts()
+        {
             return ProductService.Instance.GetAll();
         }
 
@@ -262,6 +290,70 @@ namespace Designer.ViewModel
             {
                 _productOverview.Add(product, new ProductData() {Total = 1, TotalPrice = price});
             }
+        }
+
+        public void SetRoomDimensions()
+        {
+            // TODO: Replace with room positions
+            var coordinates = Room.ToList(Design.Room.Positions);
+
+
+            PointCollection points = new PointCollection();
+            // Voeg de punten toe aan een punten collectie
+            for (int i = 0; i < coordinates.Count; i++)
+            {
+                points.Add(new Point(coordinates[i].X, coordinates[i].Y));
+            }
+
+            RoomPoly.Stroke = Brushes.Black;
+            RoomPoly.Fill = Brushes.LightGray;
+            RoomPoly.StrokeThickness = 1;
+            RoomPoly.HorizontalAlignment = HorizontalAlignment.Left;
+            RoomPoly.VerticalAlignment = VerticalAlignment.Center;
+            RoomPoly.Points = points;
+            Editor.Children.Add(RoomPoly);
+        }
+
+        public bool CheckRoomCollisions(PointCollection vertices, Point point, Product product)
+        {
+            int j = vertices.Count() - 1;
+            int yOffset = product.Length / 2;
+            int xOffset = product.Width / 2;
+            Debug.WriteLine(point.X);
+            Debug.WriteLine(point.Y);
+
+            // Punten aanmaken waar om gecheckt moet worden
+            PointCollection points = new PointCollection()
+            {
+                new Point(point.X - xOffset, point.Y - yOffset),
+                new Point(point.X + xOffset, point.Y - yOffset),
+                new Point(point.X - xOffset, point.Y + yOffset),
+                new Point(point.X + xOffset, point.Y + yOffset),
+            };
+
+            foreach (Point p in points)
+            {
+                bool result = false;
+                // Loopt door alle punten in de polygon
+                for (int i = 0; i < vertices.Count(); i++)
+                {
+                    // Kijkt of de gegeven point in de polygon ligt qua coordinaten
+                    if (vertices[i].Y < p.Y && vertices[j].Y >= p.Y || vertices[j].Y < p.Y && vertices[i].Y >= p.Y)
+                    {
+                        if (vertices[i].X + (p.Y - vertices[i].Y) / (vertices[j].Y - vertices[i].Y) *
+                            (vertices[j].X - vertices[i].X) < p.X)
+                        {
+                            result = !result;
+                        }
+                    }
+
+                    j = i;
+                }
+
+                if (!result) return false;
+            }
+
+            return true;
         }
     }
 
