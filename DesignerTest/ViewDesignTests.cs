@@ -80,22 +80,6 @@ namespace DesignerTest
         }
 
         [Test]
-        [TestCase("0,0|500,0|500,500|0,500", ExpectedResult = 4)]
-        [TestCase("0,0|250,0|250,250|500,250|500,500|0,500", ExpectedResult = 6)]
-        public int ViewDesign_ConvertPosititionsToCoordinates_ShouldReturnList(string positions)
-        {
-            List<Coordinate> coordinates = ViewModel.ConvertPosititionsToCoordinates(positions);
-
-            foreach(Coordinate coordinate in coordinates)
-            {
-                Assert.IsNotNull(coordinate.X);
-                Assert.IsNotNull(coordinate.Y);
-            }
-
-            return coordinates.Count;
-        }
-
-        [Test]
         [TestCase(10, 10, ExpectedResult = true)]
         [TestCase(100, 100, ExpectedResult = true)]
         [TestCase(510, 500, ExpectedResult = false)]
@@ -104,7 +88,7 @@ namespace DesignerTest
         [TestCase(270, 270, ExpectedResult = true)]
         public bool ViewDesign_CheckRoomCollisions_ReturnBoolean(int x, int y)
         {
-            List<Coordinate> coordinates = ViewModel.ConvertPosititionsToCoordinates("0,0|250,0|250,250|500,250|500,500|0,500");
+            List<Position> coordinates = Room.ToList("0,0|250,0|250,250|500,250|500,500|0,500");
 
             Point point = new Point(x, y);
 

@@ -289,7 +289,7 @@ namespace Designer.ViewModel
         public void SetRoomDimensions()
         {
             // TODO: Replace with room positions
-            var coordinates = ConvertPosititionsToCoordinates("0,0|250,0|250,250|500,250|500,500|0,500");
+            var coordinates = Room.ToList(Design.Room.Positions);
 
 
             PointCollection points = new PointCollection();
@@ -306,23 +306,6 @@ namespace Designer.ViewModel
             RoomPoly.VerticalAlignment = VerticalAlignment.Center;
             RoomPoly.Points = points;
             Editor.Children.Add(RoomPoly);
-        }
-
-        public List<Coordinate> ConvertPosititionsToCoordinates(string positions)
-        {
-            List<Coordinate> values = new List<Coordinate>();
-
-            // Splits de posities per pipe
-            string[] coordinates = positions.Split("|");
-
-            // Loop door alle coordinaten en voeg deze vervolgens toe aan values variable
-            foreach (string coordinate in coordinates)
-            {
-                string[] val = coordinate.Split(",");
-                values.Add(new Coordinate(Convert.ToInt32(val[0]), Convert.ToInt32(val[1])));
-            }
-
-            return values;
         }
 
         public bool CheckRoomCollisions(PointCollection vertices, Point point, Product product)
@@ -372,23 +355,5 @@ namespace Designer.ViewModel
     {
         public int Total { get; set; }
         public double TotalPrice { get; set; }
-    }
-
-    public class Coordinate
-    {
-        public int X;
-        public int Y;
-
-        public Coordinate(int x, int y)
-        {
-            X = x;
-            Y = y;
-        }
-
-        public Coordinate(Point point)
-        {
-            X = Convert.ToInt32(point.X);
-            Y = Convert.ToInt32(point.Y);
-        }
     }
 }
