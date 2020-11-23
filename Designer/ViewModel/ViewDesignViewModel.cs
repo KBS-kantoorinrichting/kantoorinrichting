@@ -142,7 +142,7 @@ namespace Designer.ViewModel {
             _previousPosition = position;
 
             // Check of het product in de ruimte wordt geplaatst
-            AllowDrop = CheckRoomCollisions(RoomPoly.Points, position);
+            AllowDrop = CheckRoomCollisions(RoomPoly.Points, position, selectedProduct);
 
             //Teken de ruimte en de al geplaatste producten
             RenderRoom();
@@ -281,10 +281,9 @@ namespace Designer.ViewModel {
 
         public bool CheckRoomCollisions(PointCollection vertices, Point point, Product product)
         {
-            // TODO: product moet nog gebruikt worden bij de offsets
             int j = vertices.Count() - 1;
-            int yOffset = 60;
-            int xOffset = 60;
+            int yOffset = product.Length / 2;
+            int xOffset = product.Width / 2;
             Debug.WriteLine(point.X);
             Debug.WriteLine(point.Y);
 
