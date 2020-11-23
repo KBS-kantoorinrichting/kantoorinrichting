@@ -10,11 +10,11 @@
     xmlns:designer="clr-namespace:Designer"
     xmlns:gif="http://wpfanimatedgif.codeplex.com"
     mc:Ignorable="d"
-    Title="ViewDesignPage"
+    Title="ViewProductsView"
     WindowHeight="-1" Height="654" Width="1154">
 
     <Page.DataContext>
-        <viewModel:ViewProductsViewModel />
+        <viewModel:ViewProductsViewModel x:Name="viewModel" />
     </Page.DataContext>
     <Page.Resources>
         <designer:ImagePathConverter x:Key="ImagePathConverter" />
@@ -43,13 +43,11 @@
                                         BorderThickness="0.2"
                                         BorderBrush="Black">
                                         <behaviors:Interaction.Triggers>
-                                            <behaviors:EventTrigger EventName="MouseDown">
-                                                <behaviors:InvokeCommandAction
-                                                    Command="{ Binding ElementName=viewModel, Path=MouseDownCommand}"
-                                                    PassEventArgsToCommand="True" />
-                                            </behaviors:EventTrigger>
-                                        </behaviors:Interaction.Triggers>
-                                        <StackPanel Orientation="Vertical" Width="108" Height="108">
+                                                <behaviors:EventTrigger EventName="MouseDown">
+                                                <behaviors:InvokeCommandAction Command="{ Binding ElementName=viewModel, Path=MouseDownCommand}" PassEventArgsToCommand="True" />
+                                                </behaviors:EventTrigger>
+                                            </behaviors:Interaction.Triggers>
+                                            <StackPanel Orientation="Vertical" Width="108" Height="108">
                                             <TextBlock
 
                                                 Text="{Binding Name}"
@@ -169,7 +167,7 @@
                            HorizontalAlignment="Left" Margin="0,10,0,0" />
                     <Border>
                         <Image
-                            gif:ImageBehavior.AnimatedSource="{Binding Path= SelectedProduct.Photo ,Converter={StaticResource ImagePathConverter}}"
+                            Source="{Binding Path= SelectedProduct.Photo ,Converter={StaticResource ImagePathConverter}}"
                             Height="237" Width="245" />
                     </Border>
                 </StackPanel>

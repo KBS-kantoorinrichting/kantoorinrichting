@@ -22,7 +22,6 @@ namespace Designer.ViewModel {
         public BasicCommand DeleteCommand { get; set; }
         public BasicCommand AddPhoto { get; set; }
 
-        public BasicCommand ReloadCommand { get; set; }
         public ArgumentCommand<MouseButtonEventArgs> MouseDownCommand { get; set; }
         public event PropertyChangedEventHandler PropertyChanged;
         public Product SelectedProduct { get; set; }
@@ -32,11 +31,9 @@ namespace Designer.ViewModel {
 
         public ViewProductsViewModel() {
             Reload();
-            MouseDownCommand = new ArgumentCommand<MouseButtonEventArgs>(e => CatalogusMouseDown(e.OriginalSource, e));
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("SelectedProduct"));
+            MouseDownCommand = new ArgumentCommand<MouseButtonEventArgs>(e => MouseDown(e.OriginalSource, e));
             AddPhoto = new BasicCommand(SelectPhoto);
             Submit = new BasicCommand(SubmitItem);
-            ReloadCommand = new BasicCommand(Reload);
             DeleteCommand = new BasicCommand(Delete);
         }
 
@@ -64,7 +61,8 @@ namespace Designer.ViewModel {
             Reload();
         }
 
-        public void CatalogusMouseDown(object sender, MouseButtonEventArgs e) {
+        public void MouseDown(object sender, MouseButtonEventArgs e) {
+           
             // Linker muisknop moet ingdrukt zijn
             if (e.LeftButton == MouseButtonState.Pressed) {
                 if (sender.GetType() != typeof(Image)) return;
