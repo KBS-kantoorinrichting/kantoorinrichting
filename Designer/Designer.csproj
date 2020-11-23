@@ -62,9 +62,6 @@
 	  <Resource Include="Resources\Images\black-cool-matte-texture-banner-black-cool-matte-background-matte-texture-png-960_350.png">
 	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
 	  </Resource>
-	  <Resource Include="Resources\Images\boef profielfoto.jpg">
-	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-	  </Resource>
 	  <Resource Include="Resources\Images\bureau_stoel.png">
 		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
 	  </Resource>
@@ -86,27 +83,11 @@
 	  <Resource Include="Resources\Images\ernstig.jpg">
 		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
 	  </Resource>
-	  <Resource Include="Resources\Images\image0-24-1.gif">
-	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-	  </Resource>
-	  <Resource Include="Resources\Images\kf8umo9p3ey51.png">
-	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-	  </Resource>
 	  <Resource Include="Resources\Images\lamp.jpg">
-		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-	  </Resource>
-	  <Resource Include="Resources\Images\lamp2.jpg">
 		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
 	  </Resource>
 	  <Resource Include="Resources\Images\logo_windesheim.png">
 	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-	  </Resource>
-
-	  <Resource Include="Resources\Images\menko.jpg">
-		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-	  </Resource>
-	  <Resource Include="Resources\Images\menko.png">
-		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
 	  </Resource>
 	  <Resource Include="Resources\Images\placeholder.png">
 		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
