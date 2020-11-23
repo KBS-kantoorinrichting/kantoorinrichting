@@ -109,7 +109,7 @@ namespace Designer.ViewModel {
 
         private void SubmitItem() {
             if (SaveProduct(Name, Price, Photo, Width, Length) != null) { // Als de parameters niet null zijn dan:
-                RoomEditorPopupView popup = new RoomEditorPopupView("Het product is opgeslagen");
+                GeneralPopup popup = new GeneralPopup("Het product is opgeslagen");
                 popup.ShowDialog();
                 Reload();
                 // Popup dialog met "Het product is opgeslagen"
