@@ -57,6 +57,10 @@ namespace Designer.ViewModel {
         }
 
         public void Delete() {
+            if(SelectedProduct == null)
+            {
+                return;
+            }
             ProductService.Instance.Delete(SelectedProduct);
             Reload();
         }
