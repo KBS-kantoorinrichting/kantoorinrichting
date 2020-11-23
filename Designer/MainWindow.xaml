@@ -20,6 +20,7 @@
                 <MenuItem Header="Product catalogus" Command="{Binding GotoExample}" />
                 <MenuItem Header="Ontwerpen" Command="{Binding GotoDesigns}" />
                 <MenuItem Header="Ruimtes" Command="{Binding GotoRooms}" />
+                <MenuItem Header="Opslaan" Command="{Binding Save}" />
             </Menu>
         </DockPanel>
         <Frame NavigationUIVisibility="Hidden" Margin="0,20,0,0" 

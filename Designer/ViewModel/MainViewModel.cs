@@ -11,6 +11,7 @@ namespace Designer.ViewModel {
         public BasicCommand GotoDesigns { get; set; }
         public BasicCommand GotoRooms { get; set; }
         public BasicCommand GotoExample { get; set; }
+        public BasicCommand Save { get; set; }
         public BasicCommand Exit { get; set; }
         public Navigator Navigator { get; set; }
 
@@ -29,6 +30,8 @@ namespace Designer.ViewModel {
             });
             GotoRooms = new PageCommand(() => new RoomEditorView());
             GotoExample = new PageCommand(() => new ExamplePage());
+            //Slaat alle aanpassing op
+            Save = new BasicCommand(() => DesignService.Instance.SaveChanges());
             Exit = new BasicCommand(() => Application.Current.Shutdown());
         }
 
