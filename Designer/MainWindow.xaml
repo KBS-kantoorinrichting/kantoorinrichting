@@ -17,7 +17,7 @@
                     <MenuItem Header="TODO" />
                     <MenuItem Header="Afsluiten" Command="{Binding Exit}" />
                 </MenuItem>
-                <MenuItem Header="Product catalogus" Command="{Binding GotoExample}" />
+                <MenuItem Header="Product catalogus" Command="{Binding GotoProducts}" />
                 <MenuItem Header="Ontwerpen" Command="{Binding GotoDesigns}" />
                 <MenuItem Header="Ruimtes" Command="{Binding GotoRooms}" />
                 <MenuItem Header="Opslaan" Command="{Binding Save}" />
