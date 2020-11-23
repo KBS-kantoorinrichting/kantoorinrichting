@@ -1,31 +1,17 @@
-﻿using Designer.Model;
-using Designer.ViewModel;
-using System;
-using System.Windows;
+﻿using Designer.ViewModel;
 using System.Windows.Controls;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
+using Models;
 
-namespace Designer.View
-{
+namespace Designer.View {
     /// <summary>
     /// Interaction logic for ViewDesignPage.xaml
     /// </summary>
-    public partial class ViewDesignPage : Page
-    {
-        public Window ParentWindow { get; set; }
+    public partial class ViewDesignPage : Page {
         private ViewDesignViewModel ViewModel => DataContext as ViewDesignViewModel;
 
-        public ViewDesignPage(Design Design)
-        {
+        public ViewDesignPage(Design design) {
             InitializeComponent();
-            ViewModel.SetDesign(Design);
+            ViewModel.SetDesign(design);
         }
-        private void Page_Initialized(object sender, EventArgs e)
-        {
-        }
-
     }
 }
