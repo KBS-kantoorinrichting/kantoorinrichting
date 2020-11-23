@@ -13,8 +13,7 @@
     <Grid>
         <DockPanel LastChildFill="False">
             <Menu DockPanel.Dock="Top" FontFamily="Verdana" Height="20" VerticalAlignment="Top">
-                <MenuItem Header="Application">
-                    <MenuItem Header="TODO" />
+                <MenuItem Header="Applicatie">
                     <MenuItem Header="Afsluiten" Command="{Binding Exit}" />
                 </MenuItem>
                 <MenuItem Header="Product catalogus" Command="{Binding GotoProducts}" />
