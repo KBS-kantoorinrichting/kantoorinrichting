@@ -17,15 +17,50 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <None Remove="Resources\Images\215-2158748_food-table-top-view-png-transparent-png.png" />
+	  <None Remove="Resources\Images\54-540285_coffee-machine-top-view-png-transparent-png.png" />
+	  <None Remove="Resources\Images\65-656911_view-png-files-for-kids-tv-top-view.png" />
+	  <None Remove="Resources\Images\72286.png" />
+	  <None Remove="Resources\Images\aquarium_PNG24.png" />
+	  <None Remove="Resources\Images\asus-vivobook-asus-vivobook-laptop-top-view-115631600184lj3oo5igt.png" />
+	  <None Remove="Resources\Images\black-cool-matte-texture-banner-black-cool-matte-background-matte-texture-png-960_350.png" />
 	  <None Remove="Resources\Images\bureau_stoel_draaiend.gif" />
+	  <None Remove="Resources\Images\coffee-cup-top-view-png-coffee-cup-top-view-11563072800dmhvkjbpzr.png" />
 	  <None Remove="Resources\Images\crafting _table.png" />
 	  <None Remove="Resources\Images\cursedtrollface.png" />
+	  <None Remove="Resources\Images\ea24f3380d3f7897fe33cd4245a7c582.png" />
 	  <None Remove="Resources\Images\image0-24-1.gif" />
+	  <None Remove="Resources\Images\png-clipart-gray-fabric-3-seat-sofa-illustration-eames-lounge-chair-furniture-bed-foot-rests-bed-top-view-angle-rectangle-thumbnail.png" />
+	  <None Remove="Resources\Images\png-transparent-black-armchair-office-desk-chairs-furniture-top-view-angle-couch-interior-design-services.png" />
+	  <None Remove="Resources\Images\png-transparent-silver-imac-setup-magic-mouse-mac-mini-imac-desktop-computers-top-view-computer-computer-monitor-accessory-laptop.png" />
+	  <None Remove="Resources\Images\pnghut_computer-keyboard-mouse-desktop-pc-game-mute-pink_xBh4Ru7ECn.png" />
+	  <None Remove="Resources\Images\pnghut_drawer-file-cabinets-office-steel-japanese-industrial-standards-filing-cabinet-files-free_0WdRtHcgVw.png" />
 	</ItemGroup>
 	
   <ItemGroup>
+	  <Resource Include="Resources\Images\215-2158748_food-table-top-view-png-transparent-png.png">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </Resource>
+	  <Resource Include="Resources\Images\54-540285_coffee-machine-top-view-png-transparent-png.png">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </Resource>
+	  <Resource Include="Resources\Images\65-656911_view-png-files-for-kids-tv-top-view.png">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </Resource>
+	  <Resource Include="Resources\Images\72286.png">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </Resource>
+	  <Resource Include="Resources\Images\aquarium_PNG24.png">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </Resource>
+	  <Resource Include="Resources\Images\asus-vivobook-asus-vivobook-laptop-top-view-115631600184lj3oo5igt.png">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </Resource>
 	  <Resource Include="Resources\Images\bank.png">
 		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </Resource>
+	  <Resource Include="Resources\Images\black-cool-matte-texture-banner-black-cool-matte-background-matte-texture-png-960_350.png">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
 	  </Resource>
 	  <Resource Include="Resources\Images\boef profielfoto.jpg">
 	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
@@ -36,10 +71,16 @@
 	  <Resource Include="Resources\Images\bureau_stoel_draaiend.gif">
 	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
 	  </Resource>
+	  <Resource Include="Resources\Images\coffee-cup-top-view-png-coffee-cup-top-view-11563072800dmhvkjbpzr.png">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </Resource>
 	  <Resource Include="Resources\Images\crafting _table.png">
 	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
 	  </Resource>
 	  <Resource Include="Resources\Images\cursedtrollface.png">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </Resource>
+	  <Resource Include="Resources\Images\ea24f3380d3f7897fe33cd4245a7c582.png">
 	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
 	  </Resource>
 	  <Resource Include="Resources\Images\ernstig.jpg">
@@ -69,6 +110,21 @@
 	  </Resource>
 	  <Resource Include="Resources\Images\placeholder.png">
 		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </Resource>
+	  <Resource Include="Resources\Images\png-clipart-gray-fabric-3-seat-sofa-illustration-eames-lounge-chair-furniture-bed-foot-rests-bed-top-view-angle-rectangle-thumbnail.png">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </Resource>
+	  <Resource Include="Resources\Images\png-transparent-black-armchair-office-desk-chairs-furniture-top-view-angle-couch-interior-design-services.png">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </Resource>
+	  <Resource Include="Resources\Images\png-transparent-silver-imac-setup-magic-mouse-mac-mini-imac-desktop-computers-top-view-computer-computer-monitor-accessory-laptop.png">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </Resource>
+	  <Resource Include="Resources\Images\pnghut_computer-keyboard-mouse-desktop-pc-game-mute-pink_xBh4Ru7ECn.png">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </Resource>
+	  <Resource Include="Resources\Images\pnghut_drawer-file-cabinets-office-steel-japanese-industrial-standards-filing-cabinet-files-free_0WdRtHcgVw.png">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
 	  </Resource>
 	  <Resource Include="Resources\Images\stoel.png">
 		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
