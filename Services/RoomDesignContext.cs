@@ -18,7 +18,7 @@ namespace Services {
             return context;
         }
 
-        public RoomDesignContext() { }
+        public RoomDesignContext() : base(RoomDesignOptions.Options) { }
 
         //Alternative constructor zodat er de db getest kan worden.
         public RoomDesignContext(DbContextOptions options) : base(options) { }

@@ -11,6 +11,7 @@ namespace Designer.ViewModel {
         public BasicCommand GotoDesigns { get; set; }
         public BasicCommand GotoRooms { get; set; }
         public BasicCommand GotoExample { get; set; }
+        public BasicCommand Save { get; set; }
         public BasicCommand GotoProducts { get; set; }
         public BasicCommand Exit { get; set; }
         public Navigator Navigator { get; set; }
@@ -18,20 +19,21 @@ namespace Designer.ViewModel {
         public MainViewModel() {
             //Maak de db connectie aan
             RoomService.Instance.Get(0);
-
+            
             Navigator = Navigator.Instance;
-            GotoDesigns = new PageCommand(
-                () => {
-                    DesignCatalog designCatalog = new DesignCatalog();
-                    designCatalog.DesignSelected += (o, e) => {
-                        Navigator.Instance.Replace(new ViewDesignPage(e.Value));
-                    };
-                    return designCatalog;
-                }
-            );
-            GotoProducts = new PageCommand(() => new ViewProductsView());
+            GotoDesigns = new PageCommand(() => {
+                DesignCatalog DesignCatalog = new DesignCatalog();
+                DesignCatalog.DesignSelected += (o, e) =>
+                {
+                    Navigator.Instance.Replace(new ViewDesignPage(e.Value));
+                };
+                return DesignCatalog;
+            });
             GotoRooms = new PageCommand(() => new RoomEditorView());
+            GotoProducts = new PageCommand(() => new ViewProductsView());
             GotoExample = new PageCommand(() => new ExamplePage());
+            //Slaat alle aanpassing op
+            Save = new BasicCommand(() => DesignService.Instance.SaveChanges());
             Exit = new BasicCommand(() => Application.Current.Shutdown());
         }
 
