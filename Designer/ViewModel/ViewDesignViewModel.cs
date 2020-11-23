@@ -279,8 +279,9 @@ namespace Designer.ViewModel {
             return values;
         }
 
-        public bool CheckRoomCollisions(PointCollection vertices, Point point)
+        public bool CheckRoomCollisions(PointCollection vertices, Point point, Product product)
         {
+            // TODO: product moet nog gebruikt worden bij de offsets
             int j = vertices.Count() - 1;
             int yOffset = 60;
             int xOffset = 60;
