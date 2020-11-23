@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Designer.View;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Windows.Controls;
@@ -13,6 +14,7 @@ namespace Designer.Other {
         }
 
         private Navigator() {
+            _stack.Push(new HomeView());
         }
 
         //De stack houdt bij welke pagina open staan
