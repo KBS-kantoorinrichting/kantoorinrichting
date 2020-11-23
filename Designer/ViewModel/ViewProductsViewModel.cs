@@ -57,7 +57,7 @@ namespace Designer.ViewModel {
         }
 
         public void Delete() {
-            if(SelectedProduct == null)
+            if (SelectedProduct == null || ProductService.Instance.Count() == 0)
             {
                 return;
             }
