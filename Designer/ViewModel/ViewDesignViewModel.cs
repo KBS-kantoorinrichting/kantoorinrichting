@@ -32,7 +32,6 @@ namespace Designer.ViewModel {
         public Canvas Editor { get; set; }
         private Point _previousPosition;
         private ProductPlacement _selectedPlacement;
-        private Polygon _selectedPoly;
         public Polygon RoomPoly { get; set; }
         public bool AllowDrop = false;
 
@@ -98,18 +97,9 @@ namespace Designer.ViewModel {
                 placement.X == Canvas.GetLeft(image) && placement.Y == Canvas.GetTop(image));
             if (placement.Count() > 0)
             {
-                _selectedPlacement = placement.First();
-                // Create new polygon that's representing the dimensions of the selected product
-                _selectedPoly = new Polygon()
-                {
-                    Points = new PointCollection() { 
-                        new Point(_selectedPlacement.X, _selectedPlacement.Y),
-                        new Point(_selectedPlacement.Y, _selectedPlacement.X),
-                        new Point(_selectedPlacement.Y, _selectedPlacement.Y),
-                        new Point(_selectedPlacement.X, _selectedPlacement.X)
-                    }
-                };
+                _selectedPlacement = placement.First();    
             }
+            
             RenderRoom();
         }
         
@@ -121,7 +111,7 @@ namespace Designer.ViewModel {
                 if(sender.GetType() != typeof(Image)) return;
                 // Cast datacontext naar product
                 var obj = (Product)((Image)sender).DataContext;
-                
+
                 // Init drag & drop voor geselecteerde product
                 DragDrop.DoDragDrop(Editor, obj, DragDropEffects.Link);
             }
@@ -152,7 +142,7 @@ namespace Designer.ViewModel {
             _previousPosition = position;
 
             // Check of het product in de ruimte wordt geplaatst
-            AllowDrop = CheckRoomCollisions(RoomPoly.Points, position, _selectedPoly);
+            AllowDrop = CheckRoomCollisions(RoomPoly.Points, position);
 
             //Teken de ruimte en de al geplaatste producten
             RenderRoom();
@@ -289,25 +279,42 @@ namespace Designer.ViewModel {
             return values;
         }
 
-        public bool CheckRoomCollisions(PointCollection vertices, Point point, Polygon product)
+        public bool CheckRoomCollisions(PointCollection vertices, Point point)
         {
-            bool result = false;
             int j = vertices.Count() - 1;
+            int yOffset = 60;
+            int xOffset = 60;
+            Debug.WriteLine(point.X);
+            Debug.WriteLine(point.Y);
 
-            // Loopt door alle punten in de polygon
-            for (int i = 0; i < vertices.Count(); i++)
+            // Punten aanmaken waar om gecheckt moet worden
+            PointCollection points = new PointCollection()
             {
-                // Kijkt of de gegeven point in de polygon ligt qua coordinaten
-                if (vertices[i].Y < point.Y && vertices[j].Y >= point.Y || vertices[j].Y < point.Y && vertices[i].Y >= point.Y)
+                new Point(point.X - xOffset, point.Y - yOffset),
+                new Point(point.X + yOffset, point.Y - xOffset),
+                new Point(point.X - yOffset, point.Y + yOffset),
+                new Point(point.X + xOffset, point.Y + xOffset),
+            };
+
+            foreach (Point p in points)
+            {
+                bool result = false;
+                // Loopt door alle punten in de polygon
+                for (int i = 0; i < vertices.Count(); i++)
                 {
-                    if (vertices[i].X + (point.Y - vertices[i].Y) / (vertices[j].Y - vertices[i].Y) * (vertices[j].X - vertices[i].X) < point.X)
+                    // Kijkt of de gegeven point in de polygon ligt qua coordinaten
+                    if (vertices[i].Y < p.Y && vertices[j].Y >= p.Y || vertices[j].Y < p.Y && vertices[i].Y >= p.Y)
                     {
-                        result = !result;
+                        if (vertices[i].X + (p.Y - vertices[i].Y) / (vertices[j].Y - vertices[i].Y) * (vertices[j].X - vertices[i].X) < p.X)
+                        {
+                            result = !result;
+                        }
                     }
+                    j = i;
                 }
-                j = i;
+                if (!result) return false;
             }
-            return result;
+            return true;
         }
     }
 
