@@ -1,14 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
+﻿using System.Windows;
+using Designer.Other;
 
 namespace Designer.View
 {
@@ -17,15 +8,25 @@ namespace Designer.View
     /// </summary>
     public partial class GeneralPopup : Window
     {
-        public GeneralPopup(string text)
+        public string Message { get; set; }
+        public string WindowTitle { get; set; }
+        public BasicCommand Continue { get; set; }
+
+        public GeneralPopup(string message) : this(message, "Popup") { }
+
+        public GeneralPopup(string message, string title)
         {
             InitializeComponent();
-            TextLabel.Content = text;
+            DataContext = this;
+            Message = message;
+            WindowTitle = title;
+            Title = title;
+            Continue = new BasicCommand(Continue_Button_Click);
         }
 
-        private void Continue_Button_Click(object sender, RoutedEventArgs e) { Close(); }
+        private void Continue_Button_Click()
+        {
+            Close();
+        }
     }
-
-
 }
-

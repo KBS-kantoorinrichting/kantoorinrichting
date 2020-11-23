@@ -5,15 +5,16 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Designer.View"
         mc:Ignorable="d"
-        Title="Popup" Height="200" Width="400">
+        Title="{Binding WindowTitle, RelativeSource={RelativeSource Self}}"
+        Height="200" Width="400">
     <Grid>
         <!-- Text weergeven -->
-        <Label Name="TextLabel" Content="Voorbeeld Text!" HorizontalAlignment="Center" Margin="0,34,0,0"
+        <Label Content="{Binding Path=Message, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Window}}" HorizontalAlignment="Center" Margin="0,34,0,0"
                VerticalAlignment="Top" />
         
         <!-- verdergaan knop -->
         <Button Background="Bisque" FontFamily="Verdana" FontSize="10" Content="Verdergaan"
-                HorizontalAlignment="Center" Margin="0,114,0,0" VerticalAlignment="Top" Click="Continue_Button_Click"
+                HorizontalAlignment="Center" Margin="0,114,0,0" VerticalAlignment="Top" Command="{Binding Path=Continue, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Window}}"
                 Height="24" Width="74" />
     </Grid>
 </Window>
