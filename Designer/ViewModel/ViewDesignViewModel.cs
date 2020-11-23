@@ -59,8 +59,7 @@ namespace Designer.ViewModel
             DragOverCommand = new ArgumentCommand<DragEventArgs>(e => CanvasDragOver(e.OriginalSource, e));
             _productOverview = new Dictionary<Product, ProductData>();
 
-            // Sets the dimensions of the current room
-            SetRoomDimensions();
+            
         }
 
         public void SetDesign(Design design)
@@ -70,7 +69,12 @@ namespace Designer.ViewModel
             ProductPlacements ??= new List<ProductPlacement>();
             _productOverview = new Dictionary<Product, ProductData>();
             //Wanneer niet in test env render die de ruimte
-            if (Editor != null) RenderRoom();
+            if (Editor != null)
+            {
+                // Sets the dimensions of the current room
+                SetRoomDimensions();
+                RenderRoom();
+            }
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(""));
         }
 
