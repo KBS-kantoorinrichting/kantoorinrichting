@@ -80,6 +80,7 @@ namespace Designer.ViewModel
 
         public void CanvasMouseDown(object sender, MouseButtonEventArgs e)
         {
+            //Rechtermuisknop zorgt ervoor dat informatie over het product wordt getoond
             if (e.ChangedButton == MouseButton.Right)
             {
                 if (sender.GetType() == typeof(Canvas))
@@ -99,6 +100,7 @@ namespace Designer.ViewModel
 
                 RenderRoom();
             }
+            //Linkermuisknop betekent dat het product wordt verplaatst
             else
             {
                 if (sender.GetType() != typeof(Image)) return;
@@ -131,6 +133,7 @@ namespace Designer.ViewModel
         {
             //Als er geen product is geselecteerd, doe niks
             if (e.Data == null) return;
+            //In dit geval wordt er een product toegevoegd
             if (e.Data.GetDataPresent(typeof(Product)))
             {
                 var selectedProduct = (Product) e.Data.GetData(typeof(Product));
@@ -142,13 +145,18 @@ namespace Designer.ViewModel
                     (int) (position.Y - (selectedProduct.Length / 2)));
                 RenderRoom();
             }
+            //Hier wordt een product dat al in het design zit verplaatst
             else if(e.Data.GetDataPresent(typeof(ProductPlacement)))
             {
                 var placement = (ProductPlacement) e.Data.GetData(typeof(ProductPlacement));
                 Point position = e.GetPosition(Editor);
+                //Verwijder de placement van de placement om te voorkomen dat het product verdubbeld wordt
                 ProductPlacements.Remove(placement);
+                //Trek de helft van de hoogte en breedte van het product eraf
+                //Zodat het product in het midden van de cursor staat
                 placement.X = (int)position.X - (placement.Product.Width / 2);
                 placement.Y = (int) position.Y - (placement.Product.Length / 2);
+                //Na het aanpassen wordt het weer toegevoegd om de illusie te geven dat het in de lijst wordt aangepast
                 ProductPlacements.Add(placement);
                 _draggingPlacement = null;
                 RenderRoom();
@@ -160,6 +168,7 @@ namespace Designer.ViewModel
             //Controleer of er een product is geselecteerd
             if (e.Data == null) return;
             Product selectedProduct = null;
+            //Afhankelijk van het type data wordt de product op een andere manier opgehaald
             if (e.Data.GetDataPresent(typeof(Product)))
             {
                 selectedProduct = (Product) e.Data.GetData(typeof(Product));
@@ -187,6 +196,8 @@ namespace Designer.ViewModel
             for (int i = 0; i < ProductPlacements.Count; i++)
             {
                 var placement = ProductPlacements[i];
+                //Controleer of de placement op dat moment verplaatst wordt
+                //Als dit het geval is moet de placement doorzichtig worden
                 DrawProduct(placement.Product, placement.X, placement.Y, i, _draggingPlacement == placement);
             }
 
@@ -198,19 +209,6 @@ namespace Designer.ViewModel
 
         private void DrawSelectionButtons(ProductPlacement placement)
         {
-            /*
-            Button deleteButton = new Button();
-            deleteButton.Content = "X";
-            Canvas.SetTop(deleteButton, placement.Y);
-            Canvas.SetLeft(deleteButton, placement.X);
-            deleteButton.Click += (o, e) =>
-            {
-                ProductPlacements.Remove(placement);
-                _selectedPlacement = null;
-                RenderRoom();
-            };
-            Editor.Children.Add(deleteButton);
-            */
             PlacementSelectScreen selectScreen = new PlacementSelectScreen();
             selectScreen.DataContext = placement.Product;
             selectScreen.DeleteButton.Click += (o, e) =>
@@ -234,7 +232,8 @@ namespace Designer.ViewModel
                 Height = product.Length,
                 Width = product.Width
             };
-
+            
+            //Als transparent in als parameter naar true wordt gezet wordt de afbeelding doorzichtig
             if (transparent)
                 image.Opacity = 0.5;
             
