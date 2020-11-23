@@ -3,31 +3,60 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:s="clr-namespace:System;assembly=mscorlib"
     xmlns:viewModel="clr-namespace:Designer.ViewModel" x:Class="Designer.View.RoomEditorView"
     mc:Ignorable="d"
     d:DesignHeight="720" d:DesignWidth="1280"
     Title="KantoorInrichting - Ruimte Editor">
 
+
     <Page.DataContext>
         <viewModel:RoomEditorViewModel />
     </Page.DataContext>
 
-    <Grid>
+    <Grid Margin="0,0,0,0">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="29*"/>
+            <RowDefinition Height="31*"/>
+        </Grid.RowDefinitions>
+        <!--Naam Pagina-->
         <Label Content="Ruimte Toevoegen" HorizontalAlignment="Left" FontSize="35" Margin="10,10,0,0"
                VerticalAlignment="Top" />
 
-        <!--naam invoerveld-->
-        <TextBox MaxLength="25" HorizontalAlignment="Left" Margin="666,346,0,0"
-                 TextWrapping="Wrap" VerticalAlignment="Top" Width="189"
-                 Text="{Binding Name, UpdateSourceTrigger = PropertyChanged}" />
+        <!--naam invoerveld -->
+        <TextBox MaxLength="25" HorizontalAlignment="Left" Margin="46,262,0,0"
+                 TextWrapping="Wrap" VerticalAlignment="Top" Width="178"
+                 Text="{Binding Name, UpdateSourceTrigger = PropertyChanged}"/>
 
-        <Label Content="Ruimte naam:" HorizontalAlignment="Left" Margin="661,309,0,0" VerticalAlignment="Top" />
+        <Label Content="Ruimte naam:" HorizontalAlignment="Left" Margin="39,225,0,0" VerticalAlignment="Top" Width="114" />
+
+        <!-- template knoppen -->
+
+
+        <Button BorderThickness="0" Command="{Binding TemplateButton}" Margin="326,86,554,137" Grid.RowSpan="2" Background="{x:Null}" BorderBrush="{x:Null}" Foreground="{x:Null}">
+            <Button.CommandParameter>
+                <s:Int32>0</s:Int32>
+            </Button.CommandParameter>
+            <StackPanel>
+                <Image Name="TemplateButton0" Source="{Binding Image0}" Stretch="Fill" HorizontalAlignment="Left" VerticalAlignment="Top" />
+            </StackPanel>
+        </Button>
+
+
+        <Button BorderThickness="0" Command="{Binding TemplateButton}" Margin="777,86,103,137" Grid.RowSpan="2" Background="{x:Null}" BorderBrush="{x:Null}" Foreground="{x:Null}">
+            <Button.CommandParameter>
+                <s:Int32>1</s:Int32>
+            </Button.CommandParameter>
+            <StackPanel>
+                <Image Name="TemplateButton1" Source="{Binding Image1}" />
+            </StackPanel>
+        </Button>
 
         <!--Breedte invoerveld-->
-        <Label Content="Ruimte breedte:" HorizontalAlignment="Left" Margin="426,309,0,0" VerticalAlignment="Top" />
+        <Label Content="Ruimte breedte:" HorizontalAlignment="Left" Margin="42,324,0,0" VerticalAlignment="Top" Grid.RowSpan="2" Width="278" />
 
-        <TextBox Name="Width" MaxLength="25" HorizontalAlignment="Left" Margin="427,346,0,0"
-                 TextWrapping="Wrap" VerticalAlignment="Top" Width="189">
+        <TextBox Name="Width" MaxLength="25" HorizontalAlignment="Left" Margin="49,39,0,0"
+                 TextWrapping="Wrap" VerticalAlignment="Top" Width="88" Grid.Row="1">
             <TextBox.Text>
                 <Binding Path="Width" UpdateSourceTrigger="PropertyChanged">
                     <Binding.ValidationRules>
@@ -38,14 +67,14 @@
         </TextBox>
 
         <TextBlock Foreground="Red" Text="{Binding (Validation.Errors)[0].ErrorContent, ElementName=Width}"
-                   Margin="426,369,622,135" />
+                   Margin="54,73,974,185" Grid.Row="1" />
 
 
         <!--Lengte invoerveld-->
-        <Label Content="Ruimte lengte" HorizontalAlignment="Left" Margin="426,382,0,0" VerticalAlignment="Top" />
+        <Label Content="Ruimte lengte" HorizontalAlignment="Left" Margin="49,199,0,0" VerticalAlignment="Top" Grid.Row="1" Width="246" />
 
-        <TextBox Name="Length" MaxLength="25" HorizontalAlignment="Left" Margin="427,415,0,0" TextWrapping="Wrap"
-                 VerticalAlignment="Top" Width="189">
+        <TextBox Name="Length" MaxLength="25" HorizontalAlignment="Left" Margin="51,240,0,0" TextWrapping="Wrap"
+                 VerticalAlignment="Top" Width="85" Grid.Row="1">
             <TextBox.Text>
                 <Binding Path="Length" UpdateSourceTrigger="PropertyChanged">
                     <Binding.ValidationRules>
@@ -56,13 +85,14 @@
         </TextBox>
 
         <TextBlock Foreground="Red" Text="{Binding (Validation.Errors)[0].ErrorContent, ElementName=Length}"
-                   Margin="426,446,622,58" />
-
+                   Margin="55,279,978,20" Grid.Row="1" />
 
         <!--Opslaan knop-->
         <Button Content="Opslaan" Background="Bisque" FontFamily="Verdana" FontSize="30"
                 HorizontalAlignment="Left" VerticalAlignment="Top" Height="52" Width="190"
-                RenderTransformOrigin="0.906,0.372" Margin="666,382,0,0"
-                Command="{Binding Submit}" />
+                RenderTransformOrigin="0.906,0.372" Margin="698,240,0,0"
+                Command="{Binding Submit}" Grid.Row="1" />
+        <TextBlock HorizontalAlignment="Left" Margin="706,51,0,0" Text="Kies een Template" TextWrapping="Wrap" VerticalAlignment="Top"/>
+
     </Grid>
 </Page>

@@ -1,10 +1,11 @@
 ﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.Runtime.CompilerServices;
 
-namespace Designer.Model
-{
-    public class Design
-    {
-        public int DesignId { get; set; }
+namespace Models {
+    public class Design : Data, IEntity {
+        [Column("DesignId")] public int Id { get; set; }
+
         public string Name { get; set; }
 
         public int RoomId { get; set; }
@@ -19,5 +20,7 @@ namespace Designer.Model
             Room = room;
             ProductPlacements = productPlacements;
         }
+
+        protected override ITuple Variables => (Id, Name, RoomId, Room, ProductPlacements);
     }
 }

@@ -1,23 +1,17 @@
 using System.Collections.Generic;
-using System.Linq;
-using Designer.Model;
 using Designer.ViewModel;
+using Models;
 using NUnit.Framework;
+using Services;
+using ServicesTest;
 
 namespace DesignerTest {
-    public class AddDesignTestsStaticMethods {
-        private static readonly Room Room1 = new Room("TestRoom1", 1, 1);
-        private static readonly Room Room2 = new Room("TestRoom2", 2, 4);
-        private static readonly Room Room3 = new Room("TestRoom3", 2, 5);
-
-        [SetUp]
-        public void Setup() {
-            TestRoomDesignContext.Setup(
-                new List<Room> {
-                    Room1, Room2, Room3
-                }
-            );
-        }
+    public class AddDesignDatabaseTestsStaticMethods : DatabaseTest {
+        private static readonly Room Room1 = Room.FromDimensions("TestRoom1", 1, 1);
+        private static readonly Room Room2 = Room.FromDimensions("TestRoom2", 2, 4);
+        private static readonly Room Room3 = Room.FromDimensions("TestRoom3", 2, 5);
+        
+        protected override List<Room> Rooms => new List<Room> {Room1, Room2, Room3};
 
         [Test]
         public void LoadRooms_Count() {
@@ -44,9 +38,8 @@ namespace DesignerTest {
             Design design = AddDesignModel.CreateDesign(name, room);
             Assert.AreEqual(name, design.Name);
             Assert.AreEqual(room.Name, design.Room.Name);
-            Assert.AreEqual(room.RoomId, design.Room.RoomId);
-            Assert.AreEqual(room.Width, design.Room.Width);
-            Assert.AreEqual(room.Length, design.Room.Length);
+            Assert.AreEqual(room.Id, design.Room.Id);
+            Assert.AreEqual(room.Positions, design.Room.Positions);
             Assert.IsEmpty(design.ProductPlacements);
         }
 
@@ -55,9 +48,9 @@ namespace DesignerTest {
             Design design = new Design("design4", Room1, new List<ProductPlacement>());
             Design returnedDesign = AddDesignModel.SaveDesign(design);
 
-            Assert.AreEqual(design.DesignId, returnedDesign.DesignId);
+            Assert.AreEqual(design.Id, returnedDesign.Id);
             Assert.AreEqual(design.Name, returnedDesign.Name);
-            Assert.AreEqual(design.RoomId, returnedDesign.RoomId);
+            Assert.AreEqual(design.Id, returnedDesign.Id);
             Assert.AreEqual(design.Room, returnedDesign.Room);
             Assert.AreEqual(design.ProductPlacements, returnedDesign.ProductPlacements);
         }
@@ -67,7 +60,7 @@ namespace DesignerTest {
             Design design = new Design("design4", Room1, new List<ProductPlacement>());
             AddDesignModel.SaveDesign(design);
 
-            int count = RoomDesignContext.Instance.Designs.Count();
+            int count = DesignService.Instance.Count();
 
             Assert.AreEqual(1, count);
         }
@@ -83,7 +76,7 @@ namespace DesignerTest {
                 AddDesignModel.SaveDesign(design);
             }
 
-            int count = RoomDesignContext.Instance.Designs.Count();
+            int count = DesignService.Instance.Count();
 
             Assert.AreEqual(times, count);
         }
@@ -93,30 +86,27 @@ namespace DesignerTest {
             Design design = new Design("design4", Room1, new List<ProductPlacement>());
             AddDesignModel.SaveDesign(design);
 
-            Design dbDesign = RoomDesignContext.Instance.Designs.First();
-            Assert.AreEqual(design.DesignId, dbDesign.DesignId);
-            Assert.AreEqual(design.Name, dbDesign.Name);
-            Assert.AreEqual(design.RoomId, dbDesign.RoomId);
-            Assert.AreEqual(design.Room, dbDesign.Room);
-            Assert.AreEqual(design.ProductPlacements, dbDesign.ProductPlacements);
+            Design dbDesign = DesignService.Instance.First();
+            Assert.AreEqual(dbDesign.Id, design.Id);
+            Assert.AreEqual(dbDesign.Name, design.Name);
+            Assert.AreEqual(dbDesign.Room, design.Room);
+            Assert.AreEqual(dbDesign.ProductPlacements, design.ProductPlacements);
         }
     }
 
-    public class AddDesignTestsInstace {
-        private static readonly Room Room1 = new Room("TestRoom1", 1, 1);
-        private static readonly Room Room2 = new Room("TestRoom2", 2, 4);
-        private static readonly Room Room3 = new Room("TestRoom3", 2, 5);
+    public class AddDesignTestsInstace : DatabaseTest {
+        private static readonly Room Room1 = Room.FromDimensions("TestRoom1", 1, 1);
+        private static readonly Room Room2 = Room.FromDimensions("TestRoom2", 2, 4);
+        private static readonly Room Room3 = Room.FromDimensions("TestRoom3", 2, 5);
+
         private static readonly string TestName = "TestDesign";
+        
+        protected override List<Room> Rooms => new List<Room> {Room1, Room2, Room3};
 
         private AddDesignModel _designModel;
 
         [SetUp]
         public void Setup() {
-            TestRoomDesignContext.Setup(
-                new List<Room> {
-                    Room1, Room2, Room3
-                }
-            );
             _designModel = new AddDesignModel();
         }
 
@@ -124,7 +114,7 @@ namespace DesignerTest {
         public void AddDesign_NeedsAll() {
             _designModel.AddDesign();
 
-            int count = RoomDesignContext.Instance.Designs.Count();
+            int count = DesignService.Instance.Count();
             Assert.AreEqual(0, count);
         }
 
@@ -132,10 +122,10 @@ namespace DesignerTest {
         public void AddDesign_IsAdded() {
             _designModel.Name = TestName;
             _designModel.Selected = Room1;
-            
+
             _designModel.AddDesign();
 
-            Design design = RoomDesignContext.Instance.Designs.First();
+            Design design = DesignService.Instance.First();
             Assert.NotNull(design);
             Assert.AreEqual(TestName, design.Name);
             Assert.AreEqual(Room1, design.Room);
@@ -146,10 +136,10 @@ namespace DesignerTest {
         public void AddDesign_IsCorrect() {
             _designModel.Name = TestName;
             _designModel.Selected = Room1;
-            
+
             _designModel.AddDesign();
 
-            int count = RoomDesignContext.Instance.Designs.Count();
+            int count = DesignService.Instance.Count();
             Assert.AreEqual(1, count);
         }
 
@@ -177,7 +167,7 @@ namespace DesignerTest {
                 Assert.AreEqual(Room1, args.Value.Room);
                 Assert.IsEmpty(args.Value.ProductPlacements);
             };
-            
+
             _designModel.AddDesign();
         }
     }

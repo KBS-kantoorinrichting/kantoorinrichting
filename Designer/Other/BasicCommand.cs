@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Windows.Input;
 
 namespace Designer.Other {
@@ -23,7 +24,6 @@ namespace Designer.Other {
         public bool CanExecute(object parameter) { return !Disabled; }
 
         public virtual void Execute(object parameter) {
-            Console.WriteLine(parameter);
             _action?.Invoke();
         }
 
@@ -38,7 +38,7 @@ namespace Designer.Other {
 
         public override void Execute(object parameter) {
             if (parameter is T o) _action?.Invoke(o);
-            else Console.WriteLine("Recieved wrong parameter for this command");
+            else Debug.WriteLine("Recieved wrong parameter for this command" + parameter?.GetType());
         }
     }
 }
