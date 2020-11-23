@@ -1,6 +1,8 @@
 ﻿using Designer.ViewModel;
 using NUnit.Framework;
 using System.Collections.Generic;
+using System.Windows;
+using System.Windows.Media;
 using Models;
 using ServicesTest;
 
@@ -123,12 +125,13 @@ namespace DesignerTest
         [TestCase(1202.0)]
         public void ViewDesign_TotalPrice_ShouldReturnSum(double price)
         {
+            ViewModel.SetDesign(Design);
             // TODO: needs fixing
             int increment = 5;
             for (int i = 0; i < increment; i++) {
                 ViewModel.AddToOverview(new Product()
                 {
-                    ProductId = i,
+                    Id = i,
                     Price = price
                 });
             }

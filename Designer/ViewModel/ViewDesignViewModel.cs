@@ -94,21 +94,23 @@ namespace Designer.ViewModel
             //Rechtermuisknop zorgt ervoor dat informatie over het product wordt getoond
             if (e.ChangedButton == MouseButton.Right)
             {
-            if (sender.GetType() == typeof(Canvas))
-            {
-                _selectedPlacement = null;
+                if (sender.GetType() == typeof(Canvas))
+                {
+                    _selectedPlacement = null;
+                    RenderRoom();
+                }
+
+                if (sender.GetType() != typeof(Image)) return;
+                var image = sender as Image;
+                var placement = ProductPlacements.Where(placement =>
+                    placement.X == Canvas.GetLeft(image) && placement.Y == Canvas.GetTop(image));
+                if (placement.Count() > 0)
+                {
+                    _selectedPlacement = placement.First();
+                }
+
                 RenderRoom();
             }
-            if (sender.GetType() != typeof(Image)) return;
-            var image = sender as Image;
-            var placement = ProductPlacements.Where(placement =>
-                placement.X == Canvas.GetLeft(image) && placement.Y == Canvas.GetTop(image));
-            if (placement.Count() > 0)
-            {
-                _selectedPlacement = placement.First();    
-            }
-            
-            RenderRoom();}
             //Linkermuisknop betekent dat het product wordt verplaatst
             else
             {
@@ -121,7 +123,7 @@ namespace Designer.ViewModel
                     _draggingPlacement = placement.First();
                     DragDrop.DoDragDrop(Editor, _draggingPlacement, DragDropEffects.Move);
                 }
-            };
+            }
         }
 
         public void CatalogusMouseDown(object sender, MouseButtonEventArgs e)
@@ -154,7 +156,7 @@ namespace Designer.ViewModel
                 RenderRoom();
             }
             //Hier wordt een product dat al in het design zit verplaatst
-            else if(e.Data.GetDataPresent(typeof(ProductPlacement)))
+            else if (e.Data.GetDataPresent(typeof(ProductPlacement)))
             {
                 var placement = (ProductPlacement) e.Data.GetData(typeof(ProductPlacement));
                 Point position = e.GetPosition(Editor);
@@ -162,7 +164,7 @@ namespace Designer.ViewModel
                 ProductPlacements.Remove(placement);
                 //Trek de helft van de hoogte en breedte van het product eraf
                 //Zodat het product in het midden van de cursor staat
-                placement.X = (int)position.X - (placement.Product.Width / 2);
+                placement.X = (int) position.X - (placement.Product.Width / 2);
                 placement.Y = (int) position.Y - (placement.Product.Length / 2);
                 //Na het aanpassen wordt het weer toegevoegd om de illusie te geven dat het in de lijst wordt aangepast
                 ProductPlacements.Add(placement);
@@ -185,6 +187,7 @@ namespace Designer.ViewModel
             {
                 selectedProduct = (e.Data.GetData(typeof(ProductPlacement)) as ProductPlacement)?.Product;
             }
+
             //Haal de positie van de cursor op
             Point position = e.GetPosition(Editor);
             //Als de muis niet bewogen is hoeft het niet opnieuw getekend te worden
@@ -197,11 +200,9 @@ namespace Designer.ViewModel
             //Teken de ruimte en de al geplaatste producten
             RenderRoom();
             // Render het plaatje vna het product als de cursor binnen de polygon zit
-            if(AllowDrop)
-                DrawProduct(selectedProduct, 
-                    (int)position.X - (selectedProduct.Width / 2),
-                    (int)position.Y - (selectedProduct.Length / 2)
-                    );
+            DrawProduct(selectedProduct,
+                (int) position.X - (selectedProduct.Width / 2),
+                (int) position.Y - (selectedProduct.Length / 2), transparent: !AllowDrop);
         }
 
         private void RenderRoom()
@@ -252,12 +253,12 @@ namespace Designer.ViewModel
                 Height = product.Length,
                 Width = product.Width
             };
-            
+
             //Als transparent in als parameter naar true wordt gezet wordt de afbeelding doorzichtig
             if (transparent)
                 image.Opacity = 0.5;
-            
-            
+
+
             Canvas.SetTop(image, y);
             Canvas.SetLeft(image, x);
             // Voeg product toe aan canvas
@@ -266,7 +267,8 @@ namespace Designer.ViewModel
             image.Uid ??= placementIndex.ToString();
         }
 
-        public static List<Product> LoadProducts() {
+        public static List<Product> LoadProducts()
+        {
             return ProductService.Instance.GetAll();
         }
 
@@ -292,7 +294,8 @@ namespace Designer.ViewModel
 
             PointCollection points = new PointCollection();
             // Voeg de punten toe aan een punten collectie
-            for (int i = 0; i < coordinates.Count; i++) {
+            for (int i = 0; i < coordinates.Count; i++)
+            {
                 points.Add(new Point(coordinates[i].X, coordinates[i].Y));
             }
 
@@ -313,7 +316,7 @@ namespace Designer.ViewModel
             string[] coordinates = positions.Split("|");
 
             // Loop door alle coordinaten en voeg deze vervolgens toe aan values variable
-            foreach(string coordinate in coordinates)
+            foreach (string coordinate in coordinates)
             {
                 string[] val = coordinate.Split(",");
                 values.Add(new Coordinate(Convert.ToInt32(val[0]), Convert.ToInt32(val[1])));
@@ -334,9 +337,9 @@ namespace Designer.ViewModel
             PointCollection points = new PointCollection()
             {
                 new Point(point.X - xOffset, point.Y - yOffset),
-                new Point(point.X + yOffset, point.Y - xOffset),
-                new Point(point.X - yOffset, point.Y + yOffset),
-                new Point(point.X + xOffset, point.Y + xOffset),
+                new Point(point.X + xOffset, point.Y - yOffset),
+                new Point(point.X - xOffset, point.Y + yOffset),
+                new Point(point.X + xOffset, point.Y + yOffset),
             };
 
             foreach (Point p in points)
@@ -348,15 +351,19 @@ namespace Designer.ViewModel
                     // Kijkt of de gegeven point in de polygon ligt qua coordinaten
                     if (vertices[i].Y < p.Y && vertices[j].Y >= p.Y || vertices[j].Y < p.Y && vertices[i].Y >= p.Y)
                     {
-                        if (vertices[i].X + (p.Y - vertices[i].Y) / (vertices[j].Y - vertices[i].Y) * (vertices[j].X - vertices[i].X) < p.X)
+                        if (vertices[i].X + (p.Y - vertices[i].Y) / (vertices[j].Y - vertices[i].Y) *
+                            (vertices[j].X - vertices[i].X) < p.X)
                         {
                             result = !result;
                         }
                     }
+
                     j = i;
                 }
+
                 if (!result) return false;
             }
+
             return true;
         }
     }
