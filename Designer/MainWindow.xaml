@@ -15,6 +15,7 @@
             <Menu DockPanel.Dock="Top" FontFamily="Verdana" Height="20" VerticalAlignment="Top">
                 <MenuItem Header="Applicatie">
                     <MenuItem Header="Afsluiten" Command="{Binding Exit}" />
+                    <MenuItem Header="Home" Command="{Binding GotoHome}" />
                 </MenuItem>
                 <MenuItem Header="Product catalogus" Command="{Binding GotoProducts}" />
                 <MenuItem Header="Ontwerpen" Command="{Binding GotoDesigns}" />
