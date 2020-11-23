@@ -49,11 +49,11 @@ namespace Designer.ViewModel {
         }
 
         public void GotoDesign(Design design) {
-            Console.WriteLine(design);
             DesignSelected?.Invoke(this, new BasicEventArgs<Design>(design));
         }
 
         public static List<Design> LoadDesigns() {
+            //Doesn't load productplacements without this, it's weird
             ProductPlacementService.Instance.GetAll();
             return DesignService.Instance.GetAll();
         }

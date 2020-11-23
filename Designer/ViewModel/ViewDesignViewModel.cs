@@ -60,6 +60,7 @@ namespace Designer.ViewModel
             ProductPlacements = design.ProductPlacements;
             ProductPlacements ??= new List<ProductPlacement>();
             _productOverview = new Dictionary<Product, ProductData>();
+            //Wanneer niet in test env render die de ruimte
             if (Editor != null) RenderRoom();
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(""));
         }

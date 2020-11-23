@@ -30,6 +30,7 @@ namespace Designer.ViewModel {
             });
             GotoRooms = new PageCommand(() => new RoomEditorView());
             GotoExample = new PageCommand(() => new ExamplePage());
+            //Slaat alle aanpassing op
             Save = new BasicCommand(() => DesignService.Instance.SaveChanges());
             Exit = new BasicCommand(() => Application.Current.Shutdown());
         }
