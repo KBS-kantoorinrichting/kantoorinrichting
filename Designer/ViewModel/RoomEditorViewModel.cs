@@ -60,7 +60,7 @@ namespace Designer.ViewModel {
                 if (Template == 1) {
                     if (SaveRoom(Name, width, length, Template) != null) {
                         //opent successvol dialoog
-                        RoomEditorPopupView popup = new RoomEditorPopupView("De kamer is opgeslagen!");
+                        GeneralPopup popup = new GeneralPopup("De kamer is opgeslagen!");
                         popup.ShowDialog();
                         return;
                     }
@@ -70,7 +70,7 @@ namespace Designer.ViewModel {
 
                 if (SaveRoom(Name, width, length) != null) {
                     //opent successvol dialoog
-                    RoomEditorPopupView popup = new RoomEditorPopupView("De kamer is opgeslagen!");
+                    GeneralPopup popup = new GeneralPopup("De kamer is opgeslagen!");
                     popup.ShowDialog();
                     return;
                 }
@@ -80,8 +80,8 @@ namespace Designer.ViewModel {
 
 
             //opent onsuccesvol dialoog
-            RoomEditorPopupView popupError = new RoomEditorPopupView("Er is iets misgegaan! probeer opnieuw.");
-            popupError.ShowDialog();
+            GeneralPopup popuperror = new GeneralPopup("Er is iets misgegaan! probeer opnieuw.");
+            popuperror.ShowDialog();
         }
 
         // methode om de kamer op te slaan
