@@ -10,7 +10,7 @@ namespace Designer
         //om te zetten naar een relatief pad voor o.a. de product-catalogus
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            return string.Format( "../Resources/Images/{0}", value ); 
+            return string.Format( "{1}/Resources/Images/{0}", value, Environment.CurrentDirectory); 
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

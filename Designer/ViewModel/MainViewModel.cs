@@ -18,18 +18,18 @@ namespace Designer.ViewModel {
         public MainViewModel() {
             //Maak de db connectie aan
             RoomService.Instance.Get(0);
-            
+
             Navigator = Navigator.Instance;
-            GotoDesigns = new PageCommand(() => {
-                DesignCatalog DesignCatalog = new DesignCatalog();
-                DesignCatalog.DesignSelected += (o, e) =>
-                {
-                    Navigator.Instance.Replace(new ViewDesignPage(e.Value));
-                };
-                return DesignCatalog;
-            });
+            GotoDesigns = new PageCommand(
+                () => {
+                    DesignCatalog designCatalog = new DesignCatalog();
+                    designCatalog.DesignSelected += (o, e) => {
+                        Navigator.Instance.Replace(new ViewDesignPage(e.Value));
+                    };
+                    return designCatalog;
+                }
+            );
             GotoProducts = new PageCommand(() => new ViewProductsView());
-            GotoDesigns = new PageCommand(() => new DesignCatalog());
             GotoRooms = new PageCommand(() => new RoomEditorView());
             GotoExample = new PageCommand(() => new ExamplePage());
             Exit = new BasicCommand(() => Application.Current.Shutdown());

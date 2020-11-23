@@ -228,7 +228,7 @@ namespace Designer.ViewModel
             var photo = product.Photo ?? "placeholder.png";
             var image = new Image()
             {
-                Source = new BitmapImage(new Uri(@"pack://application:,,,/" + $"Resources/Images/{photo}")),
+                Source = new BitmapImage(new Uri(Environment.CurrentDirectory + $"/Resources/Images/{photo}")),
                 Height = product.Length,
                 Width = product.Width
             };

@@ -4,7 +4,9 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:s="clr-namespace:System;assembly=mscorlib"
-    xmlns:viewModel="clr-namespace:Designer.ViewModel" x:Class="Designer.View.RoomEditorView"
+    xmlns:viewModel="clr-namespace:Designer.ViewModel"
+    xmlns:designer="clr-namespace:Designer"
+    x:Class="Designer.View.RoomEditorView"
     mc:Ignorable="d"
     d:DesignHeight="720" d:DesignWidth="1280"
     Title="KantoorInrichting - Ruimte Editor">
@@ -13,6 +15,9 @@
     <Page.DataContext>
         <viewModel:RoomEditorViewModel />
     </Page.DataContext>
+    <Page.Resources>
+        <designer:ImagePathConverter x:Key="ImagePathConverter"/>
+    </Page.Resources>
 
     <Grid Margin="0,0,0,0">
         <Grid.RowDefinitions>
@@ -38,7 +43,8 @@
                 <s:Int32>0</s:Int32>
             </Button.CommandParameter>
             <StackPanel>
-                <Image Name="TemplateButton0" Source="{Binding Image0}" Stretch="Fill" HorizontalAlignment="Left" VerticalAlignment="Top" />
+                <Image Name="TemplateButton0" Source="{Binding Image0, Converter={StaticResource ImagePathConverter}}"  
+                       Stretch="Fill" HorizontalAlignment="Left" VerticalAlignment="Top" />
             </StackPanel>
         </Button>
 
@@ -48,7 +54,7 @@
                 <s:Int32>1</s:Int32>
             </Button.CommandParameter>
             <StackPanel>
-                <Image Name="TemplateButton1" Source="{Binding Image1}" />
+                <Image Name="TemplateButton1" Source="{Binding Image1, Converter={StaticResource ImagePathConverter}}" />
             </StackPanel>
         </Button>
 
