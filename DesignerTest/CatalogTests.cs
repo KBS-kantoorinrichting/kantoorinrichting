@@ -1,66 +1,47 @@
-﻿using NUnit.Framework;
-using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
+using NUnit.Framework;
 using Designer.ViewModel;
-using Designer.Model;
-using System.Linq;
-using System.ComponentModel;
-using Microsoft.EntityFrameworkCore;
+using Models;
+using ServicesTest;
 
-namespace DesignerTest
-{
-    public class CatalogTests
-    {
-        private static readonly Product product1 = new Product("Bureaustoel yaksva", 51.40, "");
-        private static readonly Product product2 = new Product("Tuintafel", 200, "");
-        private static readonly Product product3 = new Product("Bureau", 140.40, "");
-        
-        [SetUp]
-        public void Setup()
-        {
-        // Producten in een lijst zetten als database om te testen.
-            TestRoomDesignContext.Setup(
-                products:new List<Product> { 
-                    product1, product2, product3
-                }
-            );
-        }
+namespace DesignerTest {
+    public class CatalogTests : DatabaseTest {
+        private static readonly Product Product1 = new Product("Bureaustoel yaksva", price: 51.40, photo: "");
+        private static readonly Product Product2 = new Product("Tuintafel", price: 200, photo: "");
+        private static readonly Product Product3 = new Product("Bureau", price: 140.40, photo: "");
+
+        protected override List<Product> Products => new List<Product> {Product1, Product2, Product3};
+
         [Test]
-        public void ViewProductsViewModel_DatabaseEqualsList()
-        {
-        // Items op het scherm vergelijken met items in de database.
+        public void ViewProductsViewModel_DatabaseEqualsList() {
+            // Items op het scherm vergelijken met items in de database.
             ViewProductsViewModel test = new ViewProductsViewModel();
-            Assert.AreEqual(test.Products[0], product1);
-            Assert.AreEqual(test.Products[1], product2);
-            Assert.AreEqual(test.Products[2], product3);
+            Assert.AreEqual(test.Products[0], Product1);
+            Assert.AreEqual(test.Products[1], Product2);
+            Assert.AreEqual(test.Products[2], Product3);
         }
 
         [Test]
-        public void GetName_NameIsCorrectName()
-        {
-        // De naam van de producten vergelijken met de naam van de producten in de database.
+        public void GetName_NameIsCorrectName() {
+            // De naam van de producten vergelijken met de naam van de producten in de database.
             ViewProductsViewModel test = new ViewProductsViewModel();
-            Assert.AreEqual(product1.Name, test.Products[0].Name);
-            Assert.AreEqual(product2.Name, test.Products[1].Name);
-            Assert.AreEqual(product3.Name, test.Products[2].Name);
+            Assert.AreEqual(Product1.Name, test.Products[0].Name);
+            Assert.AreEqual(Product2.Name, test.Products[1].Name);
+            Assert.AreEqual(Product3.Name, test.Products[2].Name);
         }
 
-
         [Test]
-        public void GetPrice_PriceIsCorrectPrice()
-        {
-        // De prijs van de producten vergelijken met de prijs van de producten in de database.
+        public void GetPrice_PriceIsCorrectPrice() {
+            // De prijs van de producten vergelijken met de prijs van de producten in de database.
             ViewProductsViewModel test = new ViewProductsViewModel();
-            Assert.AreEqual(product1.Price, test.Products[0].Price);
-            Assert.AreEqual(product2.Price, test.Products[1].Price);
-            Assert.AreEqual(product3.Price, test.Products[2].Price);
+            Assert.AreEqual(Product1.Price, test.Products[0].Price);
+            Assert.AreEqual(Product2.Price, test.Products[1].Price);
+            Assert.AreEqual(Product3.Price, test.Products[2].Price);
         }
 
         [Test]
-        public void GetPrice_PriceIsNotNull()
-        {
-        // Kijken of de prijs niet null is.
+        public void GetPrice_PriceIsNotNull() {
+            // Kijken of de prijs niet null is.
             ViewProductsViewModel test = new ViewProductsViewModel();
             Assert.IsNotNull(test.Products[0].Price);
             Assert.IsNotNull(test.Products[1].Price);
@@ -68,13 +49,12 @@ namespace DesignerTest
         }
 
         [Test]
-        public void GetPhoto_CorrectString()
-        {
-        // Kijken of de string overeenkomt met de string uit de database.
+        public void GetPhoto_CorrectString() {
+            // Kijken of de string overeenkomt met de string uit de database.
             ViewProductsViewModel test = new ViewProductsViewModel();
-            Assert.AreEqual(product1.Photo, test.Products[0].Photo);
-            Assert.AreEqual(product2.Photo, test.Products[1].Photo);
-            Assert.AreEqual(product3.Photo, test.Products[2].Photo);
+            Assert.AreEqual(Product1.Photo, test.Products[0].Photo);
+            Assert.AreEqual(Product2.Photo, test.Products[1].Photo);
+            Assert.AreEqual(Product3.Photo, test.Products[2].Photo);
         }
     }
 }

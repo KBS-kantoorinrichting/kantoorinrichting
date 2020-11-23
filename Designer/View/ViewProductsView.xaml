@@ -4,7 +4,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:viewModel="clr-namespace:Designer.ViewModel"
-    xmlns:model="clr-namespace:Designer.Model"
+    xmlns:model="clr-namespace:Models;assembly=Models"
     x:Class="Designer.View.ViewProductsView"
     xmlns:behaviors="http://schemas.microsoft.com/xaml/behaviors"
     xmlns:designer="clr-namespace:Designer"
@@ -14,10 +14,10 @@
     WindowHeight="-1" Height="654" Width="1154">
 
     <Page.DataContext>
-        <viewModel:ViewProductsViewModel x:Name="viewModel"/>
+        <viewModel:ViewProductsViewModel />
     </Page.DataContext>
     <Page.Resources>
-        <designer:ImagePathConverter x:Key="ImagePathConverter"/>
+        <designer:ImagePathConverter x:Key="ImagePathConverter" />
     </Page.Resources>
 
     <Grid>
@@ -26,9 +26,9 @@
                 <Grid Background="#FFE5E5E5" Height="603">
                     <ScrollViewer>
                         <ItemsControl
-                            x:Name="CatalogusList" 
+                            x:Name="CatalogusList"
                             ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-                            ItemsSource="{Binding Products}"  Width="237" Height="1136">
+                            ItemsSource="{Binding Products}" Width="237" Height="1136">
 
                             <ItemsControl.ItemsPanel>
                                 <ItemsPanelTemplate>
@@ -44,37 +44,39 @@
                                         BorderBrush="Black">
                                         <behaviors:Interaction.Triggers>
                                             <behaviors:EventTrigger EventName="MouseDown">
-                                                <behaviors:InvokeCommandAction Command="{ Binding ElementName=viewModel, Path=MouseDownCommand}" PassEventArgsToCommand="True" />
+                                                <behaviors:InvokeCommandAction
+                                                    Command="{ Binding ElementName=viewModel, Path=MouseDownCommand}"
+                                                    PassEventArgsToCommand="True" />
                                             </behaviors:EventTrigger>
                                         </behaviors:Interaction.Triggers>
                                         <StackPanel Orientation="Vertical" Width="108" Height="108">
                                             <TextBlock
-                                              
-                                            Text="{Binding Name}"
-                                            HorizontalAlignment="Center"                               
-                                            VerticalAlignment="Top"
-                                            FontSize="12"
-                                            TextWrapping="Wrap"
-                                            TextAlignment="Center"
-                                            FontWeight="DemiBold"
-                                            Width="108" Height="20"/>
+
+                                                Text="{Binding Name}"
+                                                HorizontalAlignment="Center"
+                                                VerticalAlignment="Top"
+                                                FontSize="12"
+                                                TextWrapping="Wrap"
+                                                TextAlignment="Center"
+                                                FontWeight="DemiBold"
+                                                Width="108" Height="20" />
                                             <Border
                                                 BorderThickness="0.2"
                                                 BorderBrush="Black"
-                                                Height="68" 
+                                                Height="68"
                                                 Width="68">
                                                 <Image
-                                                    Source="{Binding Path=Photo, Converter={StaticResource ImagePathConverter}}"/>
+                                                    Source="{Binding Path=Photo, Converter={StaticResource ImagePathConverter}}" />
                                             </Border>
                                             <TextBlock
-                                            Text="{Binding Price, StringFormat='€{0}'}"
-                                            HorizontalAlignment="Center"                               
-                                            VerticalAlignment="Top"
-                                            FontSize="12"
-                                            TextWrapping="Wrap"
-                                            TextAlignment="Center"
-                                            FontWeight="DemiBold"
-                                            Width="108" Height="20"/>
+                                                Text="{Binding Price, StringFormat='€{0}'}"
+                                                HorizontalAlignment="Center"
+                                                VerticalAlignment="Top"
+                                                FontSize="12"
+                                                TextWrapping="Wrap"
+                                                TextAlignment="Center"
+                                                FontWeight="DemiBold"
+                                                Width="108" Height="20" />
                                         </StackPanel>
                                     </Border>
                                 </DataTemplate>
@@ -84,57 +86,91 @@
                 </Grid>
             </TabItem>
             <TabItem Header="Meubel Toevoegen">
-                <StackPanel Margin="0,0,-2,28" RenderTransformOrigin="0.502,0.501" >
-                    <Label Content="Naam:" Height="26" Width="122" RenderTransformOrigin="0.49,0.577" HorizontalAlignment="Left"/>
-                    <TextBox Text="{Binding Name, UpdateSourceTrigger=PropertyChanged}" Background="#FFFFFEFE" RenderTransformOrigin="0.507,0.562" Height="30" Width="110" HorizontalAlignment="Left" BorderBrush="Black" BorderThickness="1px" Margin="10,0,0,0"/>
+                <StackPanel Margin="0,0,-2,28" RenderTransformOrigin="0.502,0.501">
+                    <Label Content="Naam:" Height="26" Width="122" RenderTransformOrigin="0.49,0.577"
+                           HorizontalAlignment="Left" />
+                    <TextBox Text="{Binding Name, UpdateSourceTrigger=PropertyChanged}" Background="#FFFFFEFE"
+                             RenderTransformOrigin="0.507,0.562" Height="30" Width="110" HorizontalAlignment="Left"
+                             BorderBrush="Black" BorderThickness="1px" Margin="10,0,0,0" />
 
-                    <Label Content="Prijs:" Height="26" Width="110" RenderTransformOrigin="0.49,0.577" HorizontalAlignment="Left"/>
-                    <TextBox Text="{Binding Price, UpdateSourceTrigger=PropertyChanged}" Background="#FFFFFEFE" RenderTransformOrigin="0.507,0.562" Height="30" Width="110" HorizontalAlignment="Left" BorderBrush="Black" BorderThickness="1px" Margin="10,0,0,0"/>
+                    <Label Content="Prijs:" Height="26" Width="110" RenderTransformOrigin="0.49,0.577"
+                           HorizontalAlignment="Left" />
+                    <TextBox Text="{Binding Price, UpdateSourceTrigger=PropertyChanged}" Background="#FFFFFEFE"
+                             RenderTransformOrigin="0.507,0.562" Height="30" Width="110" HorizontalAlignment="Left"
+                             BorderBrush="Black" BorderThickness="1px" Margin="10,0,0,0" />
 
-                    <Label Content="Dimensies:" Height="23" Width="107" RenderTransformOrigin="0.49,0.577" HorizontalAlignment="Left" Margin="0,10,0,0"/>
-                    <Label Content="Lengte:" Height="28" Width="107" RenderTransformOrigin="0.49,0.577" HorizontalAlignment="Left" />
+                    <Label Content="Dimensies:" Height="23" Width="107" RenderTransformOrigin="0.49,0.577"
+                           HorizontalAlignment="Left" Margin="0,10,0,0" />
+                    <Label Content="Lengte:" Height="28" Width="107" RenderTransformOrigin="0.49,0.577"
+                           HorizontalAlignment="Left" />
 
-                    <TextBox Text="{Binding Length, UpdateSourceTrigger=PropertyChanged}" Background="#FFFFFEFE" RenderTransformOrigin="0.507,0.562" Height="28" Width="110" HorizontalAlignment="Left" BorderBrush="Black" BorderThickness="1px" Margin="10,0,0,0"/>
-                    <Label Content="Breedte:" Height="28" Width="107" RenderTransformOrigin="0.49,0.577" HorizontalAlignment="Left" />
-                    <TextBox Text="{Binding Width, UpdateSourceTrigger=PropertyChanged}" Background="#FFFFFEFE" RenderTransformOrigin="0.507,0.562" Height="28" Width="111" HorizontalAlignment="Left" BorderBrush="Black" BorderThickness="1px" Margin="10,0,0,0"/>
+                    <TextBox Text="{Binding Length, UpdateSourceTrigger=PropertyChanged}" Background="#FFFFFEFE"
+                             RenderTransformOrigin="0.507,0.562" Height="28" Width="110" HorizontalAlignment="Left"
+                             BorderBrush="Black" BorderThickness="1px" Margin="10,0,0,0" />
+                    <Label Content="Breedte:" Height="28" Width="107" RenderTransformOrigin="0.49,0.577"
+                           HorizontalAlignment="Left" />
+                    <TextBox Text="{Binding Width, UpdateSourceTrigger=PropertyChanged}" Background="#FFFFFEFE"
+                             RenderTransformOrigin="0.507,0.562" Height="28" Width="111" HorizontalAlignment="Left"
+                             BorderBrush="Black" BorderThickness="1px" Margin="10,0,0,0" />
 
-                    <Label Content="Foto:" Height="26" Width="52" RenderTransformOrigin="0.49,0.577" HorizontalAlignment="Left" />
-                    <Button Name="AddPhoto" Command="{Binding AddPhoto}" Content="Foto Toevoegen" Height="26" Width="122"/>
-                    <TextBox Name="txtEditor" Text="{Binding Photo, Converter={StaticResource ImagePathConverter}}" Height="75"/>
+                    <Label Content="Foto:" Height="26" Width="52" RenderTransformOrigin="0.49,0.577"
+                           HorizontalAlignment="Left" />
+                    <Button Name="AddPhoto" Command="{Binding AddPhoto}" Content="Foto Toevoegen" Height="26"
+                            Width="122" />
+                    <TextBox Name="txtEditor" Text="{Binding Photo, Converter={StaticResource ImagePathConverter}}"
+                             Height="75" />
 
-                    <Border/>
-                    <Label Height="50" Visibility="Hidden"/>
-                    <Button Content="Toevoegen" Height="74" Width="184" x:Name="Toevoegen_Button" Command="{Binding Submit}" HorizontalAlignment="Center"/>
+                    <Border />
+                    <Label Height="50" Visibility="Hidden" />
+                    <Button Content="Toevoegen" Height="74" Width="184" x:Name="Toevoegen_Button"
+                            Command="{Binding Submit}" HorizontalAlignment="Center" />
                 </StackPanel>
 
             </TabItem>
         </TabControl>
         <Canvas x:Name="Editor" Margin="0,25,260,0">
-            <Label Canvas.Left="21" Canvas.Top="33" Width="136"/>
+            <Label Canvas.Left="21" Canvas.Top="33" Width="136" />
         </Canvas>
-        <Grid Background="White" HorizontalAlignment="Left" Height="634" Margin="0,20,0,0" VerticalAlignment="Top" Width="879" >
+        <Grid Background="White" HorizontalAlignment="Left" Height="634" Margin="0,20,0,0" VerticalAlignment="Top"
+              Width="879">
 
-            <Button Content="Verwijder product" Height="74" Width="170" HorizontalAlignment="Right" Margin="0,15,5,545" Command="{Binding DeleteCommand}" BorderThickness="0px" >
+            <Button Content="Verwijder product" Height="74" Width="170" HorizontalAlignment="Right" Margin="0,15,5,545"
+                    Command="{Binding DeleteCommand}" BorderThickness="0px" />
+            <Border HorizontalAlignment="Center" Height="610" Margin="0,14,0,0" VerticalAlignment="Top" Width="520"
+                    Background="White" BorderThickness="1px" BorderBrush="Black">
+                <StackPanel Margin="0,0,132,28">
+                    <Label Content="Naam:" Height="26" Width="109" RenderTransformOrigin="0.49,0.577"
+                           HorizontalAlignment="Left" />
+                    <Label Content="{Binding SelectedProduct.Name}" Background="#FFFFFEFE"
+                           RenderTransformOrigin="0.507,0.562" Height="30" Width="110" HorizontalAlignment="Left"
+                           BorderBrush="Black" BorderThickness="1px" Margin="10,0,0,0" />
 
-            </Button>
-            <Border HorizontalAlignment="Center" Height="610" Margin="0,14,0,0" VerticalAlignment="Top" Width="520" Background="White" BorderThickness="1px" BorderBrush="Black">
-                <StackPanel Margin="0,0,132,28" >
-                    <Label Content="Naam:" Height="26" Width="109" RenderTransformOrigin="0.49,0.577" HorizontalAlignment="Left"/>
-                    <Label Content="{Binding SelectedProduct.Name}" Background="#FFFFFEFE" RenderTransformOrigin="0.507,0.562" Height="30" Width="110" HorizontalAlignment="Left" BorderBrush="Black" BorderThickness="1px" Margin="10,0,0,0"/>
+                    <Label Content="Prijs:" Height="26" Width="110" RenderTransformOrigin="0.49,0.577"
+                           HorizontalAlignment="Left" />
+                    <Label Content="{Binding SelectedProduct.Price, StringFormat ='€{0}'}" Background="#FFFFFEFE"
+                           RenderTransformOrigin="0.507,0.562" Height="30" Width="110" HorizontalAlignment="Left"
+                           BorderBrush="Black" BorderThickness="1px" Margin="10,0,0,0" />
 
-                    <Label Content="Prijs:" Height="26" Width="110" RenderTransformOrigin="0.49,0.577" HorizontalAlignment="Left"/>
-                    <Label Content="{Binding SelectedProduct.Price, StringFormat ='€{0}'}" Background="#FFFFFEFE" RenderTransformOrigin="0.507,0.562" Height="30" Width="110" HorizontalAlignment="Left" BorderBrush="Black" BorderThickness="1px" Margin="10,0,0,0"/>
+                    <Label Content="Dimensies:" Height="23" Width="107" RenderTransformOrigin="0.49,0.577"
+                           HorizontalAlignment="Left" Margin="0,10,0,0" />
+                    <Label Content="Lengte:" Height="28" Width="107" RenderTransformOrigin="0.49,0.577"
+                           HorizontalAlignment="Left" Margin="10,0,0,0" />
 
-                    <Label Content="Dimensies:" Height="23" Width="107" RenderTransformOrigin="0.49,0.577" HorizontalAlignment="Left" Margin="0,10,0,0"/>
-                    <Label Content="Lengte:" Height="28" Width="107" RenderTransformOrigin="0.49,0.577" HorizontalAlignment="Left" Margin="10,0,0,0"/>
+                    <Label Content="{Binding SelectedProduct.Length}" Background="#FFFFFEFE"
+                           RenderTransformOrigin="0.507,0.562" Height="28" Width="30" HorizontalAlignment="Left"
+                           BorderBrush="Black" BorderThickness="1px" Margin="30,0,0,0" />
+                    <Label Content="Breedte:" Height="28" Width="107" RenderTransformOrigin="0.49,0.577"
+                           HorizontalAlignment="Left" Margin="10,0,0,0" />
+                    <Label Content="{Binding SelectedProduct.Width}" Background="#FFFFFEFE"
+                           RenderTransformOrigin="0.507,0.562" Height="28" Width="30" HorizontalAlignment="Left"
+                           BorderBrush="Black" BorderThickness="1px" Margin="30,0,0,0" />
 
-                    <Label Content="{Binding SelectedProduct.Length}" Background="#FFFFFEFE" RenderTransformOrigin="0.507,0.562" Height="28" Width="30" HorizontalAlignment="Left" BorderBrush="Black" BorderThickness="1px" Margin="30,0,0,0"/>
-                    <Label Content="Breedte:" Height="28" Width="107" RenderTransformOrigin="0.49,0.577" HorizontalAlignment="Left" Margin="10,0,0,0"/>
-                    <Label Content="{Binding SelectedProduct.Width}" Background="#FFFFFEFE" RenderTransformOrigin="0.507,0.562" Height="28" Width="30" HorizontalAlignment="Left" BorderBrush="Black" BorderThickness="1px" Margin="30,0,0,0"/>
-
-                    <Label Content="Foto:" Height="26" Width="52" RenderTransformOrigin="0.49,0.577" HorizontalAlignment="Left" Margin="0,10,0,0"/>
+                    <Label Content="Foto:" Height="26" Width="52" RenderTransformOrigin="0.49,0.577"
+                           HorizontalAlignment="Left" Margin="0,10,0,0" />
                     <Border>
-                        <Image gif:ImageBehavior.AnimatedSource="{Binding Path= SelectedProduct.Photo ,Converter={StaticResource ImagePathConverter}}" Height="237" Width="245" />
+                        <Image
+                            gif:ImageBehavior.AnimatedSource="{Binding Path= SelectedProduct.Photo ,Converter={StaticResource ImagePathConverter}}"
+                            Height="237" Width="245" />
                     </Border>
                 </StackPanel>
             </Border>
