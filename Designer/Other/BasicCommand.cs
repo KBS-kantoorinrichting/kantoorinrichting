@@ -24,7 +24,6 @@ namespace Designer.Other {
         public bool CanExecute(object parameter) { return !Disabled; }
 
         public virtual void Execute(object parameter) {
-            Console.WriteLine(parameter);
             _action?.Invoke();
         }
 

@@ -8,7 +8,7 @@ namespace Services {
         private static DbContextOptions _options;
 
         public static DbContextOptions Options {
-            get => _options ?? _default();
+            get => _options ??= _default();
             set => _options = value;
         }
 

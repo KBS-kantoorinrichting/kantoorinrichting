@@ -1,7 +1,4 @@
-﻿using System;
-using dotenv.net;
-using dotenv.net.Utilities;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Models;
 
 namespace Services {
@@ -33,13 +30,6 @@ namespace Services {
 
         protected override void OnConfiguring(DbContextOptionsBuilder options) {
             // todo options.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
-            if (options.IsConfigured) return;
-            Console.WriteLine("[RoomDesignContext] Currently running in: " + Environment.CurrentDirectory);
-            //Load the .env file from the project root
-            DotEnv.Config(true, Environment.CurrentDirectory + @"\.env");
-            var envReader = new EnvReader();
-            //Use the CONNECTION_STRING from the .env file
-            options.UseSqlServer(envReader.GetStringValue("CONNECTION_STRING"));
         }
     }
 }

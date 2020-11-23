@@ -2,6 +2,7 @@
 using System.Windows;
 using Designer.Other;
 using Designer.View;
+using Services;
 
 namespace Designer.ViewModel {
     public class MainViewModel : INotifyPropertyChanged {
@@ -14,6 +15,9 @@ namespace Designer.ViewModel {
         public Navigator Navigator { get; set; }
 
         public MainViewModel() {
+            //Maak de db connectie aan
+            RoomService.Instance.Get(0);
+            
             Navigator = Navigator.Instance;
             GotoDesigns = new PageCommand(() => {
                 DesignCatalog DesignCatalog = new DesignCatalog();
