@@ -35,6 +35,9 @@
                 <behaviors:EventTrigger EventName="MouseDown" SourceObject="{Binding ElementName=Editor}">
                     <behaviors:InvokeCommandAction Command="{ Binding CanvasMouseDownCommand }" PassEventArgsToCommand="True" />
                 </behaviors:EventTrigger>
+                <behaviors:EventTrigger EventName="MouseMove" SourceObject="{Binding ElementName=Editor}">
+                    <behaviors:InvokeCommandAction Command="{ Binding MouseMoveCommand }" PassEventArgsToCommand="True" />
+                </behaviors:EventTrigger>
             </behaviors:Interaction.Triggers>
         </Canvas>
         <TabControl x:Name="Tabs" HorizontalAlignment="Right" Grid.Column="1">
