@@ -39,7 +39,7 @@ namespace Designer.ViewModel
         private ProductPlacement _draggingPlacement;
         public Polygon RoomPoly { get; set; }
         public bool AllowDrop = false;
-
+        public double Scale = 1.0;
         //Special constructor for unit tests
         public ViewDesignViewModel(Design design)
         {
@@ -57,6 +57,7 @@ namespace Designer.ViewModel
             CanvasMouseDownCommand =
                 new ArgumentCommand<MouseButtonEventArgs>(e => CanvasMouseDown(e.OriginalSource, e));
             DragDropCommand = new ArgumentCommand<DragEventArgs>(e => CanvasDragDrop(e.OriginalSource, e));
+            DragOverCommand = new ArgumentCommand<DragEventArgs>(e => CanvasDragOver(e.OriginalSource, e));
             CanvasMouseScrollCommand = new ArgumentCommand<MouseWheelEventArgs>(e => CanvasMouseScroll(e.OriginalSource, e));
             _productOverview = new Dictionary<Product, ProductData>();
 
@@ -320,8 +321,6 @@ namespace Designer.ViewModel
             int j = vertices.Count() - 1;
             int yOffset = product.Length / 2;
             int xOffset = product.Width / 2;
-            Debug.WriteLine(point.X);
-            Debug.WriteLine(point.Y);
 
             // Punten aanmaken waar om gecheckt moet worden
             PointCollection points = new PointCollection()
@@ -359,11 +358,13 @@ namespace Designer.ViewModel
 
         public void CanvasMouseScroll(object sender, MouseWheelEventArgs e)
         {
-            if(e.Delta > 0)
-            {
-                Debug.WriteLine("test");
-            }
+            if (e.Delta > 0) ScaleCanvas(Scale += 0.1);
+            if (e.Delta < 0) ScaleCanvas(Scale -= 0.1);
+        }
 
+        private void ScaleCanvas(double scale)
+        {
+            Editor.RenderTransform = new ScaleTransform(scale, scale);
         }
     }
 
