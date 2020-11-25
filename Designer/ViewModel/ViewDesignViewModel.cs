@@ -30,6 +30,7 @@ namespace Designer.ViewModel
         public ArgumentCommand<DragEventArgs> DragOverCommand { get; set; }
         public ArgumentCommand<MouseButtonEventArgs> CatalogusMouseDownCommand { get; set; }
         public ArgumentCommand<MouseButtonEventArgs> CanvasMouseDownCommand { get; set; }
+        public ArgumentCommand<MouseWheelEventArgs> CanvasMouseScrollCommand { get; set; }
         public Product SelectedProduct => _selectedPlacement.Product;
         public Design Design { get; set; }
         public Canvas Editor { get; set; }
@@ -56,7 +57,7 @@ namespace Designer.ViewModel
             CanvasMouseDownCommand =
                 new ArgumentCommand<MouseButtonEventArgs>(e => CanvasMouseDown(e.OriginalSource, e));
             DragDropCommand = new ArgumentCommand<DragEventArgs>(e => CanvasDragDrop(e.OriginalSource, e));
-            DragOverCommand = new ArgumentCommand<DragEventArgs>(e => CanvasDragOver(e.OriginalSource, e));
+            CanvasMouseScrollCommand = new ArgumentCommand<MouseWheelEventArgs>(e => CanvasMouseScroll(e.OriginalSource, e));
             _productOverview = new Dictionary<Product, ProductData>();
 
             
@@ -354,6 +355,15 @@ namespace Designer.ViewModel
             }
 
             return true;
+        }
+
+        public void CanvasMouseScroll(object sender, MouseWheelEventArgs e)
+        {
+            if(e.Delta > 0)
+            {
+                Debug.WriteLine("test");
+            }
+
         }
     }
 
