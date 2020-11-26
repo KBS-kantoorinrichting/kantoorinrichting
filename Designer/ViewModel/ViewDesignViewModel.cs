@@ -11,8 +11,6 @@ using Designer.View;
 using System.Windows.Shapes;
 using System.Windows.Media;
 using System.Diagnostics;
-using System.Globalization;
-using System.Windows.Media.Effects;
 using Models;
 using Services;
 
@@ -31,6 +29,7 @@ namespace Designer.ViewModel {
         public ArgumentCommand<MouseButtonEventArgs> CatalogusMouseDownCommand { get; set; }
         public ArgumentCommand<MouseButtonEventArgs> CanvasMouseDownCommand { get; set; }
         public ArgumentCommand<MouseEventArgs> MouseMoveCommand { get; set; }
+        public BasicCommand Measure { get; set; }
         public Product SelectedProduct => _selectedPlacement.Product;
         public Design Design { get; set; }
         public Canvas Editor { get; set; }
@@ -63,6 +62,7 @@ namespace Designer.ViewModel {
             DragDropCommand = new ArgumentCommand<DragEventArgs>(e => CanvasDragDrop(e.OriginalSource, e));
             DragOverCommand = new ArgumentCommand<DragEventArgs>(e => CanvasDragOver(e.OriginalSource, e));
             MouseMoveCommand = new ArgumentCommand<MouseEventArgs>(HandleMouseMove);
+            Measure = new BasicCommand(StartMeasure);
             _productOverview = new Dictionary<Product, ProductData>();
 
             Editor.Children.Add(Line);
@@ -70,9 +70,34 @@ namespace Designer.ViewModel {
             Editor.Children.Add(TextBlock);
         }
 
-        public void HandleMouseMove(MouseEventArgs eventArgs) {
+        private bool _enabled;
+        private Position _origin; 
+        private Position _secondPoint; 
+        
+        public void StartMeasure() {
+            if (!(_enabled = !_enabled)) {
+                //_enabled was eerst true
+                _origin = null;
+                _secondPoint = null;
+            }
+        }
+        
+        private void PlacePoint(MouseButtonEventArgs eventArgs) {
             Point p = eventArgs.GetPosition(Editor);
-            RenderDistance(new Position(500, 200), new Position((int) p.X, (int) p.Y));
+
+            if (_origin == null || _secondPoint != null) {
+                _origin = new Position((int) p.X, (int) p.Y);
+                _secondPoint = null;
+            } else {
+                _secondPoint = new Position((int) p.X, (int) p.Y);
+            }
+        }
+
+        public void HandleMouseMove(MouseEventArgs eventArgs) {
+            if (!_enabled || _origin == null) return;
+
+            Point p = eventArgs.GetPosition(Editor);
+            RenderDistance(_origin, _secondPoint ?? new Position((int) p.X, (int) p.Y));
         }
 
         public void RenderDistance(Position p1, Position p2) {
@@ -188,6 +213,12 @@ namespace Designer.ViewModel {
             }
             //Linkermuisknop betekent dat het product wordt verplaatst
             else {
+                //Als meetlat aanstaat vervangt die deze behavivoer
+                if (_enabled) {
+                    PlacePoint(e);
+                    return;
+                }
+                
                 if (sender.GetType() != typeof(Image)) return;
                 var image = sender as Image;
                 var placement = ProductPlacements.Where(
