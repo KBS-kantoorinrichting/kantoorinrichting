@@ -26,6 +26,25 @@ namespace Designer.ViewModel {
         public event PropertyChangedEventHandler PropertyChanged;
         public Product SelectedProduct { get; set; }
 
+        public string ItemIsSelected
+        {
+            get
+            {
+                if (SelectedProduct == null)
+                {
+                    return  "Hidden";
+                }
+                else
+                {
+                    return "Visible";
+                }
+            }
+            set { ItemIsSelected = value; }
+          
+        }
+
+
+
         public List<Product> Products { get; set; }
         // Property van een lijst om de informatie vanuit de database op te slaan.
 
@@ -74,6 +93,7 @@ namespace Designer.ViewModel {
                 //SelectedProduct = obj;
                 SelectProduct(obj.Id);
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("SelectedProduct"));
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("ItemIsSelected"));
             }
         }
 
