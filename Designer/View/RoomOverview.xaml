@@ -14,7 +14,7 @@
     WindowHeight="-1" Height="654" Width="1154">
 
     <Page.DataContext>
-        <viewModel:ViewProductsViewModel x:Name="viewModel" />
+        <viewModel:RoomOverviewViewModel x:Name="viewModel" />
     </Page.DataContext>
     <Page.Resources>
         <designer:ImagePathConverter x:Key="ImagePathConverter" />
@@ -25,10 +25,11 @@
             <TabItem Header="Ruimtes">
                 <Grid Background="#FFE5E5E5" Height="603">
                     <ScrollViewer>
+
                         <ItemsControl
                             x:Name="CatalogusList"
                             ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-                            ItemsSource="{Binding Products}" Width="237" Height="1136">
+                            ItemsSource="{Binding Rooms}" Width="237" Height="1136">
 
                             <ItemsControl.ItemsPanel>
                                 <ItemsPanelTemplate>
@@ -39,15 +40,18 @@
                             <ItemsControl.ItemTemplate>
                                 <DataTemplate DataType="model:Product">
                                     <Border
+                                        Uid="{Binding RoomId}"
                                         Margin="5"
                                         BorderThickness="0.2"
                                         BorderBrush="Black">
+
                                         <behaviors:Interaction.Triggers>
-                                                <behaviors:EventTrigger EventName="MouseDown">
+                                            <behaviors:EventTrigger EventName="MouseDown">
                                                 <behaviors:InvokeCommandAction Command="{ Binding ElementName=viewModel, Path=MouseDownCommand}" PassEventArgsToCommand="True" />
-                                                </behaviors:EventTrigger>
-                                            </behaviors:Interaction.Triggers>
-                                            <StackPanel Orientation="Vertical" Width="108" Height="108">
+                                            </behaviors:EventTrigger>
+                                        </behaviors:Interaction.Triggers>
+
+                                        <StackPanel Orientation="Vertical" Width="108" Height="30">
                                             <TextBlock
 
                                                 Text="{Binding Name}"
@@ -58,35 +62,18 @@
                                                 TextAlignment="Center"
                                                 FontWeight="DemiBold"
                                                 Width="108" Height="20" />
-                                            <Border
-                                                BorderThickness="0.2"
-                                                BorderBrush="Black"
-                                                Height="68"
-                                                Width="68">
-                                                <Image
-                                                    Source="{Binding Path=Photo, Converter={StaticResource ImagePathConverter}}" />
-                                            </Border>
-                                            <TextBlock
-                                                Text="{Binding Price, StringFormat='€{0}'}"
-                                                HorizontalAlignment="Center"
-                                                VerticalAlignment="Top"
-                                                FontSize="12"
-                                                TextWrapping="Wrap"
-                                                TextAlignment="Center"
-                                                FontWeight="DemiBold"
-                                                Width="108" Height="20" />
+
                                         </StackPanel>
                                     </Border>
                                 </DataTemplate>
                             </ItemsControl.ItemTemplate>
                         </ItemsControl>
+
                     </ScrollViewer>
                 </Grid>
             </TabItem>
             <TabItem Header="Ruimte Toevoegen">
                 <StackPanel Margin="0,0,-2,28" RenderTransformOrigin="0.502,0.501">
-                    <Button Name="AddPhoto" Command="{Binding AddPhoto}" Content="kech Toevoegen" Height="26"
-                            Width="122" Click="AddPhoto_Click" />
 
                     <Border />
                     <Button Content="Genereer met template" Command="{Binding GotoRoomTemplate}" HorizontalAlignment="Stretch" Height="40" VerticalAlignment="Bottom" Margin="5,15,5,0" Background="#495464" BorderBrush="Gray" FontSize="14" Foreground="White"/>
@@ -95,24 +82,32 @@
 
             </TabItem>
         </TabControl>
-        <Canvas x:Name="Editor" Margin="0,25,260,0">
-            <Label Canvas.Left="21" Canvas.Top="33" Width="136" />
-        </Canvas>
+
         <Grid Background="White" HorizontalAlignment="Left" Height="634" Margin="0,20,0,0" VerticalAlignment="Top"
               Width="879">
 
+            <!--
             <Button Content="Verwijder product" Height="74" Width="170" HorizontalAlignment="Right" Margin="0,15,5,545"
                     Command="{Binding DeleteCommand}" BorderThickness="0px" />
-            <Border HorizontalAlignment="Center" Height="610" Margin="0,14,0,0" VerticalAlignment="Top" Width="520"
+            -->
+
+            <Border HorizontalAlignment="Center" Height="610" Margin="0,14,0,0" VerticalAlignment="Top" Width="860"
                     Background="White" BorderThickness="1px" BorderBrush="Black">
                 <StackPanel Margin="0,0,132,28">
-                    <Border>
-                        <Image
-                            Source="{Binding Path= SelectedProduct.Photo ,Converter={StaticResource ImagePathConverter}}"
-                            Height="237" Width="245" />
+                    <Label Content="{Binding SelectedRoom.Name}"/>
+                    <Border Height="568" Width="852">
+
+
+                        <Canvas Grid.Column="0" Name="Editor" AllowDrop="True" Background="Transparent" Margin="40,30,40,26">
+                            <ContentPresenter Content="{Binding Path=Editor}"></ContentPresenter>
+                        </Canvas>
+
                     </Border>
+
                 </StackPanel>
             </Border>
+
+
         </Grid>
     </Grid>
 </Page>
