@@ -22,9 +22,47 @@ namespace Designer.ViewModel {
         public BasicCommand DeleteCommand { get; set; }
         public BasicCommand AddPhoto { get; set; }
 
+        public BasicCommand EditCommand { get; set; }
+        public BasicCommand SaveEdit { get; set; }
+        public BasicCommand EditPhoto { get; set; }
+
         public ArgumentCommand<MouseButtonEventArgs> MouseDownCommand { get; set; }
         public event PropertyChangedEventHandler PropertyChanged;
         public Product SelectedProduct { get; set; }
+
+        public Product EditedItem { get; set; }
+
+        public string IsEditedRead
+        {
+            get
+            {
+                if (EditedItem == null)
+                {
+                    return "True";
+                }
+                else
+                {
+                    return "False";
+                }
+            }
+            set { IsEditedRead = value; }
+        }
+
+        public string IsEditedVis
+        {
+            get
+            {
+                if(EditedItem == null)
+                {
+                    return "Hidden";
+                }
+                else
+                {
+                    return "Visible";
+                }
+            }
+            set { IsEditedVis = value; }
+        }
 
         public string ItemIsSelected
         {
@@ -43,17 +81,22 @@ namespace Designer.ViewModel {
           
         }
 
-
-
         public List<Product> Products { get; set; }
         // Property van een lijst om de informatie vanuit de database op te slaan.
 
         public ViewProductsViewModel() {
+
+            // Tekenen van de catalogus 
             Reload();
+            // Initialisatie van het MouseDownCommand
             MouseDownCommand = new ArgumentCommand<MouseButtonEventArgs>(e => MouseDown(e.OriginalSource, e));
+            // Initialisatie van alle knoppen
             AddPhoto = new BasicCommand(SelectPhoto);
             Submit = new BasicCommand(SubmitItem);
             DeleteCommand = new BasicCommand(Delete);
+            EditCommand = new BasicCommand(EditItem);
+            SaveEdit = new BasicCommand(SubmitEditedItem);
+            EditPhoto = new BasicCommand(SelectPhoto);
         }
 
         public void Reload() { // Reload de items zodat de juiste te zien zijn
@@ -68,14 +111,27 @@ namespace Designer.ViewModel {
             if (openFileDialog.ShowDialog() == true)
                 // Als deze open is dan:
             {
-                //openFileDialog.Filter = "Image files (*.png;*.jpeg;*.gif)|*.png;*.jpeg;*.gif|All files (*.*)|*.*";
-                Photo = openFileDialog.FileName.Split(@"\").Last();
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("Photo"));
-                // De foto wordt veranderd in de applicatie
+                if (IsEditedRead == "True")
+                {
+                    //openFileDialog.Filter = "Image files (*.png;*.jpeg;*.gif)|*.png;*.jpeg;*.gif|All files (*.*)|*.*";
+                    Photo = openFileDialog.FileName.Split(@"\").Last();
+                    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("Photo"));
+                    // De foto wordt veranderd in de applicatie
+                }
+                else
+                {
+                    //openFileDialog.Filter = "Image files (*.png;*.jpeg;*.gif)|*.png;*.jpeg;*.gif|All files (*.*)|*.*";
+                    EditedItem.Photo = openFileDialog.FileName.Split(@"\").Last();
+                    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(""));
+                    // De foto wordt veranderd in de applicatie
+
+                }
+
             }
         }
 
-        public void Delete() {
+        public void Delete() // Verwijderd geselecteerde item uit database 
+        { 
             if (SelectedProduct == null || ProductService.Instance.Count() == 0)
             {
                 return;
@@ -84,7 +140,19 @@ namespace Designer.ViewModel {
             Reload();
         }
 
-        public void MouseDown(object sender, MouseButtonEventArgs e) {
+        public void EditItem() // Maakt de geselecteerde item editbaar
+        {
+            EditedItem = SelectedProduct;
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(""));
+        }
+
+        public void SubmitEditedItem() // vervangt het geselecteerde item met de bijgewerkte item in de database
+        {
+            ProductService.Instance.Update(EditedItem);
+            Reload();
+        }
+
+        public void MouseDown(object sender, MouseButtonEventArgs e) { // Wat er gebeurt als de muisknop ingedrukt wordt
            
             // Linker muisknop moet ingdrukt zijn
             if (e.LeftButton == MouseButtonState.Pressed) {
@@ -92,13 +160,15 @@ namespace Designer.ViewModel {
                 var obj = (Product) ((Image) sender).DataContext;
                 //SelectedProduct = obj;
                 SelectProduct(obj.Id);
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("SelectedProduct"));
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("ItemIsSelected"));
+                EditedItem = null;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(""));
+
+
             }
         }
 
         public List<Product> LoadItems() {
-            // Linq om te zorgen dat de lijst gevuld wordt met de database content.
+            // Linq om te zorgen dat de lijst gevuld wordt met de database content
             Products = ProductService.Instance.GetAll();
 
             // this.Products is de lijst met producten
@@ -137,7 +207,7 @@ namespace Designer.ViewModel {
         }
 
         public static Product SaveProduct(string naam, double? price, string photo, int width, int length) {
-            // als er geen foto wordt toegevoegd, dan krijgt foto een standaard waarde. 
+            // als er geen foto wordt toegevoegd, dan krijgt foto een standaard waarde
             if (photo == null) {
                 photo = "placeholder.png";
             }
@@ -155,7 +225,7 @@ namespace Designer.ViewModel {
         }
 
         public void EmptyDataBase()
-            // Functie om de database te legen.    
+            // Functie om de database te legen   
         {
             ProductService.Instance.DeleteAll(ProductService.Instance.GetAll());
         }
