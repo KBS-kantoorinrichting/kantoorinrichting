@@ -31,6 +31,7 @@ namespace Designer.ViewModel
         public ArgumentCommand<MouseButtonEventArgs> CatalogusMouseDownCommand { get; set; }
         public ArgumentCommand<MouseButtonEventArgs> CanvasMouseDownCommand { get; set; }
         public ArgumentCommand<MouseWheelEventArgs> CanvasMouseScrollCommand { get; set; }
+        public ArgumentCommand<SizeChangedEventArgs> ResizeCommand { get; set; }
         public Product SelectedProduct => _selectedPlacement.Product;
         public Design Design { get; set; }
         public Canvas Editor { get; set; }
@@ -59,9 +60,10 @@ namespace Designer.ViewModel
             DragDropCommand = new ArgumentCommand<DragEventArgs>(e => CanvasDragDrop(e.OriginalSource, e));
             DragOverCommand = new ArgumentCommand<DragEventArgs>(e => CanvasDragOver(e.OriginalSource, e));
             CanvasMouseScrollCommand = new ArgumentCommand<MouseWheelEventArgs>(e => CanvasMouseScroll(e.OriginalSource, e));
+            ResizeCommand = new ArgumentCommand<SizeChangedEventArgs>(e => ResizePage(e.OriginalSource, e));
             _productOverview = new Dictionary<Product, ProductData>();
 
-            
+
         }
 
         public void SetDesign(Design design)
@@ -358,13 +360,33 @@ namespace Designer.ViewModel
 
         public void CanvasMouseScroll(object sender, MouseWheelEventArgs e)
         {
-            if (e.Delta > 0) ScaleCanvas(Scale += 0.1);
-            if (e.Delta < 0) ScaleCanvas(Scale -= 0.1);
+            ScaleCanvas(Scale + (e.Delta > 0 ? +-0.02 : 0.02));
+        }
+
+        public void ResizePage(object sender, SizeChangedEventArgs e)
+        {
+            double canvasHeight = Navigator.Instance.CurrentPage.ActualHeight - 20;
+            double canvasWidth = Navigator.Instance.CurrentPage.ActualWidth - 260;
+
+            // Berekent voor de hoogte en breedte het canvas, de hoogte en breedte veranderd alleen als de room polygon kleiner wordt dan dat deze was 
+            double width = canvasWidth / RoomPoly.ActualWidth < Scale ? canvasWidth / RoomPoly.ActualWidth : Scale;
+            double height = canvasHeight / RoomPoly.ActualHeight < Scale ? canvasHeight / RoomPoly.ActualHeight : Scale;
+
+            // De kleinste waarde wordt meegegeven aan de scale functie
+            ScaleCanvas(width > height ? height : width);
         }
 
         private void ScaleCanvas(double scale)
         {
-            Editor.RenderTransform = new ScaleTransform(scale, scale);
+            double canvasHeight = Navigator.Instance.CurrentPage.ActualHeight - 20;
+            double canvasWidth = Navigator.Instance.CurrentPage.ActualWidth - 260;
+
+            // Kijkt of de gegeven schaal binnen de pagina past, zo niet veranderd de schaal niet
+            if (scale >= 0.2 && RoomPoly.ActualHeight * scale <= canvasHeight && RoomPoly.ActualWidth * scale <= canvasWidth)
+            {
+                Scale = scale;
+                Editor.RenderTransform = new ScaleTransform(scale, scale);
+            }
         }
     }
 
