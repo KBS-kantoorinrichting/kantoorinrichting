@@ -23,7 +23,6 @@
             <ColumnDefinition Width="1*" />
             <ColumnDefinition Width="240" />
         </Grid.ColumnDefinitions>
-        <Border></Border>
         <Canvas Grid.Column="0" Name="Editor" AllowDrop="True" Background="Transparent" HorizontalAlignment="Stretch" Margin="10">
             <ContentPresenter Content="{Binding Path=Editor}"></ContentPresenter>
             <behaviors:Interaction.Triggers>
