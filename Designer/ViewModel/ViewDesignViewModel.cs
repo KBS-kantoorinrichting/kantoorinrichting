@@ -193,9 +193,6 @@ namespace Designer.ViewModel {
 
         public void TryToMoveProduct(ProductPlacement placement, int newX, int newY)
         {
-            (Position p1, Position p2) = PolyUtil.MinDistance(placement.GetPoly(), Design.Room.GetPoly());
-            RenderDistance(p1, p2);
-            
             //Alleen als een object naar het nieuwe punt verplaatst mag worden, wordt het vervangen.
             if (!AllowDrop) return;
 
@@ -207,6 +204,9 @@ namespace Designer.ViewModel {
             placement.Y = newY;
             //Na het aanpassen wordt het weer toegevoegd om de illusie te geven dat het in de lijst wordt aangepast
             ProductPlacements[index] = placement;
+            
+            (Position p1, Position p2) = PolyUtil.MinDistance(Design.Room.GetPoly(), placement.GetPoly());
+            RenderDistance(p1, p2);
         }
 
         public void CanvasMouseDown(object sender, MouseButtonEventArgs e)

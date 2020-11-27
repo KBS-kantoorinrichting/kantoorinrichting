@@ -10,9 +10,9 @@ namespace Designer.Utils {
             Position best1 = null;
             Position best2 = null;
 
-            for (int i = 1; i < poly1.Count; i++) {
-                Position p1 = poly1[i - 1];
-                Position p2 = poly1[i];
+            for (int i = 0; i < poly1.Count; i++) {
+                Position p1 = poly1[i];
+                Position p2 = poly1[(i + 1) % poly1.Count];
 
                 double distance = p1.Distance(p2);
                 foreach (Position to in poly2) {
@@ -24,7 +24,7 @@ namespace Designer.Utils {
                         from = new Position((int) (p1.X + t * (p2.X - p1.X)), (int) (p1.Y + t * (p2.Y - p1.Y)));
                     }
                     
-                    double dis = to.Distance(to);
+                    double dis = from.Distance(to);
                     if (smallest >= 0 && dis >= smallest) continue;
                     smallest = dis;
                     best1 = to;
