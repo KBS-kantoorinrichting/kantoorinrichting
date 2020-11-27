@@ -78,7 +78,7 @@
 
                     <Border />
                     <Button Content="Genereer met template" Command="{Binding GotoRoomTemplate}" HorizontalAlignment="Stretch" Height="40" VerticalAlignment="Bottom" Margin="5,15,5,0" Background="#495464" BorderBrush="Gray" FontSize="14" Foreground="White"/>
-                    
+                    <Button Content="Maak kamer op maat" Command="{Binding GotoRoomEditor}" HorizontalAlignment="Stretch" Height="40" VerticalAlignment="Bottom" Margin="5,15,5,0" Background="#495464" BorderBrush="Gray" FontSize="14" Foreground="White"/>
                     <Label Height="50" Visibility="Hidden" />
                 </StackPanel>
 

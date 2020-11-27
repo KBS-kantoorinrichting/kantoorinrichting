@@ -22,5 +22,6 @@ namespace Designer.View
         {
             InitializeComponent();
         }
+
     }
 }

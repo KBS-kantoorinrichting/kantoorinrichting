@@ -19,6 +19,7 @@ namespace Designer.ViewModel
         public event PropertyChangedEventHandler PropertyChanged;
         public ArgumentCommand<MouseButtonEventArgs> MouseDownCommand { get; set; }
         public BasicCommand GotoRoomTemplate { get; set; }
+        public BasicCommand GotoRoomEditor { get; set; }
         public BasicCommand DeleteCommand { get; set; }
         public BasicCommand Products { get; set; }
 
@@ -37,6 +38,8 @@ namespace Designer.ViewModel
 
             // binding voor de knop die je naar de room editor pagina brengt
             GotoRoomTemplate = new PageCommand(() => new RoomTemplateView());
+            GotoRoomEditor = new PageCommand(() => new RoomEditorView());
+
             // binding voor het weergeven van het object waar je op klikt
             MouseDownCommand = new ArgumentCommand<MouseButtonEventArgs>(e => MouseDown(e.OriginalSource, e));
             // maakt nieuw canvas aan
