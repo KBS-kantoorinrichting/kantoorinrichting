@@ -1,11 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 using Models;
-
 namespace Designer.Utils {
     public static class PolyUtil {
         public static (Position p1, Position p2) MinDistance(List<Position> poly1, List<Position> poly2) {
+            (Position p1, Position p2) best1 = MinDistanceOneDirection(poly1, poly2);
+            (Position p1, Position p2) best2 = MinDistanceOneDirection(poly2, poly1);
+            return best1.p1.Distance(best1.p2) > best2.p1.Distance(best2.p2) ? best2 : best1;
+        }
+
+        private static (Position p1, Position p2) MinDistanceOneDirection(List<Position> poly1, List<Position> poly2) {
             double smallest = -1;
             Position best1 = null;
             Position best2 = null;
@@ -13,15 +16,22 @@ namespace Designer.Utils {
             for (int i = 0; i < poly1.Count; i++) {
                 Position p1 = poly1[i];
                 Position p2 = poly1[(i + 1) % poly1.Count];
-
-                double distance = p1.Distance(p2);
+                
                 foreach (Position to in poly2) {
                     Position from;
-                    if (distance == 0) from = p1;
+                    if (Equals(p1, p2)) from = p1;
                     else {
-                        double t = ((to.X - p1.X) * (p2.X - p1.X) + (to.Y - p1.Y) * (p2.Y - p1.Y)) / distance;
-                        t = Math.Max(0, Math.Min(1, t));
-                        from = new Position((int) (p1.X + t * (p2.X - p1.X)), (int) (p1.Y + t * (p2.Y - p1.Y)));
+                        double dX = p2.X - p1.X;
+                        double dY = p2.Y - p1.Y;
+                        double lenSq = dX * dX + dY * dY;
+                        double param = lenSq == 0 ? -1 : ((to.X - p1.X) * dX + (to.Y - p1.Y) * dY) / lenSq;
+                        if (param < 0) {
+                            from = p1;
+                        } else if (param > 1) {
+                            from = p2;
+                        } else {
+                            from = new Position((int) (p1.X + param * dX), (int) (p1.Y + param * dY));
+                        }
                     }
                     
                     double dis = from.Distance(to);

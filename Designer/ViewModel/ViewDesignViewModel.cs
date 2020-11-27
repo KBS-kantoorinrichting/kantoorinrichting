@@ -40,9 +40,6 @@ namespace Designer.ViewModel {
         private ProductPlacement _selectedPlacement;
         private ProductPlacement _draggingPlacement;
         public Polygon RoomPoly { get; set; }
-        public Line Line { get; set; }
-        public Line Line2 { get; set; }
-        public TextBlock TextBlock { get; set; }
         public bool AllowDrop = false;
         public double Scale = 1.0;
         private double _canvasHeight => Navigator.Instance.CurrentPage.ActualHeight - 20;
@@ -57,9 +54,6 @@ namespace Designer.ViewModel {
             Products = LoadProducts();
             Editor = new Canvas();
             RoomPoly = new Polygon();
-            Line = new Line();
-            Line2 = new Line();
-            TextBlock = new TextBlock();
             CatalogusMouseDownCommand =
                 new ArgumentCommand<MouseButtonEventArgs>(e => CatalogusMouseDown(e.OriginalSource, e));
             CanvasMouseDownCommand =
@@ -71,10 +65,8 @@ namespace Designer.ViewModel {
             CanvasMouseScrollCommand = new ArgumentCommand<MouseWheelEventArgs>(e => CanvasMouseScroll(e.OriginalSource, e));
             ResizeCommand = new ArgumentCommand<SizeChangedEventArgs>(e => ResizePage(e.OriginalSource, e));
             _productOverview = new Dictionary<Product, ProductData>();
-
-            Editor.Children.Add(Line);
-            Editor.Children.Add(Line2);
-            Editor.Children.Add(TextBlock);
+            
+            _distanceLine = new DistanceLine(null, null);
         }
 
         private bool _enabled;
@@ -86,10 +78,11 @@ namespace Designer.ViewModel {
 
         private Position _origin;
         private Position _secondPoint;
-
+        private DistanceLine _distanceLine;
+        
         public void StartMeasure() {
             if (_enabled) {
-                RenderDistance(new Position(-100, -100), new Position(-100, -100));
+                _distanceLine.Remove(Editor);
                 _origin = null;
                 _secondPoint = null;
             }
@@ -108,6 +101,12 @@ namespace Designer.ViewModel {
             }
         }
 
+        public void RenderDistance(Position p1, Position p2) {
+            if (!_distanceLine.Shows) _distanceLine.Add(Editor);
+            _distanceLine.P1 = p1;
+            _distanceLine.P2 = p2;
+        }
+
         public void HandleMouseMove(MouseEventArgs eventArgs) {
             if (!_enabled || _origin == null) return;
 
@@ -115,45 +114,27 @@ namespace Designer.ViewModel {
             RenderDistance(_origin, _secondPoint ?? new Position((int) p.X, (int) p.Y));
         }
 
-        public void RenderDistance(Position p1, Position p2) {
-            Position center = p1.Center(p2);
+        
+        private List<DistanceLine> _coronaLines = new List<DistanceLine>();
+        
+        public void CheckCorona() {
+            _coronaLines.ForEach(line => line.Remove(Editor));
+            _coronaLines.Clear();
+            
+            for (int i = 0; i < ProductPlacements.Count; i++) {
+                ProductPlacement placement1 = ProductPlacements[i];
+                for (int j = i + 1; j < ProductPlacements.Count; j++) {
+                    ProductPlacement placement2 = ProductPlacements[j];
 
-            Line.X1 = p1.X;
-            Line.Y1 = p1.Y;
-            Line.X2 = p2.X;
-            Line.Y2 = p2.Y;
-            Line.Stroke = Brushes.White;
-            Line.StrokeThickness = 3;
-
-            Panel.SetZIndex(Line, 100);
-
-            Line2.X1 = p1.X;
-            Line2.Y1 = p1.Y;
-            Line2.X2 = p2.X;
-            Line2.Y2 = p2.Y;
-            Line2.Stroke = Brushes.Black;
-            Line2.StrokeThickness = 1;
-
-            Panel.SetZIndex(Line2, 101);
-
-
-            TextBlock.Text = (p1.Distance(p2) / 100).ToString("F2") + " M";
-            TextBlock.Foreground = new SolidColorBrush(Colors.Black);
-            TextBlock.Background = new SolidColorBrush(Colors.White);
-
-            double degrees = ConvertRadiansToDegrees(Math.Atan2(p2.Y - p1.Y, p2.X - p1.X));
-            TextBlock.RenderTransform = new RotateTransform(degrees);
-
-            Canvas.SetLeft(TextBlock, center.X);
-            Canvas.SetTop(TextBlock, center.Y);
-            Panel.SetZIndex(TextBlock, 102);
-        }
-
-        public static double ConvertRadiansToDegrees(double radians) {
-            double degrees = 180 / Math.PI * radians;
-            if (degrees > 90) return degrees + 180;
-            if (degrees < -90) return degrees + 180;
-            return degrees;
+                    (Position p1, Position p2) = PolyUtil.MinDistance(placement1.GetPoly(), placement2.GetPoly());
+                    double distance = p1.Distance(p2);
+                    if (distance < 150) {
+                        DistanceLine line = new DistanceLine(p1, p2);
+                        line.Add(Editor);
+                        _coronaLines.Add(line);
+                    }
+                }
+            }
         }
 
         public void SetDesign(Design design) {
@@ -187,6 +168,7 @@ namespace Designer.ViewModel {
 
             // Add product to product overview
             AddToOverview(product);
+            CheckCorona();
 
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(""));
         }
@@ -204,9 +186,7 @@ namespace Designer.ViewModel {
             placement.Y = newY;
             //Na het aanpassen wordt het weer toegevoegd om de illusie te geven dat het in de lijst wordt aangepast
             ProductPlacements[index] = placement;
-            
-            (Position p1, Position p2) = PolyUtil.MinDistance(Design.Room.GetPoly(), placement.GetPoly());
-            RenderDistance(p1, p2);
+            CheckCorona();
         }
 
         public void CanvasMouseDown(object sender, MouseButtonEventArgs e)
@@ -491,5 +471,99 @@ namespace Designer.ViewModel {
     public class ProductData {
         public int Total { get; set; }
         public double TotalPrice { get; set; }
+    }
+
+    public class DistanceLine {
+       private Line _line;
+       private Line _line2;
+       private TextBlock _textBlock;
+       private Position _p1;
+       private Position _p2;
+
+       public Position P1 {
+           get => _p1;
+           set {
+               _p1 = value;
+               UpdatePositions();
+           }
+       }
+
+       public Position P2 {
+           get => _p2;
+           set {
+               _p2 = value;
+               UpdatePositions();
+           }
+       }
+
+       private bool _shows = false;
+       public bool Shows => _shows;
+
+       public DistanceLine(Position p1, Position p2) {
+           _p1 = p1;
+           _p2 = p2;
+           _line = new Line();
+           _line2 = new Line();
+           _textBlock = new TextBlock();
+       }
+
+       public void Add(Canvas editor) {
+           _shows = true;
+           editor.Children.Add(_line);
+           editor.Children.Add(_line2);
+           editor.Children.Add(_textBlock);
+           Render();
+       }
+
+       private void UpdatePositions() {
+           _line.X1 = P1.X;
+           _line.Y1 = P1.Y;
+           _line.X2 = P2.X;
+           _line.Y2 = P2.Y;
+           
+           _line2.X1 = P1.X;
+           _line2.Y1 = P1.Y;
+           _line2.X2 = P2.X;
+           _line2.Y2 = P2.Y;
+           
+           Position center = P1.Center(P2);
+           _textBlock.Text = (P1.Distance(P2) / 100).ToString("F2") + " M";
+           _textBlock.Foreground = new SolidColorBrush(Colors.Black);
+           _textBlock.Background = new SolidColorBrush(Colors.White);
+
+           double degrees = ConvertRadiansToDegrees(Math.Atan2(P2.Y - P1.Y, P2.X - P1.X));
+           _textBlock.RenderTransform = new RotateTransform(degrees);
+
+           Canvas.SetLeft(_textBlock, center.X);
+           Canvas.SetTop(_textBlock, center.Y);
+       }
+
+       public void Render() {
+          _line.Stroke = Brushes.White;
+          _line.StrokeThickness = 3;
+
+           Panel.SetZIndex(_line, 100);
+          _line2.Stroke = Brushes.Black;
+          _line2.StrokeThickness = 1;
+
+           Panel.SetZIndex(_line2, 101);
+           Panel.SetZIndex(_textBlock, 102);
+           
+           UpdatePositions();
+       }
+
+       public void Remove(Canvas editor) {
+           _shows = false;
+           editor.Children.Remove(_line);
+           editor.Children.Remove(_line2);
+           editor.Children.Remove(_textBlock);
+       }
+       
+       private static double ConvertRadiansToDegrees(double radians) {
+           double degrees = 180 / Math.PI * radians;
+           if (degrees > 90) return degrees + 180;
+           if (degrees < -90) return degrees + 180;
+           return degrees;
+       }
     }
 }
