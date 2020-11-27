@@ -32,5 +32,13 @@ namespace Models {
         public override int GetHashCode() {
             return HashCode.Combine(X, Y);
         }
+
+        public Position Center(Position position) {
+            return new Position((X + position.X) / 2, (Y + position.Y) / 2);
+        }
+
+        public double Distance(Position p) {
+            return Math.Sqrt(Math.Pow(Y - p.Y, 2) + Math.Pow(X - p.X, 2));
+        }
     }
 }
