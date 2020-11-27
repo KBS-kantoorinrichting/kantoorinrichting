@@ -16,7 +16,8 @@ namespace Services.Migrations
                     Price = table.Column<double>(type: "float", nullable: true),
                     Photo = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Width = table.Column<int>(type: "int", nullable: false),
-                    Length = table.Column<int>(type: "int", nullable: false)
+                    Length = table.Column<int>(type: "int", nullable: false),
+                    Rotation = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {

@@ -13,8 +13,9 @@ namespace Models {
 
         public int Width { get; set; }
         public int Length { get; set; }
+        public int Rotation { get; set; }
 
-        protected override ITuple Variables => (Id, Name, Price, Photo, Width, Length);
+        protected override ITuple Variables => (Id, Name, Price, Photo, Width, Length, Rotation);
 
         public Product(
             string name = default,
@@ -30,6 +31,7 @@ namespace Models {
             Photo = photo;
             Width = width;
             Length = length;
+            Rotation = 0;
         }
     }
 }
