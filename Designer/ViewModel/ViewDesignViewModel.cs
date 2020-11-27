@@ -327,7 +327,7 @@ namespace Designer.ViewModel {
                 var placement = ProductPlacements[i];
                 //Controleer of de placement op dat moment verplaatst wordt
                 //Als dit het geval is moet de placement doorzichtig worden
-                DrawProduct(placement.Product, placement.X, placement.Y, i, _draggingPlacement == placement);
+                DrawProduct(placement.Product, placement.X, placement.Y, i, _draggingPlacement == placement, placement.Rotation);
             }
 
             if (_selectedPlacement != null) {
@@ -353,13 +353,13 @@ namespace Designer.ViewModel {
             // Roteert het product naar links
             selectScreen.RotateLeftButton.Click += delegate
             {
-                placement.Product.Rotation = placement.Product.Rotation == 0 ? 270 : placement.Product.Rotation -= 90;
+                placement.Rotation = placement.Rotation == 0 ? 270 : placement.Rotation -= 90;
                 RenderRoom();
             };
             // Roteert het product naar rechts
             selectScreen.RotateRightButton.Click += delegate
             {
-                placement.Product.Rotation = placement.Product.Rotation == 270 ? 0 : placement.Product.Rotation += 90;
+                placement.Rotation = placement.Rotation == 270 ? 0 : placement.Rotation += 90;
                 RenderRoom();
             };
             Canvas.SetTop(selectScreen, placement.Y + placement.Product.Length);
@@ -367,7 +367,7 @@ namespace Designer.ViewModel {
             Editor.Children.Add(selectScreen);
         }
 
-        public void DrawProduct(Product product, int x, int y, int? placementIndex = null, bool transparent = false) {
+        public void DrawProduct(Product product, int x, int y, int? placementIndex = null, bool transparent = false, int rotation = 0) {
             //Haal de bestandsnaam van de foto op of gebruik de default
             var photo = product.Photo ?? "placeholder.png";
             
@@ -376,7 +376,7 @@ namespace Designer.ViewModel {
 
             tempBitmap.BeginInit();
             tempBitmap.Source = new BitmapImage(new Uri(Environment.CurrentDirectory + $"/Resources/Images/{photo}"));
-            RotateTransform transform = new RotateTransform(product.Rotation);
+            RotateTransform transform = new RotateTransform(rotation);
             tempBitmap.Transform = transform;
             tempBitmap.EndInit();
 
