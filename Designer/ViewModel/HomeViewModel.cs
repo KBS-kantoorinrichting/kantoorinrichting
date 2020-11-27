@@ -18,7 +18,14 @@ namespace Designer.ViewModel
         public BasicCommand GotoProducts { get; set; }
 
         public HomeViewModel() {
-            GotoDesigns = new PageCommand(() => new DesignCatalog());
+            GotoDesigns = new PageCommand(() => {
+                DesignCatalog DesignCatalog = new DesignCatalog();
+                DesignCatalog.DesignSelected += (o, e) =>
+                {
+                    Navigator.Instance.Replace(new ViewDesignPage(e.Value));
+                };
+                return DesignCatalog;
+            });
             GotoProducts = new PageCommand(() => new ViewProductsView());
         }
     }

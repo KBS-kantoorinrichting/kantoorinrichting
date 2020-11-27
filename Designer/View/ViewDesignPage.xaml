@@ -35,9 +35,18 @@
                 <behaviors:EventTrigger EventName="MouseDown" SourceObject="{Binding ElementName=Editor}">
                     <behaviors:InvokeCommandAction Command="{ Binding CanvasMouseDownCommand }" PassEventArgsToCommand="True" />
                 </behaviors:EventTrigger>
+                <behaviors:EventTrigger EventName="MouseMove" SourceObject="{Binding ElementName=Editor}">
+                    <behaviors:InvokeCommandAction Command="{ Binding MouseMoveCommand }" PassEventArgsToCommand="True" />
+                </behaviors:EventTrigger>
+                <behaviors:EventTrigger EventName="MouseWheel" SourceObject="{Binding ElementName=Editor}">
+                    <behaviors:InvokeCommandAction Command="{ Binding CanvasMouseScrollCommand }" PassEventArgsToCommand="True" />
+                </behaviors:EventTrigger>
+                <behaviors:EventTrigger EventName="SizeChanged" SourceObject="{Binding ElementName=Editor}">
+                    <behaviors:InvokeCommandAction Command="{Binding ResizeCommand}" PassEventArgsToCommand="True" />
+                </behaviors:EventTrigger>
             </behaviors:Interaction.Triggers>
         </Canvas>
-        <TabControl x:Name="Tabs" HorizontalAlignment="Right" Grid.Column="1">
+        <TabControl Grid.Column="1">
             <TabItem Header="Catalogus">
                 <Grid Background="#FFE5E5E5">
                     <ScrollViewer>
@@ -166,7 +175,12 @@
                         </ItemsControl>
                     </ScrollViewer>
                     <TextBlock Text="{Binding TotalPrice, StringFormat='Totaal: €{0}'}" VerticalAlignment="Bottom" Margin="5,0,0,25"></TextBlock>
-                    <Button x:Name="Order" Content="Bestellen" HorizontalAlignment="Center" VerticalAlignment="Bottom" Width="234"/>
+                    <Button Content="Bestellen" HorizontalAlignment="Center" VerticalAlignment="Bottom" Width="234"/>
+                </Grid>
+            </TabItem>
+            <TabItem Header="Corona">
+                <Grid Background="#FFE5E5E5" >
+                    <ToggleButton Content="Meetlat" VerticalAlignment="Top" Command="{Binding Measure}" IsChecked="{Binding Enabled, Mode=TwoWay}"/>
                 </Grid>
             </TabItem>
         </TabControl>
