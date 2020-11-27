@@ -117,15 +117,20 @@ namespace Designer.ViewModel {
         
         private List<DistanceLine> _coronaLines = new List<DistanceLine>();
         
-        public void CheckCorona() {
+        public void CheckCorona(ProductPlacement temp = null, ProductPlacement skip = null) {
             _coronaLines.ForEach(line => line.Remove(Editor));
             _coronaLines.Clear();
+
+            List<ProductPlacement> placements = ProductPlacements.ToList();
+            if (temp != null) placements.Add(temp);
             
             //Loopt door alle paren van producten zonder overbodige stappen zoals p1 -> p1 en p1 -> p2, p2 -> p1
-            for (int i = 0; i < ProductPlacements.Count; i++) {
-                ProductPlacement placement1 = ProductPlacements[i];
-                for (int j = i + 1; j < ProductPlacements.Count; j++) {
-                    ProductPlacement placement2 = ProductPlacements[j];
+            for (int i = 0; i < placements.Count; i++) {
+                ProductPlacement placement1 = placements[i];
+                if (Equals(placement1, skip)) continue;
+                for (int j = i + 1; j < placements.Count; j++) {
+                    ProductPlacement placement2 = placements[j];
+                    if (Equals(placement2, skip)) continue;
 
                     (Position p1, Position p2) = PolyUtil.MinDistance(placement1.GetPoly(), placement2.GetPoly());
                     
@@ -276,19 +281,25 @@ namespace Designer.ViewModel {
             //Controleer of er een product is geselecteerd
             if (e.Data == null) return;
             Product selectedProduct = null;
+            ProductPlacement skip = null;
             //Afhankelijk van het type data wordt de product op een andere manier opgehaald
-            if (e.Data.GetDataPresent(typeof(Product))) {
-                selectedProduct = (Product) e.Data.GetData(typeof(Product));
-            } else if (e.Data.GetDataPresent(typeof(ProductPlacement))) {
-                selectedProduct = (e.Data.GetData(typeof(ProductPlacement)) as ProductPlacement)?.Product;
-            }
 
             //Haal de positie van de cursor op
             Point position = e.GetPosition(Editor);
+            
+            if (e.Data.GetDataPresent(typeof(Product))) {
+                selectedProduct = (Product) e.Data.GetData(typeof(Product));
+            } else if (e.Data.GetDataPresent(typeof(ProductPlacement))) {
+                ProductPlacement placement = (ProductPlacement) e.Data.GetData(typeof(ProductPlacement));
+                skip = placement;
+                selectedProduct = placement?.Product;
+            }
             //Als de muis niet bewogen is hoeft het niet opnieuw getekend te worden
             if (position == _previousPosition) return;
             _previousPosition = position;
 
+            CheckCorona(new ProductPlacement((int) position.X - selectedProduct.Width / 2, (int) position.Y - selectedProduct.Length / 2, selectedProduct, null), skip);
+            
             // Check of het product in de ruimte wordt geplaatst
             AllowDrop = CheckRoomCollisions(RoomPoly.Points, position, selectedProduct);
 
@@ -518,6 +529,7 @@ namespace Designer.ViewModel {
        }
 
        private void UpdatePositions() {
+           if (P1 == null || P2 == null) return;
            _line.X1 = P1.X;
            _line.Y1 = P1.Y;
            _line.X2 = P2.X;
