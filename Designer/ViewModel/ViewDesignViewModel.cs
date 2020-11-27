@@ -320,6 +320,7 @@ namespace Designer.ViewModel {
             for (int i = Editor.Children.Count - 1; i >= 0; i += -1) {
                 UIElement Child = Editor.Children[i];
                 if (Child is Image) Editor.Children.Remove(Child);
+                if (Child is PlacementSelectScreen) Editor.Children.Remove(Child);
             }
 
             for (int i = 0; i < ProductPlacements.Count; i++) {
