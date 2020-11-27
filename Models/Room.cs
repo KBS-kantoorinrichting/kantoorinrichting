@@ -18,6 +18,10 @@ namespace Models {
         }
 
         protected override ITuple Variables => (Id, Name, Positions);
+        
+        public List<Position> GetPoly() {
+            return ToList(Positions);
+        }
 
         public Room(string name, string positions) {
             Name = name;

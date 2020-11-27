@@ -11,6 +11,7 @@ using Designer.View;
 using System.Windows.Shapes;
 using System.Windows.Media;
 using System.Diagnostics;
+using Designer.Utils;
 using Models;
 using Services;
 
@@ -184,6 +185,10 @@ namespace Designer.ViewModel {
         public void TryToMoveProduct(ProductPlacement placement, int newX, int newY)
         {
             AllowDrop = CheckRoomCollisions(RoomPoly.Points, new Point(newX, newY), placement.Product);
+
+            (Position p1, Position p2) = PolyUtil.MinDistance(placement.GetPoly(), Design.Room.GetPoly());
+            RenderDistance(p1, p2);
+            
             //Alleen als een object naar het nieuwe punt verplaatst mag worden, wordt het vervangen.
             if (AllowDrop)
             {

@@ -38,7 +38,11 @@ namespace Models {
         }
 
         public double Distance(Position p) {
-            return Math.Sqrt(Math.Pow(Y - p.Y, 2) + Math.Pow(X - p.X, 2));
+            return Distance(p.X, p.Y);
+        }
+
+        public double Distance(double x, double y) {
+            return Math.Sqrt(Math.Pow(Y - y, 2) + Math.Pow(X - x, 2));
         }
     }
 }
