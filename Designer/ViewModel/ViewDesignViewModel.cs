@@ -246,13 +246,17 @@ namespace Designer.ViewModel
                 RenderRoom();
             };
             // Sluit de placementselect scherm
-            selectScreen.CloseButton.Click += (o, e) => _selectedPlacement = null;
+            selectScreen.CloseButton.Click += delegate {
+                _selectedPlacement = null;
+                RenderRoom();
+            };
             // Roteert het product naar links
             selectScreen.RotateLeftButton.Click += delegate
             {
                 placement.Product.Rotation = placement.Product.Rotation == 0 ? 270 : placement.Product.Rotation -= 90;
                 RenderRoom();
             };
+            // Roteert het product naar rechts
             selectScreen.RotateRightButton.Click += delegate
             {
                 placement.Product.Rotation = placement.Product.Rotation == 270 ? 0 : placement.Product.Rotation += 90;
@@ -267,15 +271,22 @@ namespace Designer.ViewModel
         {
             //Haal de bestandsnaam van de foto op of gebruik de default
             var photo = product.Photo ?? "placeholder.png";
+
+            // Veranderd de rotatie van het product
+            TransformedBitmap tempBitmap = new TransformedBitmap();
+
+            tempBitmap.BeginInit();
+            tempBitmap.Source = new BitmapImage(new Uri(Environment.CurrentDirectory + $"/Resources/Images/{photo}"));
+            RotateTransform transform = new RotateTransform(product.Rotation);
+            tempBitmap.Transform = transform;
+            tempBitmap.EndInit();
+
             var image = new Image()
             {
-                Source = new BitmapImage(new Uri(Environment.CurrentDirectory + $"/Resources/Images/{photo}")),
+                Source = tempBitmap,
                 Height = product.Length,
                 Width = product.Width
             };
-
-            // Veranderd de rotatie van het product
-            image.RenderTransform = new RotateTransform(product.Rotation);
 
             //Als transparent in als parameter naar true wordt gezet wordt de afbeelding doorzichtig
             if (transparent)
