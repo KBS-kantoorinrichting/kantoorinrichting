@@ -192,19 +192,17 @@ namespace Designer.ViewModel {
 
         public void TryToMoveProduct(ProductPlacement placement, int newX, int newY)
         {
-            AllowDrop = CheckRoomCollisions(RoomPoly.Points, new Point(newX, newY), placement.Product);
             //Alleen als een object naar het nieuwe punt verplaatst mag worden, wordt het vervangen.
-            if (AllowDrop)
-            {
-                //Verwijder de placement van de placement om te voorkomen dat het product verdubbeld wordt
-                var index = ProductPlacements.FindIndex(element => Equals(element, placement));
-                //Trek de helft van de hoogte en breedte van het product eraf
-                //Zodat het product in het midden van de cursor staat
-                placement.X = newX;
-                placement.Y = newY;
-                //Na het aanpassen wordt het weer toegevoegd om de illusie te geven dat het in de lijst wordt aangepast
-                ProductPlacements[index] = placement;
-            } 
+            if (!AllowDrop) return;
+
+            //Verwijder de placement van de placement om te voorkomen dat het product verdubbeld wordt
+            var index = ProductPlacements.FindIndex(element => Equals(element, placement));
+            //Trek de helft van de hoogte en breedte van het product eraf
+            //Zodat het product in het midden van de cursor staat
+            placement.X = newX;
+            placement.Y = newY;
+            //Na het aanpassen wordt het weer toegevoegd om de illusie te geven dat het in de lijst wordt aangepast
+            ProductPlacements[index] = placement;
         }
 
         public void CanvasMouseDown(object sender, MouseButtonEventArgs e)
