@@ -7,6 +7,7 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
 using System.Text;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;
 using System.Windows.Input;
@@ -89,7 +90,28 @@ namespace Designer.ViewModel
         }
         public void MouseMove(object sender, MouseEventArgs e)
         {
-            Editor.Background = System.Windows.Media.Brushes.Black;
+            if (e.GetPosition(Editor).X % 25 == 0)
+            {
+                /*Rect br = new Rect();
+                br.X = (int)e.GetPosition(Editor).X;
+                br.Y = (int)e.GetPosition(Editor).Y;
+                br.Width = 25;
+                br.Height = 25;
+                Editor.Children.Add(br); 
+                br kan niet toegevoegd worden aan Editor.Children*/
+
+                System.Windows.Shapes.Rectangle rectangle = new System.Windows.Shapes.Rectangle();
+                //rectangle.X= (int)e.GetPosition(Editor).X;
+                //rectangle.Y = (int)e.GetPosition(Editor).Y; deze regels werken niet
+                rectangle.Fill = System.Windows.Media.Brushes.LightBlue;
+                rectangle.Width = 25;
+                rectangle.Height = 25;
+                rectangle.Stroke = System.Windows.Media.Brushes.Black;
+                Editor.Children.Add(rectangle);
+
+                // Nu tekent hij een blauw 25*25 vierkantje op 0,0 wanneer de muis beweegt
+
+            }
         }
 
     }
