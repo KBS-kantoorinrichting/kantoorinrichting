@@ -90,26 +90,18 @@ namespace Designer.ViewModel
         }
         public void MouseMove(object sender, MouseEventArgs e)
         {
-            if (e.GetPosition(Editor).X % 25 == 0)
-            {
-                /*Rect br = new Rect();
-                br.X = (int)e.GetPosition(Editor).X;
-                br.Y = (int)e.GetPosition(Editor).Y;
-                br.Width = 25;
-                br.Height = 25;
-                Editor.Children.Add(br); 
-                br kan niet toegevoegd worden aan Editor.Children*/
-
+            if (e.GetPosition(Editor).X % 25 == 0 && e.GetPosition(Editor).Y % 25 == 0)
+            { // Wanneer hij in een vakje is:
+                
                 System.Windows.Shapes.Rectangle rectangle = new System.Windows.Shapes.Rectangle();
-                //rectangle.X= (int)e.GetPosition(Editor).X;
-                //rectangle.Y = (int)e.GetPosition(Editor).Y; deze regels werken niet
                 rectangle.Fill = System.Windows.Media.Brushes.LightBlue;
                 rectangle.Width = 25;
                 rectangle.Height = 25;
                 rectangle.Stroke = System.Windows.Media.Brushes.Black;
+                Canvas.SetTop(rectangle, (int)e.GetPosition(Editor).Y);
+                Canvas.SetLeft(rectangle, (int)e.GetPosition(Editor).X);
                 Editor.Children.Add(rectangle);
-
-                // Nu tekent hij een blauw 25*25 vierkantje op 0,0 wanneer de muis beweegt
+                // Nieuwe rectangle met grootte 25x25 in lichtblauw met zwarte randen op positie van de cursor
 
             }
         }
