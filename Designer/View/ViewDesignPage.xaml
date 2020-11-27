@@ -174,7 +174,7 @@
             </TabItem>
             <TabItem Header="Corona">
                 <Grid Background="#FFE5E5E5" >
-                    <Button Content="Meetlat" VerticalAlignment="Top" Command="{Binding Measure}"/>
+                    <ToggleButton Content="Meetlat" VerticalAlignment="Top" Command="{Binding Measure}" IsChecked="{Binding Enabled, Mode=TwoWay}"/>
                 </Grid>
             </TabItem>
         </TabControl>

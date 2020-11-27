@@ -71,17 +71,23 @@ namespace Designer.ViewModel {
         }
 
         private bool _enabled;
-        private Position _origin; 
-        private Position _secondPoint; 
-        
+
+        public bool Enabled {
+            get => _enabled;
+            set => _enabled = value;
+        }
+
+        private Position _origin;
+        private Position _secondPoint;
+
         public void StartMeasure() {
-            if (!(_enabled = !_enabled)) {
-                //_enabled was eerst true
+            if (_enabled) {
+                RenderDistance(new Position(-100, -100), new Position(-100, -100));
                 _origin = null;
                 _secondPoint = null;
             }
         }
-        
+
         private void PlacePoint(MouseButtonEventArgs eventArgs) {
             Point p = eventArgs.GetPosition(Editor);
 
@@ -90,6 +96,8 @@ namespace Designer.ViewModel {
                 _secondPoint = null;
             } else {
                 _secondPoint = new Position((int) p.X, (int) p.Y);
+                _enabled = false;
+                OnPropertyChanged();
             }
         }
 
@@ -218,7 +226,7 @@ namespace Designer.ViewModel {
                     PlacePoint(e);
                     return;
                 }
-                
+
                 if (sender.GetType() != typeof(Image)) return;
                 var image = sender as Image;
                 var placement = ProductPlacements.Where(
@@ -419,6 +427,10 @@ namespace Designer.ViewModel {
             }
 
             return true;
+        }
+        
+        private void OnPropertyChanged(string propertyName = "") {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }
 
