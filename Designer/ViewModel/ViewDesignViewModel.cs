@@ -157,6 +157,7 @@ namespace Designer.ViewModel {
                 // Sets the dimensions of the current room
                 SetRoomDimensions();
                 RenderRoom();
+                CheckCorona();
 
                 // Zet de schaal van de ruimte op basis van de dimensies, dit moet na het zetten van het design
                 SetRoomScale();
@@ -167,7 +168,10 @@ namespace Designer.ViewModel {
 
         public void PlaceProduct(Product product, int x, int y) {
             // Checkt of het product niet null is en of de foto geplaatst mag worden
-            if (product == null || !AllowDrop) return;
+            if (product == null || !AllowDrop) {
+                CheckCorona();
+                return;
+            }
             ProductPlacements.Add(
                 new ProductPlacement() {
                     Product = product,
@@ -185,7 +189,10 @@ namespace Designer.ViewModel {
 
         public void TryToMoveProduct(ProductPlacement placement, int newX, int newY) {
             //Alleen als een object naar het nieuwe punt verplaatst mag worden, wordt het vervangen.
-            if (!AllowDrop) return;
+            if (!AllowDrop) {
+                CheckCorona();
+                return;
+            }
 
             //Verwijder de placement van de placement om te voorkomen dat het product verdubbeld wordt
             var index = ProductPlacements.FindIndex(element => Equals(element, placement));
