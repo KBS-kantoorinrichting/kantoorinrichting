@@ -41,6 +41,8 @@ namespace Designer.ViewModel
         public Polygon RoomPoly { get; set; }
         public bool AllowDrop = false;
         public double Scale = 1.0;
+        private double _canvasHeight => Navigator.Instance.CurrentPage.ActualHeight - 20;
+        private double _canvasWidth => Navigator.Instance.CurrentPage.ActualWidth - 260;
         //Special constructor for unit tests
         public ViewDesignViewModel(Design design)
         {
@@ -62,8 +64,6 @@ namespace Designer.ViewModel
             CanvasMouseScrollCommand = new ArgumentCommand<MouseWheelEventArgs>(e => CanvasMouseScroll(e.OriginalSource, e));
             ResizeCommand = new ArgumentCommand<SizeChangedEventArgs>(e => ResizePage(e.OriginalSource, e));
             _productOverview = new Dictionary<Product, ProductData>();
-
-
         }
 
         public void SetDesign(Design design)
@@ -78,6 +78,9 @@ namespace Designer.ViewModel
                 // Sets the dimensions of the current room
                 SetRoomDimensions();
                 RenderRoom();
+
+                // Zet de schaal van de ruimte op basis van de dimensies, dit moet na het zetten van het design
+                SetRoomScale();
             }
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(""));
         }
@@ -298,9 +301,7 @@ namespace Designer.ViewModel
 
         public void SetRoomDimensions()
         {
-            // TODO: Replace with room positions
             var coordinates = Room.ToList(Design.Room.Positions);
-
 
             PointCollection points = new PointCollection();
             // Voeg de punten toe aan een punten collectie
@@ -358,19 +359,36 @@ namespace Designer.ViewModel
             return true;
         }
 
+        public void SetRoomScale()
+        {
+            double scale;
+
+            // Zet de dimensies van de ruimte polygon
+            RoomPoly.Measure(new Size(double.PositiveInfinity, double.PositiveInfinity));
+
+            // Als de breedte hoger is dan de breedte wordt de breedte gebruikt voor de schaal en vice versa
+            if (RoomPoly.DesiredSize.Width > RoomPoly.DesiredSize.Height)
+            {
+                scale = _canvasWidth / RoomPoly.DesiredSize.Width;
+            } else
+            {
+                scale = _canvasHeight / RoomPoly.DesiredSize.Height;
+            }
+
+            ScaleCanvas(scale);
+        }
+
         public void CanvasMouseScroll(object sender, MouseWheelEventArgs e)
         {
-            ScaleCanvas(Scale + (e.Delta > 0 ? +-0.02 : 0.02));
+
+            ScaleCanvas(Scale + (e.Delta > 0 ? -0.02 : 0.02));
         }
 
         public void ResizePage(object sender, SizeChangedEventArgs e)
         {
-            double canvasHeight = Navigator.Instance.CurrentPage.ActualHeight - 20;
-            double canvasWidth = Navigator.Instance.CurrentPage.ActualWidth - 260;
-
             // Berekent voor de hoogte en breedte het canvas, de hoogte en breedte veranderd alleen als de room polygon kleiner wordt dan dat deze was 
-            double width = canvasWidth / RoomPoly.ActualWidth < Scale ? canvasWidth / RoomPoly.ActualWidth : Scale;
-            double height = canvasHeight / RoomPoly.ActualHeight < Scale ? canvasHeight / RoomPoly.ActualHeight : Scale;
+            double width = _canvasWidth / RoomPoly.ActualWidth < Scale ? _canvasWidth / RoomPoly.ActualWidth : Scale;
+            double height = _canvasHeight / RoomPoly.ActualHeight < Scale ? _canvasHeight / RoomPoly.ActualHeight : Scale;
 
             // De kleinste waarde wordt meegegeven aan de scale functie
             ScaleCanvas(width > height ? height : width);
@@ -378,11 +396,9 @@ namespace Designer.ViewModel
 
         private void ScaleCanvas(double scale)
         {
-            double canvasHeight = Navigator.Instance.CurrentPage.ActualHeight - 20;
-            double canvasWidth = Navigator.Instance.CurrentPage.ActualWidth - 260;
-
             // Kijkt of de gegeven schaal binnen de pagina past, zo niet veranderd de schaal niet
-            if (scale >= 0.2 && RoomPoly.ActualHeight * scale <= canvasHeight && RoomPoly.ActualWidth * scale <= canvasWidth)
+            //if (scale >= 0.01 && RoomPoly.ActualHeight * scale <= _canvasHeight && RoomPoly.ActualWidth * scale <= _canvasWidth)
+            if(scale >= 0.01)
             {
                 Scale = scale;
                 Editor.RenderTransform = new ScaleTransform(scale, scale);
