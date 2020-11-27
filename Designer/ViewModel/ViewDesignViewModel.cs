@@ -290,6 +290,7 @@ namespace Designer.ViewModel {
             if (e.Data == null) return;
             Product selectedProduct = null;
             ProductPlacement skip = null;
+            int rotation = 0;
             //Afhankelijk van het type data wordt de product op een andere manier opgehaald
 
             //Haal de positie van de cursor op
@@ -301,6 +302,7 @@ namespace Designer.ViewModel {
                 ProductPlacement placement = (ProductPlacement) e.Data.GetData(typeof(ProductPlacement));
                 skip = placement;
                 selectedProduct = placement?.Product;
+                rotation = placement?.Rotation ?? 0;
             }
 
             //Als de muis niet bewogen is hoeft het niet opnieuw getekend te worden
@@ -323,7 +325,9 @@ namespace Designer.ViewModel {
             DrawProduct(
                 selectedProduct,
                 (int) position.X - (selectedProduct.Width / 2),
-                (int) position.Y - (selectedProduct.Length / 2), transparent: !AllowDrop
+                (int) position.Y - (selectedProduct.Length / 2), 
+                transparent: !AllowDrop, 
+                rotation: rotation
             );
         }
 
@@ -331,13 +335,14 @@ namespace Designer.ViewModel {
             for (int i = Editor.Children.Count - 1; i >= 0; i += -1) {
                 UIElement Child = Editor.Children[i];
                 if (Child is Image) Editor.Children.Remove(Child);
+                if (Child is PlacementSelectScreen) Editor.Children.Remove(Child);
             }
 
             for (int i = 0; i < ProductPlacements.Count; i++) {
                 var placement = ProductPlacements[i];
                 //Controleer of de placement op dat moment verplaatst wordt
                 //Als dit het geval is moet de placement doorzichtig worden
-                DrawProduct(placement.Product, placement.X, placement.Y, i, _draggingPlacement == placement);
+                DrawProduct(placement.Product, placement.X, placement.Y, i, _draggingPlacement == placement, placement.Rotation);
             }
 
             if (_selectedPlacement != null) {
@@ -348,9 +353,28 @@ namespace Designer.ViewModel {
         private void DrawSelectionButtons(ProductPlacement placement) {
             PlacementSelectScreen selectScreen = new PlacementSelectScreen();
             selectScreen.DataContext = placement.Product;
-            selectScreen.DeleteButton.Click += (o, e) => {
+            // Verwijderd de plaatsing en rendert de ruimte opnieuw
+            selectScreen.DeleteButton.Click += delegate
+            {
                 ProductPlacements.Remove(placement);
                 _selectedPlacement = null;
+                RenderRoom();
+            };
+            // Sluit de placementselect scherm
+            selectScreen.CloseButton.Click += delegate {
+                _selectedPlacement = null;
+                RenderRoom();
+            };
+            // Roteert het product naar links
+            selectScreen.RotateLeftButton.Click += delegate
+            {
+                placement.Rotation = placement.Rotation == 0 ? 270 : placement.Rotation -= 90;
+                RenderRoom();
+            };
+            // Roteert het product naar rechts
+            selectScreen.RotateRightButton.Click += delegate
+            {
+                placement.Rotation = placement.Rotation == 270 ? 0 : placement.Rotation += 90;
                 RenderRoom();
             };
             Canvas.SetTop(selectScreen, placement.Y + placement.Product.Length);
@@ -358,11 +382,22 @@ namespace Designer.ViewModel {
             Editor.Children.Add(selectScreen);
         }
 
-        public void DrawProduct(Product product, int x, int y, int? placementIndex = null, bool transparent = false) {
+        public void DrawProduct(Product product, int x, int y, int? placementIndex = null, bool transparent = false, int rotation = 0) {
             //Haal de bestandsnaam van de foto op of gebruik de default
             var photo = product.Photo ?? "placeholder.png";
-            var image = new Image() {
-                Source = new BitmapImage(new Uri(Environment.CurrentDirectory + $"/Resources/Images/{photo}")),
+            
+            // Veranderd de rotatie van het product
+            TransformedBitmap tempBitmap = new TransformedBitmap();
+
+            tempBitmap.BeginInit();
+            tempBitmap.Source = new BitmapImage(new Uri(Environment.CurrentDirectory + $"/Resources/Images/{photo}"));
+            RotateTransform transform = new RotateTransform(rotation);
+            tempBitmap.Transform = transform;
+            tempBitmap.EndInit();
+
+            var image = new Image()
+            {
+                Source = tempBitmap,
                 Height = product.Length,
                 Width = product.Width
             };

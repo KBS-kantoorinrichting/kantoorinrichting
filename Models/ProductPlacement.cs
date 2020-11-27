@@ -17,7 +17,9 @@ namespace Models {
         public int DesignId { get; set; }
         public Design Design { get; set; }
 
-        protected override ITuple Variables => (Id, X, Y, ProductId, Product, DesignId, Design);
+        public int Rotation { get; set; }
+
+        protected override ITuple Variables => (Id, X, Y, ProductId, Product, DesignId, Design, Rotation);
 
         public ProductPlacement() {
         }
@@ -27,6 +29,7 @@ namespace Models {
             Y = y;
             Product = product;
             Design = design;
+            Rotation = 0;
         }
 
         public List<Position> GetPoly() {
