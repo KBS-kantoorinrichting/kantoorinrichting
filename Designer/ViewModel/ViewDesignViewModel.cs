@@ -102,6 +102,23 @@ namespace Designer.ViewModel
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(""));
         }
 
+        public void TryToMoveProduct(ProductPlacement placement, int newX, int newY)
+        {
+            AllowDrop = CheckRoomCollisions(RoomPoly.Points, new Point(newX, newY), placement.Product);
+            //Alleen als een object naar het nieuwe punt verplaatst mag worden, wordt het vervangen.
+            if (AllowDrop)
+            {
+                //Verwijder de placement van de placement om te voorkomen dat het product verdubbeld wordt
+                var index = ProductPlacements.FindIndex(element => Equals(element, placement));
+                //Trek de helft van de hoogte en breedte van het product eraf
+                //Zodat het product in het midden van de cursor staat
+                placement.X = newX;
+                placement.Y = newY;
+                //Na het aanpassen wordt het weer toegevoegd om de illusie te geven dat het in de lijst wordt aangepast
+                ProductPlacements[index] = placement;
+            } 
+        }
+
         public void CanvasMouseDown(object sender, MouseButtonEventArgs e)
         {
             //Rechtermuisknop zorgt ervoor dat informatie over het product wordt getoond
@@ -173,14 +190,9 @@ namespace Designer.ViewModel
             {
                 var placement = (ProductPlacement) e.Data.GetData(typeof(ProductPlacement));
                 Point position = e.GetPosition(Editor);
-                //Verwijder de placement van de placement om te voorkomen dat het product verdubbeld wordt
-                ProductPlacements.Remove(placement);
-                //Trek de helft van de hoogte en breedte van het product eraf
-                //Zodat het product in het midden van de cursor staat
-                placement.X = (int) position.X - (placement.Product.Width / 2);
-                placement.Y = (int) position.Y - (placement.Product.Length / 2);
-                //Na het aanpassen wordt het weer toegevoegd om de illusie te geven dat het in de lijst wordt aangepast
-                ProductPlacements.Add(placement);
+                var x = (int) position.X - (placement.Product.Width / 2);
+                var y = (int) position.Y - (placement.Product.Length / 2);
+                TryToMoveProduct(placement, x, y);
                 _draggingPlacement = null;
                 RenderRoom();
             }
