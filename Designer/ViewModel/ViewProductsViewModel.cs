@@ -36,14 +36,7 @@ namespace Designer.ViewModel {
         {
             get
             {
-                if (EditedItem == null)
-                {
-                    return "True";
-                }
-                else
-                {
-                    return "False";
-                }
+                return (EditedItem == null).ToString();
             }
             set { IsEditedRead = value; }
         }
@@ -52,14 +45,7 @@ namespace Designer.ViewModel {
         {
             get
             {
-                if(EditedItem == null)
-                {
-                    return "Hidden";
-                }
-                else
-                {
-                    return "Visible";
-                }
+                return EditedItem == null ? "Hidden" : "Visible";
             }
             set { IsEditedVis = value; }
         }
@@ -68,14 +54,7 @@ namespace Designer.ViewModel {
         {
             get
             {
-                if (SelectedProduct == null)
-                {
-                    return  "Hidden";
-                }
-                else
-                {
-                    return "Visible";
-                }
+                return SelectedProduct == null ? "Hidden" : "Visible";
             }
             set { ItemIsSelected = value; }
           

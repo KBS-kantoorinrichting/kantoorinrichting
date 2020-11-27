@@ -175,7 +175,7 @@
                 </StackPanel>
             </Border>
             <Button Content="Pas product aan" Height="74" Width="170" HorizontalAlignment="Right" Margin="0,94,5,466"
-                Command="{Binding EditCommand}" BorderThickness="0px" Click="Button_Click" />
+                Command="{Binding EditCommand}" BorderThickness="0px"  />
             <Button Content="Opslaan" Command="{Binding SaveEdit}" Height="74" Width="170" HorizontalAlignment="Right"  BorderThickness="0px" Margin="0,174,5,386" Visibility="{Binding IsEditedVis}" />
         </Grid>
     </Grid>
