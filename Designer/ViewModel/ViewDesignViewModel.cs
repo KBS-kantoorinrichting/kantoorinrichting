@@ -121,18 +121,20 @@ namespace Designer.ViewModel {
             _coronaLines.ForEach(line => line.Remove(Editor));
             _coronaLines.Clear();
             
+            //Loopt door alle paren van producten zonder overbodige stappen zoals p1 -> p1 en p1 -> p2, p2 -> p1
             for (int i = 0; i < ProductPlacements.Count; i++) {
                 ProductPlacement placement1 = ProductPlacements[i];
                 for (int j = i + 1; j < ProductPlacements.Count; j++) {
                     ProductPlacement placement2 = ProductPlacements[j];
 
                     (Position p1, Position p2) = PolyUtil.MinDistance(placement1.GetPoly(), placement2.GetPoly());
+                    
                     double distance = p1.Distance(p2);
-                    if (distance < 150) {
-                        DistanceLine line = new DistanceLine(p1, p2);
-                        line.Add(Editor);
-                        _coronaLines.Add(line);
-                    }
+                    if (distance >= 150) continue;
+                    //Als het minder dan 150 cm is voegd die de lijn toe.
+                    DistanceLine line = new DistanceLine(p1, p2);
+                    line.Add(Editor);
+                    _coronaLines.Add(line);
                 }
             }
         }

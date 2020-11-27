@@ -6,6 +6,7 @@ namespace DesignerTest {
     public class PolyUtilTest {
         [Test]
         public static void MinDistanceTest() {
+            //todo
             PolyUtil.MinDistance(Room.ToList("0,0|10,10|0,10"), Room.ToList("15,5|0,20|20,20"));
         }
     }
