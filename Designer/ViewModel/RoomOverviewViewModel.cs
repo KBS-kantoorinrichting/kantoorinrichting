@@ -36,7 +36,7 @@ namespace Designer.ViewModel
         {
 
             // binding voor de knop die je naar de room editor pagina brengt
-            GotoRoomTemplate = new PageCommand(() => new RoomEditorView());
+            GotoRoomTemplate = new PageCommand(() => new RoomTemplateView());
             // binding voor het weergeven van het object waar je op klikt
             MouseDownCommand = new ArgumentCommand<MouseButtonEventArgs>(e => MouseDown(e.OriginalSource, e));
             // maakt nieuw canvas aan
