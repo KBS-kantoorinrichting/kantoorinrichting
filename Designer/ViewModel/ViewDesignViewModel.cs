@@ -238,10 +238,24 @@ namespace Designer.ViewModel
         {
             PlacementSelectScreen selectScreen = new PlacementSelectScreen();
             selectScreen.DataContext = placement.Product;
-            selectScreen.DeleteButton.Click += (o, e) =>
+            // Verwijderd de plaatsing en rendert de ruimte opnieuw
+            selectScreen.DeleteButton.Click += delegate
             {
                 ProductPlacements.Remove(placement);
                 _selectedPlacement = null;
+                RenderRoom();
+            };
+            // Sluit de placementselect scherm
+            selectScreen.CloseButton.Click += (o, e) => _selectedPlacement = null;
+            // Roteert het product naar links
+            selectScreen.RotateLeftButton.Click += delegate
+            {
+                placement.Product.Rotation = placement.Product.Rotation == 0 ? 270 : placement.Product.Rotation -= 90;
+                RenderRoom();
+            };
+            selectScreen.RotateRightButton.Click += delegate
+            {
+                placement.Product.Rotation = placement.Product.Rotation == 270 ? 0 : placement.Product.Rotation += 90;
                 RenderRoom();
             };
             Canvas.SetTop(selectScreen, placement.Y + placement.Product.Length);
@@ -259,6 +273,9 @@ namespace Designer.ViewModel
                 Height = product.Length,
                 Width = product.Width
             };
+
+            // Veranderd de rotatie van het product
+            image.RenderTransform = new RotateTransform(product.Rotation);
 
             //Als transparent in als parameter naar true wordt gezet wordt de afbeelding doorzichtig
             if (transparent)
