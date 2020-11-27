@@ -15,6 +15,7 @@ namespace Designer.ViewModel
 {
     class RoomOverviewViewModel : INotifyPropertyChanged
     {
+
         public event PropertyChangedEventHandler PropertyChanged;
         public ArgumentCommand<MouseButtonEventArgs> MouseDownCommand { get; set; }
         public BasicCommand GotoRoomTemplate { get; set; }
@@ -40,6 +41,7 @@ namespace Designer.ViewModel
             // maakt nieuw canvas aan
             Editor = new Canvas();
             RoomPoly = new Polygon();
+            DeleteCommand = new BasicCommand(Delete);
             // herlaad pagina
             Reload();
             
@@ -49,6 +51,7 @@ namespace Designer.ViewModel
         public void Reload()
         { // Reload de items zodat de juiste te zien zijn
             Rooms = LoadItems();
+            Editor.Children.Clear();
             OnPropertyChanged();
         }
 
@@ -115,7 +118,20 @@ namespace Designer.ViewModel
             Editor.Children.Add(RoomPoly);
            
         }
+        public void Delete()
+        {
+            if (SelectedRoom == null || RoomService.Instance.Count() == 0)
+            {
+                return;
+            }
+            RoomService.Instance.Delete(SelectedRoom);
+            GeneralPopup warning = new GeneralPopup("Kamer is verwijderd!");
+            warning.ShowDialog();
+            SelectedRoom = null;
+        
+            Reload();
 
+        }
         protected virtual void OnPropertyChanged(string propertyName = "")
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));

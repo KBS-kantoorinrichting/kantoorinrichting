@@ -24,6 +24,7 @@
         <TabControl x:Name="Tabs" Margin="884,20,0,0" HorizontalAlignment="Left" Width="260">
             <TabItem Header="Ruimtes">
                 <Grid Background="#FFE5E5E5" Height="603">
+
                     <ScrollViewer>
 
                         <ItemsControl
@@ -85,13 +86,14 @@
 
         <Grid Background="White" HorizontalAlignment="Left" Height="634" Margin="0,20,0,0" VerticalAlignment="Top"
               Width="879">
-
+            <Button Content="Verwijder&#xD;&#xA;kamer" Width="51" HorizontalAlignment="Right" Margin="0,15,10,581" Background="Red" Foreground="White"
+                    Command="{Binding DeleteCommand}" BorderThickness="0px" />
             <!--
             <Button Content="Verwijder product" Height="74" Width="170" HorizontalAlignment="Right" Margin="0,15,5,545"
                     Command="{Binding DeleteCommand}" BorderThickness="0px" />
             -->
 
-            <Border HorizontalAlignment="Center" Height="610" Margin="0,14,0,0" VerticalAlignment="Top" Width="860"
+            <Border HorizontalAlignment="Left" Height="610" Margin="10,14,0,0" VerticalAlignment="Top" Width="790"
                     Background="White" BorderThickness="1px" BorderBrush="Black">
                 <StackPanel Margin="0,0,132,28">
                     <Label Content="{Binding SelectedRoom.Name}"/>
