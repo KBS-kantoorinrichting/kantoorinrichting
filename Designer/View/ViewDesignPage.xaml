@@ -35,6 +35,12 @@
                 <behaviors:EventTrigger EventName="MouseDown" SourceObject="{Binding ElementName=Editor}">
                     <behaviors:InvokeCommandAction Command="{ Binding CanvasMouseDownCommand }" PassEventArgsToCommand="True" />
                 </behaviors:EventTrigger>
+                <behaviors:EventTrigger EventName="MouseWheel" SourceObject="{Binding ElementName=Editor}">
+                    <behaviors:InvokeCommandAction Command="{ Binding CanvasMouseScrollCommand }" PassEventArgsToCommand="True" />
+                </behaviors:EventTrigger>
+                <behaviors:EventTrigger EventName="SizeChanged" SourceObject="{Binding ElementName=Editor}">
+                    <behaviors:InvokeCommandAction Command="{Binding ResizeCommand}" PassEventArgsToCommand="True" />
+                </behaviors:EventTrigger>
             </behaviors:Interaction.Triggers>
         </Canvas>
         <TabControl x:Name="Tabs" HorizontalAlignment="Right" Grid.Column="1">
