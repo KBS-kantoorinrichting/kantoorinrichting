@@ -26,10 +26,11 @@ namespace Designer.ViewModel
         public Room SelectedRoom { get; set; }
 
         public Canvas Editor { get; set; }
-        private Point _previousPosition;
-        private ProductPlacement _selectedPlacement;
-        private ProductPlacement _draggingPlacement;
+        public ArgumentCommand<SizeChangedEventArgs> ResizeCommand { get; set; }
         public Polygon RoomPoly { get; set; }
+        public double Scale = 1.0;
+        private double _canvasHeight = 500;
+        private double _canvasWidth = 790;
 
         public RoomOverviewViewModel()
         {
@@ -42,9 +43,9 @@ namespace Designer.ViewModel
             Editor = new Canvas();
             RoomPoly = new Polygon();
             DeleteCommand = new BasicCommand(Delete);
+            ResizeCommand = new ArgumentCommand<SizeChangedEventArgs>(e => ResizePage(e.OriginalSource, e));
             // herlaad pagina
             Reload();
-            
         }
 
 
@@ -82,6 +83,7 @@ namespace Designer.ViewModel
                 }
                 
                 SetRoomDimensions();
+                SetRoomScale();
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("SelectedRoom"));
             }
         }
@@ -116,7 +118,7 @@ namespace Designer.ViewModel
             RoomPoly.VerticalAlignment = VerticalAlignment.Center;
             RoomPoly.Points = points;
             Editor.Children.Add(RoomPoly);
-           
+
         }
         public void Delete()
         {
@@ -131,6 +133,46 @@ namespace Designer.ViewModel
         
             Reload();
 
+        }
+
+        private void ScaleCanvas(double scale)
+        {
+            // Kijkt of de gegeven schaal binnen de pagina past, zo niet veranderd de schaal niet
+            //if (scale >= 0.01 && RoomPoly.ActualHeight * scale <= _canvasHeight && RoomPoly.ActualWidth * scale <= _canvasWidth)
+            if (scale >= 0.01)
+            {
+                Scale = scale;
+                Editor.RenderTransform = new ScaleTransform(scale, scale);
+            }
+        }
+
+
+        public void ResizePage(object sender, SizeChangedEventArgs e)
+        {
+            // Berekent voor de hoogte en breedte het canvas, de hoogte en breedte veranderd alleen als de room polygon kleiner wordt dan dat deze was 
+            double width = _canvasWidth / RoomPoly.ActualWidth < Scale ? _canvasWidth / RoomPoly.ActualWidth : Scale;
+            double height = _canvasHeight / RoomPoly.ActualHeight < Scale ? _canvasHeight / RoomPoly.ActualHeight : Scale;
+
+            // De kleinste waarde wordt meegegeven aan de scale functie
+            ScaleCanvas(width > height ? height : width);
+        }
+        public void SetRoomScale()
+        {
+            double scale;
+
+            // Zet de dimensies van de ruimte polygon
+            RoomPoly.Measure(new Size(double.PositiveInfinity, double.PositiveInfinity));
+
+            // Als de breedte hoger is dan de breedte wordt de breedte gebruikt voor de schaal en vice versa
+            if (RoomPoly.DesiredSize.Width > RoomPoly.DesiredSize.Height)
+            {
+                scale = _canvasWidth / RoomPoly.DesiredSize.Width;
+            }
+            else
+            {
+                scale = _canvasHeight / RoomPoly.DesiredSize.Height;
+            }
+            ScaleCanvas(scale);
         }
         protected virtual void OnPropertyChanged(string propertyName = "")
         {

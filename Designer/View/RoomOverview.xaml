@@ -97,15 +97,9 @@
                     Background="White" BorderThickness="1px" BorderBrush="Black">
                 <StackPanel Margin="0,0,132,28">
                     <Label Content="{Binding SelectedRoom.Name}"/>
-                    <Border Height="568" Width="852">
-
-
-                        <Canvas Grid.Column="0" Name="Editor" AllowDrop="True" Background="Transparent" Margin="40,30,40,26">
-                            <ContentPresenter Content="{Binding Path=Editor}"></ContentPresenter>
-                        </Canvas>
-
-                    </Border>
-
+                    <Canvas Grid.Column="0" Name="Editor" AllowDrop="True" Background="Transparent" Margin="40,30,40,26">
+                        <ContentPresenter Content="{Binding Path=Editor}"></ContentPresenter>
+                    </Canvas>
                 </StackPanel>
             </Border>
 
