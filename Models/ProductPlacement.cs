@@ -1,4 +1,6 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.Linq;
 using System.Runtime.CompilerServices;
 
 namespace Models {
@@ -28,6 +30,11 @@ namespace Models {
             Product = product;
             Design = design;
             Rotation = 0;
+        }
+
+        public List<Position> GetPoly() {
+            List<Position> positions = Product.GetPoly();
+            return positions.Select(p => new Position(p.X + X, p.Y + Y)).ToList();
         }
     }
 }

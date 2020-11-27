@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Runtime.CompilerServices;
 
 namespace Models {
@@ -30,6 +31,12 @@ namespace Models {
             Photo = photo;
             Width = width;
             Length = length;
+        }
+        
+        
+
+        public List<Position> GetPoly() {
+            return Room.ToList(Room.FromDimensions(Width, Length));
         }
     }
 }
