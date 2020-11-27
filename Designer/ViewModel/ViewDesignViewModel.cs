@@ -290,11 +290,15 @@ namespace Designer.ViewModel {
             //Controleer of er een product is geselecteerd
             if (e.Data == null) return;
             Product selectedProduct = null;
+            int rotation = 0;
             //Afhankelijk van het type data wordt de product op een andere manier opgehaald
             if (e.Data.GetDataPresent(typeof(Product))) {
                 selectedProduct = (Product) e.Data.GetData(typeof(Product));
-            } else if (e.Data.GetDataPresent(typeof(ProductPlacement))) {
-                selectedProduct = (e.Data.GetData(typeof(ProductPlacement)) as ProductPlacement)?.Product;
+            } else if (e.Data.GetDataPresent(typeof(ProductPlacement)))
+            {
+                var placement = e.Data.GetData(typeof(ProductPlacement)) as ProductPlacement;
+                selectedProduct = placement?.Product;
+                rotation = placement?.Rotation ?? 0;
             }
 
             //Haal de positie van de cursor op
@@ -312,7 +316,9 @@ namespace Designer.ViewModel {
             DrawProduct(
                 selectedProduct,
                 (int) position.X - (selectedProduct.Width / 2),
-                (int) position.Y - (selectedProduct.Length / 2), transparent: !AllowDrop
+                (int) position.Y - (selectedProduct.Length / 2), 
+                transparent: !AllowDrop, 
+                rotation: rotation
             );
         }
 
