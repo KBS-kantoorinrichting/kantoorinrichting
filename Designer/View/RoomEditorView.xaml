@@ -3,6 +3,7 @@
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:behaviors="http://schemas.microsoft.com/xaml/behaviors"
       xmlns:local="clr-namespace:Designer.View" xmlns:viewModel="clr-namespace:Designer.ViewModel"
       mc:Ignorable="d" 
       d:DesignHeight="720" d:DesignWidth="1280"
@@ -15,60 +16,23 @@
                  TextWrapping="Wrap" VerticalAlignment="Top" Width="178"
                  Text="{Binding Name, UpdateSourceTrigger = PropertyChanged}" Margin="87,8,0,0"/>
         <Label Content="Ruimte naam:" HorizontalAlignment="Left" VerticalAlignment="Top" Width="114" />
-        <Canvas Margin="0,31,0,0" >
-            <Grid Height="689" Width="1270" Background="Bisque" >
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="5*"/>
-                    <RowDefinition Height="5*"/>
-                    <RowDefinition Height="5*"/>
-                    <RowDefinition Height="5*"/>
-                    <RowDefinition Height="5*"/>
-                    <RowDefinition Height="5*"/>
-                    <RowDefinition Height="5*"/>
-                    <RowDefinition Height="5*"/>
-                    <RowDefinition Height="5*"/>
-                    <RowDefinition Height="5*"/>
-                    <RowDefinition Height="5*"/>
-                    <RowDefinition Height="5*"/>
-                    <RowDefinition Height="5*"/>
-                    <RowDefinition Height="5*"/>
-                    <RowDefinition Height="5*"/>
-                    <RowDefinition Height="5*"/>
-                    <RowDefinition Height="5*"/>
-                    <RowDefinition Height="5*"/>
-                    <RowDefinition Height="5*"/>
-                    <RowDefinition Height="5*"/>
-                    <RowDefinition Height="5*"/>
+        <Border BorderThickness="1px" BorderBrush="Black" Margin="0,33,0,0" Name="CanvasBorder">
 
-                </Grid.RowDefinitions>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="5*"/>
-                    <ColumnDefinition Width="5*"/>
-                    <ColumnDefinition Width="5*"/>
-                    <ColumnDefinition Width="5*"/>
-                    <ColumnDefinition Width="5*"/>
-                    <ColumnDefinition Width="5*"/>
-                    <ColumnDefinition Width="5*"/>
-                    <ColumnDefinition Width="5*"/>
-                    <ColumnDefinition Width="5*"/>
-                    <ColumnDefinition Width="5*"/>
-                    <ColumnDefinition Width="5*"/>
-                    <ColumnDefinition Width="5*"/>
-                    <ColumnDefinition Width="5*"/>
-                    <ColumnDefinition Width="5*"/>
-                    <ColumnDefinition Width="5*"/>
-                    <ColumnDefinition Width="5*"/>
-                    <ColumnDefinition Width="5*"/>
-                    <ColumnDefinition Width="5*"/>
-                    <ColumnDefinition Width="5*"/>
-                    <ColumnDefinition Width="5*"/>
-                    <ColumnDefinition Width="5*"/>
-                </Grid.ColumnDefinitions>
-            </Grid>
-        </Canvas>
+            <Canvas Margin="0,-1,0,32" Name="Editor">
+                <ContentPresenter Content="{Binding Path=Editor}">
+                </ContentPresenter>
+                <behaviors:Interaction.Triggers>
+                    <behaviors:EventTrigger EventName="MouseMove" SourceObject="{Binding ElementName=Editor}">
+                        <behaviors:InvokeCommandAction Command="{Binding MouseOverCommand}" PassEventArgsToCommand="True"/>
+                    </behaviors:EventTrigger>
+                    <behaviors:EventTrigger EventName="MouseDown" SourceObject="{Binding ElementName=Editor}">
+                        <behaviors:InvokeCommandAction Command="{ Binding CanvasMouseDownCommand }" PassEventArgsToCommand="True" />
+                    </behaviors:EventTrigger>
+                </behaviors:Interaction.Triggers>
+            </Canvas>
+        </Border>
         <Button Content="Opslaan" Background="Bisque" VerticalAlignment="Top" Height="23"
                 RenderTransformOrigin="0.906,0.372" Margin="270,5,455,0"
                 Command="{Binding Submit}" />
-
     </Grid>
 </Page>
