@@ -20,7 +20,7 @@ namespace Designer.ViewModel
         public string Name { get; set; }
         public List<Line> GridLines = new List<Line>();
         public List<System.Windows.Point> Points = new List<System.Windows.Point>();
-
+        public Dictionary<System.Windows.Point, System.Windows.Shapes.Rectangle> RectangleDictionary = new Dictionary<System.Windows.Point, System.Windows.Shapes.Rectangle>();
         public Canvas Editor { get; set; }
         public Border CanvasBorder { get; set; }
         public event PropertyChangedEventHandler PropertyChanged;
@@ -103,13 +103,10 @@ namespace Designer.ViewModel
                     rectangle.Stroke = System.Windows.Media.Brushes.Black;
                     Canvas.SetTop(rectangle, row);
                     Canvas.SetLeft(rectangle, column);
-
-
-                    Points.Add(new System.Windows.Point(row, column));
-
+                    System.Windows.Point Point = new System.Windows.Point(row, column);
+                    Points.Add(Point);
                     Editor.Children.Add(rectangle);
-
-
+                    RectangleDictionary.Add(Point, rectangle);
                 }
             }
         }
