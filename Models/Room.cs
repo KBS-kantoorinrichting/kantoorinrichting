@@ -9,19 +9,28 @@ namespace Models {
 
         public string Name { get; set; }
 
-        public string Positions { get; set; }
+        public string Positions {
+            get => _polygon.Convert();
+            set => _polygon = new Polygon(value);
+        }
 
-        public Room(string name = default, int width = default, int length = default, int id = default, string positions = default) {
+        public Room(
+            string name = default,
+            int width = default,
+            int length = default,
+            int id = default,
+            string positions = default
+        ) {
             Id = id;
             Name = name;
             Positions = positions ?? FromDimensions(width, length);
         }
 
         protected override ITuple Variables => (Id, Name, Positions);
-        
-        public List<Position> GetPoly() {
-            return ToList(Positions);
-        }
+
+        private Polygon _polygon;
+
+        public Polygon GetPoly() { return _polygon; }
 
         public Room(string name, string positions) {
             Name = name;

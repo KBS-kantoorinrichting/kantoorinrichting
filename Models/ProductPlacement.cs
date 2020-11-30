@@ -32,9 +32,6 @@ namespace Models {
             Rotation = 0;
         }
 
-        public List<Position> GetPoly() {
-            List<Position> positions = Product.GetPoly();
-            return positions.Select(p => new Position(p.X + X, p.Y + Y)).ToList();
-        }
+        public Polygon GetPoly() => Product.GetPoly().Offset(X, Y);
     }
 }
