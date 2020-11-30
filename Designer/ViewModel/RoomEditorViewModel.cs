@@ -20,7 +20,7 @@ namespace Designer.ViewModel
         public string Name { get; set; }
         public List<Line> GridLines = new List<Line>();
         public List<System.Windows.Point> Points = new List<System.Windows.Point>();
-        public Dictionary<System.Windows.Point, System.Windows.Shapes.Rectangle> RectangleDictionary = new Dictionary<System.Windows.Point, System.Windows.Shapes.Rectangle>();
+        public Dictionary<List<System.Windows.Point>, System.Windows.Shapes.Rectangle> RectangleDictionary = new Dictionary<List<System.Windows.Point>, System.Windows.Shapes.Rectangle>();
         public Canvas Editor { get; set; }
         public Border CanvasBorder { get; set; }
         public event PropertyChangedEventHandler PropertyChanged;
@@ -103,10 +103,18 @@ namespace Designer.ViewModel
                     rectangle.Stroke = System.Windows.Media.Brushes.Black;
                     Canvas.SetTop(rectangle, row);
                     Canvas.SetLeft(rectangle, column);
-                    System.Windows.Point Point = new System.Windows.Point(row, column);
-                    Points.Add(Point);
+                    System.Windows.Point Pointlb = new System.Windows.Point(row, column);
+                    System.Windows.Point Pointrb = new System.Windows.Point(row+25, column);
+                    System.Windows.Point Pointlo = new System.Windows.Point(row, column+25);
+                    System.Windows.Point Pointro = new System.Windows.Point(row+25, column+25);
+
+                    List<System.Windows.Point> points = new List<System.Windows.Point>();
+                    points.Add(Pointlb);
+                    points.Add(Pointrb);
+                    points.Add(Pointlo);
+                    points.Add(Pointro);
                     Editor.Children.Add(rectangle);
-                    RectangleDictionary.Add(Point, rectangle);
+                    RectangleDictionary.Add(points, rectangle);
                 }
             }
         }
@@ -117,12 +125,11 @@ namespace Designer.ViewModel
             
 
 
-            if (Points.Contains(new System.Windows.Point(y, x)))
-            { // Wanneer hij in een vakje is:
-                Debug.WriteLine($"{y}  {x}");
-                RectangleDictionary[new System.Windows.Point(y, x)].Fill = System.Windows.Media.Brushes.Black;
 
-            }
+           
+            RectangleDictionary[new System.Windows.Point(y, x)].Fill = System.Windows.Media.Brushes.Bisque;
+                
+                
         }
 
     }
