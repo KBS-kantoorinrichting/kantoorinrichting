@@ -26,7 +26,7 @@
                         <behaviors:InvokeCommandAction Command="{Binding MouseOverCommand}" PassEventArgsToCommand="True"/>
                     </behaviors:EventTrigger>
                     <behaviors:EventTrigger EventName="MouseDown" SourceObject="{Binding ElementName=Editor}">
-                        <behaviors:InvokeCommandAction Command="{ Binding CanvasMouseDownCommand }" PassEventArgsToCommand="True" />
+                        <behaviors:InvokeCommandAction Command="{ Binding MouseDownCommand }" PassEventArgsToCommand="True" />
                     </behaviors:EventTrigger>
                 </behaviors:Interaction.Triggers>
             </Canvas>

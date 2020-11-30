@@ -22,9 +22,13 @@ namespace Designer.ViewModel
         public List<System.Windows.Point> Points = new List<System.Windows.Point>();
         public Dictionary<System.Windows.Point, System.Windows.Shapes.Rectangle> RectangleDictionary = new Dictionary<System.Windows.Point, System.Windows.Shapes.Rectangle>();
         public Canvas Editor { get; set; }
+        public System.Windows.Shapes.Rectangle HoveredRectangle = new System.Windows.Shapes.Rectangle();
+        public System.Windows.Shapes.Rectangle LastSelected = new System.Windows.Shapes.Rectangle();
+
         public Border CanvasBorder { get; set; }
         public event PropertyChangedEventHandler PropertyChanged;
         public ArgumentCommand<MouseEventArgs> MouseOverCommand { get; set; }
+        public ArgumentCommand<MouseButtonEventArgs> MouseDownCommand { get; set; }
         public BasicCommand Submit { get; set; }
         private double CanvasHeight = 500;
         private double CanvasWidth = 1280;
@@ -32,6 +36,7 @@ namespace Designer.ViewModel
         public RoomEditorViewModel()
         {
             MouseOverCommand = new ArgumentCommand<MouseEventArgs>(e => MouseMove(e.OriginalSource, e));
+            MouseDownCommand = new ArgumentCommand<MouseButtonEventArgs>(e => MouseClick(e.OriginalSource, e));
             Editor = new Canvas();
             Reload();
         }
@@ -112,17 +117,56 @@ namespace Designer.ViewModel
         }
         public void MouseMove(object sender, MouseEventArgs e)
         {
-            int y = Convert.ToInt32(e.GetPosition(Editor).Y);
-            int x = Convert.ToInt32(e.GetPosition(Editor).X);
-            
+            int y = Convert.ToInt32(e.GetPosition(Editor).Y - (e.GetPosition(Editor).Y % 25));
+            int x = Convert.ToInt32(e.GetPosition(Editor).X - (e.GetPosition(Editor).X % 25));
+            //int x = Convert.ToInt32(e.GetPosition(Editor).X);
 
 
-            if (Points.Contains(new System.Windows.Point(y, x)))
-            { // Wanneer hij in een vakje is:
-                Debug.WriteLine($"{y}  {x}");
-                RectangleDictionary[new System.Windows.Point(y, x)].Fill = System.Windows.Media.Brushes.Black;
+           /* if (HoveredRectangle != null)
+            {
+                if (HoveredRectangle == RectangleDictionary[new System.Windows.Point(y, x)])
+                {
+
+                }
+                else
+                {
+                    if (Points.Contains(new System.Windows.Point(y, x)))
+                    { // Wanneer hij in een vakje is:
+                        // TODO vorige kleur
+                        HoveredRectangle.Fill = System.Windows.Media.Brushes.White;
+                        HoveredRectangle = RectangleDictionary[new System.Windows.Point(y, x)];
+                        RectangleDictionary[new System.Windows.Point(y, x)].Fill = System.Windows.Media.Brushes.Bisque;
+                        RectangleDictionary[new System.Windows.Point(y, x)].Opacity = 25;
+
+                    }
+                }
+            }*/
+
+        }
+        
+        public void MouseClick(object sender, MouseButtonEventArgs e)
+        {
+            int y = Convert.ToInt32(e.GetPosition(Editor).Y - (e.GetPosition(Editor).Y % 25));
+            int x = Convert.ToInt32(e.GetPosition(Editor).X - (e.GetPosition(Editor).X % 25));
+            //int x = Convert.ToInt32(e.GetPosition(Editor).X);
+
+            if (e.LeftButton == MouseButtonState.Pressed)
+            {
+                if (LastSelected != null)
+                {
+                   // VisualOff
+                    RectangleDictionary[new System.Windows.Point(y, x)].Fill = System.Windows.Media.Brushes.DarkMagenta;
+                    LastSelected = RectangleDictionary[new System.Windows.Point(y, x)];
+                }
+                else
+                {
+                    RectangleDictionary[new System.Windows.Point(y, x)].Fill = System.Windows.Media.Brushes.DarkMagenta;
+                    LastSelected = RectangleDictionary[new System.Windows.Point(y, x)];
+                }
+
 
             }
+
         }
 
     }
