@@ -20,7 +20,7 @@ namespace Designer.ViewModel
         public string Name { get; set; }
         public List<Line> GridLines = new List<Line>();
         public List<System.Windows.Point> Points = new List<System.Windows.Point>();
-        public Dictionary<System.Windows.Point, System.Windows.Shapes.Rectangle> RectangleDictionary = new Dictionary<System.Windows.Point, System.Windows.Shapes.Rectangle>();
+        public Dictionary<List<System.Windows.Point>, System.Windows.Shapes.Rectangle> RectangleDictionary = new Dictionary<List<System.Windows.Point>, System.Windows.Shapes.Rectangle>();
         public Canvas Editor { get; set; }
         public System.Windows.Shapes.Rectangle HoveredRectangle = new System.Windows.Shapes.Rectangle();
         public System.Windows.Shapes.Rectangle LastSelected = new System.Windows.Shapes.Rectangle();
@@ -67,7 +67,7 @@ namespace Designer.ViewModel
 
         public void DrawGrid()
         {
-           
+
             /* int LengthPerSquare = (int)CanvasWidth / 25;
 
              for (int i = 1; i <= LengthPerSquare; i++)
@@ -94,12 +94,12 @@ namespace Designer.ViewModel
              {
                  Editor.Children.Add(line);
              }*/
-            var rows = 25*25;
+            var rows = 25 * 25;
             var columns = 50 * 25;
-            for (int row = 0; row < rows; row +=25)
+            for (int row = 0; row < rows; row += 25)
             {
-                
-                for (int column = 0; column < columns; column+=25)
+
+                for (int column = 0; column < columns; column += 25)
                 {
                     System.Windows.Shapes.Rectangle rectangle = new System.Windows.Shapes.Rectangle();
                     rectangle.Fill = System.Windows.Media.Brushes.White;
@@ -108,13 +108,24 @@ namespace Designer.ViewModel
                     rectangle.Stroke = System.Windows.Media.Brushes.Black;
                     Canvas.SetTop(rectangle, row);
                     Canvas.SetLeft(rectangle, column);
-                    System.Windows.Point Point = new System.Windows.Point(row, column);
-                    Points.Add(Point);
+                    System.Windows.Point PointUL = new System.Windows.Point(row, column);
+                    System.Windows.Point PointUR = new System.Windows.Point(row + 25, column);
+                    System.Windows.Point PointDL = new System.Windows.Point(row, column + 25);
+                    System.Windows.Point PointDR = new System.Windows.Point(row + 25, column + 25);
+
+                    List<System.Windows.Point> points = new List<System.Windows.Point>();
+                    points.Add(PointUL);
+                    points.Add(PointUR);
+                    points.Add(PointDL);
+                    points.Add(PointDR);
                     Editor.Children.Add(rectangle);
-                    RectangleDictionary.Add(Point, rectangle);
+                    RectangleDictionary.Add(points, rectangle);
                 }
             }
         }
+
+
+
         public void MouseMove(object sender, MouseEventArgs e)
         {
             int y = Convert.ToInt32(e.GetPosition(Editor).Y - (e.GetPosition(Editor).Y % 25));
@@ -169,6 +180,5 @@ namespace Designer.ViewModel
 
         }
 
-    }
 }
 
