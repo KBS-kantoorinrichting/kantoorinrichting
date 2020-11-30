@@ -114,13 +114,13 @@ namespace Designer.ViewModel
         {
             int y = Convert.ToInt32(e.GetPosition(Editor).Y);
             int x = Convert.ToInt32(e.GetPosition(Editor).X);
-
+            
 
 
             if (Points.Contains(new System.Windows.Point(y, x)))
             { // Wanneer hij in een vakje is:
                 Debug.WriteLine($"{y}  {x}");
-                
+                RectangleDictionary[new System.Windows.Point(y, x)].Fill = System.Windows.Media.Brushes.Black;
 
             }
         }
