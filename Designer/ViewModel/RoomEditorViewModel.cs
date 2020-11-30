@@ -19,7 +19,8 @@ namespace Designer.ViewModel
     {
         public string Name { get; set; }
         public List<Line> GridLines = new List<Line>();
-        Dictionary<int, int> GridPoints = new Dictionary<int, int>();
+        public List<System.Windows.Point> Points = new List<System.Windows.Point>();
+
         public Canvas Editor { get; set; }
         public Border CanvasBorder { get; set; }
         public event PropertyChangedEventHandler PropertyChanged;
@@ -30,7 +31,7 @@ namespace Designer.ViewModel
 
         public RoomEditorViewModel()
         {
-            //MouseOverCommand = new ArgumentCommand<MouseEventArgs>(e => MouseMove(e.OriginalSource, e));
+            MouseOverCommand = new ArgumentCommand<MouseEventArgs>(e => MouseMove(e.OriginalSource, e));
             Editor = new Canvas();
             Reload();
         }
@@ -92,6 +93,7 @@ namespace Designer.ViewModel
             var columns = 50 * 25;
             for (int row = 0; row < rows; row +=25)
             {
+                
                 for (int column = 0; column < columns; column+=25)
                 {
                     System.Windows.Shapes.Rectangle rectangle = new System.Windows.Shapes.Rectangle();
@@ -101,26 +103,27 @@ namespace Designer.ViewModel
                     rectangle.Stroke = System.Windows.Media.Brushes.Black;
                     Canvas.SetTop(rectangle, row);
                     Canvas.SetLeft(rectangle, column);
+
+
+                    Points.Add(new System.Windows.Point(row, column));
+
                     Editor.Children.Add(rectangle);
-                    GridPoints.Add(row, column);
+
+
                 }
             }
         }
         public void MouseMove(object sender, MouseEventArgs e)
         {
-            
-            //if (e.GetPositionds)
+            int y = Convert.ToInt32(e.GetPosition(Editor).Y);
+            int x = Convert.ToInt32(e.GetPosition(Editor).X);
+
+
+
+            if (Points.Contains(new System.Windows.Point(y, x)))
             { // Wanneer hij in een vakje is:
+                Debug.WriteLine($"{y}  {x}");
                 
-                System.Windows.Shapes.Rectangle rectangle = new System.Windows.Shapes.Rectangle();
-                rectangle.Fill = System.Windows.Media.Brushes.LightBlue;
-                rectangle.Width = 25;
-                rectangle.Height = 25;
-                rectangle.Stroke = System.Windows.Media.Brushes.Black;
-                Canvas.SetTop(rectangle, (Math.Floor(e.GetPosition(Editor).Y)));
-                Canvas.SetLeft(rectangle, (Math.Floor(e.GetPosition(Editor).X)));
-                Editor.Children.Add(rectangle);
-                // Nieuwe rectangle met grootte 25x25 in lichtblauw met zwarte randen op positie van de cursor
 
             }
         }
