@@ -42,6 +42,9 @@ namespace Designer.ViewModel {
         private ProductPlacement _draggingPlacement;
         public Polygon RoomPoly { get; set; }
         public bool AllowDrop = false;
+        public int DistanceScore { get; set; } = 40;
+        public int VentilationScore { get; set; } = 80;
+        public int RouteScore { get; set; } = 20;
         public double Scale = 1.0;
         private double _canvasHeight => Navigator.Instance.CurrentPage.ActualHeight - 20;
 

@@ -180,7 +180,15 @@
             </TabItem>
             <TabItem Header="Corona">
                 <Grid Background="#FFE5E5E5" >
-                    <ToggleButton Content="Meetlat" VerticalAlignment="Top" Command="{Binding Measure}" IsChecked="{Binding Enabled, Mode=TwoWay}"/>
+                    <StackPanel>
+                        <ToggleButton Content="Meetlat" VerticalAlignment="Top" Command="{Binding Measure}" IsChecked="{Binding Enabled, Mode=TwoWay}"/>
+                        <Label Content="Anderhalve meter score" />
+                        <ProgressBar Height="20" Value="{Binding DistanceScore}"/>
+                        <Label Content="Ventilatie score" />
+                        <ProgressBar Height="20" Value="{Binding VentilationScore}"/>
+                        <Label Content="Looproute score" />
+                        <ProgressBar Height="20" Value="{Binding RouteScore}"/>
+                    </StackPanel>
                 </Grid>
             </TabItem>
         </TabControl>
