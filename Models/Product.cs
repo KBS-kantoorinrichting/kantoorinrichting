@@ -33,10 +33,6 @@ namespace Models {
             Length = length;
         }
         
-        
-
-        public List<Position> GetPoly() {
-            return Room.ToList(Room.FromDimensions(Width, Length));
-        }
+        public Polygon GetPoly() => new Polygon(Width, Length);
     }
 }

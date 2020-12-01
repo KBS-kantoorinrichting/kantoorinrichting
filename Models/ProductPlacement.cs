@@ -24,6 +24,9 @@ namespace Models {
         public ProductPlacement() {
         }
 
+        public ProductPlacement(Position position, Product product, Design design) : this(position.X, position.Y, product, design) {
+        }
+
         public ProductPlacement(int x, int y, Product product, Design design) {
             X = x;
             Y = y;
@@ -32,9 +35,6 @@ namespace Models {
             Rotation = 0;
         }
 
-        public List<Position> GetPoly() {
-            List<Position> positions = Product.GetPoly();
-            return positions.Select(p => new Position(p.X + X, p.Y + Y)).ToList();
-        }
+        public Polygon GetPoly() => Product.GetPoly().Offset(X, Y);
     }
 }

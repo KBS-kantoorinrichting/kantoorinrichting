@@ -182,6 +182,8 @@
                 <Grid Background="#FFE5E5E5" >
                     <StackPanel>
                         <ToggleButton Content="Meetlat" VerticalAlignment="Top" Command="{Binding Measure}" IsChecked="{Binding Enabled, Mode=TwoWay}"/>
+                        <Button Content="GENERATE!!!!!" VerticalAlignment="Top" Command="{Binding Layout}" />
+                        <Button Content="Verwijder alles" VerticalAlignment="Top" Command="{Binding ClearProducts}" />
                         <Label Content="Anderhalve meter score" />
                         <ProgressBar Height="20" Value="{Binding DistanceScore}"/>
                         <Label Content="Ventilatie score" />
