@@ -114,7 +114,7 @@ namespace Designer.ViewModel {
             Position min = room.Min();
             Position max = room.Max();
 
-            int accuracy = Math.Min((int) min.Distance(max) / 200, Math.Min(product.Length, product.Width));
+            int accuracy = 1;//Math.Min((int) min.Distance(max) / 200, Math.Min(product.Length, product.Width));
 
             new Thread(
                 () => {

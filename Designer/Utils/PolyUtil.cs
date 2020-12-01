@@ -85,6 +85,10 @@ namespace Models.Utils {
          * Vergelijkt alle lijn delen met elkaar en kijkt of deze snijden
          */
         public static bool DoesCollide(this Polygon poly1, Polygon poly2) {
+            return poly1.DoesOutsideCollide(poly2) || poly1.InsideNoOutside(poly2) || poly2.InsideNoOutside(poly1);
+        }
+
+        private static bool DoesOutsideCollide(this Polygon poly1, Polygon poly2) {
             foreach ((Position p1, Position p2) line1 in poly1.GetLines())
             foreach ((Position p1, Position p2) line2 in poly2.GetLines()) {
                 PointF[] array = Intersector.Intersection(
@@ -95,13 +99,19 @@ namespace Models.Utils {
                 if (array.Any()) return true;
             }
 
-            return poly1.Inside(poly2) || poly2.Inside(poly1);
+            return false;
         }
 
         /**
          * Checks if poly2 is inside poly1
          */
-        public static bool Inside(this Polygon poly1, Polygon poly2) { return poly2.All(poly1.Inside); }
+        public static bool Inside(this Polygon poly1, Polygon poly2) {
+            return poly2.InsideNoOutside(poly1);// && poly1.DoesOutsideCollide(poly2);
+        }
+
+        private static bool InsideNoOutside(this Polygon poly1, Polygon poly2) {
+            return poly2.All(poly1.Inside);
+        }
 
         public static bool Inside(this Polygon poly, Position position) {
             int j = poly.Count - 1;
