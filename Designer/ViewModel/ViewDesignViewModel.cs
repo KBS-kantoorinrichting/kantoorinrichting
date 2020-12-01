@@ -16,6 +16,7 @@ using Models;
 using Models.Utils;
 using Services;
 using Polygon = System.Windows.Shapes.Polygon;
+using System.Diagnostics;
 
 namespace Designer.ViewModel {
     public class ViewDesignViewModel : INotifyPropertyChanged {
@@ -45,7 +46,37 @@ namespace Designer.ViewModel {
         private ProductPlacement _draggingPlacement;
         public Polygon RoomPoly { get; set; }
         public bool AllowDrop = false;
-        public int DistanceScore { get; set; } = 40;
+        public int DistanceScore { 
+            get
+            {
+                int increment = 0;
+                if (ProductPlacements != null && ProductPlacements.Count > 0)
+                {
+                    List<ProductPlacement> placements = ProductPlacements.ToList();
+
+                    //Loopt door alle paren van producten zonder overbodige stappen zoals p1 -> p1 en p1 -> p2, p2 -> p1
+                    for (int i = 0; i < placements.Count; i++)
+                    {
+                        ProductPlacement placement1 = placements[i];
+                        for (int j = i + 1; j < placements.Count; j++)
+                        {
+                            ProductPlacement placement2 = placements[j];
+
+                            (Position p1, Position p2)? best = placement1.GetPoly().IsSafe(placement2.GetPoly());
+                            if (best == null) continue;
+
+                            (Position p1, Position p2) = best.Value;
+                            double distance = p1.Distance(p2);
+                            if (distance >= 150) continue;
+                            //Als het minder dan 150 cm increment.
+                            increment++;
+                        }
+                    }
+                }
+                Debug.WriteLine(increment);
+                return increment;
+            }
+        }
         public int VentilationScore { get; set; } = 80;
         public int RouteScore { get; set; } = 20;
         public double Scale = 1.0;
@@ -420,6 +451,9 @@ namespace Designer.ViewModel {
             if (_selectedPlacement != null) {
                 DrawSelectionButtons(_selectedPlacement);
             }
+            // Toegevoegd zodat de corona score wordt bijgewerkt
+            // TODO: kan mogelijk beter
+            OnPropertyChanged();
         }
 
         private void DrawSelectionButtons(ProductPlacement placement) {
