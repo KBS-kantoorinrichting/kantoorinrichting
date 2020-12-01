@@ -1,11 +1,13 @@
 ﻿using Designer.Other;
 using Designer.View;
 using Models;
+using Services;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
+using System.Linq;
 using System.Text;
 using System.Windows;
 using System.Windows.Controls;
@@ -19,12 +21,13 @@ namespace Designer.ViewModel
     {
         public string Name { get; set; }
         public List<Line> GridLines = new List<Line>();
-        public List<System.Windows.Point> Points = new List<System.Windows.Point>();
-        public List<System.Windows.Point> SelectedPoints = new List<System.Windows.Point>();
-        public Dictionary<System.Windows.Point, System.Windows.Shapes.Rectangle> RectangleDictionary = new Dictionary<System.Windows.Point, System.Windows.Shapes.Rectangle>();
+        public List<Position> Points = new List<Position>();
+        public List<Position> SelectedPoints = new List<Position>();
+        public List<Position> BorderPoints = new List<Position>();
+        public Dictionary<Position, System.Windows.Shapes.Rectangle> RectangleDictionary = new Dictionary<Position, System.Windows.Shapes.Rectangle>();
         public Canvas Editor { get; set; }
-        public System.Windows.Shapes.Rectangle HoveredRectangle = new System.Windows.Shapes.Rectangle();
-        public System.Windows.Point LastSelected = new System.Windows.Point();
+        public Position LastSelected { get; set; } = new Position(-1, -1);
+        public Position LastHoveredRectangle { get; set; }
 
         public Border CanvasBorder { get; set; }
         public event PropertyChangedEventHandler PropertyChanged;
@@ -36,7 +39,7 @@ namespace Designer.ViewModel
 
         public RoomEditorViewModel()
         {
-            LastSelected.Y = 1000000;
+            Submit = new BasicCommand(SubmitRoom);
             MouseOverCommand = new ArgumentCommand<MouseEventArgs>(e => MouseMove(e.OriginalSource, e));
             MouseDownCommand = new ArgumentCommand<MouseButtonEventArgs>(e => MouseClick(e.OriginalSource, e));
             Editor = new Canvas();
@@ -55,7 +58,14 @@ namespace Designer.ViewModel
         }
         public void SubmitRoom()
         {
-            /*//if (SaveRoom(Name) != null)
+            var smallestposition =  SelectedPoints.Aggregate((p1, p2) => p1.X < p2.X || p1.Y < p2.Y ? p1 : p2);
+           List<Position> OffsetPositions = new List<Position>();
+            foreach (var position in SelectedPoints)
+            {
+                OffsetPositions.Add(new Position(position.X - smallestposition.X , position.Y- smallestposition.Y));
+            }
+            Room room = new Room(Name, Room.FromList(OffsetPositions));
+            if (RoomService.Instance.Save(room) != null)
             {
                 //opent successvol dialoog
                 GeneralPopup popup = new GeneralPopup("De kamer is opgeslagen!");
@@ -64,44 +74,18 @@ namespace Designer.ViewModel
             }
             //opent onsuccesvol dialoog
             GeneralPopup popuperror = new GeneralPopup("Er is iets misgegaan! probeer opnieuw.");
-            popuperror.ShowDialog();*/
+            popuperror.ShowDialog();
         }
 
         public void DrawGrid()
         {
-           
-            /* int LengthPerSquare = (int)CanvasWidth / 25;
 
-             for (int i = 1; i <= LengthPerSquare; i++)
-             {
-                 Line line = new Line();
-                 line.Stroke = System.Windows.Media.Brushes.Black;
-                 line.Y1 = 0;
-                 line.Y2 = 700;
-                 line.X1 = (i * 25);
-                 line.X2 = i * 25;
-                 GridLines.Add(line);
-             }
-             for (int i = 0; i <= LengthPerSquare; i++)
-             {
-                 Line line = new Line();
-                 line.Stroke = System.Windows.Media.Brushes.Black;
-                 line.X1 = 0;
-                 line.X2 = 1280;
-                 line.Y1 = (i * 25);
-                 line.Y2 = i * 25;
-                 GridLines.Add(line);
-             }
-             foreach (Line line in GridLines)
-             {
-                 Editor.Children.Add(line);
-             }*/
-            var rows = 25*25;
-            var columns = 50 * 25;
-            for (int row = 0; row < rows; row +=25)
+            var y = 25 * 25;
+            var x = 50 * 25;
+            for (int row = 0; row < y; row += 25)
             {
-                
-                for (int column = 0; column < columns; column+=25)
+
+                for (int column = 0; column < x; column += 25)
                 {
                     System.Windows.Shapes.Rectangle rectangle = new System.Windows.Shapes.Rectangle();
                     rectangle.Fill = System.Windows.Media.Brushes.White;
@@ -110,7 +94,7 @@ namespace Designer.ViewModel
                     rectangle.Stroke = System.Windows.Media.Brushes.Black;
                     Canvas.SetTop(rectangle, row);
                     Canvas.SetLeft(rectangle, column);
-                    System.Windows.Point Point = new System.Windows.Point(row, column);
+                    Position Point = new Position(column, row);
                     Points.Add(Point);
                     Editor.Children.Add(rectangle);
                     RectangleDictionary.Add(Point, rectangle);
@@ -119,33 +103,84 @@ namespace Designer.ViewModel
         }
         public void MouseMove(object sender, MouseEventArgs e)
         {
-            int y = Convert.ToInt32(e.GetPosition(Editor).Y - (e.GetPosition(Editor).Y % 25));
+          /*  int y = Convert.ToInt32(e.GetPosition(Editor).Y - (e.GetPosition(Editor).Y % 25));
             int x = Convert.ToInt32(e.GetPosition(Editor).X - (e.GetPosition(Editor).X % 25));
             //int x = Convert.ToInt32(e.GetPosition(Editor).X);
 
+            var currentpoint = new Position(x, y);
 
-           /* if (HoveredRectangle != null)
+            // als hiervoor al over een hokje gehovered is
+            if (LastHoveredRectangle != null)
             {
-                if (HoveredRectangle == RectangleDictionary[new System.Windows.Point(y, x)])
+                // als je niet nogsteeds over hetzelfde hokje hovered en als het hokje in de dictionary zit
+                if (LastHoveredRectangle != currentpoint && RectangleDictionary.ContainsKey(currentpoint))
                 {
+                    // als het momenteel geselecteerde point niet een hoek of border is
+                    if (!SelectedPoints.Contains(currentpoint) && !BorderPoints.Contains(currentpoint))
+                    {
+                        // vorige hokje terugkleuren als het geen border was
+                        if (SelectedPoints.Contains(LastHoveredRectangle) && BorderPoints.Contains(LastHoveredRectangle))
+                        {
 
-                }
-                else
-                {
-                    if (Points.Contains(new System.Windows.Point(y, x)))
-                    { // Wanneer hij in een vakje is:
-                        // TODO vorige kleur
-                        HoveredRectangle.Fill = System.Windows.Media.Brushes.White;
-                        HoveredRectangle = RectangleDictionary[new System.Windows.Point(y, x)];
-                        RectangleDictionary[new System.Windows.Point(y, x)].Fill = System.Windows.Media.Brushes.Bisque;
-                        RectangleDictionary[new System.Windows.Point(y, x)].Opacity = 25;
+                           
+                        }
+                        else
+                        {
+                            RectangleDictionary[LastHoveredRectangle].Fill = System.Windows.Media.Brushes.White;
+                            RectangleDictionary[LastHoveredRectangle].Opacity = 1;
+                            
+                        }
 
+                        // dit hokje inkleuren
+                        RectangleDictionary[currentpoint].Fill = System.Windows.Media.Brushes.Bisque;
+                        RectangleDictionary[currentpoint].Opacity = 0.5;
+
+                        // stel vorige hokje in als deze
+                        LastHoveredRectangle = currentpoint;
                     }
+                    else
+                    {
+                        if (!SelectedPoints.Contains(LastHoveredRectangle) && !BorderPoints.Contains(LastHoveredRectangle))
+                        {
+                            RectangleDictionary[LastHoveredRectangle].Fill = System.Windows.Media.Brushes.White;
+                            RectangleDictionary[LastHoveredRectangle].Opacity = 1;
+                        }
+
+                        // stel vorige hokje in als deze
+                        LastHoveredRectangle = currentpoint;
+                    }
+                    // Wanneer hij in een vakje is:
+                    // TODO vorige kleur
+
                 }
-            }*/
+            }
+            else
+            {
+                RectangleDictionary[LastHoveredRectangle].Fill = System.Windows.Media.Brushes.White;
+                LastHoveredRectangle = currentpoint;
+                RectangleDictionary[currentpoint].Fill = System.Windows.Media.Brushes.Bisque;
+                RectangleDictionary[currentpoint].Opacity = 0.5;
+            }
+*/
+        }
+
+        public void BorderRenderX(Position LastSelected, Position CurrentSelected, String Direction)
+        {
+
+
+
+
 
         }
-        
+        public void BorderRenderY(Position LastSelected, Position CurrentSelected, String Direction)
+        {
+
+
+
+
+
+        }
+
         public void MouseClick(object sender, MouseButtonEventArgs e)
         {
             int y = Convert.ToInt32(e.GetPosition(Editor).Y - (e.GetPosition(Editor).Y % 25));
@@ -157,18 +192,22 @@ namespace Designer.ViewModel
             {
 
 
+
+
+
                 // het momentele punt instellen
-                var currentpoint = new System.Windows.Point(y, x);
+                var currentpoint = new Position(x, y);
 
                 // als er een vorig item geselcteerd is
-                if (!LastSelected.Y.Equals(1000000))
+                if (!LastSelected.Y.Equals(-1))
                 {
                     // het vorig geselecteerde punt instellen
-                    var lastselected = RectangleDictionary[LastSelected];
-                    
+                    //var lastselected = RectangleDictionary[LastSelected];
+
                     // als het punt al eerder geselecteerd is
                     if (LastSelected.Equals(currentpoint) || SelectedPoints.Contains(currentpoint))
                     {
+                        //TODO tenzij het het eerste hokje is en selectedpoints groter is dan 3
                         // maakt hokje weer wit
                         RectangleDictionary[currentpoint].Fill = System.Windows.Media.Brushes.White;
                         // verwijderd hokje uit de lijst
@@ -178,28 +217,36 @@ namespace Designer.ViewModel
                     {
 
 
-                        // maakt alle tussenhokje magenta maar voegt ze niet toe aan de lijst
 
                         // kijk of de coord gelijk zijn met de x of de y
                         if (LastSelected.X == currentpoint.X)
                         {
 
                             // als het getal negatief is moet er naar boven worden getekend, positief is onder
-                            if ((LastSelected.X - currentpoint.X < 0))
+                            if (((LastSelected.Y - currentpoint.Y) >= 0))
                             {
-                                for (int i = (int)LastSelected.Y; i < currentpoint.Y; i -= 25)
+                                for (int i = (int)LastSelected.Y; i != currentpoint.Y; i -= 25)
                                 {
-                                    LastSelected.Y = i;
+                                    LastSelected = new Position(LastSelected.X, i);
+                                    // maakt alle tussenhokje magenta maar voegt ze niet toe aan de lijst
                                     RectangleDictionary[LastSelected].Fill = System.Windows.Media.Brushes.DarkMagenta;
+                                    RectangleDictionary[LastSelected].Opacity = 0.5;
+                                    BorderPoints.Add(LastSelected);
+
                                 }
+
                             }
                             else
                             {
-                                for (int i = (int)LastSelected.Y; i < currentpoint.Y; i += 25)
+                                for (int i = (int)LastSelected.Y; i != currentpoint.Y; i += 25)
                                 {
-                                    LastSelected.Y = i;
+                                    LastSelected = new Position(LastSelected.X, i);
                                     RectangleDictionary[LastSelected].Fill = System.Windows.Media.Brushes.DarkMagenta;
+                                    RectangleDictionary[LastSelected].Opacity = 0.5;
+                                    BorderPoints.Add(LastSelected);
+
                                 }
+
                             }
 
                             // voegt hoekje toe aan lijst
@@ -208,27 +255,33 @@ namespace Designer.ViewModel
                             RectangleDictionary[currentpoint].Fill = System.Windows.Media.Brushes.DarkMagenta;
                             // maakt dit het laatste geselecteerde punt
                             LastSelected = currentpoint;
-                        } else if (LastSelected.Y == currentpoint.Y)
+                        }
+                        else if (LastSelected.Y == currentpoint.Y)
                         {
                             // als het getal negatief is moet er naar links worden getekend, positief is rechts
-                            if ((LastSelected.Y - currentpoint.Y < 0))
+                            if (((LastSelected.X - currentpoint.X) >= 0))
                             {
                                 // zolang het vorige coordinaat kleiner is
-                                for (int i = (int)LastSelected.X; i > currentpoint.X; i -= 25)
+                                for (int i = (int)LastSelected.X; i != currentpoint.X; i -= 25)
                                 {
-                                    LastSelected.X = i;
+                                    LastSelected = new Position( i, LastSelected.Y);
                                     RectangleDictionary[LastSelected].Fill = System.Windows.Media.Brushes.DarkMagenta;
+                                    RectangleDictionary[LastSelected].Opacity = 0.5;
+                                    BorderPoints.Add(LastSelected);
                                 }
+
                             }
                             else
                             {
-                                for (int i = (int)LastSelected.X; i < currentpoint.X; i += 25)
+                                for (int i = (int)LastSelected.X; i != currentpoint.X; i += 25)
                                 {
-                                    LastSelected.X = i;
+                                    LastSelected = new Position(i, LastSelected.Y);
                                     RectangleDictionary[LastSelected].Fill = System.Windows.Media.Brushes.DarkMagenta;
+                                    RectangleDictionary[LastSelected].Opacity = 0.5;
+                                    BorderPoints.Add(LastSelected);
                                 }
+
                             }
-                            
 
                             // voegt hoekje toe aan lijst
                             SelectedPoints.Add(currentpoint);
@@ -245,7 +298,11 @@ namespace Designer.ViewModel
 
 
                     }
-                    
+
+
+
+
+
                 }
                 else
                 {
