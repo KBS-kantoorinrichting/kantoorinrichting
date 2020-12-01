@@ -33,7 +33,6 @@ namespace Designer.ViewModel {
         public ArgumentCommand<MouseEventArgs> MouseMoveCommand { get; set; }
         public BasicCommand Measure { get; set; }
         public ArgumentCommand<MouseWheelEventArgs> CanvasMouseScrollCommand { get; set; }
-        public ArgumentCommand<SizeChangedEventArgs> ResizeCommand { get; set; }
         public Product SelectedProduct => _selectedPlacement.Product;
         public Design Design { get; set; }
         public Canvas Editor { get; set; }
@@ -42,12 +41,8 @@ namespace Designer.ViewModel {
         private ProductPlacement _draggingPlacement;
         public Polygon RoomPoly { get; set; }
         public bool AllowDrop = false;
-        public double Scale = 1.0;
         private readonly MatrixTransform _transform = new MatrixTransform();
         private Point _initialMousePosition;
-        private double _canvasHeight => Navigator.Instance.CurrentPage.ActualHeight - 20;
-
-        private double _canvasWidth => Navigator.Instance.CurrentPage.ActualWidth - 260;
 
         //Special constructor for unit tests
         public ViewDesignViewModel(Design design) {
@@ -69,7 +64,6 @@ namespace Designer.ViewModel {
             Measure = new BasicCommand(StartMeasure);
             CanvasMouseScrollCommand =
                 new ArgumentCommand<MouseWheelEventArgs>(e => CanvasMouseScroll(e.OriginalSource, e));
-            ResizeCommand = new ArgumentCommand<SizeChangedEventArgs>(e => ResizePage(e.OriginalSource, e));
             _productOverview = new Dictionary<Product, ProductData>();
 
             _distanceLine = new DistanceLine(null, null);
@@ -116,15 +110,14 @@ namespace Designer.ViewModel {
         public void HandleMouseMove(MouseEventArgs eventArgs) {
             if(eventArgs.RightButton == MouseButtonState.Pressed)
             {
-                Point mousePosition = _transform.Inverse.Transform(eventArgs.GetPosition(Editor));
+                Point mousePosition = eventArgs.GetPosition(Editor);
                 Vector delta = Point.Subtract(mousePosition, _initialMousePosition);
+                Debug.WriteLine(mousePosition);
+                Debug.WriteLine(_initialMousePosition);
                 var translate = new TranslateTransform(delta.X, delta.Y);
                 _transform.Matrix = translate.Value * _transform.Matrix;
 
-                foreach (UIElement child in Editor.Children)
-                {
-                    child.RenderTransform = _transform;
-                }
+                Editor.RenderTransform = _transform;
             }
 
             if (!_enabled || _origin == null) return;
@@ -223,7 +216,7 @@ namespace Designer.ViewModel {
         public void CanvasMouseDown(object sender, MouseButtonEventArgs e) {
             //Rechtermuisknop zorgt ervoor dat informatie over het product wordt getoond
             if (e.ChangedButton == MouseButton.Right) {
-                _initialMousePosition = _transform.Inverse.Transform(e.GetPosition(Editor));
+                _initialMousePosition = e.GetPosition(Editor);
 
                 if (sender.GetType() == typeof(Canvas)) {
                     _selectedPlacement = null;
@@ -505,9 +498,9 @@ namespace Designer.ViewModel {
 
             // Als de breedte hoger is dan de breedte wordt de breedte gebruikt voor de schaal en vice versa
             if (RoomPoly.DesiredSize.Width > RoomPoly.DesiredSize.Height) {
-                scale = _canvasWidth / RoomPoly.DesiredSize.Width;
+                scale = (Navigator.Instance.CurrentPage.ActualWidth - 260) / RoomPoly.DesiredSize.Width;
             } else {
-                scale = _canvasHeight / RoomPoly.DesiredSize.Height;
+                scale = (Navigator.Instance.CurrentPage.ActualHeight - 20) / RoomPoly.DesiredSize.Height;
             }
 
             ScaleCanvas(scale, _initialMousePosition);
@@ -516,36 +509,21 @@ namespace Designer.ViewModel {
         public void CanvasMouseScroll(object sender, MouseWheelEventArgs e) {
             Point mousePosition = e.GetPosition(Editor);
 
-            double scaleFactor = Scale;
+            double scaleFactor = 1.05;
             if (e.Delta < 0)
             {
-                scaleFactor = 1f / scaleFactor;
+                scaleFactor = 1 / scaleFactor;
             }
 
             ScaleCanvas(scaleFactor, mousePosition);
         }
 
-        public void ResizePage(object sender, SizeChangedEventArgs e) {
-            // Berekent voor de hoogte en breedte het canvas, de hoogte en breedte veranderd alleen als de room polygon kleiner wordt dan dat deze was 
-            double width = _canvasWidth / RoomPoly.ActualWidth < Scale ? _canvasWidth / RoomPoly.ActualWidth : Scale;
-            double height = _canvasHeight / RoomPoly.ActualHeight < Scale
-                ? _canvasHeight / RoomPoly.ActualHeight
-                : Scale;
-
-            // De kleinste waarde wordt meegegeven aan de scale functie
-            ScaleCanvas(width > height ? height : width, _initialMousePosition);
-        }
-
         private void ScaleCanvas(double scale, Point mousePosition) {
             // Kijkt of de gegeven schaal binnen de pagina past, zo niet veranderd de schaal niet
-            //if (scale >= 0.01 && RoomPoly.ActualHeight * scale <= _canvasHeight && RoomPoly.ActualWidth * scale <= _canvasWidth)
-            if (scale >= 0.01) {
-                Scale = scale;
-                Matrix scaleMatrix = _transform.Matrix;
-                scaleMatrix.ScaleAt(scale, scale, mousePosition.X, mousePosition.Y);
-                _transform.Matrix = scaleMatrix;
-                Editor.RenderTransform = _transform;
-            }
+            Matrix scaleMatrix = _transform.Matrix;
+            scaleMatrix.ScaleAt(scale, scale, mousePosition.X, mousePosition.Y);
+            _transform.Matrix = scaleMatrix;
+            Editor.RenderTransform = _transform;
         }
 
         private void OnPropertyChanged(string propertyName = "") {
