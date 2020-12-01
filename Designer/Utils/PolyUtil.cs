@@ -5,6 +5,33 @@ using System.Linq;
 
 namespace Models.Utils {
     public static class PolyUtil {
+        /**
+         * Checks center distance if this is smaller than 5 m returns <see cref="MinDistance"/>
+         */
+        public static (Position p1, Position p2)? IsSafe(this Polygon poly1, Polygon poly2) {
+            double dis = poly1.Center().Distance(poly2.Center());
+            if (dis < 150) {
+                double smallest = -1;
+                Position best1 = null;
+                Position best2 = null;
+                
+                foreach (Position p1 in poly1) {
+                    foreach (Position p2 in poly2) {
+                        double d = p1.Distance(p2);
+                        if (smallest >= 0 && d >= smallest) continue;
+                        smallest = d;
+                        best1 = p1;
+                        best2 = p2;
+                    }
+                }
+
+                return (best1, best2);
+            }
+
+            if (dis < 500) return MinDistanceOneDirection(poly1, poly2);
+            return null;
+        }
+        
         public static (Position p1, Position p2) MinDistance(this Polygon poly1, Polygon poly2) {
             //Probeert bijde variates omdat het uitmaakt welke volgorde je ze in MinDistanceOneDirection stopt
             (Position p1, Position p2) best1 = MinDistanceOneDirection(poly1, poly2);

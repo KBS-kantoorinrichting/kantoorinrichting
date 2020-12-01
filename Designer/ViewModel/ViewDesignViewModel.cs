@@ -34,6 +34,7 @@ namespace Designer.ViewModel {
         public ArgumentCommand<MouseEventArgs> MouseMoveCommand { get; set; }
         public BasicCommand Measure { get; set; }
         public BasicCommand Layout { get; set; }
+        public BasicCommand ClearProducts { get; set; }
         public ArgumentCommand<MouseWheelEventArgs> CanvasMouseScrollCommand { get; set; }
         public ArgumentCommand<SizeChangedEventArgs> ResizeCommand { get; set; }
         public Product SelectedProduct => _selectedPlacement.Product;
@@ -68,6 +69,7 @@ namespace Designer.ViewModel {
             MouseMoveCommand = new ArgumentCommand<MouseEventArgs>(HandleMouseMove);
             Measure = new BasicCommand(StartMeasure);
             Layout = new BasicCommand(GenerateLayout);
+            ClearProducts = new BasicCommand(Clear);
             CanvasMouseScrollCommand =
                 new ArgumentCommand<MouseWheelEventArgs>(e => CanvasMouseScroll(e.OriginalSource, e));
             ResizeCommand = new ArgumentCommand<SizeChangedEventArgs>(e => ResizePage(e.OriginalSource, e));
@@ -88,20 +90,70 @@ namespace Designer.ViewModel {
         private DistanceLine _distanceLine;
 
         public void StartMeasure() {
-            if (_enabled) {
-                _distanceLine.Remove(Editor);
-                _origin = null;
-                _secondPoint = null;
-            }
+            if (!_enabled) return;
+            _distanceLine.Remove(Editor);
+            _origin = null;
+            _secondPoint = null;
         }
 
-        public void GenerateLayout() {
+        public void Clear() {
             ProductPlacements.Clear();
-
-            ProductPlacements.Add(new ProductPlacement(0, 0, Products.First(), Design));
-
+            
             RenderRoom();
-            CheckCorona();
+            
+            _coronaLines.ForEach(line => line.Remove(Editor));
+            _coronaLines.Clear();
+        }
+        
+        public void GenerateLayout() {
+            // ProductPlacements.Clear();
+
+            Models.Polygon room = Design.Room.GetPoly();
+            Product product = Products.First();
+
+            Position min = room.Min();
+            Position max = room.Max();
+
+            int accuracy = Math.Min((int) min.Distance(max) / 200, Math.Min(product.Length, product.Width));
+
+            new Thread(
+                () => {
+                    for (int y = min.Y + 1; y < max.Y; y += accuracy) {
+                        for (int x = min.X + 1; x < max.X; x += accuracy) {
+                            Position position = new Position(x, y);
+
+                            if (room.Inside(product.GetPoly().Offset(position))) {
+                                ProductPlacement placement = new ProductPlacement(position, Products.First(), null);
+                                bool success = true;
+                                for (int i = 0; i < ProductPlacements.Count; i++) {
+                                    ProductPlacement place = ProductPlacements[i];
+                                    (Position p1, Position p2)? best = place.GetPoly().IsSafe(placement.GetPoly());
+                                    if (best == null) continue;
+
+                                    (Position p1, Position p2) = best.Value;
+                                    if (p1.Distance(p2) >= 150) continue;
+                                    success = false;
+                                    break;
+                                }
+
+                                if (success) {
+                                    ProductPlacements.Add(placement);
+
+                                    Editor.Dispatcher.Invoke(RenderRoom);
+                                }
+                            }
+                        }
+                    }
+                }
+            ).Start();
+
+            // while (room.Inside(product.GetPoly().Offset(position))) {
+            //     while (room.Inside(product.GetPoly().Offset(position))) {
+            //         ProductPlacements.Add(new ProductPlacement(position, Products.First(), Design));
+            //         position = position.CopyAdd(150 + product.Width);
+            //     }
+            //     position = position.CopyWith(1, position.Y + 150 + product.Width);
+            // }
         }
 
         private void PlacePoint(MouseButtonEventArgs eventArgs) {
@@ -147,8 +199,10 @@ namespace Designer.ViewModel {
                     ProductPlacement placement2 = placements[j];
                     if (Equals(placement2, skip)) continue;
 
-                    (Position p1, Position p2) = placement1.GetPoly().MinDistance(placement2.GetPoly());
+                    (Position p1, Position p2)? best = placement1.GetPoly().IsSafe(placement2.GetPoly());
+                    if (best == null) continue;
 
+                    (Position p1, Position p2) = best.Value;
                     double distance = p1.Distance(p2);
                     if (distance >= 150) continue;
                     //Als het minder dan 150 cm is voegd die de lijn toe.
@@ -373,6 +427,7 @@ namespace Designer.ViewModel {
                 ProductPlacements.Remove(placement);
                 _selectedPlacement = null;
                 RenderRoom();
+                CheckCorona();
             };
             // Sluit de placementselect scherm
             selectScreen.CloseButton.Click += delegate {
@@ -467,8 +522,9 @@ namespace Designer.ViewModel {
         public bool CheckRoomCollisions(PointCollection vertices2, Point point, Product product) {
             int yOffset = product.Length / 2;
             int xOffset = product.Width / 2;
-            
-            return Design.Room.GetPoly().Inside(product.GetPoly().Offset((int) point.X - xOffset, (int) point.Y - yOffset));
+
+            return Design.Room.GetPoly()
+                .Inside(product.GetPoly().Offset((int) point.X - xOffset, (int) point.Y - yOffset));
         }
 
         public void SetRoomScale() {

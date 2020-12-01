@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -33,6 +34,10 @@ namespace Models {
             List<Position> clone = _positions.Select(position => position.CopyAdd(xOffset, yOffset)).ToList();
             return new Polygon(clone);
         }
+
+        public Polygon Offset(Position position) {
+            return Offset(position.X, position.Y);
+        }
         
         public string Convert() {
             if (_positions == null) return null;
@@ -62,6 +67,35 @@ namespace Models {
 
         public override int GetHashCode() {
             return (_positions != null ? _positions.GetHashCode() : 0);
+        }
+
+        private Position _max;
+        private Position _min;
+        private Position _center;
+        private Polygon _bounds;
+        
+        public Position Max() {
+            return _max ??= _positions.Aggregate((p1, p2) => new Position(Math.Max(p1.X, p2.X), Math.Max(p1.Y, p2.Y)));
+        }
+
+        public Position Min() {
+            return _min ?? _positions.Aggregate((p1, p2) => new Position(Math.Min(p1.X, p2.X), Math.Min(p1.Y, p2.Y)));
+        }
+
+        public Position Center() {
+            if (_center != null) return _center;
+            
+            Position min = Min();
+            Position max = Max();
+            return _center = new Position((min.X + max.X) / 2, ((min.Y + max.Y) / 2));
+        }
+
+        public Polygon Bounds() {
+            if (_bounds != null) return _bounds;
+            
+            Position min = Min();
+            Position max = Max();
+            return _bounds = new Polygon(new List<Position> {min, new Position(min.X, max.Y), max, new Position(max.X, min.Y)});
         }
 
         public IEnumerator<Position> GetEnumerator() => _positions.GetEnumerator();

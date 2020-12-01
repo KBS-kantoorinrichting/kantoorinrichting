@@ -24,6 +24,9 @@ namespace Models {
         public ProductPlacement() {
         }
 
+        public ProductPlacement(Position position, Product product, Design design) : this(position.X, position.Y, product, design) {
+        }
+
         public ProductPlacement(int x, int y, Product product, Design design) {
             X = x;
             Y = y;
