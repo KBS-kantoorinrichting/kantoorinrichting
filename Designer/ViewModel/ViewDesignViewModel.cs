@@ -50,31 +50,33 @@ namespace Designer.ViewModel {
             get
             {
                 int increment = 0;
-                if (ProductPlacements != null && ProductPlacements.Count > 0)
+                if (ProductPlacements == null) return 0;
+
+                List<ProductPlacement> placements = ProductPlacements.ToList();
+
+                //Loopt door alle paren van producten zonder overbodige stappen zoals p1 -> p1 en p1 -> p2, p2 -> p1
+                for (int i = 0; i < placements.Count; i++)
                 {
-                    List<ProductPlacement> placements = ProductPlacements.ToList();
-
-                    //Loopt door alle paren van producten zonder overbodige stappen zoals p1 -> p1 en p1 -> p2, p2 -> p1
-                    for (int i = 0; i < placements.Count; i++)
+                    bool noDistance = false;
+                    ProductPlacement placement1 = placements[i];
+                    for (int j = 0; j < placements.Count; j++)
                     {
-                        ProductPlacement placement1 = placements[i];
-                        for (int j = i + 1; j < placements.Count; j++)
+                        ProductPlacement placement2 = placements[j];
+                        if(j != i)
                         {
-                            ProductPlacement placement2 = placements[j];
-
                             (Position p1, Position p2)? best = placement1.GetPoly().IsSafe(placement2.GetPoly());
                             if (best == null) continue;
 
                             (Position p1, Position p2) = best.Value;
                             double distance = p1.Distance(p2);
-                            if (distance >= 150) continue;
-                            //Als het minder dan 150 cm increment.
-                            increment++;
+                            if(!noDistance) noDistance = distance <= 150;
                         }
                     }
+                    if(noDistance) increment++;
                 }
-                Debug.WriteLine(increment);
-                return increment;
+                double reversedIncrement = ProductPlacements.Count - increment;
+
+                return (int)(reversedIncrement / ProductPlacements.Count * 100);
             }
         }
         public int VentilationScore { get; set; } = 80;
@@ -345,6 +347,10 @@ namespace Designer.ViewModel {
                     DragDrop.DoDragDrop(Editor, _draggingPlacement, DragDropEffects.Move);
                 }
             }
+
+            // Toegevoegd zodat de corona score wordt bijgewerkt
+            // TODO: kan mogelijk beter
+            OnPropertyChanged();
         }
 
         public void CatalogusMouseDown(object sender, MouseButtonEventArgs e) {
@@ -451,9 +457,6 @@ namespace Designer.ViewModel {
             if (_selectedPlacement != null) {
                 DrawSelectionButtons(_selectedPlacement);
             }
-            // Toegevoegd zodat de corona score wordt bijgewerkt
-            // TODO: kan mogelijk beter
-            OnPropertyChanged();
         }
 
         private void DrawSelectionButtons(ProductPlacement placement) {
@@ -465,6 +468,9 @@ namespace Designer.ViewModel {
                 _selectedPlacement = null;
                 RenderRoom();
                 CheckCorona();
+                // Toegevoegd zodat de corona score wordt bijgewerkt
+                // TODO: kan mogelijk beter
+                OnPropertyChanged();
             };
             // Sluit de placementselect scherm
             selectScreen.CloseButton.Click += delegate {
