@@ -43,11 +43,11 @@
                                         BorderThickness="0.2"
                                         BorderBrush="Black">
                                         <behaviors:Interaction.Triggers>
-                                                <behaviors:EventTrigger EventName="MouseDown">
+                                            <behaviors:EventTrigger EventName="MouseDown">
                                                 <behaviors:InvokeCommandAction Command="{ Binding ElementName=viewModel, Path=MouseDownCommand}" PassEventArgsToCommand="True" />
-                                                </behaviors:EventTrigger>
-                                            </behaviors:Interaction.Triggers>
-                                            <StackPanel Orientation="Vertical" Width="108" Height="108">
+                                            </behaviors:EventTrigger>
+                                        </behaviors:Interaction.Triggers>
+                                        <StackPanel Orientation="Vertical" Width="108" Height="108">
                                             <TextBlock
 
                                                 Text="{Binding Name}"
@@ -95,7 +95,7 @@
                            HorizontalAlignment="Left" />
                     <TextBox Text="{Binding Price, UpdateSourceTrigger=PropertyChanged}" Background="#FFFFFEFE"
                              RenderTransformOrigin="0.507,0.562" Height="30" Width="110" HorizontalAlignment="Left"
-                             BorderBrush="Black" BorderThickness="1px" Margin="10,0,0,0" />
+                             BorderBrush="Black" BorderThickness="1px" Margin="10,0,0,0"  />
 
                     <Label Content="Dimensies:" Height="23" Width="107" RenderTransformOrigin="0.49,0.577"
                            HorizontalAlignment="Left" Margin="0,10,0,0" />
@@ -115,7 +115,7 @@
                            HorizontalAlignment="Left" />
                     <Button Name="AddPhoto" Command="{Binding AddPhoto}" Content="Foto Toevoegen" Height="26"
                             Width="122" />
-                    <TextBox Name="txtEditor" Text="{Binding Photo, Converter={StaticResource ImagePathConverter}}"
+                    <TextBox Name="txtEditor" Text="{Binding Photo, Converter={StaticResource ImagePathConverter}}" 
                              Height="75" />
 
                     <Border />
@@ -126,11 +126,8 @@
 
             </TabItem>
         </TabControl>
-        <Canvas x:Name="Editor" Margin="0,25,260,0">
-            <Label Canvas.Left="21" Canvas.Top="33" Width="136" />
-        </Canvas>
         <Grid Background="White" HorizontalAlignment="Left" Height="634" Margin="0,20,0,0" VerticalAlignment="Top"
-              Width="879">
+              Width="879" Visibility="{Binding ItemIsSelected ,UpdateSourceTrigger=PropertyChanged}">
 
             <Button Content="Verwijder product" Height="74" Width="170" HorizontalAlignment="Right" Margin="0,15,5,545"
                     Command="{Binding DeleteCommand}" BorderThickness="0px" />
@@ -139,39 +136,47 @@
                 <StackPanel Margin="0,0,132,28">
                     <Label Content="Naam:" Height="26" Width="109" RenderTransformOrigin="0.49,0.577"
                            HorizontalAlignment="Left" />
-                    <Label Content="{Binding SelectedProduct.Name}" Background="#FFFFFEFE"
+                    <TextBox Text="{Binding SelectedProduct.Name}" Background="#FFFFFEFE"
                            RenderTransformOrigin="0.507,0.562" Height="30" Width="110" HorizontalAlignment="Left"
-                           BorderBrush="Black" BorderThickness="1px" Margin="10,0,0,0" />
+                           BorderBrush="Black" BorderThickness="1px" Margin="10,0,0,0" IsReadOnly="{Binding IsEditedRead}" />
 
                     <Label Content="Prijs:" Height="26" Width="110" RenderTransformOrigin="0.49,0.577"
                            HorizontalAlignment="Left" />
-                    <Label Content="{Binding SelectedProduct.Price, StringFormat ='€{0}'}" Background="#FFFFFEFE"
+                    <!-- StringFormat ='€{0}' below in text -->
+                    <TextBox Text="{Binding SelectedProduct.Price }" Background="#FFFFFEFE"
                            RenderTransformOrigin="0.507,0.562" Height="30" Width="110" HorizontalAlignment="Left"
-                           BorderBrush="Black" BorderThickness="1px" Margin="10,0,0,0" />
+                           BorderBrush="Black" BorderThickness="1px" Margin="10,0,0,0" IsReadOnly="{Binding IsEditedRead}" />
 
                     <Label Content="Dimensies:" Height="23" Width="107" RenderTransformOrigin="0.49,0.577"
                            HorizontalAlignment="Left" Margin="0,10,0,0" />
                     <Label Content="Lengte:" Height="28" Width="107" RenderTransformOrigin="0.49,0.577"
                            HorizontalAlignment="Left" Margin="10,0,0,0" />
 
-                    <Label Content="{Binding SelectedProduct.Length}" Background="#FFFFFEFE"
+                    <TextBox Text="{Binding SelectedProduct.Length}" Background="#FFFFFEFE"
                            RenderTransformOrigin="0.507,0.562" Height="28" Width="30" HorizontalAlignment="Left"
-                           BorderBrush="Black" BorderThickness="1px" Margin="30,0,0,0" />
+                           BorderBrush="Black" BorderThickness="1px" Margin="30,0,0,0" IsReadOnly="{Binding IsEditedRead}"/>
                     <Label Content="Breedte:" Height="28" Width="107" RenderTransformOrigin="0.49,0.577"
                            HorizontalAlignment="Left" Margin="10,0,0,0" />
-                    <Label Content="{Binding SelectedProduct.Width}" Background="#FFFFFEFE"
+                    <TextBox Text="{Binding SelectedProduct.Width}" Background="#FFFFFEFE"
                            RenderTransformOrigin="0.507,0.562" Height="28" Width="30" HorizontalAlignment="Left"
-                           BorderBrush="Black" BorderThickness="1px" Margin="30,0,0,0" />
+                           BorderBrush="Black" BorderThickness="1px" Margin="30,0,0,0" IsReadOnly="{Binding IsEditedRead}" />
 
                     <Label Content="Foto:" Height="26" Width="52" RenderTransformOrigin="0.49,0.577"
                            HorizontalAlignment="Left" Margin="0,10,0,0" />
+
+                    <Button Name="EditPhoto" Command="{Binding EditPhoto, UpdateSourceTrigger=PropertyChanged}" Content="Foto Toevoegen" Height="26"
+                            Width="122" Visibility="{Binding IsEditedVis}" />
                     <Border>
                         <Image
                             Source="{Binding Path= SelectedProduct.Photo ,Converter={StaticResource ImagePathConverter}}"
                             Height="237" Width="245" />
                     </Border>
+
                 </StackPanel>
             </Border>
+            <Button Content="Pas product aan" Height="74" Width="170" HorizontalAlignment="Right" Margin="0,94,5,466"
+                Command="{Binding EditCommand}" BorderThickness="0px" Click="Button_Click" />
+            <Button Content="Opslaan" Command="{Binding SaveEdit}" Height="74" Width="170" HorizontalAlignment="Right"  BorderThickness="0px" Margin="0,174,5,386" Visibility="{Binding IsEditedVis}" />
         </Grid>
     </Grid>
 </Page>
