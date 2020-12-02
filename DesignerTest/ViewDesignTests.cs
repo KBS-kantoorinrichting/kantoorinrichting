@@ -99,7 +99,7 @@ namespace DesignerTest
                 points.Add(new Point(coordinates[i].X, coordinates[i].Y));
             }
 
-            return ViewModel.CheckRoomCollisions(points, point, Product1);
+            return ViewModel.CheckRoomCollisions(points, point, Product1, 0);
         }
 
         [Test]
