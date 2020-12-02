@@ -12,9 +12,9 @@ namespace DesignerTest
         private static readonly Room Room = Room.FromDimensions("TestRoom", 1, 1);
         private static readonly Design Design = new Design("TestDesign", Room, new List<ProductPlacement>());
         private static readonly ViewDesignViewModel ViewModel = new ViewDesignViewModel(Design);
-        private static readonly Product Product1 = new Product() { Id = 1, Name = "Product1" };
-        private static readonly Product Product2 = new Product() { Id = 2, Name = "Product2" };
-        private static readonly Product Product3 = new Product() { Id = 3, Name = "Product3" };
+        private static readonly Product Product1 = new Product() { Id = 1, Name = "Product1", Width = 5, Length = 5 };
+        private static readonly Product Product2 = new Product() { Id = 2, Name = "Product2", Width = 5, Length = 5 };
+        private static readonly Product Product3 = new Product() { Id = 3, Name = "Product3", Width = 5, Length = 5 };
 
         protected override List<Product> Products => new List<Product> {Product1, Product2, Product3};
 
@@ -82,24 +82,27 @@ namespace DesignerTest
         [Test]
         [TestCase(10, 10, ExpectedResult = true)]
         [TestCase(100, 100, ExpectedResult = true)]
-        [TestCase(510, 500, ExpectedResult = false)]
-        [TestCase(150, 270, ExpectedResult = true)]
-        [TestCase(270, 150, ExpectedResult = false)]
-        [TestCase(270, 270, ExpectedResult = true)]
+        [TestCase(500, 500, ExpectedResult = false)]
+        [TestCase(299, 270, ExpectedResult = false)]
         public bool ViewDesign_CheckRoomCollisions_ReturnBoolean(int x, int y)
         {
-            List<Position> coordinates = Room.ToList("0,0|250,0|250,250|500,250|500,500|0,500");
-
             Point point = new Point(x, y);
 
-            PointCollection points = new PointCollection();
-            // Voeg de punten toe aan een punten collectie
-            for (int i = 0; i < coordinates.Count; i++)
-            {
-                points.Add(new Point(coordinates[i].X, coordinates[i].Y));
-            }
+            return ViewModel.CheckRoomCollisions(Room.FromDimensions("test", 300,300).GetPoly(), point, Product1, 0);
+        }
 
-            return ViewModel.CheckRoomCollisions(points, point, Product1, 0);
+        [Test]
+        [TestCase(0,0,5,0, ExpectedResult = false)]
+        [TestCase(0,0,6,0, ExpectedResult = true)]
+        [TestCase(0,0,0,5, ExpectedResult = false)]
+        [TestCase(0,0,0, 6, ExpectedResult = true)]
+        public bool ViewDesign_CheckProductCollisions_ReturnBoolean(int x1, int y1, int x2, int y2)
+        {
+            ViewModel.ProductPlacements = new List<ProductPlacement>()
+            {
+                new ProductPlacement(x2,y2,Product1, Design)
+            };
+            return ViewModel.CheckProductCollisions(new Point(x1,y1), Product1, 0);
         }
 
         [Test]

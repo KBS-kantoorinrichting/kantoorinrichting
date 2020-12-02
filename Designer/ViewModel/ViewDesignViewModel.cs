@@ -11,7 +11,7 @@ using Designer.View;
 using System.Windows.Shapes;
 using System.Windows.Media;
 using System.Globalization;
-using System.Threading;
+using Microsoft.VisualBasic.CompilerServices;
 using Models;
 using Models.Utils;
 using Services;
@@ -334,7 +334,7 @@ namespace Designer.ViewModel {
             CheckCorona(temp, skip);
 
             // Check of het product in de ruimte wordt geplaatst
-            AllowDrop = CheckRoomCollisions(RoomPoly.Points, actualPosition, selectedProduct, rotation) && CheckProductCollisions(actualPosition, selectedProduct, rotation);
+            AllowDrop = CheckRoomCollisions(Design.Room.GetPoly(), actualPosition, selectedProduct, rotation) && CheckProductCollisions(actualPosition, selectedProduct, rotation);
 
             //Teken de ruimte en de al geplaatste producten
             RenderRoom();
@@ -482,10 +482,10 @@ namespace Designer.ViewModel {
             Editor.Children.Add(RoomPoly);
         }
 
-        public bool CheckRoomCollisions(PointCollection vertices2, Point point, Product product, int rotation) {
+        public bool CheckRoomCollisions(Models.Polygon poly, Point point, Product product, int rotation) {
             var temp = new ProductPlacement((int) point.X, (int) point.Y, product, Design) {Rotation = rotation};
 
-            return Design.Room.GetPoly().Inside(temp.GetPoly());
+            return poly.Inside(temp.GetPoly());
         }
 
         public bool CheckProductCollisions(Point point, Product product, int rotation)
