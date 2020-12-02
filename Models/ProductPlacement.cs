@@ -32,6 +32,10 @@ namespace Models {
             Rotation = 0;
         }
 
-        public Polygon GetPoly() => Product.GetPoly().Offset(X, Y);
+        public Polygon GetPoly() => 
+            Rotation % 180 == 0 ?
+                Product.GetPoly().Offset(X, Y) :
+                //Hoogte en breedte omgedraaid
+                new Polygon(Product.Length, Product.Width).Offset(X,Y);
     }
 }
