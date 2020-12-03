@@ -34,5 +34,11 @@
         <Button Content="Opslaan" Background="Bisque" VerticalAlignment="Top" Height="23"
                 RenderTransformOrigin="0.906,0.372" Margin="270,5,455,0"
                 Command="{Binding Submit}" />
+        <ToggleButton Content="Deuren Toevoegen" Background="Bisque" VerticalAlignment="Top" Height="23" Width="120"
+                RenderTransformOrigin="0.906,0.372" Margin="770,5,155,0"
+                Command="{Binding AddDoors}" IsChecked="{Binding AddDoorsChecked}" />
+        <ToggleButton Content="Ramen Toevoegen" Background="Bisque" VerticalAlignment="Top" Height="23" Width="120"
+                RenderTransformOrigin="0.906,0.372" Margin="870,5,0,0"
+                Command="{Binding AddWindows}" IsChecked="{Binding AddWindowsChecked}"/>
     </Grid>
 </Page>

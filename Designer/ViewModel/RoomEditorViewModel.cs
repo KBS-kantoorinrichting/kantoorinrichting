@@ -34,6 +34,10 @@ namespace Designer.ViewModel
         public ArgumentCommand<MouseEventArgs> MouseOverCommand { get; set; }
         public ArgumentCommand<MouseButtonEventArgs> MouseDownCommand { get; set; }
         public BasicCommand Submit { get; set; }
+        public BasicCommand AddDoors { get; set; }
+        public BasicCommand AddWindows { get; set; }
+        public bool AddDoorsChecked { get; set; } = false;
+        public bool AddWindowsChecked { get; set; } = false;
         private double CanvasHeight = 500;
         private double CanvasWidth = 1280;
 
@@ -42,6 +46,8 @@ namespace Designer.ViewModel
             Submit = new BasicCommand(SubmitRoom);
             MouseOverCommand = new ArgumentCommand<MouseEventArgs>(e => MouseMove(e.OriginalSource, e));
             MouseDownCommand = new ArgumentCommand<MouseButtonEventArgs>(e => MouseClick(e.OriginalSource, e));
+            AddDoors = new BasicCommand(AddDoorsClick);
+            AddWindows = new BasicCommand(AddWindowsClick);
             Editor = new Canvas();
             Reload();
         }
@@ -102,6 +108,26 @@ namespace Designer.ViewModel
         }
         public void MouseMove(object sender, MouseEventArgs e)
         {
+            //Debug.WriteLine(AddDoorsChecked);
+            if(AddDoorsChecked)
+            {
+                var mousePosition = e.GetPosition(Editor);
+
+                int y = (int)(mousePosition.Y - (mousePosition.Y % 25));
+                int x = (int)(mousePosition.X - (mousePosition.X % 25));
+
+                List<Position> points = Points;
+
+                for (int i = 0; i < points.Count; i++)
+                {
+                    Debug.WriteLine($"{points[i].X} - {points[i + 1].X}");
+                    if(i < (points.Count - 1) && points[i].X == points[i + 1].X)
+                    {
+                        Debug.WriteLine("Same X values");
+                    }
+                }
+            }
+
           /*  int y = Convert.ToInt32(e.GetPosition(Editor).Y - (e.GetPosition(Editor).Y % 25));
             int x = Convert.ToInt32(e.GetPosition(Editor).X - (e.GetPosition(Editor).X % 25));
             //int x = Convert.ToInt32(e.GetPosition(Editor).X);
@@ -321,6 +347,15 @@ namespace Designer.ViewModel
 
         }
 
+        public void AddDoorsClick()
+        {
+            if(AddDoorsChecked) AddWindowsChecked = false;
+        }
+
+        public void AddWindowsClick()
+        {
+            if(AddWindowsChecked) AddDoorsChecked = false;
+        }
     }
 }
 
