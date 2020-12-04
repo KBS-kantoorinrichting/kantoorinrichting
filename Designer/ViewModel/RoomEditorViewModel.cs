@@ -301,24 +301,24 @@ namespace Designer.ViewModel
 
                 var previouslySelected = LastSelected.Equals(currentpoint) /*|| SelectedPoints.Contains(currentpoint)*/;
                 if (previouslySelected)
-                {
-                    RectangleDictionary[currentpoint].Fill = System.Windows.Media.Brushes.White;
-                    SelectedPoints.Remove(currentpoint);
+                {  // Als de laatst geselecteerde rectangle hetzelfde is als currentpoint
+                    RectangleDictionary[currentpoint].Fill = System.Windows.Media.Brushes.White; // Maak deze rectactangle wit
+                    SelectedPoints.Remove(currentpoint); // En verwijder hem van SelectedPoints
                     if (SelectedPoints.Count < 1)
-                    {
+                    { // Als het aantal selectedpoints kleiner dan 1 is
                         LastSelected = new Position(-1, -1);
-                        return;
+                        return; // zet lastselected op een positie die niet bestaat
                     }
                     else
-                    {
+                    { // Anders is de lastselected de laatst geselecteerde
                         LastSelected = SelectedPoints.Last();
                     }
                 }
 
             if (!previouslySelected && (LastSelected.X != currentpoint.X && LastSelected.Y != currentpoint.Y))
-                {
+                {  // Als je hem schuin zet
                     GeneralPopup warning = new GeneralPopup("sorry, je kunt niet schuin neerzetten");
-                    warning.Show();
+                    warning.Show(); // Warning met "sorry, je kunt niet schuin neerzetten"
                     return;
                 }
 
