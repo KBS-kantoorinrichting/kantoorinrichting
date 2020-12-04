@@ -5,6 +5,32 @@ using System.Linq;
 
 namespace Models.Utils {
     public static class PolyUtil {
+        /**
+         * Checks center distance if this is smaller than 5 m and bigger then 1.5m returns <see cref="MinDistance"/>
+         */
+        public static bool IsSafe(this Polygon poly1, Polygon poly2) {
+            double dis = poly1.Center().Distance(poly2.Center());
+            //TODO use bounds to check this
+            if (dis <= 150) return false;
+            if (dis >= 500) return true;
+            (Position p1, Position p2) = MinDistance(poly1, poly2);
+            return p1.Distance(p2) > 150;
+        }
+
+        public static (bool needed, bool safe) PreciseNeeded(this Polygon poly1, Polygon poly2, double distance) {
+            Position c1 = poly1.Center();
+            Position c2 = poly2.Center();
+
+            double dis = c1.DistanceManhattan(c2);
+            if (dis <= 150) return (false, true);
+            if (dis >= 800) return (false, false);
+            
+            dis = c1.Distance(c2);
+            if (dis <= 150) return (false, false);
+            if (dis >= 500) return (false, true);
+            return (true, false);
+        }
+        
         public static (Position p1, Position p2) MinDistance(this Polygon poly1, Polygon poly2) {
             //Probeert bijde variates omdat het uitmaakt welke volgorde je ze in MinDistanceOneDirection stopt
             (Position p1, Position p2) best1 = MinDistanceOneDirection(poly1, poly2);
@@ -58,6 +84,10 @@ namespace Models.Utils {
          * Vergelijkt alle lijn delen met elkaar en kijkt of deze snijden
          */
         public static bool DoesCollide(this Polygon poly1, Polygon poly2) {
+            return poly1.DoesOutsideCollide(poly2) || poly1.InsideNoOutside(poly2) || poly2.InsideNoOutside(poly1);
+        }
+
+        private static bool DoesOutsideCollide(this Polygon poly1, Polygon poly2) {
             foreach ((Position p1, Position p2) line1 in poly1.GetLines())
             foreach ((Position p1, Position p2) line2 in poly2.GetLines()) {
                 PointF[] array = Intersector.Intersection(
@@ -68,13 +98,19 @@ namespace Models.Utils {
                 if (array.Any()) return true;
             }
 
-            return poly1.Inside(poly2) || poly2.Inside(poly1);
+            return false;
         }
 
         /**
          * Checks if poly2 is inside poly1
          */
-        public static bool Inside(this Polygon poly1, Polygon poly2) { return poly2.All(poly1.Inside); }
+        public static bool Inside(this Polygon poly1, Polygon poly2) {
+            return poly1.InsideNoOutside(poly2) && !poly2.DoesOutsideCollide(poly1);
+        }
+
+        private static bool InsideNoOutside(this Polygon poly1, Polygon poly2) {
+            return poly2.All(poly1.Inside);
+        }
 
         public static bool Inside(this Polygon poly, Position position) {
             int j = poly.Count - 1;

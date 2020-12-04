@@ -45,6 +45,14 @@ namespace Models {
             return Math.Sqrt(Math.Pow(Y - y, 2) + Math.Pow(X - x, 2));
         }
 
+        public double DistanceManhattan(Position p) {
+            return DistanceManhattan(p.X, p.Y);
+        }
+
+        public double DistanceManhattan(double x, double y) {
+            return Math.Abs(Y - y) + Math.Abs(X - x);
+        }
+
         public Position Copy() {
             return new Position(X, Y);
         }
