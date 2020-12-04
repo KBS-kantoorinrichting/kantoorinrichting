@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Windows;
 using Designer.Other;
@@ -11,7 +12,7 @@ using Designer.View;
 using System.Windows.Shapes;
 using System.Windows.Media;
 using System.Globalization;
-using System.Threading;
+using Microsoft.VisualBasic.CompilerServices;
 using Models;
 using Models.Utils;
 using Services;
@@ -139,14 +140,6 @@ namespace Designer.ViewModel {
                     }
                 }
             ).Start();
-
-            // while (room.Inside(product.GetPoly().Offset(position))) {
-            //     while (room.Inside(product.GetPoly().Offset(position))) {
-            //         ProductPlacements.Add(new ProductPlacement(position, Products.First(), Design));
-            //         position = position.CopyAdd(150 + product.Width);
-            //     }
-            //     position = position.CopyWith(1, position.Y + 150 + product.Width);
-            // }
         }
 
         private void PlacePoint(MouseButtonEventArgs eventArgs) {
@@ -366,7 +359,11 @@ namespace Designer.ViewModel {
                 Point position = e.GetPosition(Editor);
                 var x = (int) position.X - (placement.Product.Width / 2);
                 var y = (int) position.Y - (placement.Product.Length / 2);
-                TryToMoveProduct(placement, x, y);
+                //TODO center with rotation
+                var actualWidth = placement.Rotation % 180 == 0 ? placement.Product.Width : placement.Product.Length;
+                var actualLength = placement.Rotation % 180 == 0 ? placement.Product.Length : placement.Product.Width;
+                var actualPosition = new Point((int) position.X - actualWidth / 2, (int) position.Y - actualLength / 2);
+                TryToMoveProduct(placement, (int) actualPosition.X, (int) actualPosition.Y);
                 _draggingPlacement = null;
                 RenderRoom();
             }
@@ -409,7 +406,8 @@ namespace Designer.ViewModel {
             CheckCorona(_tempPlacement, skip);
 
             // Check of het product in de ruimte wordt geplaatst
-            AllowDrop = CheckRoomCollisions(position, selectedProduct);
+            AllowDrop = CheckRoomCollisions(position, selectedProduct) &&
+                        CheckProductCollisions(actualPosition, selectedProduct, rotation);
 
             //Teken de ruimte en de al geplaatste producten
             // RenderRoom();
@@ -435,6 +433,11 @@ namespace Designer.ViewModel {
 
             foreach (Image image in _images.Values) {
                 Editor.Children.Remove(image);
+            }
+
+            for (int i = Editor.Children.Count - 1; i >= 0; i += -1) {
+                UIElement Child = Editor.Children[i];
+                if (Child is Rectangle) Editor.Children.Remove(Child);
             }
 
             _images.Clear();
@@ -501,20 +504,22 @@ namespace Designer.ViewModel {
             int y = placement.Y;
 
             var photo = product.Photo ?? "placeholder.png";
-
+            var actualWidth = rotation % 180 == 0 ? product.Width : product.Length;
+            var actualLength = rotation % 180 == 0 ? product.Length : product.Width;
             // Veranderd de rotatie van het product
             TransformedBitmap tempBitmap = new TransformedBitmap();
 
             tempBitmap.BeginInit();
-            tempBitmap.Source = new BitmapImage(new Uri(Environment.CurrentDirectory + $"/Resources/Images/{photo}"));
-            RotateTransform transform = new RotateTransform(rotation);
+            var source = new BitmapImage(new Uri(Environment.CurrentDirectory + $"/Resources/Images/{photo}"));
+            tempBitmap.Source = source;
+            RotateTransform transform = new RotateTransform(rotation, source.Width / 2, source.Height / 2);
             tempBitmap.Transform = transform;
             tempBitmap.EndInit();
 
             var image = new Image() {
                 Source = tempBitmap,
-                Height = product.Length,
-                Width = product.Width
+                Height = actualLength,
+                Width = actualWidth
             };
 
             //Als transparent in als parameter naar true wordt gezet wordt de afbeelding doorzichtig
@@ -525,6 +530,16 @@ namespace Designer.ViewModel {
             Canvas.SetLeft(image, x);
             // Voeg product toe aan canvas
             Editor.Children.Add(image);
+
+            var rect = new Rectangle() {
+                Stroke = Brushes.Red,
+                Height = actualLength,
+                Width = actualWidth,
+            };
+
+            Canvas.SetTop(rect, y);
+            Canvas.SetLeft(rect, x);
+            Editor.Children.Add(rect);
             // Voegt het id van het productplacement index in de productplacement list
             image.Uid ??= placementIndex.ToString();
 
@@ -571,6 +586,20 @@ namespace Designer.ViewModel {
 
             return Design.Room.GetPoly()
                 .Inside(product.GetPoly().Offset((int) point.X - xOffset, (int) point.Y - yOffset));
+        }
+
+        public bool CheckProductCollisions(Point point, Product product, int rotation) {
+            var temp_placement = new ProductPlacement((int) point.X, (int) point.Y, product, Design);
+            temp_placement.Rotation = rotation;
+            var poly = temp_placement.GetPoly();
+            foreach (var placement in ProductPlacements) {
+                if (Equals(placement, _draggingPlacement)) continue;
+                if (placement.GetPoly().DoesCollide(poly)) {
+                    return false;
+                }
+            }
+
+            return true;
         }
 
         public void SetRoomScale() {

@@ -1,5 +1,4 @@
-﻿using System;
-using Designer.ViewModel;
+﻿using Designer.ViewModel;
 using NUnit.Framework;
 using System.Collections.Generic;
 using System.Windows;
@@ -12,9 +11,9 @@ namespace DesignerTest {
         private static readonly Room Room = Room.FromDimensions("TestRoom", 250, 500);
         private static readonly Design Design = new Design("TestDesign", Room, new List<ProductPlacement>());
         private static readonly ViewDesignViewModel ViewModel = new ViewDesignViewModel(Design);
-        private static readonly Product Product1 = new Product("Product1", 1, 1, 1);
-        private static readonly Product Product2 = new Product() {Id = 2, Name = "Product2"};
-        private static readonly Product Product3 = new Product() {Id = 3, Name = "Product3"};
+        private static readonly Product Product1 = new Product("Product1", 1, 5, 5);
+        private static readonly Product Product2 = new Product("Product2", 2, 5, 5);
+        private static readonly Product Product3 = new Product("Product3", 3, 5, 5);
 
         protected override List<Product> Products => new List<Product> {Product1, Product2, Product3};
 
@@ -85,6 +84,20 @@ namespace DesignerTest {
         }
 
         [Test]
+        [TestCase(0,0,5,0, ExpectedResult = false)]
+        [TestCase(0,0,6,0, ExpectedResult = true)]
+        [TestCase(0,0,0,5, ExpectedResult = false)]
+        [TestCase(0,0,0, 6, ExpectedResult = true)]
+        public bool ViewDesign_CheckProductCollisions_ReturnBoolean(int x1, int y1, int x2, int y2)
+        {
+            ViewModel.ProductPlacements = new List<ProductPlacement>()
+            {
+                new ProductPlacement(x2,y2,Product1, Design)
+            };
+            return ViewModel.CheckProductCollisions(new Point(x1,y1), Product1, 0);
+        }
+
+        [Test]
         [TestCase(12.55)]
         [TestCase(78.95)]
         [TestCase(0.05)]
@@ -101,7 +114,7 @@ namespace DesignerTest {
                     }
                 );
             }
-
+            
             Assert.AreEqual(price * increment, ViewModel.TotalPrice);
         }
     }
