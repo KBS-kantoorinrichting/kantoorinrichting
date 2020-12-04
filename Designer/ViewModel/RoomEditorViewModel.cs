@@ -27,6 +27,7 @@ namespace Designer.ViewModel
         public List<Position> BorderPoints = new List<Position>();
         public List<Position> Last3HoveredPoints = new List<Position>(3);
         public Dictionary<Position, System.Windows.Shapes.Rectangle> RectangleDictionary = new Dictionary<Position, System.Windows.Shapes.Rectangle>();
+
         public Room SelectedRoom = new Room();
         public Canvas Editor { get; set; }
         public Position LastSelected { get; set; } = new Position(-1, -1);
@@ -98,6 +99,7 @@ namespace Designer.ViewModel
                 }
 
             }
+            LastSelected = SelectedPoints.Last();
             PaintRoom();
         }
 
@@ -115,7 +117,16 @@ namespace Designer.ViewModel
                 RectangleDictionary[pos].Opacity = 1;
             }
 
+            foreach (Position pos in Points)
+            {
+                if (!BorderPoints.Contains(pos) && !SelectedPoints.Contains(pos))
+                {
+                    RectangleDictionary[pos].Fill = System.Windows.Media.Brushes.White;
+                    RectangleDictionary[pos].Opacity = 1;
+                }
+            }
 
+            RectangleDictionary[SelectedPoints.Last()].Fill = System.Windows.Media.Brushes.Bisque;
         }
 
         public void SetSelectedRoom(Room selectedroom)
@@ -275,15 +286,15 @@ namespace Designer.ViewModel
                 Action AddPoint = () =>
                 {
                     // het geselecteerde punt kleuren en toevoegen aan de lijst van tussenpunten
-                    RectangleDictionary[LastSelected].Fill = System.Windows.Media.Brushes.DarkMagenta;
-                    RectangleDictionary[LastSelected].Opacity = 0.5;
+                    /*RectangleDictionary[LastSelected].Fill = System.Windows.Media.Brushes.DarkMagenta;
+                    RectangleDictionary[LastSelected].Opacity = 0.5;*/
                     BorderPoints.Add(LastSelected);
                 };
                 Action RemovePoint = () =>
                 {
                     // het geselecteerde punt wit kleuren en toevoegen aan de lijst van tussenpunten
-                    RectangleDictionary[LastSelected].Fill = System.Windows.Media.Brushes.White;
-                    RectangleDictionary[LastSelected].Opacity = 1;
+                    /*RectangleDictionary[LastSelected].Fill = System.Windows.Media.Brushes.White;
+                    RectangleDictionary[LastSelected].Opacity = 1;*/
                     BorderPoints.Remove(LastSelected);
                 };
 
@@ -291,7 +302,7 @@ namespace Designer.ViewModel
                 if (LastSelected.Y.Equals(-1))
                 {
                     // kleurt het hokje in
-                    RectangleDictionary[currentpoint].Fill = System.Windows.Media.Brushes.DarkMagenta;
+                   // RectangleDictionary[currentpoint].Fill = System.Windows.Media.Brushes.DarkMagenta;
                     // maakt dit het laatste geselecteerde punt
                     LastSelected = currentpoint;
                     // voegt het hokje toe aan de lijst
@@ -302,7 +313,7 @@ namespace Designer.ViewModel
                 var previouslySelected = LastSelected.Equals(currentpoint) /*|| SelectedPoints.Contains(currentpoint)*/;
                 if (previouslySelected)
                 {  // Als de laatst geselecteerde rectangle hetzelfde is als currentpoint
-                    RectangleDictionary[currentpoint].Fill = System.Windows.Media.Brushes.White; // Maak deze rectactangle wit
+                    //RectangleDictionary[currentpoint].Fill = System.Windows.Media.Brushes.White; // Maak deze rectactangle wit
                     SelectedPoints.Remove(currentpoint); // En verwijder hem van SelectedPoints
                     if (SelectedPoints.Count < 1)
                     { // Als het aantal selectedpoints kleiner dan 1 is
@@ -370,7 +381,7 @@ namespace Designer.ViewModel
                         // voegt hoekje toe aan lijst
                         SelectedPoints.Add(LastSelected);
                         // maakt hokje magenta
-                        RectangleDictionary[currentpoint].Fill = System.Windows.Media.Brushes.DarkMagenta;
+                        //RectangleDictionary[currentpoint].Fill = System.Windows.Media.Brushes.DarkMagenta;
                         // maakt dit het laatste geselecteerde punt
                         
                     }
@@ -378,13 +389,13 @@ namespace Designer.ViewModel
                     {
                         // vult vorige hokje weer in
                         LastSelected = SelectedPoints.Last();
-                        RectangleDictionary[LastSelected].Fill = System.Windows.Media.Brushes.DarkMagenta;
+                        //RectangleDictionary[LastSelected].Fill = System.Windows.Media.Brushes.DarkMagenta;
                     }
 
                 }
 
             }
-
+            PaintRoom();
         }
     }
 }
