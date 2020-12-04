@@ -254,7 +254,7 @@ namespace Designer.ViewModel {
         }
 
         public void PlaceProduct(Product product, int x, int y) {
-            RemoveCorona(_tempPlacement);
+            if (Editor != null) RemoveCorona(_tempPlacement);
             // Checkt of het product niet null is en of de foto geplaatst mag worden
             if (product == null || !AllowDrop) return;
 
@@ -263,8 +263,8 @@ namespace Designer.ViewModel {
 
             // Add product to product overview
             AddToOverview(product);
-            RenderRoom();
-            CheckCorona(placement);
+            if (Editor != null) RenderRoom();
+            if (Editor != null) CheckCorona(placement);
 
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(""));
         }
@@ -409,7 +409,7 @@ namespace Designer.ViewModel {
             CheckCorona(_tempPlacement, skip);
 
             // Check of het product in de ruimte wordt geplaatst
-            AllowDrop = CheckRoomCollisions(RoomPoly.Points, position, selectedProduct);
+            AllowDrop = CheckRoomCollisions(position, selectedProduct);
 
             //Teken de ruimte en de al geplaatste producten
             // RenderRoom();
@@ -565,7 +565,7 @@ namespace Designer.ViewModel {
             Editor.Children.Add(RoomPoly);
         }
 
-        public bool CheckRoomCollisions(PointCollection vertices2, Point point, Product product) {
+        public bool CheckRoomCollisions(Point point, Product product) {
             int yOffset = product.Length / 2;
             int xOffset = product.Width / 2;
 
