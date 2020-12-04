@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
+﻿using System.ComponentModel.DataAnnotations.Schema;
 using System.Runtime.CompilerServices;
 
 namespace Models {
@@ -8,8 +6,21 @@ namespace Models {
         [Column("ProductPlacementId")] 
         public int Id { get; set; }
 
-        public int X { get; set; }
-        public int Y { get; set; }
+        public int X {
+            get => _x;
+            set {
+                _x = value;
+                _poly = null;
+            }
+        }
+
+        public int Y {
+            get => _y;
+            set {
+                _y = value;
+                _poly = null;
+            }
+        }
 
         public int ProductId { get; set; }
         public Product Product { get; set; }
@@ -27,7 +38,7 @@ namespace Models {
         public ProductPlacement(Position position, Product product, Design design) : this(position.X, position.Y, product, design) {
         }
 
-        public ProductPlacement(int x, int y, Product product, Design design) {
+        public ProductPlacement(int x, int y, Product product, Design design = null) {
             X = x;
             Y = y;
             Product = product;
@@ -35,6 +46,9 @@ namespace Models {
             Rotation = 0;
         }
 
-        public Polygon GetPoly() => Product.GetPoly().Offset(X, Y);
+        private Polygon _poly;
+        private int _x;
+        private int _y;
+        public Polygon GetPoly() => _poly ??= Product.GetPoly().Offset(X, Y);
     }
 }

@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.ComponentModel.DataAnnotations.Schema;
 using System.Runtime.CompilerServices;
 
 namespace Models {
@@ -32,7 +31,7 @@ namespace Models {
             Width = width;
             Length = length;
         }
-        
+
         public Polygon GetPoly() => new Polygon(Width, Length);
     }
 }

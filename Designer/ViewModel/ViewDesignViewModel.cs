@@ -97,14 +97,12 @@ namespace Designer.ViewModel {
         }
 
         public void Clear() {
+            ProductPlacements.ForEach(RemoveCorona);
             ProductPlacements.Clear();
-            
+
             RenderRoom();
-            
-            _coronaLines.ForEach(line => line.Remove(Editor));
-            _coronaLines.Clear();
         }
-        
+
         public void GenerateLayout() {
             // ProductPlacements.Clear();
 
@@ -114,7 +112,7 @@ namespace Designer.ViewModel {
             Position min = room.Min();
             Position max = room.Max();
 
-            int accuracy = 1;//Math.Min((int) min.Distance(max) / 200, Math.Min(product.Length, product.Width));
+            int accuracy = Math.Min((int) min.Distance(max) / 200, Math.Min(product.Length, product.Width));
 
             new Thread(
                 () => {
@@ -127,17 +125,16 @@ namespace Designer.ViewModel {
                                 bool success = true;
                                 for (int i = 0; i < ProductPlacements.Count; i++) {
                                     ProductPlacement place = ProductPlacements[i];
-                                    (Position p1, Position p2)? best = place.GetPoly().IsSafe(placement.GetPoly());
-                                    if (best == null) continue;
+                                    if (place.GetPoly().IsSafe(placement.GetPoly())) continue;
 
-                                    (Position p1, Position p2) = best.Value;
-                                    if (p1.Distance(p2) >= 150) continue;
                                     success = false;
                                     break;
                                 }
 
                                 if (success) {
                                     ProductPlacements.Add(placement);
+
+                                    AddToOverview(placement.Product);
 
                                     Editor.Dispatcher.Invoke(RenderRoom);
                                 }
@@ -184,34 +181,78 @@ namespace Designer.ViewModel {
 
         private List<DistanceLine> _coronaLines = new List<DistanceLine>();
 
-        public void CheckCorona(ProductPlacement temp = null, ProductPlacement skip = null) {
-            _coronaLines.ForEach(line => line.Remove(Editor));
-            _coronaLines.Clear();
+        private Dictionary<ProductPlacement, Dictionary<ProductPlacement, DistanceLine>> _lines =
+            new Dictionary<ProductPlacement, Dictionary<ProductPlacement, DistanceLine>>();
 
-            List<ProductPlacement> placements = ProductPlacements.ToList();
-            if (temp != null) placements.Add(temp);
+        public void RemoveCorona(ProductPlacement removed) {
+            if (removed == null) return;
+            if (!_lines.ContainsKey(removed)) return;
 
-            //Loopt door alle paren van producten zonder overbodige stappen zoals p1 -> p1 en p1 -> p2, p2 -> p1
-            for (int i = 0; i < placements.Count; i++) {
-                ProductPlacement placement1 = placements[i];
-                if (Equals(placement1, skip)) continue;
-                for (int j = i + 1; j < placements.Count; j++) {
-                    ProductPlacement placement2 = placements[j];
-                    if (Equals(placement2, skip)) continue;
+            foreach (KeyValuePair<ProductPlacement, DistanceLine> entry in _lines[removed]) {
+                _lines[entry.Key].Remove(removed);
+                entry.Value.Remove(Editor);
+            }
+        }
 
-                    (Position p1, Position p2)? best = placement1.GetPoly().IsSafe(placement2.GetPoly());
-                    if (best == null) continue;
+        public void CheckCorona(ProductPlacement changed, ProductPlacement skip = null) {
+            if (changed == null) return;
+            if (!_lines.ContainsKey(changed)) {
+                _lines[changed] = new Dictionary<ProductPlacement, DistanceLine>();
+            }
 
-                    (Position p1, Position p2) = best.Value;
-                    double distance = p1.Distance(p2);
-                    if (distance >= 150) continue;
-                    //Als het minder dan 150 cm is voegd die de lijn toe.
-                    DistanceLine line = new DistanceLine(p1, p2);
-                    line.Add(Editor);
-                    _coronaLines.Add(line);
+            for (int i = 0; i < ProductPlacements.Count; i++) {
+                ProductPlacement placement = ProductPlacements[i];
+                if (Equals(placement, changed) || skip != null && Equals(placement, skip)) continue;
+                (bool needed, bool safe) = placement.GetPoly().PreciseNeeded(changed.GetPoly(), 150);
+                if (!needed && safe) continue;
+
+                (Position p1, Position p2) = placement.GetPoly().MinDistance(changed.GetPoly());
+                DistanceLine line = _lines[changed].ContainsKey(placement)
+                    ? _lines[changed][placement]
+                    : new DistanceLine(null, null);
+
+                _lines[changed][placement] = line;
+                if (!_lines.ContainsKey(placement))
+                    _lines[placement] = new Dictionary<ProductPlacement, DistanceLine>();
+
+                _lines[placement][changed] = line;
+
+                if (p1.Distance(p2) >= 150) {
+                    line.Remove(Editor);
+                } else {
+                    line.P1 = p1;
+                    line.P2 = p2;
+
+                    if (!line.Shows) line.Add(Editor);
                 }
             }
         }
+
+        // public void CheckCorona(ProductPlacement temp = null, ProductPlacement skip = null) {
+        //     _coronaLines.ForEach(line => line.Remove(Editor));
+        //     _coronaLines.Clear();
+        //
+        //     List<ProductPlacement> placements = ProductPlacements.ToList();
+        //     if (temp != null) placements.Add(temp);
+        //
+        //     //Loopt door alle paren van producten zonder overbodige stappen zoals p1 -> p1 en p1 -> p2, p2 -> p1
+        //     for (int i = 0; i < placements.Count; i++) {
+        //         ProductPlacement placement1 = placements[i];
+        //         if (Equals(placement1, skip)) continue;
+        //         for (int j = i + 1; j < placements.Count; j++) {
+        //             ProductPlacement placement2 = placements[j];
+        //             if (placement2?.GetHashCode() == skip?.GetHashCode()) continue;
+        //
+        //             (Position p1, Position p2) = placement1.GetPoly().MinDistance(placement2.GetPoly());
+        //             double distance = p1.Distance(p2);
+        //             if (distance >= 150) continue;
+        //             //Als het minder dan 150 cm is voegd die de lijn toe.
+        //             DistanceLine line = new DistanceLine(p1, p2);
+        //             line.Add(Editor);
+        //             _coronaLines.Add(line);
+        //         }
+        //     }
+        // }
 
         public void SetDesign(Design design) {
             Design = design;
@@ -223,7 +264,8 @@ namespace Designer.ViewModel {
                 // Sets the dimensions of the current room
                 SetRoomDimensions();
                 RenderRoom();
-                CheckCorona();
+
+                ProductPlacements.ForEach(p => CheckCorona(p));
 
                 // Zet de schaal van de ruimte op basis van de dimensies, dit moet na het zetten van het design
                 SetRoomScale();
@@ -233,31 +275,25 @@ namespace Designer.ViewModel {
         }
 
         public void PlaceProduct(Product product, int x, int y) {
+            RemoveCorona(_tempPlacement);
             // Checkt of het product niet null is en of de foto geplaatst mag worden
-            if (product == null || !AllowDrop) {
-                CheckCorona();
-                return;
-            }
+            if (product == null || !AllowDrop) return;
 
-            ProductPlacements.Add(
-                new ProductPlacement() {
-                    Product = product,
-                    X = x,
-                    Y = y
-                }
-            );
+            ProductPlacement placement = new ProductPlacement(x, y, product);
+            ProductPlacements.Add(placement);
 
             // Add product to product overview
             AddToOverview(product);
-            CheckCorona();
+            RenderRoom();
+            CheckCorona(placement);
 
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(""));
         }
 
         public void TryToMoveProduct(ProductPlacement placement, int newX, int newY) {
+            RemoveCorona(_tempPlacement);
             //Alleen als een object naar het nieuwe punt verplaatst mag worden, wordt het vervangen.
             if (!AllowDrop) {
-                CheckCorona();
                 return;
             }
 
@@ -267,9 +303,11 @@ namespace Designer.ViewModel {
             //Zodat het product in het midden van de cursor staat
             placement.X = newX;
             placement.Y = newY;
+            RemoveCorona(ProductPlacements[index]);
             //Na het aanpassen wordt het weer toegevoegd om de illusie te geven dat het in de lijst wordt aangepast
             ProductPlacements[index] = placement;
-            CheckCorona();
+            RenderRoom();
+            CheckCorona(placement);
         }
 
         public void CanvasMouseDown(object sender, MouseButtonEventArgs e) {
@@ -352,6 +390,10 @@ namespace Designer.ViewModel {
             }
         }
 
+        private ProductPlacement _tempPlacement = new ProductPlacement();
+
+        private Image _prevImage;
+
         public void CanvasDragOver(object sender, DragEventArgs e) {
             //Controleer of er een product is geselecteerd
             if (e.Data == null) return;
@@ -376,41 +418,51 @@ namespace Designer.ViewModel {
             if (position == _previousPosition) return;
             _previousPosition = position;
 
-            CheckCorona(
-                new ProductPlacement(
-                    (int) position.X - selectedProduct.Width / 2, (int) position.Y - selectedProduct.Length / 2,
-                    selectedProduct, null
-                ), skip
-            );
+            _tempPlacement.Product = selectedProduct;
+            _tempPlacement.Rotation = rotation;
+            _tempPlacement.X = (int) position.X - selectedProduct.Width / 2;
+            _tempPlacement.Y = (int) position.Y - selectedProduct.Length / 2;
+
+            RemoveCorona(skip);
+            CheckCorona(_tempPlacement, skip);
 
             // Check of het product in de ruimte wordt geplaatst
             AllowDrop = CheckRoomCollisions(RoomPoly.Points, position, selectedProduct);
 
             //Teken de ruimte en de al geplaatste producten
-            RenderRoom();
+            // RenderRoom();
             // Render het plaatje vna het product als de cursor binnen de polygon zit
-            DrawProduct(
-                selectedProduct,
-                (int) position.X - (selectedProduct.Width / 2),
-                (int) position.Y - (selectedProduct.Length / 2),
-                transparent: !AllowDrop,
-                rotation: rotation
+            if (_prevImage != null) Editor.Children.Remove(_prevImage);
+            if (skip != null && _images.ContainsKey(skip)) _images[skip].Opacity = 0.5;
+
+            _prevImage = DrawProduct(
+                _tempPlacement,
+                200,
+                !AllowDrop,
+                rotation
             );
         }
 
+        private PlacementSelectScreen _screen;
+        
         private void RenderRoom() {
-            for (int i = Editor.Children.Count - 1; i >= 0; i += -1) {
-                UIElement Child = Editor.Children[i];
-                if (Child is Image) Editor.Children.Remove(Child);
-                if (Child is PlacementSelectScreen) Editor.Children.Remove(Child);
+            if (_screen != null) {
+                Editor.Children.Remove(_screen);
+                _screen = null;
             }
+            
+            foreach (Image image in _images.Values) {
+                Editor.Children.Remove(image);
+            }
+
+            _images.Clear();
 
             for (int i = 0; i < ProductPlacements.Count; i++) {
                 var placement = ProductPlacements[i];
                 //Controleer of de placement op dat moment verplaatst wordt
                 //Als dit het geval is moet de placement doorzichtig worden
                 DrawProduct(
-                    placement.Product, placement.X, placement.Y, i, _draggingPlacement == placement, placement.Rotation
+                    placement, i, _draggingPlacement == placement, placement.Rotation
                 );
             }
 
@@ -421,18 +473,21 @@ namespace Designer.ViewModel {
 
         private void DrawSelectionButtons(ProductPlacement placement) {
             PlacementSelectScreen selectScreen = new PlacementSelectScreen();
+            _screen = selectScreen;
             selectScreen.DataContext = placement.Product;
             // Verwijderd de plaatsing en rendert de ruimte opnieuw
             selectScreen.DeleteButton.Click += delegate {
                 ProductPlacements.Remove(placement);
                 _selectedPlacement = null;
-                RenderRoom();
-                CheckCorona();
+                RemoveCorona(placement);
+                Editor.Children.Remove(selectScreen);
+                Editor.Children.Remove(_images[placement]);
+                _images.Remove(placement);
             };
             // Sluit de placementselect scherm
             selectScreen.CloseButton.Click += delegate {
                 _selectedPlacement = null;
-                RenderRoom();
+                Editor.Children.Remove(selectScreen);
             };
             // Roteert het product naar links
             selectScreen.RotateLeftButton.Click += delegate {
@@ -446,18 +501,23 @@ namespace Designer.ViewModel {
             };
             Canvas.SetTop(selectScreen, placement.Y + placement.Product.Length);
             Canvas.SetLeft(selectScreen, placement.X);
+            Panel.SetZIndex(selectScreen, 300);
             Editor.Children.Add(selectScreen);
         }
 
-        public void DrawProduct(
-            Product product,
-            int x,
-            int y,
+        public Dictionary<ProductPlacement, Image> _images = new Dictionary<ProductPlacement, Image>();
+
+        public Image DrawProduct(
+            ProductPlacement placement,
             int? placementIndex = null,
             bool transparent = false,
             int rotation = 0
         ) {
             //Haal de bestandsnaam van de foto op of gebruik de default
+            Product product = placement.Product;
+            int x = placement.X;
+            int y = placement.Y;
+
             var photo = product.Photo ?? "placeholder.png";
 
             // Veranderd de rotatie van het product
@@ -485,6 +545,10 @@ namespace Designer.ViewModel {
             Editor.Children.Add(image);
             // Voegt het id van het productplacement index in de productplacement list
             image.Uid ??= placementIndex.ToString();
+
+            _images[placement] = image;
+
+            return image;
         }
 
         public static List<Product> LoadProducts() { return ProductService.Instance.GetAll(); }
