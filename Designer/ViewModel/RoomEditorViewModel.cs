@@ -81,24 +81,23 @@ namespace Designer.ViewModel
         public void DrawGrid()
         {
 
-            var y = 25 * 25;
-            var x = 50 * 25;
+            var y = 25 * 25; // Scherm is 25 vakjes hoog
+            var x = 50 * 25; // Scherm is 50 vakjes breed
             for (int row = 0; row < y; row += 25)
-            {
-
+            { // Voor elke rij
                 for (int column = 0; column < x; column += 25)
-                {
+                { // In deze rij voor elke kolom
                     System.Windows.Shapes.Rectangle rectangle = new System.Windows.Shapes.Rectangle();
                     rectangle.Fill = System.Windows.Media.Brushes.White;
                     rectangle.Width = 25;
                     rectangle.Height = 25;
-                    rectangle.Stroke = System.Windows.Media.Brushes.Black;
+                    rectangle.Stroke = System.Windows.Media.Brushes.Black; // Maak vierkant
                     Canvas.SetTop(rectangle, row);
                     Canvas.SetLeft(rectangle, column);
-                    Position Point = new Position(column, row);
+                    Position Point = new Position(column, row); // Op de juiste plek
                     Points.Add(Point);
                     Editor.Children.Add(rectangle);
-                    RectangleDictionary.Add(Point, rectangle);
+                    RectangleDictionary.Add(Point, rectangle); // Maak hem aan
                 }
             }
         }
