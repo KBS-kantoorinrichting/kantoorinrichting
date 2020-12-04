@@ -6,13 +6,13 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
-using System.Drawing;
 using System.Linq;
 using System.Text;
-using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;
 using System.Windows.Input;
+using System.Windows.Markup;
+using System.Windows.Media;
 using System.Windows.Shapes;
 
 namespace Designer.ViewModel
@@ -38,6 +38,9 @@ namespace Designer.ViewModel
         public BasicCommand AddWindows { get; set; }
         public bool AddDoorsChecked { get; set; } = false;
         public bool AddWindowsChecked { get; set; } = false;
+        private Position _previousCanvasPosition { get; set; }
+        private Frame _activeFrame { get; set; }
+        public List<Frame> FramePoints = new List<Frame>();
         private double CanvasHeight = 500;
         private double CanvasWidth = 1280;
 
@@ -106,26 +109,92 @@ namespace Designer.ViewModel
                 }
             }
         }
+
         public void MouseMove(object sender, MouseEventArgs e)
         {
-            //Debug.WriteLine(AddDoorsChecked);
-            if(AddDoorsChecked)
+
+            Debug.WriteLine("testest");
+            var mousePosition = e.GetPosition(Editor);
+
+            int y = (int)(mousePosition.Y - (mousePosition.Y % 25));
+            int x = (int)(mousePosition.X - (mousePosition.X % 25));
+
+            Position point = new Position(x, y);
+
+            Debug.WriteLine("Exists: " + FramePoints.Exists(p => p.X == point.X && p.Y == point.Y));
+
+            // Als de vorige positie is gezet wordt dit vervangen door de standaard kleur
+            if (!FramePoints.Exists(p => p.X == point.X && p.Y == point.Y) && _previousCanvasPosition != null)
             {
-                var mousePosition = e.GetPosition(Editor);
+                RectangleDictionary[_previousCanvasPosition].Fill = Brushes.DarkMagenta;
+                RectangleDictionary[_previousCanvasPosition].Opacity = 0.5;
+                _previousCanvasPosition = null;
+            }
 
-                int y = (int)(mousePosition.Y - (mousePosition.Y % 25));
-                int x = (int)(mousePosition.X - (mousePosition.X % 25));
+            if (AddDoorsChecked || AddWindowsChecked)
+            {
+                List<Position> points = SelectedPoints;
 
-                List<Position> points = Points;
+                bool valid = false;
 
-                for (int i = 0; i < points.Count; i++)
+                for (int i = 0; i < (points.Count - 1); i++)
                 {
-                    Debug.WriteLine($"{points[i].X} - {points[i + 1].X}");
-                    if(i < (points.Count - 1) && points[i].X == points[i + 1].X)
+                    int nextIncrement = i + 1;
+
+                    int highX = points[i].X > points[nextIncrement].X ? points[i].X : points[nextIncrement].X;
+                    int lowX = points[i].X > points[nextIncrement].X ? points[nextIncrement].X : points[i].X;
+
+                    int highY = points[i].Y > points[nextIncrement].Y ? points[i].Y : points[nextIncrement].Y;
+                    int lowY = points[i].Y > points[nextIncrement].Y ? points[nextIncrement].Y : points[i].Y;
+
+                    if ((x > lowX && x < highX && y == points[i].Y) || (y > lowY && y < highY && x == points[i].X))
                     {
-                        Debug.WriteLine("Same X values");
+                        valid = true;
+                        break;
                     }
                 }
+
+                if(valid)
+                {
+                    // Kopieert de point naar een variable
+                    _previousCanvasPosition = point;
+
+                    if (AddWindowsChecked)
+                    {
+                        Frame window = new Frame(point.X, point.Y, FrameTypes.Window);
+
+                        RectangleDictionary[point].Fill = Brushes.DarkBlue;
+                        RectangleDictionary[point].Opacity = 1.0;
+                        _activeFrame = window;
+                    }
+
+                    if(AddDoorsChecked)
+                    {
+                        Frame door = new Frame(point.X, point.Y, FrameTypes.Door);
+
+                        RectangleDictionary[point].Fill = Brushes.DarkBlue;
+
+                        Position horiLeft = new Position(x - 25, y);
+                        Position horiRight = new Position(x + 25, y);
+
+                        door.Rotation = RectangleDictionary[horiLeft] != null && RectangleDictionary[horiRight] != null ? 0 : 90;
+
+                        RectangleDictionary[point].Fill = Brushes.Brown;
+                        RectangleDictionary[point].Opacity = 1.0;
+
+                        RotateDoor(door.Rotation, x, y);
+                    }
+                }
+
+
+                //for (int i = 0; i < points.Count; i++)
+                //{
+                //    Debug.WriteLine($"{points[i].X} - {points[i + 1].X}");
+                //    if(i < (points.Count - 1) && points[i].X == points[i + 1].X)
+                //    {
+                //        Debug.WriteLine("Same X values");
+                //    }
+                //}
             }
 
           /*  int y = Convert.ToInt32(e.GetPosition(Editor).Y - (e.GetPosition(Editor).Y % 25));
@@ -189,6 +258,33 @@ namespace Designer.ViewModel
 */
         }
 
+        public void RotateDoor(int angle, int x, int y)
+        {
+            if(_activeFrame != null)
+            {
+                int doorOpenX = x;
+                int doorOpenY = y;
+
+                switch (angle)
+                {
+                    case 0:
+                        doorOpenY -= 15;
+                        break;
+                    case 90:
+                        doorOpenX += 25;
+                        break;
+                    case 180:
+                        doorOpenY += 25;
+                        break;
+                    case 270:
+                        doorOpenX -= 25;
+                        break;
+                }
+
+                Position doorOpenPos = new Position(doorOpenX, doorOpenY);
+            }
+        }
+
         public void BorderRenderX(Position LastSelected, Position CurrentSelected, String Direction)
         {
 
@@ -212,19 +308,26 @@ namespace Designer.ViewModel
             int x = Convert.ToInt32(e.GetPosition(Editor).X - (e.GetPosition(Editor).X % 25));
             //int x = Convert.ToInt32(e.GetPosition(Editor).X);
 
+            if(e.RightButton == MouseButtonState.Pressed && _activeFrame != null)
+            {
+                Debug.WriteLine("Rotate door");
+            }
+
             // controleer of de linkermuisknop ingedrukt werdt
             if (e.LeftButton == MouseButtonState.Pressed)
             {
-
-
-
-
-
                 // het momentele punt instellen
                 var currentpoint = new Position(x, y);
 
+                if(AddWindowsChecked)
+                {
+                    Frame window = new Frame(x, y, FrameTypes.Window);
+                    FramePoints.Add(window);
+                }
+
+
                 // als er een vorig item geselcteerd is
-                if (!LastSelected.Y.Equals(-1))
+                else if (!LastSelected.Y.Equals(-1))
                 {
                     // het vorig geselecteerde punt instellen
                     //var lastselected = RectangleDictionary[LastSelected];
@@ -350,11 +453,30 @@ namespace Designer.ViewModel
         public void AddDoorsClick()
         {
             if(AddDoorsChecked) AddWindowsChecked = false;
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(""));
         }
 
         public void AddWindowsClick()
         {
             if(AddWindowsChecked) AddDoorsChecked = false;
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(""));
+        }
+    }
+
+    public enum FrameTypes
+    {
+        Door,
+        Window
+    }
+
+    public class Frame : Position
+    {
+        public FrameTypes Type { get; set; }
+        public int Rotation { get; set; }
+
+        public Frame(int x, int y, FrameTypes type): base(x, y)
+        {
+            Type = type;
         }
     }
 }
