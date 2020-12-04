@@ -103,65 +103,64 @@ namespace Designer.ViewModel
         }
         public void MouseMove(object sender, MouseEventArgs e)
         {
-            /*  int y = Convert.ToInt32(e.GetPosition(Editor).Y - (e.GetPosition(Editor).Y % 25));
-              int x = Convert.ToInt32(e.GetPosition(Editor).X - (e.GetPosition(Editor).X % 25));
-              //int x = Convert.ToInt32(e.GetPosition(Editor).X);
+/*            int y = Convert.ToInt32(e.GetPosition(Editor).Y - (e.GetPosition(Editor).Y % 25));
+            int x = Convert.ToInt32(e.GetPosition(Editor).X - (e.GetPosition(Editor).X % 25));
+            //int x = Convert.ToInt32(e.GetPosition(Editor).X);
 
-              var currentpoint = new Position(x, y);
+            var currentpoint = new Position(x, y);
 
-              // als hiervoor al over een hokje gehovered is
-              if (LastHoveredRectangle != null)
-              {
-                  // als je niet nogsteeds over hetzelfde hokje hovered en als het hokje in de dictionary zit
-                  if (LastHoveredRectangle != currentpoint && RectangleDictionary.ContainsKey(currentpoint))
-                  {
-                      // als het momenteel geselecteerde point niet een hoek of border is
-                      if (!SelectedPoints.Contains(currentpoint) && !BorderPoints.Contains(currentpoint))
-                      {
-                          // vorige hokje terugkleuren als het geen border was
-                          if (SelectedPoints.Contains(LastHoveredRectangle) && BorderPoints.Contains(LastHoveredRectangle))
-                          {
+            // als hiervoor al over een hokje gehovered is
+            if (LastHoveredRectangle != null)
+            {
+                // als je niet nogsteeds over hetzelfde hokje hovered en als het hokje in de dictionary zit
+                if (LastHoveredRectangle != currentpoint && RectangleDictionary.ContainsKey(currentpoint))
+                {
+                    // als het momenteel geselecteerde point niet een hoek of border is
+                    if (!SelectedPoints.Contains(currentpoint) && !BorderPoints.Contains(currentpoint))
+                    {
+                        // vorige hokje terugkleuren als het geen border was
+                        if (SelectedPoints.Contains(LastHoveredRectangle) && BorderPoints.Contains(LastHoveredRectangle))
+                        {
 
+                        }
+                        else
+                        {
+                            RectangleDictionary[LastHoveredRectangle].Fill = System.Windows.Media.Brushes.White;
+                            RectangleDictionary[LastHoveredRectangle].Opacity = 1;
 
-                          }
-                          else
-                          {
-                              RectangleDictionary[LastHoveredRectangle].Fill = System.Windows.Media.Brushes.White;
-                              RectangleDictionary[LastHoveredRectangle].Opacity = 1;
+                        }
 
-                          }
+                        // dit hokje inkleuren
+                        RectangleDictionary[currentpoint].Fill = System.Windows.Media.Brushes.Bisque;
+                        RectangleDictionary[currentpoint].Opacity = 0.5;
 
-                          // dit hokje inkleuren
-                          RectangleDictionary[currentpoint].Fill = System.Windows.Media.Brushes.Bisque;
-                          RectangleDictionary[currentpoint].Opacity = 0.5;
+                        // stel vorige hokje in als deze
+                        LastHoveredRectangle = currentpoint;
+                    }
+                    else
+                    {
+                        if (!SelectedPoints.Contains(LastHoveredRectangle) && !BorderPoints.Contains(LastHoveredRectangle))
+                        {
+                            RectangleDictionary[LastHoveredRectangle].Fill = System.Windows.Media.Brushes.White;
+                            RectangleDictionary[LastHoveredRectangle].Opacity = 1;
+                        }
 
-                          // stel vorige hokje in als deze
-                          LastHoveredRectangle = currentpoint;
-                      }
-                      else
-                      {
-                          if (!SelectedPoints.Contains(LastHoveredRectangle) && !BorderPoints.Contains(LastHoveredRectangle))
-                          {
-                              RectangleDictionary[LastHoveredRectangle].Fill = System.Windows.Media.Brushes.White;
-                              RectangleDictionary[LastHoveredRectangle].Opacity = 1;
-                          }
+                        // stel vorige hokje in als deze
+                        LastHoveredRectangle = currentpoint;
+                    }
+                    // Wanneer hij in een vakje is:
+                    // TODO vorige kleur
 
-                          // stel vorige hokje in als deze
-                          LastHoveredRectangle = currentpoint;
-                      }
-                      // Wanneer hij in een vakje is:
-                      // TODO vorige kleur
-
-                  }
-              }
-              else
-              {
-                  RectangleDictionary[LastHoveredRectangle].Fill = System.Windows.Media.Brushes.White;
-                  LastHoveredRectangle = currentpoint;
-                  RectangleDictionary[currentpoint].Fill = System.Windows.Media.Brushes.Bisque;
-                  RectangleDictionary[currentpoint].Opacity = 0.5;
-              }
-  */
+                }
+            }
+            else
+            {
+                //RectangleDictionary[LastHoveredRectangle].Fill = System.Windows.Media.Brushes.White;
+                LastHoveredRectangle = currentpoint;
+                RectangleDictionary[currentpoint].Fill = System.Windows.Media.Brushes.Bisque;
+                RectangleDictionary[currentpoint].Opacity = 0.5;
+            }
+*/
         }
 
 

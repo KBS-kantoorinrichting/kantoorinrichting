@@ -30,8 +30,8 @@ namespace Designer.ViewModel
         public ArgumentCommand<SizeChangedEventArgs> ResizeCommand { get; set; }
         public Polygon RoomPoly { get; set; }
         public double Scale = 1.0;
-        private double _canvasHeight = 500;
-        private double _canvasWidth = 790;
+        private double _canvasHeight = 450;
+        private double _canvasWidth = 500;
 
         public RoomOverviewViewModel()
         {
