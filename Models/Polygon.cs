@@ -87,6 +87,9 @@ namespace Models {
             return _min ?? _positions.Aggregate((p1, p2) => new Position(Math.Min(p1.X, p2.X), Math.Min(p1.Y, p2.Y)));
         }
 
+        public int Width => Max().X - Min().X;
+        public int Length => Max().Y - Min().Y;
+
         public Position Center() {
             if (_center != null) return _center;
 

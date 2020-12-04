@@ -94,7 +94,7 @@ namespace DesignerTest {
             {
                 new ProductPlacement(x2,y2,Product1, Design)
             };
-            return ViewModel.CheckProductCollisions(new Point(x1,y1), Product1, 0);
+            return ViewModel.CheckProductCollisions(new ProductPlacement(x1, x2, Product1));
         }
 
         [Test]

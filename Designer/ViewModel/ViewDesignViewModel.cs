@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Diagnostics;
 using System.Linq;
 using System.Windows;
 using Designer.Other;
@@ -12,7 +11,7 @@ using Designer.View;
 using System.Windows.Shapes;
 using System.Windows.Media;
 using System.Globalization;
-using Microsoft.VisualBasic.CompilerServices;
+using System.Threading;
 using Models;
 using Models.Utils;
 using Services;
@@ -355,15 +354,12 @@ namespace Designer.ViewModel {
             }
             //Hier wordt een product dat al in het design zit verplaatst
             else if (e.Data.GetDataPresent(typeof(ProductPlacement))) {
-                var placement = (ProductPlacement) e.Data.GetData(typeof(ProductPlacement));
+                ProductPlacement placement = (ProductPlacement) e.Data.GetData(typeof(ProductPlacement));
                 Point position = e.GetPosition(Editor);
-                var x = (int) position.X - (placement.Product.Width / 2);
-                var y = (int) position.Y - (placement.Product.Length / 2);
-                //TODO center with rotation
-                var actualWidth = placement.Rotation % 180 == 0 ? placement.Product.Width : placement.Product.Length;
-                var actualLength = placement.Rotation % 180 == 0 ? placement.Product.Length : placement.Product.Width;
-                var actualPosition = new Point((int) position.X - actualWidth / 2, (int) position.Y - actualLength / 2);
-                TryToMoveProduct(placement, (int) actualPosition.X, (int) actualPosition.Y);
+                int x = (int) position.X - (placement.GetPoly().Width / 2);
+                int y = (int) position.Y - (placement.GetPoly().Length / 2);
+                
+                TryToMoveProduct(placement, x, y);
                 _draggingPlacement = null;
                 RenderRoom();
             }
@@ -371,7 +367,7 @@ namespace Designer.ViewModel {
 
         private ProductPlacement _tempPlacement = new ProductPlacement();
 
-        private Image _prevImage;
+        private (Image i, Rectangle r)? _prevPlace = null;
 
         public void CanvasDragOver(object sender, DragEventArgs e) {
             //Controleer of er een product is geselecteerd
@@ -399,23 +395,26 @@ namespace Designer.ViewModel {
 
             _tempPlacement.Product = selectedProduct;
             _tempPlacement.Rotation = rotation;
-            _tempPlacement.X = (int) position.X - selectedProduct.Width / 2;
-            _tempPlacement.Y = (int) position.Y - selectedProduct.Length / 2;
+            _tempPlacement.X = (int) position.X - _tempPlacement.GetPoly().Width / 2;
+            _tempPlacement.Y = (int) position.Y - _tempPlacement.GetPoly().Length / 2;
 
             RemoveCorona(skip);
             CheckCorona(_tempPlacement, skip);
 
             // Check of het product in de ruimte wordt geplaatst
             AllowDrop = CheckRoomCollisions(position, selectedProduct) &&
-                        CheckProductCollisions(actualPosition, selectedProduct, rotation);
+                        CheckProductCollisions(_tempPlacement);
 
             //Teken de ruimte en de al geplaatste producten
             // RenderRoom();
             // Render het plaatje vna het product als de cursor binnen de polygon zit
-            if (_prevImage != null) Editor.Children.Remove(_prevImage);
+            if (_prevPlace != null) {
+                Editor.Children.Remove(_prevPlace.Value.i);
+                Editor.Children.Remove(_prevPlace.Value.r);
+            }
             if (skip != null && _images.ContainsKey(skip)) _images[skip].Opacity = 0.5;
 
-            _prevImage = DrawProduct(
+            _prevPlace = DrawProduct(
                 _tempPlacement,
                 200,
                 !AllowDrop,
@@ -435,12 +434,12 @@ namespace Designer.ViewModel {
                 Editor.Children.Remove(image);
             }
 
-            for (int i = Editor.Children.Count - 1; i >= 0; i += -1) {
-                UIElement Child = Editor.Children[i];
-                if (Child is Rectangle) Editor.Children.Remove(Child);
+            foreach (Rectangle rect in _rectangles.Values) {
+                Editor.Children.Remove(rect);
             }
 
             _images.Clear();
+            _rectangles.Clear();
 
             for (int i = 0; i < ProductPlacements.Count; i++) {
                 var placement = ProductPlacements[i];
@@ -467,6 +466,7 @@ namespace Designer.ViewModel {
                 RemoveCorona(placement);
                 Editor.Children.Remove(selectScreen);
                 Editor.Children.Remove(_images[placement]);
+                Editor.Children.Remove(_rectangles[placement]);
                 _images.Remove(placement);
             };
             // Sluit de placementselect scherm
@@ -484,15 +484,16 @@ namespace Designer.ViewModel {
                 placement.Rotation = placement.Rotation == 270 ? 0 : placement.Rotation += 90;
                 RenderRoom();
             };
-            Canvas.SetTop(selectScreen, placement.Y + placement.Product.Length);
+            Canvas.SetTop(selectScreen, placement.Y + placement.GetPoly().Length);
             Canvas.SetLeft(selectScreen, placement.X);
             Panel.SetZIndex(selectScreen, 300);
             Editor.Children.Add(selectScreen);
         }
 
         public Dictionary<ProductPlacement, Image> _images = new Dictionary<ProductPlacement, Image>();
-
-        public Image DrawProduct(
+        public Dictionary<ProductPlacement, Rectangle> _rectangles = new Dictionary<ProductPlacement, Rectangle>();
+        
+        public (Image i, Rectangle r) DrawProduct(
             ProductPlacement placement,
             int? placementIndex = null,
             bool transparent = false,
@@ -516,7 +517,7 @@ namespace Designer.ViewModel {
             tempBitmap.Transform = transform;
             tempBitmap.EndInit();
 
-            var image = new Image() {
+            var image = new Image {
                 Source = tempBitmap,
                 Height = actualLength,
                 Width = actualWidth
@@ -537,6 +538,8 @@ namespace Designer.ViewModel {
                 Width = actualWidth,
             };
 
+            _rectangles[placement] = rect;
+
             Canvas.SetTop(rect, y);
             Canvas.SetLeft(rect, x);
             Editor.Children.Add(rect);
@@ -545,7 +548,7 @@ namespace Designer.ViewModel {
 
             _images[placement] = image;
 
-            return image;
+            return (image, rect);
         }
 
         public static List<Product> LoadProducts() { return ProductService.Instance.GetAll(); }
@@ -588,13 +591,11 @@ namespace Designer.ViewModel {
                 .Inside(product.GetPoly().Offset((int) point.X - xOffset, (int) point.Y - yOffset));
         }
 
-        public bool CheckProductCollisions(Point point, Product product, int rotation) {
-            var temp_placement = new ProductPlacement((int) point.X, (int) point.Y, product, Design);
-            temp_placement.Rotation = rotation;
-            var poly = temp_placement.GetPoly();
-            foreach (var placement in ProductPlacements) {
-                if (Equals(placement, _draggingPlacement)) continue;
-                if (placement.GetPoly().DoesCollide(poly)) {
+        public bool CheckProductCollisions(ProductPlacement placement) {
+            Models.Polygon poly = placement.GetPoly();
+            foreach (ProductPlacement p in ProductPlacements) {
+                if (Equals(p, _draggingPlacement)) continue;
+                if (p.GetPoly().DoesCollide(poly)) {
                     return false;
                 }
             }
