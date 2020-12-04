@@ -9,6 +9,7 @@ using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Text;
+//using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;
@@ -24,10 +25,10 @@ namespace Designer.ViewModel
         public List<Position> Points = new List<Position>();
         public List<Position> SelectedPoints = new List<Position>();
         public List<Position> BorderPoints = new List<Position>();
+        public List<Position> Last3HoveredPoints = new List<Position>(3);
         public Dictionary<Position, System.Windows.Shapes.Rectangle> RectangleDictionary = new Dictionary<Position, System.Windows.Shapes.Rectangle>();
         public Canvas Editor { get; set; }
         public Position LastSelected { get; set; } = new Position(-1, -1);
-        public Position LastHoveredRectangle { get; set; }
 
         public Border CanvasBorder { get; set; }
         public event PropertyChangedEventHandler PropertyChanged;
@@ -103,12 +104,79 @@ namespace Designer.ViewModel
         }
         public void MouseMove(object sender, MouseEventArgs e)
         {
-/*            int y = Convert.ToInt32(e.GetPosition(Editor).Y - (e.GetPosition(Editor).Y % 25));
+           int y = Convert.ToInt32(e.GetPosition(Editor).Y - (e.GetPosition(Editor).Y % 25));
             int x = Convert.ToInt32(e.GetPosition(Editor).X - (e.GetPosition(Editor).X % 25));
             //int x = Convert.ToInt32(e.GetPosition(Editor).X);
-
+            // stel punt in dat op dit moment wordt behoverd
             var currentpoint = new Position(x, y);
 
+
+            Action UnHover = () =>
+            {
+                foreach (Position pos in Last3HoveredPoints)
+                {
+                    if (!SelectedPoints.Contains(pos) && !BorderPoints.Contains(pos))
+                    // als als hij niet geselecteerd is en ook geen border is
+                    {
+                        RectangleDictionary[pos].Fill = System.Windows.Media.Brushes.White;
+                        RectangleDictionary[pos].Opacity = 1;
+                    }
+                }
+            };
+
+            Action Bisqueinator = () =>
+            {
+                RectangleDictionary[currentpoint].Fill = System.Windows.Media.Brushes.Bisque;
+                RectangleDictionary[currentpoint].Opacity = 0.5;
+            };
+
+            if (Last3HoveredPoints.Count > 0) 
+                // als er al iets is gehovered
+            {
+                #region last3hoveredpoints
+                if (Last3HoveredPoints.Count() == 3) 
+                    // als de lijst al vol is
+                {
+                    // verwijder de eerste van de 3
+                    Last3HoveredPoints.Remove(Last3HoveredPoints.First());
+                }
+                // voeg nieuwe aan lijst van gehoverede punten toe
+                Last3HoveredPoints.Add(currentpoint);
+                #endregion
+
+                if (Last3HoveredPoints.Last().Equals(currentpoint) && RectangleDictionary.ContainsKey(currentpoint))
+                    // als het item niet hetzelfde is al net behovered en als het hokje bestaat
+                {
+                    if (!SelectedPoints.Contains(currentpoint) && !BorderPoints.Contains(currentpoint))
+                        // als als hij niet geselecteerd is en ook geen border is
+                    {
+                       
+                        //Thread.Sleep(23000);
+                        UnHover();
+                        //kleuren
+                        Bisqueinator();
+                    }
+                    // als het een border of hoek is
+                    else
+                    {
+                        UnHover();
+                        Last3HoveredPoints.Add(currentpoint);
+                    }
+
+                    }
+
+            }
+            else 
+            // als er nog niks is gehovered
+            {
+                // voeg toe aan vorige 3 punten
+                Last3HoveredPoints.Add(currentpoint);
+
+                //kleuren
+                Bisqueinator();
+            }
+
+            /* 
             // als hiervoor al over een hokje gehovered is
             if (LastHoveredRectangle != null)
             {
