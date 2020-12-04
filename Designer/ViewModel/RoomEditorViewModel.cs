@@ -27,6 +27,7 @@ namespace Designer.ViewModel
         public List<Position> BorderPoints = new List<Position>();
         public List<Position> Last3HoveredPoints = new List<Position>(3);
         public Dictionary<Position, System.Windows.Shapes.Rectangle> RectangleDictionary = new Dictionary<Position, System.Windows.Shapes.Rectangle>();
+        public Room SelectedRoom = new Room();
         public Canvas Editor { get; set; }
         public Position LastSelected { get; set; } = new Position(-1, -1);
 
@@ -40,11 +41,87 @@ namespace Designer.ViewModel
 
         public RoomEditorViewModel()
         {
+            
             Submit = new BasicCommand(SubmitRoom);
             MouseOverCommand = new ArgumentCommand<MouseEventArgs>(e => MouseMove(e.OriginalSource, e));
             MouseDownCommand = new ArgumentCommand<MouseButtonEventArgs>(e => MouseClick(e.OriginalSource, e));
             Editor = new Canvas();
             Reload();
+        }
+
+        public void MakeRoom()
+        {
+            SelectedPoints = Room.ToList(SelectedRoom.Positions);
+            Position Last = new Position(-1, -1);
+
+            foreach (Position pos in SelectedPoints)
+            {
+                if (!Last.Equals(new Position(-1, -1)))
+                {
+                    if (Last.Y == pos.Y)
+                    {
+                        // als het getal negatief is moet er naar links worden getekend, positief is rechts
+                        var toRight = Last.X - pos.X >= 0;
+                        // zolang het vorige coordinaat kleiner is
+                        int i = (int)Last.X;
+                        while (i != pos.X)
+                        {
+                            Last = new Position(i, Last.Y);
+                            BorderPoints.Add(Last);
+                            if (toRight)
+                                i -= 25;
+                            else
+                                i += 25;
+                        }
+                    }
+                    else
+                    {
+                        var toBottom = Last.Y - pos.Y >= 0;
+                        int i = (int)Last.Y;
+
+                        // zolang het vorige coordinaat kleiner is
+                        while (i != pos.Y)
+                        {
+                            Last = new Position(Last.X, i);
+                            BorderPoints.Add(Last);
+                            if (toBottom)
+                                i -= 25;
+                            else
+                                i += 25;
+                        }
+                    }
+                    Last = new Position(pos.X, pos.Y);
+                }
+                else
+                {
+                    Last = new Position(pos.X, pos.Y);
+                }
+
+            }
+            PaintRoom();
+        }
+
+        public void PaintRoom()
+        {
+            
+            foreach (Position pos in BorderPoints)
+            {
+                RectangleDictionary[pos].Fill = System.Windows.Media.Brushes.DarkMagenta;
+                RectangleDictionary[pos].Opacity = 0.5;
+            }
+            foreach (Position pos in SelectedPoints)
+            {
+                RectangleDictionary[pos].Fill = System.Windows.Media.Brushes.DarkMagenta;
+                RectangleDictionary[pos].Opacity = 1;
+            }
+
+
+        }
+
+        public void SetSelectedRoom(Room selectedroom)
+        {
+            SelectedRoom = selectedroom;
+            MakeRoom();
         }
         public void Reload()
         { // Reload de items zodat de juiste te zien zijn
@@ -59,6 +136,12 @@ namespace Designer.ViewModel
         }
         public void SubmitRoom()
         {
+            if (SelectedPoints.Count() < 3)
+            {
+                GeneralPopup counterror = new GeneralPopup("Voer aub meer dan 2 punten in!.");
+                counterror.ShowDialog();
+                return;
+            }
             var smallestX = SelectedPoints.Aggregate((p1, p2) => p1.X < p2.X ? p1 : p2);
             var smallestY = SelectedPoints.Aggregate((p1, p2) => p1.Y < p2.Y ? p1 : p2);
             List<Position> OffsetPositions = new List<Position>();
@@ -177,7 +260,6 @@ namespace Designer.ViewModel
             }
 
         }
-
 
         public void MouseClick(object sender, MouseButtonEventArgs e)
         {

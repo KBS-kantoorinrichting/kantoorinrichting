@@ -21,6 +21,7 @@ namespace Designer.ViewModel
         public BasicCommand GotoRoomTemplate { get; set; }
         public BasicCommand GotoRoomEditor { get; set; }
         public BasicCommand DeleteCommand { get; set; }
+        public BasicCommand ChangeCommand { get; set; }
         public BasicCommand Products { get; set; }
 
         public List<Room> Rooms { get; set; }
@@ -46,6 +47,7 @@ namespace Designer.ViewModel
             Editor = new Canvas();
             RoomPoly = new Polygon();
             DeleteCommand = new BasicCommand(Delete);
+            ChangeCommand = new BasicCommand(Change);
             ResizeCommand = new ArgumentCommand<SizeChangedEventArgs>(e => ResizePage(e.OriginalSource, e));
             // herlaad pagina
             Reload();
@@ -135,6 +137,17 @@ namespace Designer.ViewModel
             SelectedRoom = null;
         
             Reload();
+
+        } 
+        public void Change()
+        {
+            if (SelectedRoom == null || RoomService.Instance.Count() == 0)
+            {
+                return;
+            }
+            RoomEditorView edit = new RoomEditorView(SelectedRoom);
+            Navigator.Instance.Replace(edit);
+
 
         }
 
