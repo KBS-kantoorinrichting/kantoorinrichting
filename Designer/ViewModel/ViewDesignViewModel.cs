@@ -294,6 +294,7 @@ namespace Designer.ViewModel {
             RemoveCorona(_tempPlacement);
             //Alleen als een object naar het nieuwe punt verplaatst mag worden, wordt het vervangen.
             if (!AllowDrop) {
+                CheckCorona(placement);
                 return;
             }
 
