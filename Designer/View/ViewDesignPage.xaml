@@ -178,6 +178,7 @@
             <TabItem Header="Corona">
                 <Grid Background="#FFE5E5E5" >
                     <ToggleButton Content="Meetlat" VerticalAlignment="Top" Command="{Binding Measure}" IsChecked="{Binding Enabled, Mode=TwoWay}"/>
+                    <Button Content="GENERATE!!!!!" VerticalAlignment="Top" Command="{Binding Layout}" Margin="0 32 0 0"/>
                 </Grid>
             </TabItem>
         </TabControl>

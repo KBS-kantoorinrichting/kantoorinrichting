@@ -5,7 +5,7 @@ namespace Models {
         public int X { get; }
         public int Y { get; }
 
-        public Position(int x, int y) {
+        public Position(int x = 0, int y = 0) {
             X = x;
             Y = y;
         }
@@ -43,6 +43,18 @@ namespace Models {
 
         public double Distance(double x, double y) {
             return Math.Sqrt(Math.Pow(Y - y, 2) + Math.Pow(X - x, 2));
+        }
+
+        public Position Copy() {
+            return new Position(X, Y);
+        }
+
+        public Position CopyWith(int? x = null, int? y = null) {
+            return new Position(x ?? X, y ?? Y);
+        }
+
+        public Position CopyAdd(int x = 0, int y = 0) {
+            return new Position(X + x, Y + y);
         }
     }
 }

@@ -32,9 +32,10 @@ namespace Models {
             Rotation = 0;
         }
 
-        public List<Position> GetPoly() {
-            List<Position> positions = Product.GetPoly();
-            return positions.Select(p => new Position(p.X + X, p.Y + Y)).ToList();
-        }
+        public Polygon GetPoly() => 
+            Rotation % 180 == 0 ?
+                Product.GetPoly().Offset(X, Y) :
+                //Hoogte en breedte omgedraaid
+                new Polygon(Product.Length, Product.Width).Offset(X,Y);
     }
 }
