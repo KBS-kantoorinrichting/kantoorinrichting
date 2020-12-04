@@ -53,15 +53,16 @@ namespace DesignerTest {
         public void ViewDesign_PlaceProduct_ShouldAddToProductPlacements() {
             //ViewDesign_MouseDown_ShouldSetSelectedProduct();
             // Zet de variable die bepaald of er iets geplaatst mag worden of niet
+            ViewModel.ProductPlacements.Clear();
             ViewModel.AllowDrop = true;
             Product product = new Product {
                 Id = 1,
                 Name = "test"
             };
             ViewModel.PlaceProduct(product, 4, 20);
-            Assert.AreEqual(ViewModel.ProductPlacements[0].X, 4);
-            Assert.AreEqual(ViewModel.ProductPlacements[0].Y, 20);
-            Assert.AreEqual(ViewModel.ProductPlacements[0].Product.Id, 1);
+            Assert.AreEqual(4, ViewModel.ProductPlacements[0].X);
+            Assert.AreEqual(20, ViewModel.ProductPlacements[0].Y);
+            Assert.AreEqual(1, ViewModel.ProductPlacements[0].Product.Id);
         }
 
         [Test]
