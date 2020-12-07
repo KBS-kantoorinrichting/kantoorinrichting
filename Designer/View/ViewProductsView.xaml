@@ -8,6 +8,7 @@
     x:Class="Designer.View.ViewProductsView"
     xmlns:behaviors="http://schemas.microsoft.com/xaml/behaviors"
     xmlns:designer="clr-namespace:Designer"
+    xmlns:designer1="clr-namespace:Designer.Other"
     xmlns:gif="http://wpfanimatedgif.codeplex.com"
     mc:Ignorable="d"
     Title="ViewProductsView"
@@ -18,6 +19,7 @@
     </Page.DataContext>
     <Page.Resources>
         <designer:ImagePathConverter x:Key="ImagePathConverter" />
+        <designer1:BoolInverterConverter x:Key="BoolInverterConverter"/>
     </Page.Resources>
 
     <Grid>
@@ -84,7 +86,7 @@
                 </Grid>
             </TabItem>
             <TabItem Header="Meubel Toevoegen">
-                <StackPanel Margin="0,0,-2,28" RenderTransformOrigin="0.502,0.501">
+                <StackPanel Margin="0,0,-2,28" RenderTransformOrigin="0.502,0.501" Height="608" HorizontalAlignment="Right" Width="256">
                     <Label Content="Naam:" Height="26" Width="122" RenderTransformOrigin="0.49,0.577"
                            HorizontalAlignment="Left" />
                     <TextBox Text="{Binding Name, UpdateSourceTrigger=PropertyChanged}" Background="#FFFFFEFE"
@@ -113,17 +115,21 @@
 
                     <Label Content="Foto:" Height="26" Width="52" RenderTransformOrigin="0.49,0.577"
                            HorizontalAlignment="Left" />
-                    <Button Name="AddPhoto" Command="{Binding AddPhoto}" Content="Foto Toevoegen" Height="26"
+                    <Button x:Name="AddPhoto" Command="{Binding AddPhoto}" Content="Foto Toevoegen" Height="26"
                             Width="122" />
-                    <TextBox Name="txtEditor" Text="{Binding Photo, Converter={StaticResource ImagePathConverter}}" 
-                             Height="75" />
 
                     <Border />
-                    <Label Height="50" Visibility="Hidden" />
+                    <TextBox x:Name="txtEditor" Text="{Binding Photo, Converter={StaticResource ImagePathConverter}}" 
+                             Height="77" />
+                    <Grid Height="110">
+                        <Label Content="Heeft dit product een zitplek?"/>
+                        <RadioButton GroupName="Group1" IsChecked="{Binding HasPerson}" Content="Ja" Margin="4,24,-4,69" />
+                        <RadioButton GroupName="Group1"  Content="Nee" IsChecked="{Binding HasPerson, Converter={StaticResource BoolInverterConverter}}" Margin="4,41,-4,49" />
+                    </Grid>
                     <Button Content="Toevoegen" Height="74" Width="184" x:Name="Toevoegen_Button"
-                            Command="{Binding Submit}" HorizontalAlignment="Center" />
+                            Command="{Binding Submit}" />
+                    <Label Height="50" Visibility="Hidden" />
                 </StackPanel>
-
             </TabItem>
         </TabControl>
         <Grid Background="White" HorizontalAlignment="Left" Height="634" Margin="0,20,0,0" VerticalAlignment="Top"
@@ -160,17 +166,20 @@
                     <TextBox Text="{Binding SelectedProduct.Width}" Background="#FFFFFEFE"
                            RenderTransformOrigin="0.507,0.562" Height="28" Width="30" HorizontalAlignment="Left"
                            BorderBrush="Black" BorderThickness="1px" Margin="30,0,0,0" IsReadOnly="{Binding IsEditedRead}" />
+                    <Label Content="Heeft dit product een zitplek?"/>
+                    <RadioButton  IsChecked="{Binding HasPersonSelectedTrue}" Content="Ja" />
+                    <RadioButton  IsChecked="{Binding HasPersonSelectedFalse}" Content="Nee" />
 
                     <Label Content="Foto:" Height="26" Width="52" RenderTransformOrigin="0.49,0.577"
                            HorizontalAlignment="Left" Margin="0,10,0,0" />
 
                     <Button Name="EditPhoto" Command="{Binding EditPhoto, UpdateSourceTrigger=PropertyChanged}" Content="Foto Toevoegen" Height="26"
                             Width="122" Visibility="{Binding IsEditedVis}" />
-                    <Border>
-                        <Image
-                            Source="{Binding Path= SelectedProduct.Photo ,Converter={StaticResource ImagePathConverter}}"
-                            Height="237" Width="245" />
-                    </Border>
+
+                    <Border/>
+                    <Image
+                            Source="{Binding SelectedProduct.Photo, Converter={StaticResource ImagePathConverter}}"
+                            Height="161" Width="246" />
 
                 </StackPanel>
             </Border>

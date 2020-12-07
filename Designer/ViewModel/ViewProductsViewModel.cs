@@ -18,6 +18,9 @@ namespace Designer.ViewModel {
         public string Photo { get; set; }
         public int Width { get; set; }
         public int Length { get; set; }
+        public bool HasPerson { get; set; }
+
+
         public BasicCommand Submit { get; set; }
         public BasicCommand DeleteCommand { get; set; }
         public BasicCommand AddPhoto { get; set; }
@@ -48,6 +51,39 @@ namespace Designer.ViewModel {
                 return EditedItem == null ? "Hidden" : "Visible";
             }
             set { IsEditedVis = value; }
+        }
+
+        public string HasPersonSelectedTrue
+        {
+            get
+            {
+                if(SelectedProduct != null)
+                {
+                    return (SelectedProduct.HasPerson == true).ToString();
+                }
+                else
+                {
+                    return false.ToString();
+                }
+                
+            }
+            set { HasPersonSelectedTrue = value; }
+        }
+        public string HasPersonSelectedFalse
+        {
+            get
+            {
+                if(SelectedProduct != null)
+                {
+                    return (SelectedProduct.HasPerson == false).ToString();
+                }
+                else
+                {
+                    return false.ToString();
+                }
+
+            }
+            set { HasPersonSelectedFalse = value; }
         }
 
         public string ItemIsSelected
@@ -140,7 +176,9 @@ namespace Designer.ViewModel {
                 //SelectedProduct = obj;
                 SelectProduct(obj.Id);
                 EditedItem = null;
+                Reload();
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(""));
+
 
 
             }
@@ -177,7 +215,7 @@ namespace Designer.ViewModel {
         #endregion
 
         private void SubmitItem() {
-            if (SaveProduct(Name, Price, Photo, Width, Length) != null) { // Als de parameters niet null zijn dan:
+            if (SaveProduct(Name, Price, Photo, Width, Length, HasPerson) != null) { // Als de parameters niet null zijn dan:
                 GeneralPopup popup = new GeneralPopup("Het product is opgeslagen");
                 popup.ShowDialog();
                 Reload();
@@ -185,14 +223,14 @@ namespace Designer.ViewModel {
             }
         }
 
-        public static Product SaveProduct(string naam, double? price, string photo, int width, int length) {
+        public static Product SaveProduct(string naam, double? price, string photo, int width, int length, bool hasPerson) {
             // als er geen foto wordt toegevoegd, dan krijgt foto een standaard waarde
             if (photo == null) {
                 photo = "placeholder.png";
             }
 
             // Kamer opslaan
-            Product product = new Product(naam, price: price, photo: photo, width: width, length: length);
+            Product product = new Product(naam, price: price, photo: photo, width: width, length: length, hasPerson: hasPerson);
 
             // Zorgen dan het in de database komt
             try { // Proberen op te slaan, dan product returnen
