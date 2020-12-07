@@ -177,9 +177,20 @@
             </TabItem>
             <TabItem Header="Corona">
                 <Grid Background="#FFE5E5E5" >
-                    <ToggleButton Content="Meetlat" VerticalAlignment="Top" Command="{Binding Measure}" IsChecked="{Binding Enabled, Mode=TwoWay}"/>
-                    <Button Content="GENERATE!!!!!" VerticalAlignment="Top" Command="{Binding Layout}" Margin="0 32 0 0"/>
-                    <Button Content="Verwijder alles" VerticalAlignment="Top" Command="{Binding ClearProducts}" Margin="0 64 0 0"/>
+                    <StackPanel>
+                        <ToggleButton Content="Meetlat" VerticalAlignment="Top" Command="{Binding Measure}" IsChecked="{Binding Enabled, Mode=TwoWay}"/>
+                        <Button Content="GENERATE!!!!!" VerticalAlignment="Top" Command="{Binding Layout}" />
+                        <Button Content="Verwijder alles" VerticalAlignment="Top" Command="{Binding ClearProducts}" />
+                        <Label Content="Anderhalve meter score" />
+                        <ProgressBar Height="20" Value="{Binding DistanceScore, Mode=OneWay}" />
+                        <TextBlock Margin="0,-18,0,0" HorizontalAlignment="Center" Text="{Binding DistanceScore, StringFormat={}{0} %}" />
+                        <Label Content="Ventilatie score" />
+                        <ProgressBar Height="20" Value="{Binding VentilationScore, Mode=OneWay}"/>
+                        <TextBlock Margin="0,-18,0,0" HorizontalAlignment="Center" Text="{Binding VentilationScore, StringFormat={}{0} %}" />
+                        <Label Content="Looproute score" />
+                        <ProgressBar Height="20" Value="{Binding RouteScore, Mode=OneWay}"/>
+                        <TextBlock Margin="0,-18,0,0" HorizontalAlignment="Center" Text="{Binding RouteScore, StringFormat={}{0} %}" />
+                    </StackPanel>
                 </Grid>
             </TabItem>
         </TabControl>
