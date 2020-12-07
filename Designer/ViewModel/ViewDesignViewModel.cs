@@ -61,12 +61,10 @@ namespace Designer.ViewModel {
                     for (int j = 0; j < placements.Count; j++)
                     {
                         ProductPlacement placement2 = placements[j];
-                        if(j != i)
+                        if (j != i)
                         {
-                            (Position p1, Position p2)? best = placement1.GetPoly().MinDistance(placement2.GetPoly());
-                            if (best == null) continue;
+                            (Position p1, Position p2) = placement1.GetPoly().MinDistance(placement2.GetPoly());
 
-                            (Position p1, Position p2) = best.Value;
                             double distance = p1.Distance(p2);
                             if(!noDistance) noDistance = distance <= 150;
                         }
@@ -507,10 +505,7 @@ namespace Designer.ViewModel {
             selectScreen.DeleteButton.Click += delegate {
                 ProductPlacements.Remove(placement);
                 _selectedPlacement = null;
-                RenderRoom();
-                CheckCorona(placement);
                 // Toegevoegd zodat de corona score wordt bijgewerkt
-                // TODO: kan mogelijk beter
                 OnPropertyChanged();
                 RemoveCorona(placement);
                 Editor.Children.Remove(selectScreen);
