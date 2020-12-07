@@ -21,7 +21,6 @@
             <Canvas Margin="0,-1,0,32" Name="Editor">
                 <ContentPresenter Content="{Binding Path=Editor}">
                 </ContentPresenter>
-                <Rectangle x:Name="filter" Height="628" Width="1251" Fill="Bisque" Opacity="0.1"/>
                 <behaviors:Interaction.Triggers>
                     <behaviors:EventTrigger EventName="MouseMove" SourceObject="{Binding ElementName=Editor}">
                         <behaviors:InvokeCommandAction Command="{Binding MouseOverCommand}" PassEventArgsToCommand="True"/>
