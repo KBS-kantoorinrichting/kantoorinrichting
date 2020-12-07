@@ -25,7 +25,6 @@ namespace Models {
             double? price = default,
             string? photo = default,
             bool hasPerson = default
-
         ) {
             Id = id;
             Name = name;
@@ -34,7 +33,6 @@ namespace Models {
             Width = width;
             Length = length;
             HasPerson = hasPerson;
-            
         }
     }
 }
