@@ -177,10 +177,12 @@
                              BorderBrush="Black" BorderThickness="1px" Margin="30,0,0,0"
                              IsReadOnly="{Binding IsEditedRead}" />
                     <Label Content="Heeft dit product een zitplek?" />
-                    <RadioButton IsChecked="{Binding SelectedProduct.HasPerson}" Content="Ja" />
-                    <RadioButton
-                        IsChecked="{Binding SelectedProduct.HasPerson, Converter={StaticResource BoolInverterConverter}}"
-                        Content="Nee" />
+                    <RadioButton GroupName="HasPerson" IsChecked="{Binding SelectedProduct.HasPerson}" Content="Ja"
+                                 IsEnabled="{Binding IsEditedNotRead}" />
+                    <RadioButton GroupName="HasPerson"
+                                 IsChecked="{Binding SelectedProduct.HasPerson, 
+                                 Converter={StaticResource BoolInverterConverter}, Mode=OneWay}"
+                                 Content="Nee" IsEnabled="{Binding IsEditedNotRead}" />
 
                     <Label Content="Foto:" Height="26" Width="52" RenderTransformOrigin="0.49,0.577"
                            HorizontalAlignment="Left" Margin="0,10,0,0" />

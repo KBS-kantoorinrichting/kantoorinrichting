@@ -34,20 +34,10 @@ namespace Designer.ViewModel {
 
         public Product EditedItem { get; set; }
 
-        public string IsEditedRead {
-            get { return (EditedItem == null).ToString(); }
-            set { IsEditedRead = value; }
-        }
-
-        public string IsEditedVis {
-            get { return EditedItem == null ? "Hidden" : "Visible"; }
-            set { IsEditedVis = value; }
-        }
-
-        public string ItemIsSelected {
-            get { return SelectedProduct == null ? "Hidden" : "Visible"; }
-            set { ItemIsSelected = value; }
-        }
+        public bool IsEditedRead => EditedItem == null;
+        public bool IsEditedNotRead => !IsEditedRead;
+        public string IsEditedVis => EditedItem == null ? "Hidden" : "Visible";
+        public string ItemIsSelected => SelectedProduct == null ? "Hidden" : "Visible";
 
         public List<Product> Products { get; set; }
         // Property van een lijst om de informatie vanuit de database op te slaan.
@@ -78,7 +68,7 @@ namespace Designer.ViewModel {
             if (openFileDialog.ShowDialog() == true)
                 // Als deze open is dan:
             {
-                if (IsEditedRead == "True") {
+                if (IsEditedRead) {
                     //openFileDialog.Filter = "Image files (*.png;*.jpeg;*.gif)|*.png;*.jpeg;*.gif|All files (*.*)|*.*";
                     Photo = openFileDialog.FileName.Split(@"\").Last();
                     PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("Photo"));
