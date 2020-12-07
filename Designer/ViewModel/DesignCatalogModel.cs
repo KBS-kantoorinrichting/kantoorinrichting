@@ -13,9 +13,32 @@ namespace Designer.ViewModel {
         public event EventHandler<BasicEventArgs<Design>> DesignSelected;
         public event PropertyChangedEventHandler PropertyChanged;
 
-        public List<Design> Designs { get; set; }
+        private List<Design> _designs { get; set; }
+
+        public List<Design> Designs
+        {
+            get
+            {
+                if (SelectedFilter != null)
+                    return _designs.Where(d => d.Room.Id == SelectedFilter.Id).ToList();
+                else
+                    return _designs;
+            }
+        }
+
+        public List<Room> Rooms { get; set; }
+        private Room _selected = null;
+        public Room SelectedFilter {
+            get => _selected;
+            set {
+                _selected = value;
+                OnPropertyChanged();
+            }
+        }
+        
         public BasicCommand AddDesign { get; set; }
         public BasicCommand ReloadCommand { get; set; }
+        public BasicCommand ClearFilterCommand { get; set; }
         public Navigator Navigator { get; set; }
 
         public Design Selected {
@@ -25,9 +48,11 @@ namespace Designer.ViewModel {
 
         public DesignCatalogModel() {
             Navigator = Navigator.Instance;
-            Designs = LoadDesigns();
+            _designs = LoadDesigns();
+            Rooms = LoadRooms();
             AddDesign = new PageCommand(AddDesignPage, NavigationType.Push);
             ReloadCommand = new BasicCommand(Reload);
+            ClearFilterCommand = new BasicCommand(ClearFilter);
         }
 
         private AddDesign AddDesignPage() {
@@ -38,7 +63,14 @@ namespace Designer.ViewModel {
         }
 
         public void Reload() {
-            Designs = LoadDesigns();
+            _designs = LoadDesigns();
+            Rooms = LoadRooms();
+            OnPropertyChanged();
+        }
+
+        public void ClearFilter()
+        {
+            _selected = null;
             OnPropertyChanged();
         }
 
@@ -56,6 +88,11 @@ namespace Designer.ViewModel {
             //Doesn't load productplacements without this, it's weird
             ProductPlacementService.Instance.GetAll();
             return DesignService.Instance.GetAll();
+        }
+
+        public static List<Room> LoadRooms()
+        {
+            return RoomService.Instance.GetAll();
         }
 
         protected virtual void OnPropertyChanged(string propertyName = "") {

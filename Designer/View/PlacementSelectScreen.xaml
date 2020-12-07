@@ -8,7 +8,7 @@
              xmlns:designer="clr-namespace:Designer"
              x:Class="Designer.View.PlacementSelectScreen"
              mc:Ignorable="d"
-             d:DesignHeight="300" d:DesignWidth="300">
+             d:DesignHeight="130" d:DesignWidth="160">
 
     <UserControl.DataContext>
         <viewModel:ViewDesignViewModel x:Name="viewModel"/>
@@ -18,17 +18,33 @@
         <designer:PriceConverter x:Key="PriceConverter"/>
     </UserControl.Resources>
     <Grid Background="White">
-        <Rectangle Height="45" Stroke="Black" VerticalAlignment="Bottom" Margin="0,0,0,255" Fill="#FF65EAEA"/>
-        <Label Content="{Binding Name}" HorizontalAlignment="Center" Height="45" VerticalAlignment="Top" Width="280" FontSize="22"/>
-        <Border BorderBrush="Black" BorderThickness="1">
-        <Image HorizontalAlignment="Left" Height="170" Margin="0,45,0,0" VerticalAlignment="Top" Width="295" Source="{Binding Path=Photo, Converter={StaticResource ImagePathConverter}}"/>
+        <Rectangle Height="40" Stroke="Black" VerticalAlignment="Top" Fill="#FF65EAEA" />
+        <Label Content="{Binding Name}" HorizontalAlignment="Stretch" Height="30" VerticalAlignment="Top" Margin="0,40,0,0" FontSize="16" />
+        <Border BorderBrush="Black" BorderThickness="0.2">
+            <Label Content="{Binding Price, Converter={StaticResource PriceConverter}}" HorizontalAlignment="Stretch" Height="30" Margin="0,70,0,0" VerticalAlignment="Top" FontSize="16"/>
         </Border>
-        <Border BorderBrush="Black" BorderThickness="1">
-        <Label Content="{Binding Price, Converter={StaticResource PriceConverter}}" HorizontalAlignment="Center" Height="35" Margin="0,210,0,0" VerticalAlignment="Top" Width="250" FontSize="22"/>
+        <Border BorderBrush="Black" BorderThickness="0.2">
+            <Label Content="{Binding ProductId}" HorizontalAlignment="Stretch" Height="30" Margin="0,100,0,0" VerticalAlignment="Top" FontSize="16"/>
         </Border>
-        <Border BorderBrush="Black" BorderThickness="1">
-        <Label Content="{Binding ProductId}" HorizontalAlignment="Center" Height="35" Margin="0,255,0,0" VerticalAlignment="Top" Width="250" FontSize="22"/>
-        </Border>
-        <Button x:Name="DeleteButton" Content="X" HorizontalAlignment="Left" Height="45" Margin="254,-1,0,0" VerticalAlignment="Top" Width="45" FontSize="22"/>
+        <Grid HorizontalAlignment="Stretch" Height="40" VerticalAlignment="Top">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="1*" />
+                <ColumnDefinition Width="1*" />
+                <ColumnDefinition Width="1*" />
+                <ColumnDefinition Width="1*" />
+            </Grid.ColumnDefinitions>
+            <Button x:Name="RotateRightButton" Grid.Column="0" Background="Transparent" Height="40" Width="45" BorderThickness="0">
+                <Image Source="\Resources\Icons\rotate_right.png" Height="30" Width="30" />
+            </Button>
+            <Button x:Name="RotateLeftButton" Grid.Column="1" Background="Transparent" Height="40" Width="45" BorderThickness="0">
+                <Image Source="\Resources\Icons\rotate_left.png" Height="30" Width="30" />
+            </Button>
+            <Button x:Name="DeleteButton" Grid.Column="2" Background="Transparent" Width="45" BorderThickness="0">
+                <Image Source="\Resources\Icons\delete.png" Height="30" Width="30" />
+            </Button>
+            <Button x:Name="CloseButton" Grid.Column="3" Background="Transparent" Width="45" BorderThickness="0">
+                <Image Source="\Resources\Icons\close.png" Height="30" Width="30" />
+            </Button>
+        </Grid>
     </Grid>
 </UserControl>
