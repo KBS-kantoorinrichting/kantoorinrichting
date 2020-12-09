@@ -50,9 +50,9 @@ namespace Designer.ViewModel
             Reload();
         }
 
-        public void MakeRoom()
+        public List<Position> MakeRoom(Room selectedroom)
         {
-            SelectedPoints = Room.ToList(SelectedRoom.Positions);
+            SelectedPoints = Room.ToList(selectedroom.Positions);
             Position Last = new Position(-1, -1);
 
             foreach (Position pos in SelectedPoints)
@@ -100,7 +100,7 @@ namespace Designer.ViewModel
 
             }
             LastSelected = SelectedPoints.Last();
-            PaintRoom();
+            return SelectedPoints;
         }
 
         public void PaintRoom()
@@ -131,8 +131,16 @@ namespace Designer.ViewModel
 
         public void SetSelectedRoom(Room selectedroom)
         {
-            SelectedRoom = selectedroom;
-            MakeRoom();
+            if (MakeRoom(selectedroom) != null)
+            {
+                PaintRoom();
+            }
+            else
+            {
+                GeneralPopup warning = new GeneralPopup("Oeps, er is iets mis gegaan!");
+                warning.ShowDialog();
+            }
+            
         }
         public void Reload()
         { // Reload de items zodat de juiste te zien zijn
