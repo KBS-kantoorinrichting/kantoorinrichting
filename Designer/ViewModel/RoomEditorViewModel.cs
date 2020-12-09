@@ -343,6 +343,7 @@ namespace Designer.ViewModel
                     _activeFrame.Type = FrameTypes.Door;
                     if (FramePoints.Contains(_activeFrame))
                     {
+                        Debug.WriteLine(_activeFrame.AttachedPosition);
                         FramePoints.Remove(_activeFrame);
                     }
                     else
