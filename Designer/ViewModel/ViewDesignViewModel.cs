@@ -36,6 +36,7 @@ namespace Designer.ViewModel {
         public BasicCommand Measure { get; set; }
         public BasicCommand Layout { get; set; }
         public BasicCommand ClearProducts { get; set; }
+        public BasicCommand Route { get; set; }
         public ArgumentCommand<MouseWheelEventArgs> CanvasMouseScrollCommand { get; set; }
         public Product SelectedProduct => _selectedPlacement.Product;
         public Design Design { get; set; }
@@ -104,6 +105,7 @@ namespace Designer.ViewModel {
             MouseMoveCommand = new ArgumentCommand<MouseEventArgs>(HandleMouseMove);
             Measure = new BasicCommand(StartMeasure);
             Layout = new BasicCommand(GenerateLayout);
+            Route = new BasicCommand(StartRoute);
             ClearProducts = new BasicCommand(Clear);
             CanvasMouseScrollCommand =
                 new ArgumentCommand<MouseWheelEventArgs>(e => CanvasMouseScroll(e.OriginalSource, e));
@@ -112,24 +114,62 @@ namespace Designer.ViewModel {
             _distanceLine = new DistanceLine(null, null);
         }
 
-        private bool _enabled;
-
-        public bool Enabled {
-            get => _enabled;
-            set => _enabled = value;
-        }
+        public bool Enabled { get; set; }
 
         private Position _origin;
         private Position _secondPoint;
         private DistanceLine _distanceLine;
 
         public void StartMeasure() {
-            if (!_enabled) return;
+            if (!Enabled) return;
             _distanceLine.Remove(Editor);
             _origin = null;
             _secondPoint = null;
         }
+        
+        public bool RouteEnabled { get; set; }
 
+        private Models.Polygon _route {
+            get => Design.GetRoutePoly();
+            set => Design.Route = value?.Convert();
+        }
+
+        public void StartRoute() {
+        }
+
+        List<DistanceLine> _routeLines = new List<DistanceLine>();
+        List<Ellipse> _ellipses = new List<Ellipse>();
+        
+        public void ShowRoute() {
+            _routeLines.ForEach(l => l.Remove(Editor));
+            _routeLines.Clear();
+            _ellipses.ForEach(Editor.Children.Remove);
+            _ellipses.Clear();
+            if (_route == null) return;
+            foreach ((Position p1, Position p2) in _route.GetLines()) {
+                _routeLines.Add(new DistanceLine(p1, p2));
+            }
+
+            for (int index = 0; index < _route.Count; index++) {
+                Position position = _route[index];
+                int size = 10;
+                Ellipse ellipse = new Ellipse() {
+                    Height = size,
+                    Width = size,
+                    Fill = Brushes.Black,
+                    Uid = index.ToString(),
+                };
+
+                _ellipses.Add(ellipse);
+                Editor.Children.Add(ellipse);
+                Canvas.SetLeft(ellipse, position.X - size / 2);
+                Canvas.SetTop(ellipse, position.Y - size / 2);
+                Canvas.SetZIndex(ellipse, 300);
+            }
+
+            _routeLines.ForEach(l => l.Add(Editor));
+        }
+        
         public void Clear() {
             ProductPlacements.ForEach(RemoveCorona);
             ProductPlacements.Clear();
@@ -187,9 +227,19 @@ namespace Designer.ViewModel {
                 _secondPoint = null;
             } else {
                 _secondPoint = new Position((int) p.X, (int) p.Y);
-                _enabled = false;
+                Enabled = false;
                 OnPropertyChanged();
             }
+        }
+        
+        private void PlaceRoutePoint(MouseButtonEventArgs eventArgs) {
+            Point p = eventArgs.GetPosition(Editor);
+            int acc = 1;
+            Position position = new Position((int) (p.X / acc) * acc, (int) (p.Y / acc) * acc);
+            List<Position> positions = new List<Position> {position};
+            if (_route != null) positions.AddRange(_route);
+            _route = new Models.Polygon(positions);
+            ShowRoute();
         }
 
         public void RenderDistance(Position p1, Position p2) {
@@ -208,13 +258,11 @@ namespace Designer.ViewModel {
                 Editor.RenderTransform = _transform;
             }
 
-            if (!_enabled || _origin == null) return;
+            if (!Enabled || _origin == null) return;
 
             Point p = eventArgs.GetPosition(Editor);
             RenderDistance(_origin, _secondPoint ?? new Position((int) p.X, (int) p.Y));
         }
-
-        private List<DistanceLine> _coronaLines = new List<DistanceLine>();
 
         private Dictionary<ProductPlacement, Dictionary<ProductPlacement, DistanceLine>> _lines =
             new Dictionary<ProductPlacement, Dictionary<ProductPlacement, DistanceLine>>();
@@ -278,6 +326,7 @@ namespace Designer.ViewModel {
 
                 // Zet de schaal van de ruimte op basis van de dimensies, dit moet na het zetten van het design
                 SetRoomScale();
+                ShowRoute();
             }
 
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(""));
@@ -345,8 +394,18 @@ namespace Designer.ViewModel {
             //Linkermuisknop betekent dat het product wordt verplaatst
             else {
                 //Als meetlat aanstaat vervangt die deze behavivoer
-                if (_enabled) {
+                if (Enabled) {
                     PlacePoint(e);
+                    return;
+                }
+
+                if (RouteEnabled) {
+                    if (sender is Ellipse) {
+                        DragDrop.DoDragDrop(Editor, sender, DragDropEffects.Move);
+                    } else {
+                        PlaceRoutePoint(e);
+                    }
+
                     return;
                 }
 
@@ -381,6 +440,15 @@ namespace Designer.ViewModel {
         public void CanvasDragDrop(object sender, DragEventArgs e) {
             //Als er geen product is geselecteerd, doe niks
             if (e.Data == null) return;
+            if (e.Data.GetDataPresent(typeof(Ellipse))) {
+                int pos = int.Parse(((Ellipse) e.Data.GetData(typeof(Ellipse))).Uid);
+                List<Position> positions = _route.ToList();
+                positions[pos] = new Position((int) e.GetPosition(Editor).X, (int) e.GetPosition(Editor).Y);
+                _route = new Models.Polygon(positions);
+                ShowRoute();
+                return;
+            }
+            
             //In dit geval wordt er een product toegevoegd
             if (e.Data.GetDataPresent(typeof(Product))) {
                 var selectedProduct = (Product) e.Data.GetData(typeof(Product));
