@@ -16,6 +16,8 @@ namespace Models {
             set => _polygon = new Polygon(value);
         }
 
+        public List<RoomPlacement> RoomPlacements { get; set; } = new List<RoomPlacement>();
+
         public Room(
             string name = default,
             int width = default,
@@ -34,9 +36,17 @@ namespace Models {
 
         public Polygon GetPoly() { return _polygon; }
 
-        public Room(string name, string positions) {
+        public Room(string name, string positions)
+        {
             Name = name;
             Positions = positions;
+        }
+
+        public Room(string name, string positions, List<RoomPlacement> framePlacements) : this(name, positions) {
+            foreach (RoomPlacement placement in framePlacements)
+            {
+                RoomPlacements.Add(placement);
+            }
         }
 
         public static List<Position> ToList(string positions) {
