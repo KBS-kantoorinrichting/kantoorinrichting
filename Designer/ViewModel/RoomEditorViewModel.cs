@@ -153,8 +153,11 @@ namespace Designer.ViewModel
                 counterror.ShowDialog();
                 return;
             }
+            // bepaal de kleinste x waarde
             var smallestX = SelectedPoints.Aggregate((p1, p2) => p1.X < p2.X ? p1 : p2);
+            // bepaal de kleinste y waarde
             var smallestY = SelectedPoints.Aggregate((p1, p2) => p1.Y < p2.Y ? p1 : p2);
+            // maakt de kamer zo hoog en links mogelijk
             List<Position> OffsetPositions = new List<Position>();
             foreach (var position in SelectedPoints)
             {
@@ -218,7 +221,7 @@ namespace Designer.ViewModel
                 }
             };
 
-            Action Bisqueinator = () =>
+            Action Hover = () =>
             {
                 RectangleDictionary[currentpoint].Fill = System.Windows.Media.Brushes.Bisque;
                 RectangleDictionary[currentpoint].Opacity = 0.5;
@@ -248,7 +251,7 @@ namespace Designer.ViewModel
                         //Thread.Sleep(23000);
                         UnHover();
                         //kleuren
-                        Bisqueinator();
+                        Hover();
                     }
                     // als het een border of hoek is
                     else
@@ -267,7 +270,7 @@ namespace Designer.ViewModel
                 Last3HoveredPoints.Add(currentpoint);
 
                 //kleuren
-                Bisqueinator();
+                Hover();
             }
 
         }
