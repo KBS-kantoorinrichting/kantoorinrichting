@@ -34,6 +34,7 @@ namespace Designer.ViewModel {
         public ArgumentCommand<MouseButtonEventArgs> CanvasMouseDownCommand { get; set; }
         public ArgumentCommand<MouseEventArgs> MouseMoveCommand { get; set; }
         public BasicCommand Measure { get; set; }
+        public BasicCommand Plexiglass { get; set; }
         public BasicCommand Layout { get; set; }
         public BasicCommand ClearProducts { get; set; }
         public ArgumentCommand<MouseWheelEventArgs> CanvasMouseScrollCommand { get; set; }
@@ -73,6 +74,11 @@ namespace Designer.ViewModel {
                 }
                 double reversedIncrement = ProductPlacements.Count - increment;
 
+                if (ProductPlacements.Count == 0)
+                {
+                    return 100;
+                }
+
                 return (int)(reversedIncrement / ProductPlacements.Count * 100);
             }
         }
@@ -103,6 +109,7 @@ namespace Designer.ViewModel {
             DragOverCommand = new ArgumentCommand<DragEventArgs>(e => CanvasDragOver(e.OriginalSource, e));
             MouseMoveCommand = new ArgumentCommand<MouseEventArgs>(HandleMouseMove);
             Measure = new BasicCommand(StartMeasure);
+            Plexiglass = new BasicCommand(StartPlexiglass);
             Layout = new BasicCommand(GenerateLayout);
             ClearProducts = new BasicCommand(Clear);
             CanvasMouseScrollCommand =
@@ -110,6 +117,7 @@ namespace Designer.ViewModel {
             _productOverview = new Dictionary<Product, ProductData>();
 
             _distanceLine = new DistanceLine(null, null);
+            _plexiLine = new PlexiLine(null, null);
         }
 
         private bool _enabled;
@@ -122,10 +130,17 @@ namespace Designer.ViewModel {
         private Position _origin;
         private Position _secondPoint;
         private DistanceLine _distanceLine;
+        private PlexiLine _plexiLine;
 
         public void StartMeasure() {
             if (!_enabled) return;
             _distanceLine.Remove(Editor);
+            _origin = null;
+            _secondPoint = null;
+        }
+        public void StartPlexiglass() {
+            if (!_enabled) return;
+            _plexiLine.Remove(Editor);
             _origin = null;
             _secondPoint = null;
         }
@@ -197,6 +212,12 @@ namespace Designer.ViewModel {
             _distanceLine.P1 = p1;
             _distanceLine.P2 = p2;
         }
+        
+        public void RenderPlexiglass(Position p1, Position p2) {
+            if (!_plexiLine.Shows) _plexiLine.Add(Editor);
+            _plexiLine.P1 = p1;
+            _plexiLine.P2 = p2;
+        }
 
         public void HandleMouseMove(MouseEventArgs eventArgs) {
             if (eventArgs.RightButton == MouseButtonState.Pressed) {
@@ -215,9 +236,13 @@ namespace Designer.ViewModel {
         }
 
         private List<DistanceLine> _coronaLines = new List<DistanceLine>();
+        //private List<PlexiLine> _plexiLine = new List<PlexiLine>();
 
         private Dictionary<ProductPlacement, Dictionary<ProductPlacement, DistanceLine>> _lines =
             new Dictionary<ProductPlacement, Dictionary<ProductPlacement, DistanceLine>>();
+
+/*        private Dictionary<ProductPlacement, Dictionary<ProductPlacement, PlexiLine>> _plexilines =
+            new Dictionary<ProductPlacement, Dictionary<ProductPlacement, Line>>();*/
 
         public void RemoveCorona(ProductPlacement removed) {
             if (removed == null) return;
@@ -811,6 +836,150 @@ namespace Designer.ViewModel {
         }
 
         private static double ConvertRadiansToDegrees(double radians) {
+            double degrees = 180 / Math.PI * radians;
+            if (degrees > 90) return degrees + 180;
+            if (degrees < -90) return degrees + 180;
+            return degrees;
+        }
+    }
+
+
+
+    public class PlexiLine
+    {
+        private Line _line;
+        private Line _line2;
+        private TextBlock _textBlock;
+        private Position _p1;
+        private Position _p2;
+
+        public Position P1
+        {
+            get => _p1;
+            set
+            {
+                _p1 = value;
+                UpdatePositions();
+            }
+        }
+
+        public Position P2
+        {
+            get => _p2;
+            set
+            {
+                _p2 = value;
+                UpdatePositions();
+            }
+        }
+
+        private bool _shows = false;
+        public bool Shows => _shows;
+
+        public PlexiLine(Position p1, Position p2)
+        {
+            _p1 = p1;
+            _p2 = p2;
+            _line = new Line();
+            _line2 = new Line();
+            _textBlock = new TextBlock();
+        }
+
+        public void Add(Canvas editor)
+        {
+            _shows = true;
+            editor.Children.Add(_line);
+            editor.Children.Add(_line2);
+            editor.Children.Add(_textBlock);
+            Render();
+        }
+
+        public void Render()
+        {
+            _line.Stroke = Brushes.White;
+            _line.StrokeThickness = 3;
+
+            Panel.SetZIndex(_line, 100);
+            _line2.Stroke = Brushes.Black;
+            _line2.StrokeThickness = 1;
+
+            Panel.SetZIndex(_line2, 101);
+            Panel.SetZIndex(_textBlock, 102);
+
+            _textBlock.Foreground = new SolidColorBrush(Colors.Black);
+            _textBlock.Background = new SolidColorBrush(Colors.White);
+
+            UpdatePositions();
+        }
+
+        private void UpdatePositions()
+        {
+            if (P1 == null || P2 == null) return;
+            _line.X1 = P1.X;
+            _line.Y1 = P1.Y;
+            _line.X2 = P2.X;
+            _line.Y2 = P2.Y;
+
+            _line2.X1 = P1.X;
+            _line2.Y1 = P1.Y;
+            _line2.X2 = P2.X;
+            _line2.Y2 = P2.Y;
+
+            Position center = P1.Center(P2);
+            _textBlock.Text = "(Plexiglas) " + FormatText(P1.Distance(P2));
+            Size size = MeasureString();
+
+            double dx = size.Width / 2;
+            double dy = size.Height / 2;
+
+            double radians = Math.Atan2(P2.Y - P1.Y, P2.X - P1.X);
+            double degrees = ConvertRadiansToDegrees(radians);
+            _textBlock.RenderTransform = new RotateTransform(degrees, dx, 0);
+
+            Canvas.SetLeft(_textBlock, center.X - dx);
+            Canvas.SetTop(_textBlock, center.Y - 0);
+        }
+
+        private Size MeasureString()
+        {
+            var formattedText = new FormattedText(
+                _textBlock.Text,
+                CultureInfo.CurrentCulture,
+                FlowDirection.LeftToRight,
+                new Typeface(
+                    _textBlock.FontFamily, _textBlock.FontStyle, _textBlock.FontWeight, _textBlock.FontStretch
+                ),
+                _textBlock.FontSize,
+                Brushes.Black,
+                new NumberSubstitution(),
+                1
+            );
+
+            return new Size(formattedText.Width, formattedText.Height);
+        }
+
+        private string FormatText(double distance)
+        {
+            if (distance < 100)
+            {
+                return distance.ToString("F0") + " cm";
+            }
+            else
+            {
+                return (distance / 100).ToString("F2") + " m";
+            }
+        }
+
+        public void Remove(Canvas editor)
+        {
+            _shows = false;
+            editor.Children.Remove(_line);
+            editor.Children.Remove(_line2);
+            editor.Children.Remove(_textBlock);
+        }
+
+        private static double ConvertRadiansToDegrees(double radians)
+        {
             double degrees = 180 / Math.PI * radians;
             if (degrees > 90) return degrees + 180;
             if (degrees < -90) return degrees + 180;
