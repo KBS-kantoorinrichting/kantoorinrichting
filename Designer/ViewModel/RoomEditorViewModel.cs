@@ -39,6 +39,7 @@ namespace Designer.ViewModel
         public bool AddDoorsChecked { get; set; } = false;
         public bool AddWindowsChecked { get; set; } = false;
         private Position _previousCanvasPosition { get; set; }
+        private Position _previousDoorOffsetPosition { get; set; }
         private Frame _activeFrame { get; set; }
         public List<Frame> FramePoints = new List<Frame>();
         private double CanvasHeight = 500;
@@ -113,7 +114,6 @@ namespace Designer.ViewModel
         public void MouseMove(object sender, MouseEventArgs e)
         {
 
-            Debug.WriteLine("testest");
             var mousePosition = e.GetPosition(Editor);
 
             int y = (int)(mousePosition.Y - (mousePosition.Y % 25));
@@ -121,7 +121,7 @@ namespace Designer.ViewModel
 
             Position point = new Position(x, y);
 
-            Debug.WriteLine("Exists: " + FramePoints.Exists(p => p.X == point.X && p.Y == point.Y));
+            //Debug.WriteLine("Exists: " + FramePoints.Exists(p => p.X == point.X && p.Y == point.Y));
 
             // Als de vorige positie is gezet wordt dit vervangen door de standaard kleur
             if (_previousCanvasPosition != null && !FramePoints.Exists(p => p.X == _previousCanvasPosition.X && p.Y == _previousCanvasPosition.Y))
@@ -129,6 +129,12 @@ namespace Designer.ViewModel
                 RectangleDictionary[_previousCanvasPosition].Fill = Brushes.DarkMagenta;
                 RectangleDictionary[_previousCanvasPosition].Opacity = 0.5;
                 _previousCanvasPosition = null;
+
+                if(_previousDoorOffsetPosition != null && !FramePoints.Exists(p => p.X == _previousDoorOffsetPosition.X && p.Y == _previousDoorOffsetPosition.Y))
+                {
+                    RectangleDictionary[_previousDoorOffsetPosition].Fill = Brushes.White;
+                    _previousDoorOffsetPosition = null;
+                }
             }
 
             if (AddDoorsChecked || AddWindowsChecked)
@@ -165,6 +171,7 @@ namespace Designer.ViewModel
 
                         RectangleDictionary[point].Fill = Brushes.DarkBlue;
                         RectangleDictionary[point].Opacity = 1.0;
+
                         _activeFrame = window;
                     }
 
@@ -172,15 +179,15 @@ namespace Designer.ViewModel
                     {
                         Frame door = new Frame(point.X, point.Y, FrameTypes.Door);
 
-                        RectangleDictionary[point].Fill = Brushes.DarkBlue;
-
                         Position horiLeft = new Position(x - 25, y);
                         Position horiRight = new Position(x + 25, y);
 
-                        door.Rotation = RectangleDictionary[horiLeft] != null && RectangleDictionary[horiRight] != null ? 0 : 90;
+                        door.Rotation = RectangleDictionary[horiLeft] != null && RectangleDictionary[horiLeft].Fill != Brushes.White && RectangleDictionary[horiRight] != null && RectangleDictionary[horiRight].Fill != Brushes.White ? 0 : 90;
 
                         RectangleDictionary[point].Fill = Brushes.Brown;
                         RectangleDictionary[point].Opacity = 1.0;
+
+                        _activeFrame = door;
 
                         RotateDoor(door.Rotation, x, y);
                     }
@@ -260,6 +267,7 @@ namespace Designer.ViewModel
 
         public void RotateDoor(int angle, int x, int y)
         {
+            Debug.WriteLine("Rotating door: " + _activeFrame);
             if(_activeFrame != null)
             {
                 int doorOpenX = x;
@@ -268,7 +276,7 @@ namespace Designer.ViewModel
                 switch (angle)
                 {
                     case 0:
-                        doorOpenY -= 15;
+                        doorOpenY -= 25;
                         break;
                     case 90:
                         doorOpenX += 25;
@@ -282,6 +290,10 @@ namespace Designer.ViewModel
                 }
 
                 Position doorOpenPos = new Position(doorOpenX, doorOpenY);
+
+                _previousDoorOffsetPosition = doorOpenPos;
+
+                RectangleDictionary[doorOpenPos].Fill = Brushes.Brown;
             }
         }
 
@@ -307,22 +319,48 @@ namespace Designer.ViewModel
             int y = Convert.ToInt32(e.GetPosition(Editor).Y - (e.GetPosition(Editor).Y % 25));
             int x = Convert.ToInt32(e.GetPosition(Editor).X - (e.GetPosition(Editor).X % 25));
             //int x = Convert.ToInt32(e.GetPosition(Editor).X);
+            Position currentpoint = new Position(x, y);
 
-            if(e.RightButton == MouseButtonState.Pressed && _activeFrame != null)
+            if (e.RightButton == MouseButtonState.Pressed && _activeFrame != null)
             {
-                Debug.WriteLine("Rotate door");
+                if(_activeFrame != null && _activeFrame.Type == FrameTypes.Door)
+                {
+                    int oppositeSide = (_activeFrame.Rotation + 180) >= 270 ? (_activeFrame.Rotation + 180) - 270 : _activeFrame.Rotation + 180;
+                    _activeFrame.Rotation = oppositeSide;
+                    RotateDoor(_activeFrame.Rotation, x, y);
+                }
             }
 
             // controleer of de linkermuisknop ingedrukt werdt
             if (e.LeftButton == MouseButtonState.Pressed)
             {
-                // het momentele punt instellen
-                var currentpoint = new Position(x, y);
-
                 if(AddWindowsChecked)
                 {
                     Frame window = new Frame(x, y, FrameTypes.Window);
-                    FramePoints.Add(window);
+                    if(FramePoints.Contains(window))
+                    {
+                        FramePoints.Remove(window);
+                    } else
+                    {
+                        FramePoints.Add(window);
+                    }
+                    _activeFrame = null;
+                    return;
+                }
+
+                if (AddDoorsChecked)
+                {
+                    Frame door = new Frame(x, y, FrameTypes.Door);
+                    if (FramePoints.Contains(door))
+                    {
+                        FramePoints.Remove(door);
+                    }
+                    else
+                    {
+                        FramePoints.Add(door);
+                    }
+                    _activeFrame = null;
+                    return;
                 }
 
 
