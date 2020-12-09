@@ -124,7 +124,7 @@ namespace Designer.ViewModel
             Debug.WriteLine("Exists: " + FramePoints.Exists(p => p.X == point.X && p.Y == point.Y));
 
             // Als de vorige positie is gezet wordt dit vervangen door de standaard kleur
-            if (!FramePoints.Exists(p => p.X == point.X && p.Y == point.Y) && _previousCanvasPosition != null)
+            if (_previousCanvasPosition != null && !FramePoints.Exists(p => p.X == _previousCanvasPosition.X && p.Y == _previousCanvasPosition.Y))
             {
                 RectangleDictionary[_previousCanvasPosition].Fill = Brushes.DarkMagenta;
                 RectangleDictionary[_previousCanvasPosition].Opacity = 0.5;
