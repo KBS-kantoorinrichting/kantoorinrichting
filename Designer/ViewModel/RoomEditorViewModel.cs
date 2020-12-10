@@ -59,6 +59,7 @@ namespace Designer.ViewModel
         { // Reload de items zodat de juiste te zien zijn
             Editor.Children.Clear();
             DrawGrid();
+            RenderFrames();
             OnPropertyChanged();
         }
         private void OnPropertyChanged(string propertyName = "")
@@ -134,13 +135,19 @@ namespace Designer.ViewModel
             {
                 RectangleDictionary[_previousCanvasPosition].Fill = Brushes.DarkMagenta;
                 RectangleDictionary[_previousCanvasPosition].Opacity = 0.5;
-                _previousCanvasPosition = null;
 
-                if(_activeFrame != null && _activeFrame.AttachedPosition != null)
+                if (_activeFrame != null && _activeFrame.AttachedPosition != null)
                 {
                     RectangleDictionary[_activeFrame.AttachedPosition].Fill = Brushes.White;
+
+                    int nextRotation = _activeFrame.Rotation + (_activeFrame.Rotation >= 180 ? -180 : 180);
+                    Position oppositeSide = CalculateNextPositionFromAngle(nextRotation, _previousCanvasPosition.X, _previousCanvasPosition.Y);
+
+                    RectangleDictionary[oppositeSide].Fill = Brushes.White;
+
                     _activeFrame.AttachedPosition = null;
                 }
+                _previousCanvasPosition = null;
             }
 
             if (AddDoorsChecked || AddWindowsChecked)
@@ -150,19 +157,26 @@ namespace Designer.ViewModel
                     // Kopieert de point naar een variable
                     _previousCanvasPosition = point;
 
+                    // Haalt de positie uit de lijst als die daar bestaat
                     if (AddWindowsChecked)
                     {
                         Frame window = new Frame(point.X, point.Y, FrameTypes.Window);
 
+                        _activeFrame = window;
+
+                        if (FramePoints.Contains(window)) return;
+
                         RectangleDictionary[point].Fill = Brushes.DarkBlue;
                         RectangleDictionary[point].Opacity = 1.0;
-
-                        _activeFrame = window;
                     }
 
                     if (AddDoorsChecked)
                     {
                         Frame door = new Frame(point.X, point.Y, FrameTypes.Door);
+
+                        _activeFrame = door;
+
+                        if (FramePoints.Contains(door)) return;
 
                         // Berekend de horizontale posities links en rechts van het geplaatste object
                         Position horiLeft = new Position(x - 25, y);
@@ -177,82 +191,49 @@ namespace Designer.ViewModel
                         RectangleDictionary[point].Fill = Brushes.Brown;
                         RectangleDictionary[point].Opacity = 1.0;
 
-                        _activeFrame = door;
-
                         RotateDoor(door.Rotation, x, y);
+
+                        //Position attachedPosition = new Position(x, y);
+
+                        //// Haalt de framepoint op uit de framepoint selectie, vervolgens wordt er gekeken of het actieve punt wel bestaat in de framepoints
+                        //Frame frameInList = FramePoints.Where(p => p == attachedPosition).FirstOrDefault();
+
+                        //if (frameInList != null)
+                        //{
+                        //    RectangleDictionary[frameInList.AttachedPosition].Fill = Brushes.White;
+                        //}
                     }
                 }
-
-
-                //for (int i = 0; i < points.Count; i++)
-                //{
-                //    Debug.WriteLine($"{points[i].X} - {points[i + 1].X}");
-                //    if(i < (points.Count - 1) && points[i].X == points[i + 1].X)
-                //    {
-                //        Debug.WriteLine("Same X values");
-                //    }
-                //}
             }
+        }
 
-          /*  int y = Convert.ToInt32(e.GetPosition(Editor).Y - (e.GetPosition(Editor).Y % 25));
-            int x = Convert.ToInt32(e.GetPosition(Editor).X - (e.GetPosition(Editor).X % 25));
-            //int x = Convert.ToInt32(e.GetPosition(Editor).X);
-
-            var currentpoint = new Position(x, y);
-
-            // als hiervoor al over een hokje gehovered is
-            if (LastHoveredRectangle != null)
+        public void RenderFrames()
+        {
+            if(FramePoints != null)
             {
-                // als je niet nogsteeds over hetzelfde hokje hovered en als het hokje in de dictionary zit
-                if (LastHoveredRectangle != currentpoint && RectangleDictionary.ContainsKey(currentpoint))
+                foreach (Frame frame in FramePoints)
                 {
-                    // als het momenteel geselecteerde point niet een hoek of border is
-                    if (!SelectedPoints.Contains(currentpoint) && !BorderPoints.Contains(currentpoint))
+                    if(frame.Type == FrameTypes.Door)
                     {
-                        // vorige hokje terugkleuren als het geen border was
-                        if (SelectedPoints.Contains(LastHoveredRectangle) && BorderPoints.Contains(LastHoveredRectangle))
-                        {
+                        Position doorPosition = new Position(frame.X, frame.Y);
+                        Position doorOpenPosition = CalculateNextPositionFromAngle(frame.Rotation, frame.X, frame.Y);
 
-                           
-                        }
-                        else
-                        {
-                            RectangleDictionary[LastHoveredRectangle].Fill = System.Windows.Media.Brushes.White;
-                            RectangleDictionary[LastHoveredRectangle].Opacity = 1;
-                            
-                        }
+                        RectangleDictionary[doorPosition].Fill = Brushes.Brown;
+                        RectangleDictionary[doorPosition].Opacity = 1.0;
 
-                        // dit hokje inkleuren
-                        RectangleDictionary[currentpoint].Fill = System.Windows.Media.Brushes.Bisque;
-                        RectangleDictionary[currentpoint].Opacity = 0.5;
-
-                        // stel vorige hokje in als deze
-                        LastHoveredRectangle = currentpoint;
+                        RectangleDictionary[doorOpenPosition].Fill = Brushes.Brown;
+                        RectangleDictionary[doorOpenPosition].Opacity = 1.0;
                     }
-                    else
+
+                    if(frame.Type == FrameTypes.Window)
                     {
-                        if (!SelectedPoints.Contains(LastHoveredRectangle) && !BorderPoints.Contains(LastHoveredRectangle))
-                        {
-                            RectangleDictionary[LastHoveredRectangle].Fill = System.Windows.Media.Brushes.White;
-                            RectangleDictionary[LastHoveredRectangle].Opacity = 1;
-                        }
+                        Position windowPosition = new Position(frame.X, frame.Y);
 
-                        // stel vorige hokje in als deze
-                        LastHoveredRectangle = currentpoint;
+                        RectangleDictionary[windowPosition].Fill = Brushes.DarkBlue;
+                        RectangleDictionary[windowPosition].Opacity = 1.0;
                     }
-                    // Wanneer hij in een vakje is:
-                    // TODO vorige kleur
-
                 }
             }
-            else
-            {
-                RectangleDictionary[LastHoveredRectangle].Fill = System.Windows.Media.Brushes.White;
-                LastHoveredRectangle = currentpoint;
-                RectangleDictionary[currentpoint].Fill = System.Windows.Media.Brushes.Bisque;
-                RectangleDictionary[currentpoint].Opacity = 0.5;
-            }
-*/
         }
 
         public void RotateDoor(int angle, int x, int y)
@@ -264,34 +245,36 @@ namespace Designer.ViewModel
                     RectangleDictionary[_activeFrame.AttachedPosition].Fill = Brushes.White;
                 }
 
-                int doorOpenX = x;
-                int doorOpenY = y;
+                Position doorOpenPos = CalculateNextPositionFromAngle(angle, x, y);
 
-                switch (angle)
-                {
-                    case 0:
-                        doorOpenY -= 25;
-                        break;
-                    case 90:
-                        doorOpenX += 25;
-                        break;
-                    case 180:
-                        doorOpenY += 25;
-                        break;
-                    case 270:
-                        doorOpenX -= 25;
-                        break;
-                }
-
-                Position doorOpenPos = new Position(doorOpenX, doorOpenY);
-
-                if(!FramePoints.Contains(_activeFrame))
+                if (!FramePoints.Contains(_activeFrame))
                 {
                     _activeFrame.AttachedPosition = doorOpenPos;
 
                     RectangleDictionary[doorOpenPos].Fill = Brushes.Brown;
                 }
             }
+        }
+
+        private Position CalculateNextPositionFromAngle(int angle, int x, int y)
+        {
+            switch (angle)
+            {
+                case 0:
+                    y -= 25;
+                    break;
+                case 90:
+                    x += 25;
+                    break;
+                case 180:
+                    y += 25;
+                    break;
+                case 270:
+                    x -= 25;
+                    break;
+            }
+
+            return new Position(x, y);
         }
 
         public void BorderRenderX(Position LastSelected, Position CurrentSelected, String Direction)
@@ -332,26 +315,18 @@ namespace Designer.ViewModel
             // controleer of de linkermuisknop ingedrukt werdt
             if (e.LeftButton == MouseButtonState.Pressed)
             {
-                if(AddWindowsChecked && _activeFrame != null)
+                if(WithinSelectedPoints(x, y) && _activeFrame != null)
                 {
-                    _activeFrame.Type = FrameTypes.Window;
-                    if(FramePoints.Contains(_activeFrame))
+                    if (AddWindowsChecked)
                     {
-                        FramePoints.Remove(_activeFrame);
-                    } else
+                        _activeFrame.Type = FrameTypes.Window;
+                    } else if(AddDoorsChecked)
                     {
-                        FramePoints.Add(_activeFrame);
+                        _activeFrame.Type = FrameTypes.Door;
                     }
-                    _activeFrame = null;
-                    return;
-                }
 
-                if (AddDoorsChecked && _activeFrame != null)
-                {
-                    _activeFrame.Type = FrameTypes.Door;
                     if (FramePoints.Contains(_activeFrame))
                     {
-                        Debug.WriteLine(_activeFrame.AttachedPosition);
                         FramePoints.Remove(_activeFrame);
                     }
                     else
@@ -361,7 +336,6 @@ namespace Designer.ViewModel
                     _activeFrame = null;
                     return;
                 }
-
 
                 // als er een vorig item geselcteerd is
                 else if (!LastSelected.Y.Equals(-1))
