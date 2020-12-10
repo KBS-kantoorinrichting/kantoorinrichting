@@ -85,7 +85,6 @@ namespace Designer.ViewModel
                 return (int)(reversedIncrement / ProductPlacements.Count * 100);
             }
         }
-        public string prefix { get; set; } = "";
         public int VentilationScore { get; set; } = 80;
         public int RouteScore { get; set; } = 20;
         public double Scale = 1.0;
@@ -106,9 +105,9 @@ namespace Designer.ViewModel
         }
 
         private Position _origin;
-        private Position _pOrigin;
+        //private Position _pOrigin;
         private Position _secondPoint;
-        private Position _pSecondPoint;
+        //private Position _pSecondPoint;
         private DistanceLine _distanceLine;
         private DistanceLine _plexiLine;
 
@@ -140,7 +139,7 @@ namespace Designer.ViewModel
             _productOverview = new Dictionary<Product, ProductData>();
 
             _distanceLine = new DistanceLine(null, null);
-            _plexiLine = new DistanceLine(null, null);
+            _plexiLine = new DistanceLine(null, null, "(Plexiglas)");
         }
 
         public void StartMeasure()
@@ -152,8 +151,9 @@ namespace Designer.ViewModel
         }
         public void StartPlexiglass()
         {
-            _pOrigin = null;
-            _pSecondPoint = null;
+            // initializeerd de waardes gebruikt voor het plaatsen van plexiglas
+            _origin = null;
+            _secondPoint = null;
         }
 
         public void Clear()
@@ -234,11 +234,14 @@ namespace Designer.ViewModel
         private void PlacePointPlexi(MouseButtonEventArgs eventArgs) {
             Point p = eventArgs.GetPosition(Editor);
 
-            if (_pOrigin == null || _pSecondPoint != null) {
-                _pOrigin = new Position((int) p.X, (int) p.Y);
-                _pSecondPoint = null;
+            if (_origin == null || _secondPoint != null) {
+                _origin = new Position((int) p.X, (int) p.Y);
+                _secondPoint = null;
             } else {
-                _pSecondPoint = new Position((int) p.X, (int) p.Y);
+                _secondPoint = new Position((int) p.X, (int) p.Y);
+                _plexiLine = new DistanceLine(_origin, _secondPoint, "(Plexiglas)");
+                PlexiLines.Add(_plexiLine);
+
                 PEnabled = false;
                 OnPropertyChanged();
             }
@@ -259,8 +262,7 @@ namespace Designer.ViewModel
             if (!_plexiLine.Shows) _plexiLine.Add(Editor);
             _plexiLine.P1 = p1;
             _plexiLine.P2 = p2;
-            PlexiLines.Add( _plexiLine);
-            _plexiLine = new DistanceLine(p1, p2);
+           // _plexiLine.Remove(Editor);
         }
 
         public void HandleMouseMove(MouseEventArgs eventArgs)
@@ -281,9 +283,9 @@ namespace Designer.ViewModel
                 RenderDistance(_origin, _secondPoint ?? new Position((int) p.X, (int) p.Y));
             }
 
-            if (PEnabled && _pOrigin != null)
+            if (PEnabled && _origin != null)
             {
-                RenderPlexiglass(_pOrigin, _pSecondPoint ?? new Position((int) p.X, (int) p.Y));
+                RenderPlexiglass(_origin, _secondPoint ?? new Position((int) p.X, (int) p.Y));
             }
             
             
@@ -848,6 +850,7 @@ namespace Designer.ViewModel
         private Line _line;
         private Line _line2;
         private TextBlock _textBlock;
+        private string _prefix;
         private Position _p1;
         private Position _p2;
 
@@ -881,6 +884,18 @@ namespace Designer.ViewModel
             _line = new Line();
             _line2 = new Line();
             _textBlock = new TextBlock();
+            _prefix = "";
+            
+        }
+
+        public DistanceLine(Position p1, Position p2, string prefix)
+        {
+            _p1 = p1;
+            _p2 = p2;
+            _line = new Line();
+            _line2 = new Line();
+            _textBlock = new TextBlock();
+            _prefix = prefix;
         }
 
         public void Add(Canvas editor)
@@ -960,11 +975,11 @@ namespace Designer.ViewModel
         {
             if (distance < 100)
             {
-                return prefix + distance.ToString("F0") + " cm";
+                return _prefix + distance.ToString("F0") + " cm";
             }
             else
             {
-                return prefix + (distance / 100).ToString("F2") + " m";
+                return _prefix + (distance / 100).ToString("F2") + " m";
             }
         }
 
