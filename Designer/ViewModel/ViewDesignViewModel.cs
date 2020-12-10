@@ -94,6 +94,23 @@ namespace Designer.ViewModel
         private double _canvasWidth => Navigator.Instance.CurrentPage.ActualWidth - 260;
         private readonly MatrixTransform _transform = new MatrixTransform();
         private Point _initialMousePosition;
+        
+        public List<DistanceLine> PlexiLines  = new List<DistanceLine>();
+
+        private bool _enabled;
+        public bool PEnabled { get; set; }
+        public bool Enabled
+        {
+            get => _enabled;
+            set => _enabled = value;
+        }
+
+        private Position _origin;
+        private Position _pOrigin;
+        private Position _secondPoint;
+        private Position _pSecondPoint;
+        private DistanceLine _distanceLine;
+        private DistanceLine _plexiLine;
 
         //Special constructor for unit tests
         public ViewDesignViewModel(Design design)
@@ -123,19 +140,8 @@ namespace Designer.ViewModel
             _productOverview = new Dictionary<Product, ProductData>();
 
             _distanceLine = new DistanceLine(null, null);
+            _plexiLine = new DistanceLine(null, null);
         }
-
-        private bool _enabled;
-
-        public bool Enabled
-        {
-            get => _enabled;
-            set => _enabled = value;
-        }
-
-        private Position _origin;
-        private Position _secondPoint;
-        private DistanceLine _distanceLine;
 
         public void StartMeasure()
         {
@@ -146,10 +152,8 @@ namespace Designer.ViewModel
         }
         public void StartPlexiglass()
         {
-            if (!_enabled) return;
-            _distanceLine.Remove(Editor);
-            _origin = null;
-            _secondPoint = null;
+            _pOrigin = null;
+            _pSecondPoint = null;
         }
 
         public void Clear()
@@ -224,6 +228,22 @@ namespace Designer.ViewModel
                 _enabled = false;
                 OnPropertyChanged();
             }
+            
+            
+        }
+        private void PlacePointPlexi(MouseButtonEventArgs eventArgs) {
+            Point p = eventArgs.GetPosition(Editor);
+
+            if (_pOrigin == null || _pSecondPoint != null) {
+                _pOrigin = new Position((int) p.X, (int) p.Y);
+                _pSecondPoint = null;
+            } else {
+                _pSecondPoint = new Position((int) p.X, (int) p.Y);
+                PEnabled = false;
+                OnPropertyChanged();
+            }
+            
+            
         }
 
         public void RenderDistance(Position p1, Position p2)
@@ -232,12 +252,15 @@ namespace Designer.ViewModel
             _distanceLine.P1 = p1;
             _distanceLine.P2 = p2;
         }
-
+        
         public void RenderPlexiglass(Position p1, Position p2)
         {
-            if (!_distanceLine.Shows) _distanceLine.Add(Editor);
-            _distanceLine.P1 = p1;
-            _distanceLine.P2 = p2;
+            bool IsDrawn = false;
+            if (!_plexiLine.Shows) _plexiLine.Add(Editor);
+            _plexiLine.P1 = p1;
+            _plexiLine.P2 = p2;
+            PlexiLines.Add( _plexiLine);
+            _plexiLine = new DistanceLine(p1, p2);
         }
 
         public void HandleMouseMove(MouseEventArgs eventArgs)
@@ -252,10 +275,20 @@ namespace Designer.ViewModel
                 Editor.RenderTransform = _transform;
             }
 
-            if (!_enabled || _origin == null) return;
-
             Point p = eventArgs.GetPosition(Editor);
-            RenderDistance(_origin, _secondPoint ?? new Position((int)p.X, (int)p.Y));
+            if (_enabled && _origin != null)
+            {
+                RenderDistance(_origin, _secondPoint ?? new Position((int) p.X, (int) p.Y));
+            }
+
+            if (PEnabled && _pOrigin != null)
+            {
+                RenderPlexiglass(_pOrigin, _pSecondPoint ?? new Position((int) p.X, (int) p.Y));
+            }
+            
+            
+            
+           
         }
 
         private List<DistanceLine> _coronaLines = new List<DistanceLine>();
@@ -416,6 +449,13 @@ namespace Designer.ViewModel
                     PlacePoint(e);
                     return;
                 }
+
+                if (PEnabled)
+                {
+                    PlacePointPlexi(e);
+                    return;
+                }
+                
 
                 if (sender.GetType() != typeof(Image)) return;
                 var image = sender as Image;

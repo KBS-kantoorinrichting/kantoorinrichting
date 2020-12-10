@@ -179,7 +179,7 @@
                 <Grid Background="#FFE5E5E5" >
                     <StackPanel>
                         <ToggleButton Content="Meetlat" VerticalAlignment="Top" Command="{Binding Measure}" IsChecked="{Binding Enabled, Mode=TwoWay}"/>
-                        <ToggleButton Content="Plaats Plexiglas" VerticalAlignment="Top" Command="{Binding Plexiglass}" IsChecked="{Binding Enabled, Mode=TwoWay}"/>
+                        <ToggleButton Content="Plaats Plexiglas" VerticalAlignment="Top" Command="{Binding Plexiglass}" IsChecked="{Binding PEnabled, Mode=TwoWay}"/>
                         <Button Content="GENERATE!!!!!" VerticalAlignment="Top" Command="{Binding Layout}" />
                         <Button Content="Verwijder alles" VerticalAlignment="Top" Command="{Binding ClearProducts}" />
                         <Label Content="Anderhalve meter score" />
