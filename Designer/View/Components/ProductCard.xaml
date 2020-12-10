@@ -37,14 +37,15 @@
                                 
                                 <StackPanel Orientation="Horizontal">
                                 <Button
-                                    Style="{StaticResource MaterialDesignFlatButton}"
+                                    Style="{StaticResource MaterialDesignRaisedButton}"
                                     Command="{Binding ElementName=viewModel, Path=EditCommand}"
                                     CommandParameter="{Binding Id}"
-                                    Margin="0 4 0 0"
+                                    Margin="0 4 5 0"
                                     Content="EDIT"/>
                                 <Button
-                                    Style="{StaticResource MaterialDesignFlatButton}"
-                                    Foreground="Red"
+                                    Style="{StaticResource MaterialDesignRaisedButton}"
+                                    Background="Red"
+                                    BorderBrush="Red"
                                     Command="{Binding ElementName=viewModel, Path=DeleteCommand}"
                                     CommandParameter="{Binding Id}"
                                     Margin="0 4 0 0"

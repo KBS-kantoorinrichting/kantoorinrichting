@@ -20,7 +20,7 @@
                 VerticalAlignment="Stretch">
                 <TextBlock
                     Margin="10,10,0,10"
-                    Style="{StaticResource MaterialDesignSubtitle1TextBlock}">
+                    Style="{StaticResource MaterialDesignHeadline5TextBlock}">
                     Voeg product toe
                 </TextBlock>
             </materialDesign:ColorZone>
