@@ -16,6 +16,7 @@ using Models;
 using Models.Utils;
 using Services;
 using Polygon = System.Windows.Shapes.Polygon;
+using System.Diagnostics;
 
 namespace Designer.ViewModel
 {
@@ -240,6 +241,7 @@ namespace Designer.ViewModel
                 _secondPoint = new Position((int) p.X, (int) p.Y);
                 _plexiLine = new DistanceLine(_origin, _secondPoint, "(Plexiglas)");
                 PlexiLines.Add(_plexiLine);
+                Design.Plexiglass = FromList(PlexiLines);
 
                 PEnabled = false;
                 OnPropertyChanged();
@@ -836,6 +838,20 @@ namespace Designer.ViewModel
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
+
+
+        public static string FromList(List<DistanceLine> distancelines)
+        {
+            string returnstring = "";
+            if (distancelines == null) return null;
+            //IEnumerable<Position> enumerable = positions.ToList();
+            foreach ( DistanceLine position in distancelines)
+            {
+                returnstring = $"{returnstring}  {position.P1} ; {position.P2} |"; 
+            }
+        return returnstring;
+        }
+
     }
 
     public class ProductData
@@ -843,6 +859,8 @@ namespace Designer.ViewModel
         public int Total { get; set; }
         public double TotalPrice { get; set; }
     }
+
+
 
     public class DistanceLine
     {

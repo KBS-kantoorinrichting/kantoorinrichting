@@ -7,6 +7,7 @@ namespace Models {
         [Column("DesignId")] public int Id { get; set; }
 
         public string Name { get; set; }
+        public string Plexiglass { get; set; }
 
         public int RoomId { get; set; }
         public Room Room { get; set; }
@@ -15,12 +16,13 @@ namespace Models {
 
         public Design() { }
 
-        public Design(string name, Room room, List<ProductPlacement> productPlacements) {
+        public Design(string name, Room room, List<ProductPlacement> productPlacements, string plexiglass) {
             Name = name;
+            Plexiglass = plexiglass;
             Room = room;
             ProductPlacements = productPlacements;
         }
 
-        protected override ITuple Variables => (Id, Name, RoomId, Room, ProductPlacements);
+        protected override ITuple Variables => (Id, Name, RoomId, Room, ProductPlacements, Plexiglass);
     }
 }
