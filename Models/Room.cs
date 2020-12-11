@@ -42,8 +42,7 @@ namespace Models {
             Positions = positions;
         }
 
-        public Room(string name, string positions, List<RoomPlacement> roomPlacements) : this(name, positions)
-        {
+        public Room(string name, string positions, List<RoomPlacement> roomPlacements) : this(name, positions) {
             RoomPlacements = roomPlacements;
         }
 

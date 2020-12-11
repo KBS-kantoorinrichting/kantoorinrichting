@@ -99,6 +99,17 @@ namespace Designer.ViewModel {
             RenderRoom();
         }
 
+        public void RenderRoomFrames()
+        {
+            if(Design.Room.RoomPlacements != null)
+            {
+                foreach (RoomPlacement frame in Design.Room.RoomPlacements)
+                {
+                    //Position framePosition = Room.ToList(frame);
+                }
+            }
+        }
+
         public void GenerateLayout() {
             // ProductPlacements.Clear();
 

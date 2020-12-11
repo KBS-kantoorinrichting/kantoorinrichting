@@ -20,11 +20,11 @@ namespace Designer.ViewModel
     public class RoomEditorViewModel : INotifyPropertyChanged
     {
         public string Name { get; set; }
-        public List<Line> GridLines = new List<Line>();
+        public List<Line> GridLines { get; set; }
         public List<Position> Points = new List<Position>();
         public List<Position> SelectedPoints = new List<Position>();
         public List<Position> BorderPoints = new List<Position>();
-        public Dictionary<Position, System.Windows.Shapes.Rectangle> RectangleDictionary = new Dictionary<Position, System.Windows.Shapes.Rectangle>();
+        public Dictionary<Position, Rectangle> RectangleDictionary { get; set; }
         public Canvas Editor { get; set; }
         public Position LastSelected { get; set; } = new Position(-1, -1);
         public Position LastHoveredRectangle { get; set; }
@@ -45,8 +45,16 @@ namespace Designer.ViewModel
         private double CanvasHeight = 500;
         private double CanvasWidth = 1280;
 
+        // Constructor specially for unit testing
+        public RoomEditorViewModel(string name) 
+        {
+            Name = name;
+        }
+
         public RoomEditorViewModel()
         {
+            GridLines = new List<Line>();
+            RectangleDictionary = new Dictionary<Position, Rectangle>();
             Submit = new BasicCommand(SubmitRoom);
             MouseOverCommand = new ArgumentCommand<MouseEventArgs>(e => MouseMove(e.OriginalSource, e));
             MouseDownCommand = new ArgumentCommand<MouseButtonEventArgs>(e => MouseClick(e.OriginalSource, e));
@@ -79,7 +87,7 @@ namespace Designer.ViewModel
             List<RoomPlacement> framePositions = new List<RoomPlacement>();
             foreach (Frame frame in FramePoints)
             {
-                framePositions.Add(new RoomPlacement(Room.FromDimensions(frame.X - smallestposition.X, frame.Y - smallestposition.Y), frame.Rotation));
+                framePositions.Add(new RoomPlacement(Room.FromDimensions(frame.X - smallestposition.X, frame.Y - smallestposition.Y), frame.Rotation, frame.Type));
             }
 
             Room room = new Room(Name, Room.FromList(OffsetPositions), framePositions);
@@ -256,7 +264,7 @@ namespace Designer.ViewModel
             }
         }
 
-        private Position CalculateNextPositionFromAngle(int angle, int x, int y)
+        public Position CalculateNextPositionFromAngle(int angle, int x, int y)
         {
             switch (angle)
             {
@@ -498,12 +506,6 @@ namespace Designer.ViewModel
 
             return valid;
         }
-    }
-
-    public enum FrameTypes
-    {
-        Door,
-        Window
     }
 
     public class Frame : Position

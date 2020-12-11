@@ -1,5 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Diagnostics;
 using System.Linq;
 using System.Runtime.CompilerServices;
 
@@ -31,43 +33,40 @@ namespace Models
             }
         }
 
-        protected override ITuple Variables => (Id, RoomId, Room, Positions, Rotation);
+        [Column("Type")]
+        public string TypeString
+        {
+            get { return Type.ToString(); }
+            private set { Type = (FrameTypes)Enum.Parse(typeof(FrameTypes), value, true); }
+        }
+
+        [NotMapped]
+        public FrameTypes Type { get; set; }
+
+        protected override ITuple Variables => (Id, RoomId, Room, Positions, Rotation, Type);
 
         private Polygon _polygon;
 
-        public RoomPlacement(string positions, int rotation)
+        public RoomPlacement() { }
+
+        public RoomPlacement(string positions, int rotation, FrameTypes type)
         {
             Positions = positions;
             Rotation = rotation;
+            Type = type;
         }
 
-        public RoomPlacement(Room room, string positions, int rotation)
+        public RoomPlacement(Room room, string positions, int rotation, FrameTypes type) : this(positions, rotation, type)
         {
             Room = room;
-            Positions = positions;
-            Rotation = rotation;
         }
 
         public Polygon GetPoly() { return _polygon; }
+    }
 
-        public static List<Position> ToList(string positions)
-        {
-            return positions switch
-            {
-                null => null,
-                "" => new List<Position>(),
-                _ => positions.Split("|").Select(p => new Position(p)).ToList()
-            };
-        }
-
-        public static string FromList(IEnumerable<Position> positions)
-        {
-            if (positions == null) return null;
-            IEnumerable<Position> enumerable = positions.ToList();
-
-            if (!enumerable.Any()) return "";
-            return enumerable.Select(p => p.ToString())
-                .Aggregate((s1, s2) => $"{s1}|{s2}");
-        }
+    public enum FrameTypes
+    {
+        Door,
+        Window
     }
 }
