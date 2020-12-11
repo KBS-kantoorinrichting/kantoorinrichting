@@ -235,6 +235,7 @@ namespace Designer.ViewModel
         }
         private void PlacePointPlexi(MouseButtonEventArgs eventArgs) {
             Point p = eventArgs.GetPosition(Editor);
+            
 
             if (_origin == null || _secondPoint != null) {
                 _origin = new Position((int) p.X, (int) p.Y);
@@ -244,7 +245,7 @@ namespace Designer.ViewModel
                 _plexiLine = new DistanceLine(_origin, _secondPoint, "(Plexiglas)");
                 PlexiLines.Add(_plexiLine);
                 Design.Plexiglass = FromList(PlexiLines);
-
+                PlexiLines = ToList(Design.Plexiglass);
                 PEnabled = false;
                 OnPropertyChanged();
             }
@@ -261,7 +262,6 @@ namespace Designer.ViewModel
         
         public void RenderPlexiglass(Position p1, Position p2)
         {
-            bool IsDrawn = false;
             if (!_plexiLine.Shows) _plexiLine.Add(Editor);
             _plexiLine.P1 = p1;
             _plexiLine.P2 = p2;
@@ -361,6 +361,8 @@ namespace Designer.ViewModel
         {
             Design = design;
             ProductPlacements = design.ProductPlacements;
+            PlexiLines = ToList(Design.Plexiglass);
+            Console.WriteLine(PlexiLines.Count);
             ProductPlacements ??= new List<ProductPlacement>();
             _productOverview = new Dictionary<Product, ProductData>();
             //Wanneer niet in test env render die de ruimte
@@ -371,6 +373,7 @@ namespace Designer.ViewModel
                 RenderRoom();
 
                 ProductPlacements.ForEach(p => CheckCorona(p));
+                PlexiLines.ForEach(p => p.Add(Editor));
 
                 // Zet de schaal van de ruimte op basis van de dimensies, dit moet na het zetten van het design
                 SetRoomScale();
@@ -849,9 +852,32 @@ namespace Designer.ViewModel
             //IEnumerable<Position> enumerable = positions.ToList();
             foreach ( DistanceLine position in distancelines)
             {
-                returnstring = $"{returnstring}  {position.P1} ; {position.P2} |"; 
+                returnstring = $"{returnstring}{position.P1};{position.P2}|"; 
             }
         return returnstring;
+        }
+
+        public static List<DistanceLine> ToList(string DistanceLines) {
+            switch(DistanceLines) {
+                case null:
+                case "": {
+                    return new List<DistanceLine>();
+                }
+                default: {
+                    var list = new List<DistanceLine>();
+                    var lines = DistanceLines.Split("|").ToList();
+                    foreach(var line in lines){
+                        if(line == "") continue;
+                        var positions = line.Split(";")
+                        .Select(p => p.Split(",").Select(Int32.Parse).ToList())
+                        .Select(p => new Position(p[0], p[1]))
+                        .ToList();
+                        list.Add(new DistanceLine(positions[0], positions[1]));
+                        
+                    }
+                    return list;
+                }  
+            };
         }
 
     }
