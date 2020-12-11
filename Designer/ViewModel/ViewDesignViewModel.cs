@@ -16,7 +16,6 @@ using Models;
 using Models.Utils;
 using Services;
 using Polygon = System.Windows.Shapes.Polygon;
-using System.Diagnostics;
 
 namespace Designer.ViewModel {
     public class ViewDesignViewModel : INotifyPropertyChanged {

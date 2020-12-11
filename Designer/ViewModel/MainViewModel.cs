@@ -32,14 +32,14 @@ namespace Designer.ViewModel {
                 return DesignCatalog;
             });
             GotoHome = new PageCommand(() => new HomeView());
-            GotoRooms = new PageCommand(() => new RoomEditorView());
+            GotoRooms = new PageCommand(() => new RoomOverview());
             GotoProducts = new PageCommand(() => new ViewProductsView());
             GotoExample = new PageCommand(() => new ExamplePage());
             //Slaat alle aanpassing op
             Save = new BasicCommand(() => DesignService.Instance.SaveChanges());
             Exit = new BasicCommand(() => Application.Current.Shutdown());
         }
-
+       
         private void OnPropertyChanged(string propertyName = "") {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
