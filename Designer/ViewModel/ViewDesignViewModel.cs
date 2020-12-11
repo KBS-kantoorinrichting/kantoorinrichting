@@ -119,6 +119,7 @@ namespace Designer.ViewModel {
         private Position _secondPoint;
         private DistanceLine _distanceLine;
 
+        //Verwijder de lijn als er al een meetlat was
         public void StartMeasure() {
             if (!Enabled) return;
             _distanceLine.Remove(Editor);
@@ -133,6 +134,9 @@ namespace Designer.ViewModel {
             set => Design.Route = value?.Convert();
         }
 
+        /**
+         * Verwijderd de route
+         */
         public void DeleteRoute() {
             _route = null;
             ShowRoute();
@@ -140,17 +144,23 @@ namespace Designer.ViewModel {
 
         List<DistanceLine> _routeLines = new List<DistanceLine>();
         List<Ellipse> _ellipses = new List<Ellipse>();
-
+        
+        /**
+         * Tekent de volledige route
+         */
         public void ShowRoute() {
+            //Verwijderd eerst de volledige lijn
             _routeLines.ForEach(l => l.Remove(Editor));
             _routeLines.Clear();
             _ellipses.ForEach(Editor.Children.Remove);
             _ellipses.Clear();
             if (_route == null) return;
+            //Tekend de volledige lijn
             foreach ((Position p1, Position p2) in _route.GetLines()) {
                 _routeLines.Add(new DistanceLine(p1, p2));
             }
 
+            //Tekend alle hoek punten
             for (int index = 0; index < _route.Count; index++) {
                 Position position = _route[index];
                 int size = 10;
@@ -169,11 +179,15 @@ namespace Designer.ViewModel {
             }
 
             _routeLines.ForEach(l => l.Add(Editor));
-            
+
+            //Controlleerd alle plaatsing tegen over de route
             _fakeRoute.poly = _route;
             CheckCorona(_fakeRoute);
         }
 
+        /**
+         * Verwijderd alle plaatsingen
+         */
         public void Clear() {
             ProductPlacements.ForEach(RemoveCorona);
             ProductPlacements.Clear();
@@ -181,26 +195,35 @@ namespace Designer.ViewModel {
             RenderRoom();
         }
 
+        /**
+         * Loopt alle mogelijke plaatsingen door om vervolgens de kamer zo vol mogelijk te krijgen
+         */
         public void GenerateLayout() {
-            // ProductPlacements.Clear();
-
             Models.Polygon room = Design.Room.GetPoly();
+            //TODO Pakt momententeel nog het eerste product om te plaatsen
             Product product = Products.First();
 
+            //Pakt de minimale en maximale punten
             Position min = room.Min();
             Position max = room.Max();
 
+            //Berekend de afstand per stap door middel van de afstand tussen de 2 boudning hoeken punten,
+            //als dit te groot wordt pakt die de product lengte of hoogte ligt er aan welke kleiner is 
             int accuracy = Math.Min((int) min.Distance(max) / 200, Math.Min(product.Length, product.Width));
 
+            //Maakt een nieuwe thread aan waar de dingen gecontrolleerd worden zodat je live de producten ziet plaatsen
             new Thread(
                 () => {
+                    //Loopt door alle coordinaten binnen de ruimte boudning box heen met stappen van accuracy
                     for (int y = min.Y + 1; y < max.Y; y += accuracy) {
                         for (int x = min.X + 1; x < max.X; x += accuracy) {
                             Position position = new Position(x, y);
 
+                            //Als het punt binnen de ruimte zit controlleerd die of deze genoeg afstand heeft van alles
                             if (room.Inside(product.GetPoly().Offset(position))) {
-                                ProductPlacement placement = new ProductPlacement(position, Products.First(), null);
+                                ProductPlacement placement = new ProductPlacement(position, product, null);
                                 bool success = true;
+                                //Loopt alle plaatsingen langs om te kijken of die veilig is om te plaatsen
                                 for (int i = 0; i < ProductPlacements.Count; i++) {
                                     ProductPlacement place = ProductPlacements[i];
                                     if (place.GetPoly().IsSafe(placement.GetPoly())) continue;
@@ -209,28 +232,38 @@ namespace Designer.ViewModel {
                                     break;
                                 }
 
+                                //Kijkt of die ver genoeg van de lijn is
                                 if (success && _route != null && _route.Count >= 2) {
                                     (Position p1, Position p2) = placement.GetPoly().MinDistance(_route);
                                     if (p1.Distance(p2) < 150) success = false;
                                 }
 
+                                //Als dit allemaal klopt voegd die het product toe;
                                 if (success) {
                                     ProductPlacements.Add(placement);
 
                                     AddToOverview(placement.Product);
 
-                                    Editor.Dispatcher.Invoke(RenderRoom);
+                                    Editor.Dispatcher.Invoke(
+                                        () => {
+                                            DrawProduct(placement, ProductPlacements.IndexOf(placement));
+                                        });
                                 }
                             }
                         }
                     }
+                    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(""));
                 }
             ).Start();
         }
 
+        /**
+         * Plaats het begin punt of het tweede punt van de meetlat
+         */
         private void PlacePoint(MouseButtonEventArgs eventArgs) {
             Point p = eventArgs.GetPosition(Editor);
 
+            //Als er nog geen begin is of al een volledige lijn zet die het begin punt anders het tweede punt
             if (_origin == null || _secondPoint != null) {
                 _origin = new Position((int) p.X, (int) p.Y);
                 _secondPoint = null;
@@ -241,18 +274,30 @@ namespace Designer.ViewModel {
             }
         }
 
+        /**
+         * Plaatst een nieuwe hoek punt voor de route
+         */
         private void PlaceRoutePoint(MouseButtonEventArgs eventArgs) {
             Point p = eventArgs.GetPosition(Editor);
+            //De hoeveelheid pixels waar die naar snapt
             int acc = 1;
-            Position position = new Position((int) (p.X / acc) * acc, (int) (p.Y / acc) * acc);
+            //Rond de lijn af op een accuracy
+            Position position = new Position((int) Math.Round(p.X / acc) * acc, (int) Math.Round(p.Y / acc) * acc);
+            //Als het nieuwe punt buiten de ruimte zit stopt die
             if (!Design.Room.GetPoly().Inside(position)) return;
+            
+            //Voegt het nieuwe punt toe aan het begin van de route
             List<Position> positions = new List<Position> {position};
             if (_route != null) positions.AddRange(_route);
             _route = new Models.Polygon(positions);
             ShowRoute();
         }
 
+        /**
+         * Tekend de meetlat tussen de 2 locaties
+         */
         public void RenderDistance(Position p1, Position p2) {
+            //Als de lijn nog niet zichtbaar is wordt die zichtbaar
             if (!_distanceLine.Shows) _distanceLine.Add(Editor);
             _distanceLine.P1 = p1;
             _distanceLine.P2 = p2;
@@ -268,50 +313,80 @@ namespace Designer.ViewModel {
                 Editor.RenderTransform = _transform;
             }
 
+            //Wanneer meetlat niet aan staat of er geen begin punt is van de lijn stopt die
             if (!Enabled || _origin == null) return;
 
+            //Tekend tijdelijk de lijn voor waar de muis nu is
             Point p = eventArgs.GetPosition(Editor);
             RenderDistance(_origin, _secondPoint ?? new Position((int) p.X, (int) p.Y));
         }
 
-        private Dictionary<ProductPlacement, Dictionary<ProductPlacement, DistanceLine>> _lines =
+        /**
+         * De graaf waaring alle lijnen worden opgeslagen
+         */
+        private readonly Dictionary<ProductPlacement, Dictionary<ProductPlacement, DistanceLine>> _lines =
             new Dictionary<ProductPlacement, Dictionary<ProductPlacement, DistanceLine>>();
 
-        private FakePlacement _fakeRoute = new FakePlacement();
+        //Nette plaatsing die gebruikt wordt voor de route check
+        private readonly FakePlacement _fakeRoute = new FakePlacement();
 
+        /**
+         * Verwijderd alle corona lijnen tussen deze plaatsing en alle andere
+         */
         public void RemoveCorona(ProductPlacement removed) {
             if (removed == null) return;
             if (!_lines.ContainsKey(removed)) return;
 
+            //Gaat door alle lijnen heen waar die ooit gemaakt zijn
             foreach (KeyValuePair<ProductPlacement, DistanceLine> entry in _lines[removed]) {
+                //Verwijderd de connectie naar deze deze plaatsing
                 _lines[entry.Key].Remove(removed);
-                entry.Value.Remove(Editor);
+                //Verwijderd deze lijnen van het scherm
+                if (entry.Value.Shows) entry.Value.Remove(Editor);
             }
+
+            _lines.Remove(removed);
         }
 
+        /**
+         * Controlleerd het veranderde product tegen alle andere plaatsing, hier slaat die skip over
+         */
         public void CheckCorona(ProductPlacement changed, ProductPlacement skip = null) {
-            if (changed == null) return;
+            if (changed?.GetPoly() == null) return;
             if (!_lines.ContainsKey(changed)) {
                 _lines[changed] = new Dictionary<ProductPlacement, DistanceLine>();
             }
 
-            for (int i = 0; i < ProductPlacements.Count; i++) {
-                ProductPlacement placement = ProductPlacements[i];
-                if (Equals(placement, changed) || skip != null && Equals(placement, skip)) continue;
+            //Voegd route toe aan de placements zodat deze ook gecontrolleerd wordt
+            List<ProductPlacement> toCheck = new List<ProductPlacement>(ProductPlacements);
+            if (_route != null && _route.Count >= 2) toCheck.Add(_fakeRoute);
+
+            //Gaat door alle producten heen behalve zichzelf en skip
+            foreach (ProductPlacement placement in toCheck) {
+                if (Equals(placement, changed) || (skip != null && Equals(placement, skip)) || placement.GetPoly() == null) continue;
+                
+                //Controlleerd door middel van snelle minder accuraten functies hoe het nodig is om te checken
                 (bool needed, bool safe) = placement.GetPoly().PreciseNeeded(changed.GetPoly(), 150);
                 if (!needed && safe) continue;
 
+                //Kijkt accuraat wat de afstand is
                 (Position p1, Position p2) = placement.GetPoly().MinDistance(changed.GetPoly());
+                
+                //Maakt een nieuwe lijn aan als deze nog niet bestond en anders pakt die de oude lijn
                 DistanceLine line = _lines[changed].ContainsKey(placement)
                     ? _lines[changed][placement]
                     : new DistanceLine(null, null);
 
+                //Vervangt de lijn met de vorige
                 _lines[changed][placement] = line;
+                
+                //Als de mee vergelijken nog niet bestaat wordt deze aan gemaakt
                 if (!_lines.ContainsKey(placement))
                     _lines[placement] = new Dictionary<ProductPlacement, DistanceLine>();
-
+                //Zet de referencitie naar de lijn vanaf de andere kant, dit maakt een soort graaf
                 _lines[placement][changed] = line;
 
+                //Als het binnen de bepaalde afstand zit wordt de lijn getekend en anders weggehaalt
                 if (p1.Distance(p2) >= 150) {
                     line.Remove(Editor);
                 } else {
@@ -319,26 +394,6 @@ namespace Designer.ViewModel {
                     line.P2 = p2;
 
                     if (!line.Shows) line.Add(Editor);
-                }
-            }
-
-            if (_route != null && _route.Count >= 2) {
-                (Position p1, Position p2) = changed.GetPoly().MinDistance(_route);
-
-                if (!_lines.ContainsKey(_fakeRoute))
-                    _lines[_fakeRoute] = new Dictionary<ProductPlacement, DistanceLine>();
-
-                DistanceLine line = _lines[_fakeRoute].ContainsKey(changed)
-                    ? _lines[_fakeRoute][changed]
-                    : new DistanceLine(null, null);
-
-                if (p1.Distance(p2) < 150) {
-                    line.P1 = p1;
-                    line.P2 = p2;
-                    _lines[_fakeRoute][changed] = line;
-                    if (!line.Shows) line.Add(Editor);
-                } else {
-                    line.Remove(Editor);
                 }
             }
         }
@@ -354,11 +409,12 @@ namespace Designer.ViewModel {
                 SetRoomDimensions();
                 RenderRoom();
 
+                //Tekend de route en alle corona lijnen
                 ProductPlacements.ForEach(p => CheckCorona(p));
+                ShowRoute();
 
                 // Zet de schaal van de ruimte op basis van de dimensies, dit moet na het zetten van het design
                 SetRoomScale();
-                ShowRoute();
             }
 
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(""));
@@ -374,16 +430,18 @@ namespace Designer.ViewModel {
 
             // Add product to product overview
             AddToOverview(product);
-            if (Editor != null) RenderRoom();
+            if (Editor != null) DrawProduct(placement, ProductPlacements.IndexOf(placement));
             if (Editor != null) CheckCorona(placement);
 
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(""));
         }
 
         public void TryToMoveProduct(ProductPlacement placement, int newX, int newY) {
+            //Verwijderd de corona lijnen van de preview
             RemoveCorona(_tempPlacement);
             //Alleen als een object naar het nieuwe punt verplaatst mag worden, wordt het vervangen.
             if (!AllowDrop) {
+                //Tekent de corona lijnen van de orginele plaatsin
                 CheckCorona(placement);
                 return;
             }
@@ -394,10 +452,13 @@ namespace Designer.ViewModel {
             //Zodat het product in het midden van de cursor staat
             placement.X = newX;
             placement.Y = newY;
+            
+            //Verwijderd de corona lijnen van de preview
             RemoveCorona(ProductPlacements[index]);
             //Na het aanpassen wordt het weer toegevoegd om de illusie te geven dat het in de lijst wordt aangepast
             ProductPlacements[index] = placement;
             RenderRoom();
+            //Tekend de nieuw lijnen van de plaatsing
             CheckCorona(placement);
         }
 
@@ -406,9 +467,11 @@ namespace Designer.ViewModel {
             if (e.ChangedButton == MouseButton.Right) {
                 _initialMousePosition = e.GetPosition(Editor);
 
+                //Kaapt het event als er op een hoekpunt van de route is geklikt
                 if (RouteEnabled && sender is Ellipse ellipse) {
                     int pos = int.Parse(ellipse.Uid);
 
+                    //Verwijderd dit hoekpunt
                     List<Position> positions = _route.ToList();
                     positions.RemoveAt(pos);
                     _route = new Models.Polygon(positions);
@@ -442,10 +505,13 @@ namespace Designer.ViewModel {
                     return;
                 }
 
+                //Kaapt het event als looproute aan staat
                 if (RouteEnabled) {
                     if (sender is Ellipse) {
+                        //Verplaatst het hoekpunt waar op geklikt is
                         DragDrop.DoDragDrop(Editor, sender, DragDropEffects.Move);
                     } else {
+                        //Plaats een hoekpunt op de plek waar geklikt is
                         PlaceRoutePoint(e);
                     }
 
@@ -484,6 +550,7 @@ namespace Designer.ViewModel {
             //Als er geen product is geselecteerd, doe niks
             if (e.Data == null) return;
             if (e.Data.GetDataPresent(typeof(Ellipse))) {
+                //Als er een hoek punt van een route wordt versleept kijkt die of deze in de ruimte zit en zo ja past die hem aan
                 Position position = new Position((int) e.GetPosition(Editor).X, (int) e.GetPosition(Editor).Y);
                 if (!Design.Room.GetPoly().Inside(position)) return;
                 int pos = int.Parse(((Ellipse) e.Data.GetData(typeof(Ellipse))).Uid);
@@ -507,6 +574,7 @@ namespace Designer.ViewModel {
                 );
                 RenderRoom();
             }
+            
             //Hier wordt een product dat al in het design zit verplaatst
             else if (e.Data.GetDataPresent(typeof(ProductPlacement))) {
                 ProductPlacement placement = (ProductPlacement) e.Data.GetData(typeof(ProductPlacement));
@@ -520,9 +588,9 @@ namespace Designer.ViewModel {
             }
         }
 
-        private ProductPlacement _tempPlacement = new ProductPlacement();
+        private readonly ProductPlacement _tempPlacement = new ProductPlacement();
 
-        private (Image i, Rectangle r)? _prevPlace = null;
+        private (Image i, Rectangle r)? _prevPlace;
 
         public void CanvasDragOver(object sender, DragEventArgs e) {
             //Controleer of er een product is geselecteerd
@@ -558,6 +626,7 @@ namespace Designer.ViewModel {
             _tempPlacement.X = (int) position.X - _tempPlacement.GetPoly().Width / 2;
             _tempPlacement.Y = (int) position.Y - _tempPlacement.GetPoly().Length / 2;
 
+            //Checkt alleen voor afstand bij de nodige producten
             RemoveCorona(skip);
             CheckCorona(_tempPlacement, skip);
 
@@ -585,12 +654,17 @@ namespace Designer.ViewModel {
 
         private PlacementSelectScreen _screen;
 
+        /**
+         * Rendert alle element in de ruimte opnieuw<br/>
+         * <b>Dit is erg intensief met veel producten</b>
+         */
         private void RenderRoom() {
+            //Verwijder alle oude element op het canvas
             if (_screen != null) {
                 Editor.Children.Remove(_screen);
                 _screen = null;
             }
-
+            
             foreach (Image image in _images.Values) {
                 Editor.Children.Remove(image);
             }
@@ -628,9 +702,12 @@ namespace Designer.ViewModel {
                 OnPropertyChanged();
                 RemoveCorona(placement);
                 Editor.Children.Remove(selectScreen);
+                _screen = null;
+                //Verwijder de opgeslagen elementen
                 Editor.Children.Remove(_images[placement]);
                 Editor.Children.Remove(_rectangles[placement]);
                 _images.Remove(placement);
+                _rectangles.Remove(placement);
             };
             // Sluit de placementselect scherm
             selectScreen.CloseButton.Click += delegate {
@@ -701,6 +778,7 @@ namespace Designer.ViewModel {
                 Width = actualWidth,
             };
 
+            //Slaat de rectangle op met placement als key zodat die makkerlijker te verwijderen is
             _rectangles[placement] = rect;
 
             Canvas.SetTop(rect, y);
@@ -709,8 +787,10 @@ namespace Designer.ViewModel {
             // Voegt het id van het productplacement index in de productplacement list
             image.Uid ??= placementIndex.ToString();
 
+            //Slaat de foto op met placement als key zodat die makkerlijker te verwijderen is
             _images[placement] = image;
 
+            
             return (image, rect);
         }
 
@@ -834,8 +914,7 @@ namespace Designer.ViewModel {
             }
         }
 
-        private bool _shows = false;
-        public bool Shows => _shows;
+        public bool Shows { get; private set; }
 
         public DistanceLine(Position p1, Position p2) {
             _p1 = p1;
@@ -843,33 +922,40 @@ namespace Designer.ViewModel {
             _line = new Line();
             _line2 = new Line();
             _textBlock = new TextBlock();
+
+            _line.Stroke = Brushes.White;
+            _line.StrokeThickness = 3;
+            _line2.Stroke = Brushes.Black;
+            _line2.StrokeThickness = 1;
+            _textBlock.Foreground = new SolidColorBrush(Colors.Black);
+            _textBlock.Background = new SolidColorBrush(Colors.White);
         }
 
+        /**
+         * Renders the line on the canvas
+         */
         public void Add(Canvas editor) {
-            _shows = true;
+            Shows = true;
             editor.Children.Add(_line);
             editor.Children.Add(_line2);
             editor.Children.Add(_textBlock);
             Render();
         }
 
-        public void Render() {
-            _line.Stroke = Brushes.White;
-            _line.StrokeThickness = 3;
-
+        /**
+         * Set stuff that needs the canvas to be used
+         */
+        private void Render() {
             Panel.SetZIndex(_line, 100);
-            _line2.Stroke = Brushes.Black;
-            _line2.StrokeThickness = 1;
-
             Panel.SetZIndex(_line2, 101);
             Panel.SetZIndex(_textBlock, 102);
-
-            _textBlock.Foreground = new SolidColorBrush(Colors.Black);
-            _textBlock.Background = new SolidColorBrush(Colors.White);
 
             UpdatePositions();
         }
 
+        /**
+         * Updates the lines so that they reflect P1 and P2
+         */
         private void UpdatePositions() {
             if (P1 == null || P2 == null) return;
             _line.X1 = P1.X;
@@ -887,8 +973,8 @@ namespace Designer.ViewModel {
             Size size = MeasureString();
 
             double dx = size.Width / 2;
-            double dy = size.Height / 2;
 
+            //Calculate the rotation by use of atan2
             double radians = Math.Atan2(P2.Y - P1.Y, P2.X - P1.X);
             double degrees = ConvertRadiansToDegrees(radians);
             _textBlock.RenderTransform = new RotateTransform(degrees, dx, 0);
@@ -897,6 +983,9 @@ namespace Designer.ViewModel {
             Canvas.SetTop(_textBlock, center.Y - 0);
         }
 
+        /**
+         * Measaures the length of the text, this is needed to properly rotate the text block
+         */
         private Size MeasureString() {
             var formattedText = new FormattedText(
                 _textBlock.Text,
@@ -914,21 +1003,30 @@ namespace Designer.ViewModel {
             return new Size(formattedText.Width, formattedText.Height);
         }
 
-        private string FormatText(double distance) {
+        /**
+         * Generate the text is the correct format
+         */
+        private static string FormatText(double distance) {
             if (distance < 100) {
                 return distance.ToString("F0") + " cm";
-            } else {
-                return (distance / 100).ToString("F2") + " m";
             }
+
+            return (distance / 100).ToString("F2") + " m";
         }
 
+        /**
+         * Removes the lines and text from the canvas
+         */
         public void Remove(Canvas editor) {
-            _shows = false;
+            Shows = false;
             editor.Children.Remove(_line);
             editor.Children.Remove(_line2);
             editor.Children.Remove(_textBlock);
         }
 
+        /**
+         * Converts radians to degrees
+         */
         private static double ConvertRadiansToDegrees(double radians) {
             double degrees = 180 / Math.PI * radians;
             if (degrees > 90) return degrees + 180;
@@ -937,7 +1035,8 @@ namespace Designer.ViewModel {
         }
     }
 
-    class FakePlacement : ProductPlacement {
+    //Holder for a polygon as placement, so this works with the distance check method
+    internal class FakePlacement : ProductPlacement {
         public Models.Polygon poly { get; set; }
 
         public override Models.Polygon GetPoly() => poly;
