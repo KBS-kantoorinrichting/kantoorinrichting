@@ -24,7 +24,7 @@
             <ColumnDefinition Width="240" />
         </Grid.ColumnDefinitions>
         <Canvas Grid.Column="0" Name="Editor" AllowDrop="True" Background="Transparent" HorizontalAlignment="Stretch" Margin="10">
-            <ContentPresenter Content="{Binding Path=Editor}"></ContentPresenter>
+            <ContentPresenter Content="{Binding Path=Editor}" />
             <behaviors:Interaction.Triggers>
                 <behaviors:EventTrigger EventName="Drop" SourceObject="{Binding ElementName=Editor}">
                     <behaviors:InvokeCommandAction Command="{Binding DragDropCommand}" PassEventArgsToCommand="True" />
@@ -171,7 +171,7 @@
                             </ItemsControl.ItemTemplate>
                         </ItemsControl>
                     </ScrollViewer>
-                    <TextBlock Text="{Binding TotalPrice, StringFormat='Totaal: €{0}'}" VerticalAlignment="Bottom" Margin="5,0,0,25"></TextBlock>
+                    <TextBlock Text="{Binding TotalPrice, StringFormat='Totaal: €{0}'}" VerticalAlignment="Bottom" Margin="5,0,0,25" />
                     <Button Content="Bestellen" HorizontalAlignment="Center" VerticalAlignment="Bottom" Width="234"/>
                 </Grid>
             </TabItem>
@@ -179,6 +179,8 @@
                 <Grid Background="#FFE5E5E5" >
                     <StackPanel>
                         <ToggleButton Content="Meetlat" VerticalAlignment="Top" Command="{Binding Measure}" IsChecked="{Binding Enabled, Mode=TwoWay}"/>
+                        <ToggleButton Content="Loop route" VerticalAlignment="Top" IsChecked="{Binding RouteEnabled, Mode=TwoWay}"/>
+                        <Button Content="Verwijder loop route" VerticalAlignment="Top" Command="{Binding RemoveRoute}" />
                         <Button Content="GENERATE!!!!!" VerticalAlignment="Top" Command="{Binding Layout}" />
                         <Button Content="Verwijder alles" VerticalAlignment="Top" Command="{Binding ClearProducts}" />
                         <Label Content="Anderhalve meter score" />
