@@ -87,7 +87,7 @@ namespace Designer.ViewModel
             List<RoomPlacement> framePositions = new List<RoomPlacement>();
             foreach (Frame frame in FramePoints)
             {
-                framePositions.Add(new RoomPlacement(Room.FromDimensions(frame.X - smallestposition.X, frame.Y - smallestposition.Y), frame.Rotation, frame.Type));
+                framePositions.Add(new RoomPlacement(RoomPlacement.FromDimensions(frame.X - smallestposition.X, frame.Y - smallestposition.Y, frame.Type, frame.Rotation), frame.Rotation, frame.Type));
             }
 
             Room room = new Room(Name, Room.FromList(OffsetPositions), framePositions);
@@ -165,6 +165,13 @@ namespace Designer.ViewModel
                     // Kopieert de point naar een variable
                     _previousCanvasPosition = point;
 
+                    // Berekend de horizontale posities links en rechts van het geplaatste object
+                    Position horiLeft = new Position(x - 25, y);
+                    Position horiRight = new Position(x + 25, y);
+
+                    // Als het object locaties naast zich heeft wordt de rotatie naar 0 gezet en anders 90
+                    int rotation = RectangleDictionary[horiLeft] != null && RectangleDictionary[horiLeft].Fill != Brushes.White && RectangleDictionary[horiRight] != null && RectangleDictionary[horiRight].Fill != Brushes.White ? 0 : 90;
+
                     // Haalt de positie uit de lijst als die daar bestaat
                     if (AddWindowsChecked)
                     {
@@ -173,6 +180,8 @@ namespace Designer.ViewModel
                         _activeFrame = window;
 
                         if (FramePoints.Contains(window)) return;
+
+                        window.Rotation = rotation;
 
                         RectangleDictionary[point].Fill = Brushes.DarkBlue;
                         RectangleDictionary[point].Opacity = 1.0;
@@ -185,13 +194,6 @@ namespace Designer.ViewModel
                         _activeFrame = door;
 
                         if (FramePoints.Contains(door)) return;
-
-                        // Berekend de horizontale posities links en rechts van het geplaatste object
-                        Position horiLeft = new Position(x - 25, y);
-                        Position horiRight = new Position(x + 25, y);
-
-                        // Als het object locaties naast zich heeft wordt de rotatie naar 0 gezet en anders 90
-                        int rotation = RectangleDictionary[horiLeft] != null && RectangleDictionary[horiLeft].Fill != Brushes.White && RectangleDictionary[horiRight] != null && RectangleDictionary[horiRight].Fill != Brushes.White ? 0 : 90;
 
                         // Als de focus van horizontaal naar verticaal gaat moet de rotatie veranderen, anders mag de opgeslagen rotatie gebruikt worden. Dit is ook vice versa
                         door.Rotation = _angle == rotation || _angle == (rotation + 180) ? _angle : rotation;

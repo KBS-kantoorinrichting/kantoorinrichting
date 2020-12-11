@@ -52,13 +52,30 @@ namespace Models
 
         public Polygon GetPoly() { return _polygon; }
 
+        public static string FromDimensions(int x, int y, FrameTypes type, int? rotation)
+        {
+            return Room.FromList(
+                new[] {
+                    new Position(x, y),
+                    new Position(x + 25, y),
+                    new Position(x + 25, y + 25),
+                    new Position(x, y + 25),
+                }
+            );
+        }
+
+        //public Polygon FrameDimension()
+        //{
+
+        //}
+
         //public List<Position> GetFrameDimensions()
         //{
         //    List<Position> positions = new List<Position>();
 
         //    if (Type == FrameTypes.Door)
         //    {
-                
+
         //    } else if(Type == FrameTypes.Window)
         //    {
 

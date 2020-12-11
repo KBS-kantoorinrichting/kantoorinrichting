@@ -104,9 +104,17 @@ namespace Designer.ViewModel {
         {
             if(Design.Room.RoomPlacements != null)
             {
+                Debug.WriteLine(Design.Room.RoomPlacements.Count);
                 foreach (RoomPlacement frame in Design.Room.RoomPlacements)
                 {
-                    Editor.Children.Add(frame.GetPoly().GetPolygon());
+                    Polygon poly = frame.GetPoly().GetPolygon();
+
+                    foreach (Point point in poly.Points)
+                    {
+                        Debug.WriteLine($"{point.X} - {point.Y}");
+                    }
+                    poly.Fill = frame.Type == FrameTypes.Door ? Brushes.Brown : Brushes.DarkBlue;
+                    Editor.Children.Add(poly);
                 }
             }
         }
