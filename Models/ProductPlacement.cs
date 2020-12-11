@@ -57,7 +57,7 @@ namespace Models {
         private int _y;
         private int _rotation;
 
-        public Polygon GetPoly() =>
+        public virtual Polygon GetPoly() =>
             //Hoogte en breedte omgedraaid
             _poly ??= Rotation % 180 == 0
                 ? Product.GetPoly().Offset(X, Y)
