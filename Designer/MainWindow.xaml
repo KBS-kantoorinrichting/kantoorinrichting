@@ -13,7 +13,8 @@
     </Window.DataContext>
     <Grid>
         <materialDesign:ColorZone
-            Mode="PrimaryMid">
+            Mode="PrimaryMid"
+            Panel.ZIndex="2">
             <StackPanel
                 Orientation="Horizontal"
                 Margin="2">
