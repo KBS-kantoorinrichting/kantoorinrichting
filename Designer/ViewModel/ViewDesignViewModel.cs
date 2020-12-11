@@ -13,6 +13,7 @@ using System.Windows.Media;
 using System.Diagnostics;
 using Models;
 using Services;
+using Polygon = System.Windows.Shapes.Polygon;
 
 namespace Designer.ViewModel
 {

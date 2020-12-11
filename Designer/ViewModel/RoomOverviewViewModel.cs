@@ -29,7 +29,7 @@ namespace Designer.ViewModel
 
         public Canvas Editor { get; set; }
         public ArgumentCommand<SizeChangedEventArgs> ResizeCommand { get; set; }
-        public Polygon RoomPoly { get; set; }
+        public System.Windows.Shapes.Polygon RoomPoly { get; set; }
         public double Scale = 1.0;
         private double _canvasHeight = 450;
         private double _canvasWidth = 500;
@@ -45,7 +45,7 @@ namespace Designer.ViewModel
             MouseDownCommand = new ArgumentCommand<MouseButtonEventArgs>(e => MouseDown(e.OriginalSource, e));
             // maakt nieuw canvas aan
             Editor = new Canvas();
-            RoomPoly = new Polygon();
+            RoomPoly = new System.Windows.Shapes.Polygon();
             DeleteCommand = new BasicCommand(Delete);
             ChangeCommand = new BasicCommand(Change);
             ResizeCommand = new ArgumentCommand<SizeChangedEventArgs>(e => ResizePage(e.OriginalSource, e));
