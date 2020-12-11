@@ -8,11 +8,15 @@ using System.Windows.Controls;
 using Designer.View;
 using Microsoft.Win32;
 using System.Diagnostics;
+using System.Windows;
+using Designer.View.Components;
+using MaterialDesignThemes.Wpf;
 using Models;
 using Services;
 
 namespace Designer.ViewModel {
     public class ViewProductsViewModel : INotifyPropertyChanged {
+        public UIElement Popup { get; set; }
         public string Name { get; set; }
         public double Price { get; set; }
         public string Photo { get; set; }
@@ -21,12 +25,15 @@ namespace Designer.ViewModel {
         public bool HasPerson { get; set; }
 
         public BasicCommand Submit { get; set; }
-        public BasicCommand DeleteCommand { get; set; }
+        public ArgumentCommand<int> DeleteCommand { get; set; }
         public BasicCommand AddPhoto { get; set; }
 
-        public BasicCommand EditCommand { get; set; }
+        public ArgumentCommand<int> EditCommand { get; set; }
         public BasicCommand SaveEdit { get; set; }
+        public BasicCommand CancelEdit { get; set; }
         public BasicCommand EditPhoto { get; set; }
+        public BasicCommand AddCommand { get; set; }
+        public BasicCommand CancelAdd { get; set; }
 
         public ArgumentCommand<MouseButtonEventArgs> MouseDownCommand { get; set; }
         public event PropertyChangedEventHandler PropertyChanged;
@@ -35,9 +42,8 @@ namespace Designer.ViewModel {
         public Product EditedItem { get; set; }
 
         public bool IsEditedRead => EditedItem == null;
-        public bool IsEditedNotRead => !IsEditedRead;
-        public string IsEditedVis => EditedItem == null ? "Hidden" : "Visible";
-        public string ItemIsSelected => SelectedProduct == null ? "Hidden" : "Visible";
+        public bool IsAdding { get; set; } = false;
+        public bool IsEditing { get; set; } = false;
 
         public List<Product> Products { get; set; }
         // Property van een lijst om de informatie vanuit de database op te slaan.
@@ -50,9 +56,12 @@ namespace Designer.ViewModel {
             // Initialisatie van alle knoppen
             AddPhoto = new BasicCommand(SelectPhoto);
             Submit = new BasicCommand(SubmitItem);
-            DeleteCommand = new BasicCommand(Delete);
-            EditCommand = new BasicCommand(EditItem);
+            DeleteCommand = new ArgumentCommand<int>(Delete);
+            EditCommand = new ArgumentCommand<int>(EditItem);
+            AddCommand = new BasicCommand(AddItem);
+            CancelAdd = new BasicCommand(CancelAddItem);
             SaveEdit = new BasicCommand(SubmitEditedItem);
+            CancelEdit = new BasicCommand(CancelEditPopup);
             EditPhoto = new BasicCommand(SelectPhoto);
         }
 
@@ -82,8 +91,9 @@ namespace Designer.ViewModel {
             }
         }
 
-        public void Delete() // Verwijderd geselecteerde item uit database 
+        public void Delete(int id) // Verwijderd geselecteerde item uit database 
         {
+            SelectProduct(id);
             if (SelectedProduct == null || ProductService.Instance.Count() == 0) {
                 return;
             }
@@ -92,14 +102,48 @@ namespace Designer.ViewModel {
             Reload();
         }
 
-        public void EditItem() // Maakt de geselecteerde item editbaar
+        public void AddItem()
         {
-            EditedItem = SelectedProduct;
+            IsAdding = true;
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(""));
+        }
+
+        public void CancelAddItem()
+        {
+            IsAdding = false;
+            ResetFields();
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(""));
+        }
+
+        public void ResetFields()
+        {
+            Name = "";
+            Price = 0;
+            Photo = "";
+            Width = 0;
+            Length = 0;
+            HasPerson = false;
+        }
+
+        public void EditItem(int id) // Maakt de geselecteerde item editbaar
+        {
+            SelectProduct(id);
+            EditedItem = SelectedProduct;
+            IsEditing = true;
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(""));
+        }
+
+        public void CancelEditPopup()
+        {
+            IsEditing = false;
+            OnPropertyChanged();
+            EditedItem = null;
+            SelectedProduct = null;
         }
 
         public void SubmitEditedItem() // vervangt het geselecteerde item met de bijgewerkte item in de database
         {
+            IsEditing = false;
             ProductService.Instance.Update(EditedItem);
             Reload();
         }
@@ -153,6 +197,7 @@ namespace Designer.ViewModel {
                 // Als de parameters niet null zijn dan:
                 GeneralPopup popup = new GeneralPopup("Het product is opgeslagen");
                 popup.ShowDialog();
+                IsAdding = false;
                 Reload();
                 // Popup dialog met "Het product is opgeslagen"
             }

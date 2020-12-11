@@ -1,6 +1,6 @@
-﻿using Designer.ViewModel;
+﻿using NUnit.Framework;
+using Designer.ViewModel;
 using Models;
-using NUnit.Framework;
 using Services;
 using ServicesTest;
 
@@ -11,7 +11,7 @@ namespace DesignerTest {
         [Test]
         public void TestSaveProduct() {
             Product productTest = ViewProductsViewModel.SaveProduct(
-                TestProduct.Name, TestProduct.Price, TestProduct.Photo, TestProduct.Width, TestProduct.Length, false
+                TestProduct.Name, TestProduct.Price, TestProduct.Photo, TestProduct.Width, TestProduct.Length, TestProduct.HasPerson
             );
             
             Assert.IsNotNull(productTest);
