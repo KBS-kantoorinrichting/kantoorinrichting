@@ -1,22 +1,21 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Globalization;
 using System.Linq;
+using System.Threading;
 using System.Windows;
-using Designer.Other;
 using System.Windows.Controls;
 using System.Windows.Input;
-using System.Windows.Media.Imaging;
-using Designer.View;
-using System.Windows.Shapes;
 using System.Windows.Media;
-using System.Globalization;
-using System.Threading;
+using System.Windows.Media.Imaging;
+using System.Windows.Shapes;
+using Designer.Other;
+using Designer.View;
 using Models;
 using Models.Utils;
 using Services;
 using Polygon = System.Windows.Shapes.Polygon;
-using System.Diagnostics;
 
 namespace Designer.ViewModel {
     public class ViewDesignViewModel : INotifyPropertyChanged {
@@ -36,7 +35,7 @@ namespace Designer.ViewModel {
         public BasicCommand Measure { get; set; }
         public BasicCommand Layout { get; set; }
         public BasicCommand ClearProducts { get; set; }
-        public BasicCommand Route { get; set; }
+        public BasicCommand RemoveRoute { get; set; }
         public ArgumentCommand<MouseWheelEventArgs> CanvasMouseScrollCommand { get; set; }
         public Product SelectedProduct => _selectedPlacement.Product;
         public Design Design { get; set; }
@@ -46,37 +45,37 @@ namespace Designer.ViewModel {
         private ProductPlacement _draggingPlacement;
         public Polygon RoomPoly { get; set; }
         public bool AllowDrop = false;
-        public int DistanceScore { 
-            get
-            {
+
+        public int DistanceScore {
+            get {
                 int increment = 0;
                 if (ProductPlacements == null) return 0;
 
                 List<ProductPlacement> placements = ProductPlacements.ToList();
 
                 //Loopt door alle paren van producten zonder overbodige stappen zoals p1 -> p1 en p1 -> p2, p2 -> p1
-                for (int i = 0; i < placements.Count; i++)
-                {
+                for (int i = 0; i < placements.Count; i++) {
                     bool noDistance = false;
                     ProductPlacement placement1 = placements[i];
-                    for (int j = 0; j < placements.Count; j++)
-                    {
+                    for (int j = 0; j < placements.Count; j++) {
                         ProductPlacement placement2 = placements[j];
-                        if (j != i)
-                        {
+                        if (j != i) {
                             (Position p1, Position p2) = placement1.GetPoly().MinDistance(placement2.GetPoly());
 
                             double distance = p1.Distance(p2);
-                            if(!noDistance) noDistance = distance <= 150;
+                            if (!noDistance) noDistance = distance <= 150;
                         }
                     }
-                    if(noDistance) increment++;
+
+                    if (noDistance) increment++;
                 }
+
                 double reversedIncrement = ProductPlacements.Count - increment;
 
-                return (int)(reversedIncrement / ProductPlacements.Count * 100);
+                return (int) (reversedIncrement / ProductPlacements.Count * 100);
             }
         }
+
         public int VentilationScore { get; set; } = 80;
         public int RouteScore { get; set; } = 20;
         public double Scale = 1.0;
@@ -105,7 +104,7 @@ namespace Designer.ViewModel {
             MouseMoveCommand = new ArgumentCommand<MouseEventArgs>(HandleMouseMove);
             Measure = new BasicCommand(StartMeasure);
             Layout = new BasicCommand(GenerateLayout);
-            Route = new BasicCommand(StartRoute);
+            RemoveRoute = new BasicCommand(DeleteRoute);
             ClearProducts = new BasicCommand(Clear);
             CanvasMouseScrollCommand =
                 new ArgumentCommand<MouseWheelEventArgs>(e => CanvasMouseScroll(e.OriginalSource, e));
@@ -126,7 +125,7 @@ namespace Designer.ViewModel {
             _origin = null;
             _secondPoint = null;
         }
-        
+
         public bool RouteEnabled { get; set; }
 
         private Models.Polygon _route {
@@ -134,12 +133,14 @@ namespace Designer.ViewModel {
             set => Design.Route = value?.Convert();
         }
 
-        public void StartRoute() {
+        public void DeleteRoute() {
+            _route = null;
+            ShowRoute();
         }
 
         List<DistanceLine> _routeLines = new List<DistanceLine>();
         List<Ellipse> _ellipses = new List<Ellipse>();
-        
+
         public void ShowRoute() {
             _routeLines.ForEach(l => l.Remove(Editor));
             _routeLines.Clear();
@@ -168,8 +169,11 @@ namespace Designer.ViewModel {
             }
 
             _routeLines.ForEach(l => l.Add(Editor));
+            
+            _fakeRoute.poly = _route;
+            CheckCorona(_fakeRoute);
         }
-        
+
         public void Clear() {
             ProductPlacements.ForEach(RemoveCorona);
             ProductPlacements.Clear();
@@ -205,6 +209,11 @@ namespace Designer.ViewModel {
                                     break;
                                 }
 
+                                if (success && _route != null && _route.Count >= 2) {
+                                    (Position p1, Position p2) = placement.GetPoly().MinDistance(_route);
+                                    if (p1.Distance(p2) < 150) success = false;
+                                }
+
                                 if (success) {
                                     ProductPlacements.Add(placement);
 
@@ -231,11 +240,12 @@ namespace Designer.ViewModel {
                 OnPropertyChanged();
             }
         }
-        
+
         private void PlaceRoutePoint(MouseButtonEventArgs eventArgs) {
             Point p = eventArgs.GetPosition(Editor);
             int acc = 1;
             Position position = new Position((int) (p.X / acc) * acc, (int) (p.Y / acc) * acc);
+            if (!Design.Room.GetPoly().Inside(position)) return;
             List<Position> positions = new List<Position> {position};
             if (_route != null) positions.AddRange(_route);
             _route = new Models.Polygon(positions);
@@ -266,6 +276,8 @@ namespace Designer.ViewModel {
 
         private Dictionary<ProductPlacement, Dictionary<ProductPlacement, DistanceLine>> _lines =
             new Dictionary<ProductPlacement, Dictionary<ProductPlacement, DistanceLine>>();
+
+        private FakePlacement _fakeRoute = new FakePlacement();
 
         public void RemoveCorona(ProductPlacement removed) {
             if (removed == null) return;
@@ -307,6 +319,26 @@ namespace Designer.ViewModel {
                     line.P2 = p2;
 
                     if (!line.Shows) line.Add(Editor);
+                }
+            }
+
+            if (_route != null && _route.Count >= 2) {
+                (Position p1, Position p2) = changed.GetPoly().MinDistance(_route);
+
+                if (!_lines.ContainsKey(_fakeRoute))
+                    _lines[_fakeRoute] = new Dictionary<ProductPlacement, DistanceLine>();
+
+                DistanceLine line = _lines[_fakeRoute].ContainsKey(changed)
+                    ? _lines[_fakeRoute][changed]
+                    : new DistanceLine(null, null);
+
+                if (p1.Distance(p2) < 150) {
+                    line.P1 = p1;
+                    line.P2 = p2;
+                    _lines[_fakeRoute][changed] = line;
+                    if (!line.Shows) line.Add(Editor);
+                } else {
+                    line.Remove(Editor);
                 }
             }
         }
@@ -373,6 +405,17 @@ namespace Designer.ViewModel {
             //Rechtermuisknop zorgt ervoor dat informatie over het product wordt getoond
             if (e.ChangedButton == MouseButton.Right) {
                 _initialMousePosition = e.GetPosition(Editor);
+
+                if (RouteEnabled && sender is Ellipse ellipse) {
+                    int pos = int.Parse(ellipse.Uid);
+
+                    List<Position> positions = _route.ToList();
+                    positions.RemoveAt(pos);
+                    _route = new Models.Polygon(positions);
+                    ShowRoute();
+
+                    return;
+                }
 
                 if (sender.GetType() == typeof(Canvas)) {
                     _selectedPlacement = null;
@@ -441,14 +484,16 @@ namespace Designer.ViewModel {
             //Als er geen product is geselecteerd, doe niks
             if (e.Data == null) return;
             if (e.Data.GetDataPresent(typeof(Ellipse))) {
+                Position position = new Position((int) e.GetPosition(Editor).X, (int) e.GetPosition(Editor).Y);
+                if (!Design.Room.GetPoly().Inside(position)) return;
                 int pos = int.Parse(((Ellipse) e.Data.GetData(typeof(Ellipse))).Uid);
                 List<Position> positions = _route.ToList();
-                positions[pos] = new Position((int) e.GetPosition(Editor).X, (int) e.GetPosition(Editor).Y);
+                positions[pos] = position;
                 _route = new Models.Polygon(positions);
                 ShowRoute();
                 return;
             }
-            
+
             //In dit geval wordt er een product toegevoegd
             if (e.Data.GetDataPresent(typeof(Product))) {
                 var selectedProduct = (Product) e.Data.GetData(typeof(Product));
@@ -468,7 +513,7 @@ namespace Designer.ViewModel {
                 Point position = e.GetPosition(Editor);
                 int x = (int) position.X - (placement.GetPoly().Width / 2);
                 int y = (int) position.Y - (placement.GetPoly().Length / 2);
-                
+
                 TryToMoveProduct(placement, x, y);
                 _draggingPlacement = null;
                 RenderRoom();
@@ -482,6 +527,11 @@ namespace Designer.ViewModel {
         public void CanvasDragOver(object sender, DragEventArgs e) {
             //Controleer of er een product is geselecteerd
             if (e.Data == null) return;
+            if (e.Data.GetDataPresent(typeof(Ellipse))) {
+                CanvasDragDrop(sender, e);
+                return;
+            }
+
             Product selectedProduct = null;
             ProductPlacement skip = null;
             int rotation = 0;
@@ -522,6 +572,7 @@ namespace Designer.ViewModel {
                 Editor.Children.Remove(_prevPlace.Value.i);
                 Editor.Children.Remove(_prevPlace.Value.r);
             }
+
             if (skip != null && _images.ContainsKey(skip)) _images[skip].Opacity = 0.5;
 
             _prevPlace = DrawProduct(
@@ -604,7 +655,7 @@ namespace Designer.ViewModel {
 
         public Dictionary<ProductPlacement, Image> _images = new Dictionary<ProductPlacement, Image>();
         public Dictionary<ProductPlacement, Rectangle> _rectangles = new Dictionary<ProductPlacement, Rectangle>();
-        
+
         public (Image i, Rectangle r) DrawProduct(
             ProductPlacement placement,
             int? placementIndex = null,
@@ -884,5 +935,11 @@ namespace Designer.ViewModel {
             if (degrees < -90) return degrees + 180;
             return degrees;
         }
+    }
+
+    class FakePlacement : ProductPlacement {
+        public Models.Polygon poly { get; set; }
+
+        public override Models.Polygon GetPoly() => poly;
     }
 }
