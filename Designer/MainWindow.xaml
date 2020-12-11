@@ -5,26 +5,47 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:viewModel="clr-namespace:Designer.ViewModel"
         mc:Ignorable="d"
-        Title="Kantoor Ontwerper" Width="1280" Height="720" FontFamily="Verdana">
-
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        Style="{DynamicResource MaterialDesignWindow}"
+        Title="Kantoor Ontwerper" Width="1280" Height="720">
     <Window.DataContext>
         <viewModel:MainViewModel />
     </Window.DataContext>
     <Grid>
-        <DockPanel LastChildFill="False">
-            <Menu DockPanel.Dock="Top" FontFamily="Verdana" Height="20" VerticalAlignment="Top">
-                <MenuItem Header="Applicatie">
-                    <MenuItem Header="Afsluiten" Command="{Binding Exit}" />
-                    <MenuItem Header="Home" Command="{Binding GotoHome}" />
-                </MenuItem>
-                <MenuItem Header="Product catalogus" Command="{Binding GotoProducts}" />
-                <MenuItem Header="Ontwerpen" Command="{Binding GotoDesigns}" />
-                <MenuItem Header="Ruimtes" Command="{Binding GotoRooms}" />
-                <MenuItem Header="Opslaan" Command="{Binding Save}" />
-            </Menu>
-        </DockPanel>
-        <Frame NavigationUIVisibility="Hidden" Margin="0,20,0,0" 
-               DataContext="{Binding Navigator}" 
-               Content="{Binding CurrentPage}"/>
+        <materialDesign:ColorZone
+            Mode="PrimaryMid">
+            <StackPanel
+                Orientation="Horizontal"
+                Margin="2">
+                <RadioButton
+                    Style="{StaticResource MaterialDesignTabRadioButton}"
+                    Margin="4"
+                    IsChecked="True"
+                    Content="Home" 
+                    Command="{Binding GotoHome}"/>
+                <RadioButton
+                    Style="{StaticResource MaterialDesignTabRadioButton}"
+                    Margin="4"
+                    IsChecked="False"
+                    Content="Producten"
+                    Command="{Binding GotoProducts}"/>
+                <RadioButton
+                    Style="{StaticResource MaterialDesignTabRadioButton}"
+                    Margin="4"
+                    IsChecked="False"
+                    Content="Ontwerpen" 
+                    Command="{Binding GotoDesigns}"/>
+                <RadioButton
+                    Style="{StaticResource MaterialDesignTabRadioButton}"
+                    Margin="4"
+                    IsChecked="False"
+                    Content="Ruimtes"
+                    Command="{Binding GotoRooms}"/> 
+            </StackPanel>
+        </materialDesign:ColorZone>
+
+        <Frame NavigationUIVisibility="Hidden" Margin="0,44,0,0"
+               DataContext="{Binding Navigator}"
+               Content="{Binding CurrentPage}" />
     </Grid>
 </Window>
