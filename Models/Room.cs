@@ -42,11 +42,9 @@ namespace Models {
             Positions = positions;
         }
 
-        public Room(string name, string positions, List<RoomPlacement> framePlacements) : this(name, positions) {
-            foreach (RoomPlacement placement in framePlacements)
-            {
-                RoomPlacements.Add(placement);
-            }
+        public Room(string name, string positions, List<RoomPlacement> roomPlacements) : this(name, positions)
+        {
+            RoomPlacements = roomPlacements;
         }
 
         public static List<Position> ToList(string positions) {

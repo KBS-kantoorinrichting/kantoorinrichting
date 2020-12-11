@@ -76,13 +76,14 @@ namespace Designer.ViewModel
                 OffsetPositions.Add(new Position(position.X - smallestposition.X , position.Y- smallestposition.Y));
             }
 
+            Room room = new Room(Name, Room.FromList(OffsetPositions));
+
             List<RoomPlacement> framePositions = new List<RoomPlacement>();
             foreach (Frame frame in FramePoints)
             {
-                framePositions.Add(new RoomPlacement(Room.FromDimensions(frame.X, frame.Y), frame.Rotation));
+                framePositions.Add(new RoomPlacement(room, Room.FromDimensions(frame.X - smallestposition.X, frame.Y - smallestposition.Y), frame.Rotation));
             }
 
-            Room room = new Room(Name, Room.FromList(OffsetPositions), framePositions);
 
             if (RoomService.Instance.Save(room) != null)
             {
