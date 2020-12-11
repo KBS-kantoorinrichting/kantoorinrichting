@@ -16,6 +16,7 @@ using Models;
 using Models.Utils;
 using Services;
 using Polygon = System.Windows.Shapes.Polygon;
+using System.Diagnostics;
 
 namespace Designer.ViewModel {
     public class ViewDesignViewModel : INotifyPropertyChanged {
@@ -103,9 +104,11 @@ namespace Designer.ViewModel {
         {
             if(Design.Room.RoomPlacements != null)
             {
+                Debug.WriteLine(Design.Room.RoomPlacements.Count);
                 foreach (RoomPlacement frame in Design.Room.RoomPlacements)
                 {
-                    //Position framePosition = Room.ToList(frame);
+                    Debug.WriteLine(frame.GetPoly().GetPolygon());
+                    Editor.Children.Add(frame.GetPoly().GetPolygon());
                 }
             }
         }
@@ -246,6 +249,8 @@ namespace Designer.ViewModel {
                 // Sets the dimensions of the current room
                 SetRoomDimensions();
                 RenderRoom();
+
+                RenderRoomFrames();
 
                 ProductPlacements.ForEach(p => CheckCorona(p));
 

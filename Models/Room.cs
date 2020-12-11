@@ -30,7 +30,7 @@ namespace Models {
             Positions = positions ?? FromDimensions(width, length);
         }
 
-        protected override ITuple Variables => (Id, Name, Positions);
+        protected override ITuple Variables => (Id, Name, Positions, RoomPlacements);
 
         private Polygon _polygon;
 

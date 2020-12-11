@@ -62,6 +62,21 @@ namespace Models
         }
 
         public Polygon GetPoly() { return _polygon; }
+
+        //public List<Position> GetFrameDimensions()
+        //{
+        //    List<Position> positions = new List<Position>();
+
+        //    if (Type == FrameTypes.Door)
+        //    {
+                
+        //    } else if(Type == FrameTypes.Window)
+        //    {
+
+        //    }
+
+        //    return positions;
+        //}
     }
 
     public enum FrameTypes
