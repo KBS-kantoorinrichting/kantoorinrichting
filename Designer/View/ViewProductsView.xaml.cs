@@ -7,9 +7,5 @@ namespace Designer.View {
     public partial class ViewProductsView : Page {
         public ViewProductsView() { InitializeComponent(); }
 
-        private void Button_Click(object sender, System.Windows.RoutedEventArgs e)
-        {
-
-        }
     }
 }
