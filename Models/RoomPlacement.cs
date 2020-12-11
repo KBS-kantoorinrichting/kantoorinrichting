@@ -11,9 +11,6 @@ namespace Models
     {
         [Column("RoomPlacementId")] public int Id { get; set; }
 
-        private Polygon _poly;
-        private int _rotation;
-
         public int RoomId { get; set; }
         public Room Room { get; set; }
 
@@ -23,15 +20,7 @@ namespace Models
             set => _polygon = new Polygon(value);
         }
 
-        public int Rotation
-        {
-            get => _rotation;
-            set
-            {
-                _rotation = value;
-                _poly = null;
-            }
-        }
+        public int Rotation { get; set; }
 
         [Column("Type")]
         public string TypeString

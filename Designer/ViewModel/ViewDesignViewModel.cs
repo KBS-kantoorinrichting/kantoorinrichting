@@ -104,10 +104,8 @@ namespace Designer.ViewModel {
         {
             if(Design.Room.RoomPlacements != null)
             {
-                Debug.WriteLine(Design.Room.RoomPlacements.Count);
                 foreach (RoomPlacement frame in Design.Room.RoomPlacements)
                 {
-                    Debug.WriteLine(frame.GetPoly().GetPolygon());
                     Editor.Children.Add(frame.GetPoly().GetPolygon());
                 }
             }
