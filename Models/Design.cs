@@ -22,7 +22,7 @@ namespace Models {
         }
 
         public string Route {
-            get => _route.Convert();
+            get => _route?.Convert();
             set => _route = new Polygon(value);
         }
         
