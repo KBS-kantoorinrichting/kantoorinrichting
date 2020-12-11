@@ -8,41 +8,57 @@
     x:Class="Designer.View.ViewDesignPage"
     xmlns:behaviors="http://schemas.microsoft.com/xaml/behaviors"
     xmlns:designer="clr-namespace:Designer"
+    xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
     mc:Ignorable="d"
     d:DesignWidth="800"
     Title="ViewDesignPage"
     WindowHeight="-1">
     <Page.DataContext>
-        <viewModel:ViewDesignViewModel x:Name="viewModel"/>
+        <viewModel:ViewDesignViewModel x:Name="viewModel" />
     </Page.DataContext>
     <Page.Resources>
-        <designer:ImagePathConverter x:Key="ImagePathConverter"/>
+        <designer:ImagePathConverter x:Key="ImagePathConverter" />
     </Page.Resources>
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="1*" />
             <ColumnDefinition Width="240" />
         </Grid.ColumnDefinitions>
-        <Canvas Grid.Column="0" Name="Editor" AllowDrop="True" Background="Transparent" HorizontalAlignment="Stretch" Margin="10">
-            <ContentPresenter Content="{Binding Path=Editor}"></ContentPresenter>
+        <Canvas Grid.Column="0" Name="Editor" AllowDrop="True" Background="Transparent" HorizontalAlignment="Stretch"
+                Margin="10">
+            <ContentPresenter Content="{Binding Path=Editor}" />
             <behaviors:Interaction.Triggers>
                 <behaviors:EventTrigger EventName="Drop" SourceObject="{Binding ElementName=Editor}">
                     <behaviors:InvokeCommandAction Command="{Binding DragDropCommand}" PassEventArgsToCommand="True" />
                 </behaviors:EventTrigger>
                 <behaviors:EventTrigger EventName="DragOver" SourceObject="{Binding ElementName=Editor}">
-                    <behaviors:InvokeCommandAction Command="{Binding DragOverCommand}" PassEventArgsToCommand="True"/>
+                    <behaviors:InvokeCommandAction Command="{Binding DragOverCommand}" PassEventArgsToCommand="True" />
                 </behaviors:EventTrigger>
                 <behaviors:EventTrigger EventName="MouseDown" SourceObject="{Binding ElementName=Editor}">
-                    <behaviors:InvokeCommandAction Command="{ Binding CanvasMouseDownCommand }" PassEventArgsToCommand="True" />
+                    <behaviors:InvokeCommandAction Command="{ Binding CanvasMouseDownCommand }"
+                                                   PassEventArgsToCommand="True" />
                 </behaviors:EventTrigger>
                 <behaviors:EventTrigger EventName="MouseMove" SourceObject="{Binding ElementName=Editor}">
                     <behaviors:InvokeCommandAction Command="{ Binding MouseMoveCommand }" PassEventArgsToCommand="True" />
                 </behaviors:EventTrigger>
                 <behaviors:EventTrigger EventName="MouseWheel" SourceObject="{Binding ElementName=Editor}">
-                    <behaviors:InvokeCommandAction Command="{ Binding CanvasMouseScrollCommand }" PassEventArgsToCommand="True" />
+                    <behaviors:InvokeCommandAction Command="{ Binding CanvasMouseScrollCommand }"
+                                                   PassEventArgsToCommand="True" />
                 </behaviors:EventTrigger>
             </behaviors:Interaction.Triggers>
         </Canvas>
+        <Button
+            Grid.Column="0"
+            Style="{StaticResource MaterialDesignFloatingActionAccentButton}"
+            HorizontalAlignment="Right"
+            VerticalAlignment="Bottom"
+            Margin="0,0,20,20"
+            Command="{Binding Save}">
+            <materialDesign:PackIcon
+                Kind="Floppy"
+                Height="24"
+                Width="24" />
+        </Button>
         <TabControl Grid.Column="1">
             <TabItem Header="Catalogus">
                 <Grid Background="#FFE5E5E5">
@@ -66,7 +82,9 @@
                                         BorderBrush="Black">
                                         <behaviors:Interaction.Triggers>
                                             <behaviors:EventTrigger EventName="MouseDown">
-                                                <behaviors:InvokeCommandAction Command="{ Binding ElementName=viewModel, Path=CatalogusMouseDownCommand}" PassEventArgsToCommand="True" />
+                                                <behaviors:InvokeCommandAction
+                                                    Command="{ Binding ElementName=viewModel, Path=CatalogusMouseDownCommand}"
+                                                    PassEventArgsToCommand="True" />
                                             </behaviors:EventTrigger>
                                         </behaviors:Interaction.Triggers>
                                         <StackPanel Orientation="Vertical" Width="108" Height="108">
@@ -85,7 +103,7 @@
                                                 Height="68"
                                                 Width="68">
                                                 <Image
-                                                    Source="{Binding Path=Photo, Converter={StaticResource ImagePathConverter}}"/>
+                                                    Source="{Binding Path=Photo, Converter={StaticResource ImagePathConverter}}" />
                                             </Border>
                                             <TextBlock
                                                 Text="{Binding Price}"
@@ -105,8 +123,8 @@
                 </Grid>
             </TabItem>
             <TabItem Header="Overzicht">
-                <Grid Background="#FFE5E5E5" >
-                    <Label Content="Financien" HorizontalAlignment="Center" VerticalAlignment="Top" Width="234"/>
+                <Grid Background="#FFE5E5E5">
+                    <Label Content="Financien" HorizontalAlignment="Center" VerticalAlignment="Top" Width="234" />
                     <ScrollViewer Margin="0,31,0,2">
                         <ItemsControl
                             x:Name="ProductOverview"
@@ -128,42 +146,41 @@
                                         <StackPanel Orientation="Vertical" Width="206" Height="50">
                                             <Grid>
                                                 <Border
-                                                BorderThickness="0.2"
-                                                BorderBrush="Black"
-                                                Height="40"
-                                                Width="40"
-                                                Margin="5,5,0,0"
-                                                HorizontalAlignment="Left"
-                                                >
+                                                    BorderThickness="0.2"
+                                                    BorderBrush="Black"
+                                                    Height="40"
+                                                    Width="40"
+                                                    Margin="5,5,0,0"
+                                                    HorizontalAlignment="Left">
                                                     <Image
-                                                    Source="{Binding Path=Key.Photo, Converter={StaticResource ImagePathConverter}}"/>
+                                                        Source="{Binding Path=Key.Photo, Converter={StaticResource ImagePathConverter}}" />
                                                 </Border>
                                                 <TextBlock
-                                                VerticalAlignment="Top"
-                                                FontSize="12"
-                                                TextWrapping="Wrap"
-                                                TextAlignment="Left"
-                                                FontWeight="DemiBold"
-                                                Width="108" Height="20"
-                                                Margin="50,10,0,0"
-                                                HorizontalAlignment="Left">
+                                                    VerticalAlignment="Top"
+                                                    FontSize="12"
+                                                    TextWrapping="Wrap"
+                                                    TextAlignment="Left"
+                                                    FontWeight="DemiBold"
+                                                    Width="108" Height="20"
+                                                    Margin="50,10,0,0"
+                                                    HorizontalAlignment="Left">
                                                     <TextBlock.Text>
                                                         <MultiBinding StringFormat=" {0} (€{1} x {2})">
-                                                            <Binding Path="Key.Name"/>
+                                                            <Binding Path="Key.Name" />
                                                             <Binding Path="Key.Price" />
                                                             <Binding Path="Value.Total" />
                                                         </MultiBinding>
                                                     </TextBlock.Text>
                                                 </TextBlock>
                                                 <TextBlock
-                                                Text="{Binding Value.TotalPrice, StringFormat='€{0}'}"
-                                                VerticalAlignment="Top"
-                                                FontSize="12"
-                                                TextWrapping="Wrap"
-                                                TextAlignment="Left"
-                                                Width="108" Height="15"
-                                                Margin="50,25,0,0"
-                                                HorizontalAlignment="Left"/>
+                                                    Text="{Binding Value.TotalPrice, StringFormat='€{0}'}"
+                                                    VerticalAlignment="Top"
+                                                    FontSize="12"
+                                                    TextWrapping="Wrap"
+                                                    TextAlignment="Left"
+                                                    Width="108" Height="15"
+                                                    Margin="50,25,0,0"
+                                                    HorizontalAlignment="Left" />
                                             </Grid>
                                         </StackPanel>
                                     </Border>
@@ -171,26 +188,32 @@
                             </ItemsControl.ItemTemplate>
                         </ItemsControl>
                     </ScrollViewer>
-                    <TextBlock Text="{Binding TotalPrice, StringFormat='Totaal: €{0}'}" VerticalAlignment="Bottom" Margin="5,0,0,25"></TextBlock>
-                    <Button Content="Bestellen" HorizontalAlignment="Center" VerticalAlignment="Bottom" Width="234"/>
+                    <TextBlock Text="{Binding TotalPrice, StringFormat='Totaal: €{0}'}" VerticalAlignment="Bottom"
+                               Margin="5,0,0,25" />
+                    <Button Content="Bestellen" HorizontalAlignment="Center" VerticalAlignment="Bottom" Width="234" />
                 </Grid>
             </TabItem>
             <TabItem Header="Corona">
-                <Grid Background="#FFE5E5E5" >
+                <Grid Background="#FFE5E5E5">
                     <StackPanel>
-                        <ToggleButton Content="Meetlat" VerticalAlignment="Top" Command="{Binding Measure}" IsChecked="{Binding Enabled, Mode=TwoWay}"/>
-                        <ToggleButton Content="Plaats Plexiglas" VerticalAlignment="Top" Command="{Binding Plexiglass}" IsChecked="{Binding PEnabled, Mode=TwoWay}"/>
+                        <ToggleButton Content="Meetlat" VerticalAlignment="Top" Command="{Binding Measure}"
+                                      IsChecked="{Binding Enabled, Mode=TwoWay}" />
+                        <ToggleButton Content="Plaats Plexiglas" VerticalAlignment="Top" Command="{Binding Plexiglass}"
+                                      IsChecked="{Binding PEnabled, Mode=TwoWay}" />
                         <Button Content="GENERATE!!!!!" VerticalAlignment="Top" Command="{Binding Layout}" />
                         <Button Content="Verwijder alles" VerticalAlignment="Top" Command="{Binding ClearProducts}" />
                         <Label Content="Anderhalve meter score" />
                         <ProgressBar Height="20" Value="{Binding DistanceScore, Mode=OneWay}" />
-                        <TextBlock Margin="0,-18,0,0" HorizontalAlignment="Center" Text="{Binding DistanceScore, StringFormat={}{0} %}" />
+                        <TextBlock Margin="0,-18,0,0" HorizontalAlignment="Center"
+                                   Text="{Binding DistanceScore, StringFormat={}{0} %}" />
                         <Label Content="Ventilatie score" />
-                        <ProgressBar Height="20" Value="{Binding VentilationScore, Mode=OneWay}"/>
-                        <TextBlock Margin="0,-18,0,0" HorizontalAlignment="Center" Text="{Binding VentilationScore, StringFormat={}{0} %}" />
+                        <ProgressBar Height="20" Value="{Binding VentilationScore, Mode=OneWay}" />
+                        <TextBlock Margin="0,-18,0,0" HorizontalAlignment="Center"
+                                   Text="{Binding VentilationScore, StringFormat={}{0} %}" />
                         <Label Content="Looproute score" />
-                        <ProgressBar Height="20" Value="{Binding RouteScore, Mode=OneWay}"/>
-                        <TextBlock Margin="0,-18,0,0" HorizontalAlignment="Center" Text="{Binding RouteScore, StringFormat={}{0} %}" />
+                        <ProgressBar Height="20" Value="{Binding RouteScore, Mode=OneWay}" />
+                        <TextBlock Margin="0,-18,0,0" HorizontalAlignment="Center"
+                                   Text="{Binding RouteScore, StringFormat={}{0} %}" />
                     </StackPanel>
                 </Grid>
             </TabItem>

@@ -36,7 +36,7 @@ namespace Designer.ViewModel {
             GotoProducts = new PageCommand(() => new ViewProductsView());
             GotoExample = new PageCommand(() => new ExamplePage());
             //Slaat alle aanpassing op
-            Save = new BasicCommand(() => DesignService.Instance.SaveChanges());
+            
             Exit = new BasicCommand(() => Application.Current.Shutdown());
         }
        

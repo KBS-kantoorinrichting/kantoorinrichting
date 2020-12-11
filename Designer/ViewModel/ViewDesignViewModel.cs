@@ -39,6 +39,7 @@ namespace Designer.ViewModel
         public BasicCommand Plexiglass { get; set; }
         public BasicCommand Layout { get; set; }
         public BasicCommand ClearProducts { get; set; }
+        public BasicCommand Save { get; set; }
         public ArgumentCommand<MouseWheelEventArgs> CanvasMouseScrollCommand { get; set; }
         public Product SelectedProduct => _selectedPlacement.Product;
         public Design Design { get; set; }
@@ -134,6 +135,7 @@ namespace Designer.ViewModel
             Plexiglass = new BasicCommand(StartPlexiglass);
             Layout = new BasicCommand(GenerateLayout);
             ClearProducts = new BasicCommand(Clear);
+            Save = new BasicCommand(() => DesignService.Instance.SaveChanges());
             CanvasMouseScrollCommand =
                 new ArgumentCommand<MouseWheelEventArgs>(e => CanvasMouseScroll(e.OriginalSource, e));
             _productOverview = new Dictionary<Product, ProductData>();
