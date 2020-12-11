@@ -45,6 +45,43 @@ namespace Designer.ViewModel {
         private ProductPlacement _draggingPlacement;
         public Polygon RoomPoly { get; set; }
         public bool AllowDrop = false;
+        public int DistanceScore { 
+            get
+            {
+                int increment = 0;
+                if (ProductPlacements == null) return 0;
+
+                List<ProductPlacement> placements = ProductPlacements.ToList();
+
+                //Loopt door alle paren van producten zonder overbodige stappen zoals p1 -> p1 en p1 -> p2, p2 -> p1
+                for (int i = 0; i < placements.Count; i++)
+                {
+                    bool noDistance = false;
+                    ProductPlacement placement1 = placements[i];
+                    for (int j = 0; j < placements.Count; j++)
+                    {
+                        ProductPlacement placement2 = placements[j];
+                        if (j != i)
+                        {
+                            (Position p1, Position p2) = placement1.GetPoly().MinDistance(placement2.GetPoly());
+
+                            double distance = p1.Distance(p2);
+                            if(!noDistance) noDistance = distance <= 150;
+                        }
+                    }
+                    if(noDistance) increment++;
+                }
+                double reversedIncrement = ProductPlacements.Count - increment;
+
+                return (int)(reversedIncrement / ProductPlacements.Count * 100);
+            }
+        }
+        public int VentilationScore { get; set; } = 80;
+        public int RouteScore { get; set; } = 20;
+        public double Scale = 1.0;
+        private double _canvasHeight => Navigator.Instance.CurrentPage.ActualHeight - 20;
+
+        private double _canvasWidth => Navigator.Instance.CurrentPage.ActualWidth - 260;
         private readonly MatrixTransform _transform = new MatrixTransform();
         private Point _initialMousePosition;
 
@@ -345,6 +382,10 @@ namespace Designer.ViewModel {
                     DragDrop.DoDragDrop(Editor, _draggingPlacement, DragDropEffects.Move);
                 }
             }
+
+            // Toegevoegd zodat de corona score wordt bijgewerkt
+            // TODO: kan mogelijk beter
+            OnPropertyChanged();
         }
 
         public void CatalogusMouseDown(object sender, MouseButtonEventArgs e) {
@@ -485,6 +526,8 @@ namespace Designer.ViewModel {
             selectScreen.DeleteButton.Click += delegate {
                 ProductPlacements.Remove(placement);
                 _selectedPlacement = null;
+                // Toegevoegd zodat de corona score wordt bijgewerkt
+                OnPropertyChanged();
                 RemoveCorona(placement);
                 Editor.Children.Remove(selectScreen);
                 Editor.Children.Remove(_images[placement]);

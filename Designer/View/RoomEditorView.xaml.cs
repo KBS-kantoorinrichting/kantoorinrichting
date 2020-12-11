@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Designer.ViewModel;
+using Models;
+using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Windows;
@@ -18,10 +20,20 @@ namespace Designer.View
     /// </summary>
     public partial class RoomEditorView : Page
     {
+        private RoomEditorViewModel ViewModel => DataContext as RoomEditorViewModel;
+
+
         public RoomEditorView()
         {
             InitializeComponent();
         }
 
+        public RoomEditorView(Room selectedRoom)
+        {
+            InitializeComponent();
+            ViewModel.SetSelectedRoom(selectedRoom);
+       
+            
+        }
     }
 }

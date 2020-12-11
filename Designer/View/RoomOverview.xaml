@@ -30,7 +30,7 @@
                         <ItemsControl
                             x:Name="CatalogusList"
                             ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-                            ItemsSource="{Binding Rooms}" Width="237" Height="1136">
+                            ItemsSource="{Binding Rooms}" Width="237" Height="2697">
 
                             <ItemsControl.ItemsPanel>
                                 <ItemsPanelTemplate>
@@ -87,12 +87,12 @@
 
         <Grid Background="White" HorizontalAlignment="Left" Height="634" Margin="0,20,0,0" VerticalAlignment="Top"
               Width="879">
-            <Button Content="Verwijder&#xD;&#xA;kamer" Width="51" HorizontalAlignment="Right" Margin="0,15,10,581" Background="Red" Foreground="White"
+            <Rectangle HorizontalAlignment="Left" Height="116" Margin="800,14,0,0" Stroke="Black" VerticalAlignment="Top" Width="79"/>
+            <Button Content="Verwijder&#xD;&#xA;kamer" Width="77" HorizontalAlignment="Right" Margin="0,26,1,570" Background="Red" Foreground="White"
                     Command="{Binding DeleteCommand}" BorderThickness="0px" />
-            <!--
-            <Button Content="Verwijder product" Height="74" Width="170" HorizontalAlignment="Right" Margin="0,15,5,545"
-                    Command="{Binding DeleteCommand}" BorderThickness="0px" />
-            -->
+
+            <Button Content="Wijzig&#xA;kamer" Width="77" HorizontalAlignment="Right" Margin="0,78,1,518" Background="Bisque" Foreground="White"
+                Command="{Binding ChangeCommand}" BorderThickness="0px" />
 
             <Border HorizontalAlignment="Left" Height="610" Margin="10,14,0,0" VerticalAlignment="Top" Width="790"
                     Background="White" BorderThickness="1px" BorderBrush="Black">
@@ -103,6 +103,8 @@
                     </Canvas>
                 </StackPanel>
             </Border>
+
+
 
 
         </Grid>

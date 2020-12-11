@@ -17,28 +17,22 @@
     </ItemGroup>
 
     <ItemGroup>
-      <None Remove="Resources\Icons\close.png" />
-      <None Remove="Resources\Icons\delete.png" />
-      <None Remove="Resources\Icons\rotate_left.png" />
-      <None Remove="Resources\Icons\rotate_right.png" />
-    </ItemGroup>
-
-    <ItemGroup>
         <ProjectReference Include="..\Models\Models.csproj" />
         <ProjectReference Include="..\Services\Services.csproj" />
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="DocumentFormat.OpenXml" Version="2.11.3" />
+        <PackageReference Include="MaterialDesignThemes" Version="3.2.0" />
         <PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" Version="1.1.19" />
+        <PackageReference Include="ShowMeTheXAML.MSBuild" Version="2.0.0" />
         <PackageReference Include="System.Drawing.Common" Version="5.0.0" />
         <PackageReference Include="WpfAnimatedGif" Version="2.0.0" />
     </ItemGroup>
 
     <ItemGroup>
-      <Resource Include="Resources\Icons\close.png" />
-      <Resource Include="Resources\Icons\delete.png" />
-      <Resource Include="Resources\Icons\rotate_left.png" />
-      <Resource Include="Resources\Icons\rotate_right.png" />
+        <Resource Include="Resources\Icons\close.png" CopyToOutputDirectory="Always" />
+        <Resource Include="Resources\Icons\delete.png" CopyToOutputDirectory="Always" />
+        <Resource Include="Resources\Icons\rotate_left.png" CopyToOutputDirectory="Always" />
+        <Resource Include="Resources\Icons\rotate_right.png" CopyToOutputDirectory="Always" />
     </ItemGroup>
 </Project>

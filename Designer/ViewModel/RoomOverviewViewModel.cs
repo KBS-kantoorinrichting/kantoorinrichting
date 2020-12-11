@@ -10,6 +10,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Shapes;
+using Polygon = System.Windows.Shapes.Polygon;
 
 namespace Designer.ViewModel
 {
@@ -21,6 +22,7 @@ namespace Designer.ViewModel
         public BasicCommand GotoRoomTemplate { get; set; }
         public BasicCommand GotoRoomEditor { get; set; }
         public BasicCommand DeleteCommand { get; set; }
+        public BasicCommand ChangeCommand { get; set; }
         public BasicCommand Products { get; set; }
 
         public List<Room> Rooms { get; set; }
@@ -30,8 +32,8 @@ namespace Designer.ViewModel
         public ArgumentCommand<SizeChangedEventArgs> ResizeCommand { get; set; }
         public System.Windows.Shapes.Polygon RoomPoly { get; set; }
         public double Scale = 1.0;
-        private double _canvasHeight = 500;
-        private double _canvasWidth = 790;
+        private double _canvasHeight = 450;
+        private double _canvasWidth = 500;
 
         public RoomOverviewViewModel()
         {
@@ -46,6 +48,7 @@ namespace Designer.ViewModel
             Editor = new Canvas();
             RoomPoly = new System.Windows.Shapes.Polygon();
             DeleteCommand = new BasicCommand(Delete);
+            ChangeCommand = new BasicCommand(Change);
             ResizeCommand = new ArgumentCommand<SizeChangedEventArgs>(e => ResizePage(e.OriginalSource, e));
             // herlaad pagina
             Reload();
@@ -135,6 +138,17 @@ namespace Designer.ViewModel
             SelectedRoom = null;
         
             Reload();
+
+        } 
+        public void Change()
+        {
+            if (SelectedRoom == null || RoomService.Instance.Count() == 0)
+            {
+                return;
+            }
+            RoomEditorView edit = new RoomEditorView(SelectedRoom);
+            Navigator.Instance.Replace(edit);
+
 
         }
 
