@@ -6,12 +6,12 @@
              xmlns:local="clr-namespace:Designer.View"
              xmlns:designer="clr-namespace:Designer"
              mc:Ignorable="d" 
-             d:DesignHeight="256" d:DesignWidth="200">
+             d:DesignHeight="256" d:DesignWidth="250">
     <UserControl.Resources>
         <designer:ImagePathConverter x:Key="ImagePathConverter"/>
     </UserControl.Resources>
     <materialDesign:Card>
-         <Grid Height="256" Width="200" Margin="0,0,0,0">
+         <Grid Height="256" Width="250" Margin="0,0,0,0">
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="120" />
                                 <RowDefinition Height="*" />
@@ -25,7 +25,7 @@
                                 Grid.Row="1"
                                 HorizontalAlignment="Center"
                                 VerticalAlignment="Center"
-                                Width="150">
+                                Width="200">
                                 <TextBlock Text="{Binding Name}" FontSize="20"/>
                                 <StackPanel
                                     Orientation="Horizontal">
@@ -41,7 +41,7 @@
                                     Command="{Binding ElementName=viewModel, Path=EditCommand}"
                                     CommandParameter="{Binding Id}"
                                     Margin="0 4 5 0"
-                                    Content="EDIT"/>
+                                    Content="PAS AAN"/>
                                 <Button
                                     Style="{StaticResource MaterialDesignRaisedButton}"
                                     Background="Red"
@@ -49,7 +49,7 @@
                                     Command="{Binding ElementName=viewModel, Path=DeleteCommand}"
                                     CommandParameter="{Binding Id}"
                                     Margin="0 4 0 0"
-                                    Content="DELETE"/>
+                                    Content="VERWIJDER"/>
                                 </StackPanel>
                 </StackPanel>
             </Grid>

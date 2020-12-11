@@ -76,12 +76,12 @@
             <Button
                 Command="{Binding CancelAdd}"
                 Style="{DynamicResource MaterialDesignFlatButton}">
-                CANCEL
+                ANNULEER
             </Button>
             <Button
                 Command="{Binding Submit}"
                 Style="{DynamicResource MaterialDesignFlatButton}">
-                ADD
+                VOEG TOE
             </Button>
         </StackPanel>
     </Grid>
