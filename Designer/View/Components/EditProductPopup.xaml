@@ -76,12 +76,12 @@
             <Button
                 Command="{Binding CancelEdit}"
                 Style="{DynamicResource MaterialDesignFlatButton}">
-                ANNULEER
+                ANNULEREN
             </Button>
             <Button
                 Command="{Binding SaveEdit}"
                 Style="{DynamicResource MaterialDesignFlatButton}">
-                SLA OP
+                OPSLAAN
             </Button>
         </StackPanel>
     </Grid>
