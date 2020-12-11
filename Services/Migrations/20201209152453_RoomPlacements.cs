@@ -13,7 +13,7 @@ namespace Services.Migrations
                     RoomPlacementId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     RoomId = table.Column<int>(type: "int", nullable: false),
-                    Positions = table.Column<int>(type: "int", nullable: true),
+                    Positions = table.Column<int>(type: "nvarchar(max)", nullable: true),
                     Rotation = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
