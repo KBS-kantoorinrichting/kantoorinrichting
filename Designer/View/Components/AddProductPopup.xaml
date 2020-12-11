@@ -44,8 +44,8 @@
                     Width="120"
                     VerticalAlignment="Bottom" />
                 <Button Name="AddPhoto" Command="{Binding EditPhoto, UpdateSourceTrigger=PropertyChanged}"
-                        Content="Foto Toevoegen" Height="26"
-                        Width="150"/>
+                        Content="Foto Toevoegen" Height="30"
+                    Width="150"/>
             </StackPanel>
             <TextBox
                 materialDesign:HintAssist.Hint="Breedte"
