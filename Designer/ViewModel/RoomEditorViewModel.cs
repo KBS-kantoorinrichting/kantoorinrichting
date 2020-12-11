@@ -8,7 +8,9 @@ using System.Windows.Shapes;
 using Designer.Other;
 using Designer.View;
 using Models;
-using Services; //using System.Threading;
+using Services;
+
+//using System.Threading;
 
 namespace Designer.ViewModel {
     public class RoomEditorViewModel : INotifyPropertyChanged {
@@ -44,6 +46,7 @@ namespace Designer.ViewModel {
             Submit = new BasicCommand(SubmitRoom);
             MouseOverCommand = new ArgumentCommand<MouseEventArgs>(e => MouseMove(e.OriginalSource, e));
             MouseDownCommand = new ArgumentCommand<MouseButtonEventArgs>(e => MouseClick(e.OriginalSource, e));
+            Reload();
         }
 
         public List<Position> MakeRoom(Room selectedroom) {
@@ -117,11 +120,9 @@ namespace Designer.ViewModel {
         }
 
         public void Reload() { // Reload de items zodat de juiste te zien zijn
-            if (_editor != null) {
-                Editor.Children.Clear();
-                DrawGrid();
-                OnPropertyChanged();
-            }
+            Editor.Children.Clear();
+            DrawGrid();
+            OnPropertyChanged();
         }
 
         private void OnPropertyChanged(string propertyName = "") {
