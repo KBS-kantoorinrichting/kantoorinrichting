@@ -18,6 +18,8 @@ namespace Designer.ViewModel {
         public string Photo { get; set; }
         public int Width { get; set; }
         public int Length { get; set; }
+        public bool HasPerson { get; set; }
+
         public BasicCommand Submit { get; set; }
         public BasicCommand DeleteCommand { get; set; }
         public BasicCommand AddPhoto { get; set; }
@@ -32,60 +34,15 @@ namespace Designer.ViewModel {
 
         public Product EditedItem { get; set; }
 
-        public string IsEditedRead
-        {
-            get
-            {
-                if (EditedItem == null)
-                {
-                    return "True";
-                }
-                else
-                {
-                    return "False";
-                }
-            }
-            set { IsEditedRead = value; }
-        }
-
-        public string IsEditedVis
-        {
-            get
-            {
-                if(EditedItem == null)
-                {
-                    return "Hidden";
-                }
-                else
-                {
-                    return "Visible";
-                }
-            }
-            set { IsEditedVis = value; }
-        }
-
-        public string ItemIsSelected
-        {
-            get
-            {
-                if (SelectedProduct == null)
-                {
-                    return  "Hidden";
-                }
-                else
-                {
-                    return "Visible";
-                }
-            }
-            set { ItemIsSelected = value; }
-          
-        }
+        public bool IsEditedRead => EditedItem == null;
+        public bool IsEditedNotRead => !IsEditedRead;
+        public string IsEditedVis => EditedItem == null ? "Hidden" : "Visible";
+        public string ItemIsSelected => SelectedProduct == null ? "Hidden" : "Visible";
 
         public List<Product> Products { get; set; }
         // Property van een lijst om de informatie vanuit de database op te slaan.
 
         public ViewProductsViewModel() {
-
             // Tekenen van de catalogus 
             Reload();
             // Initialisatie van het MouseDownCommand
@@ -111,31 +68,26 @@ namespace Designer.ViewModel {
             if (openFileDialog.ShowDialog() == true)
                 // Als deze open is dan:
             {
-                if (IsEditedRead == "True")
-                {
+                if (IsEditedRead) {
                     //openFileDialog.Filter = "Image files (*.png;*.jpeg;*.gif)|*.png;*.jpeg;*.gif|All files (*.*)|*.*";
                     Photo = openFileDialog.FileName.Split(@"\").Last();
                     PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("Photo"));
                     // De foto wordt veranderd in de applicatie
-                }
-                else
-                {
+                } else {
                     //openFileDialog.Filter = "Image files (*.png;*.jpeg;*.gif)|*.png;*.jpeg;*.gif|All files (*.*)|*.*";
                     EditedItem.Photo = openFileDialog.FileName.Split(@"\").Last();
                     PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(""));
                     // De foto wordt veranderd in de applicatie
-
                 }
-
             }
         }
 
         public void Delete() // Verwijderd geselecteerde item uit database 
-        { 
-            if (SelectedProduct == null || ProductService.Instance.Count() == 0)
-            {
+        {
+            if (SelectedProduct == null || ProductService.Instance.Count() == 0) {
                 return;
             }
+
             ProductService.Instance.Delete(SelectedProduct);
             Reload();
         }
@@ -153,7 +105,7 @@ namespace Designer.ViewModel {
         }
 
         public void MouseDown(object sender, MouseButtonEventArgs e) { // Wat er gebeurt als de muisknop ingedrukt wordt
-           
+
             // Linker muisknop moet ingdrukt zijn
             if (e.LeftButton == MouseButtonState.Pressed) {
                 if (sender.GetType() != typeof(Image)) return;
@@ -161,9 +113,8 @@ namespace Designer.ViewModel {
                 //SelectedProduct = obj;
                 SelectProduct(obj.Id);
                 EditedItem = null;
+                Reload();
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(""));
-
-
             }
         }
 
@@ -198,7 +149,8 @@ namespace Designer.ViewModel {
         #endregion
 
         private void SubmitItem() {
-            if (SaveProduct(Name, Price, Photo, Width, Length) != null) { // Als de parameters niet null zijn dan:
+            if (SaveProduct(Name, Price, Photo, Width, Length, HasPerson) != null) {
+                // Als de parameters niet null zijn dan:
                 GeneralPopup popup = new GeneralPopup("Het product is opgeslagen");
                 popup.ShowDialog();
                 Reload();
@@ -206,14 +158,23 @@ namespace Designer.ViewModel {
             }
         }
 
-        public static Product SaveProduct(string naam, double? price, string photo, int width, int length) {
+        public static Product SaveProduct(
+            string naam,
+            double? price,
+            string photo,
+            int width,
+            int length,
+            bool hasPerson
+        ) {
             // als er geen foto wordt toegevoegd, dan krijgt foto een standaard waarde
             if (photo == null) {
                 photo = "placeholder.png";
             }
 
             // Kamer opslaan
-            Product product = new Product(naam, price: price, photo: photo, width: width, length: length);
+            Product product = new Product(
+                naam, price: price, photo: photo, width: width, length: length, hasPerson: hasPerson
+            );
 
             // Zorgen dan het in de database komt
             try { // Proberen op te slaan, dan product returnen
