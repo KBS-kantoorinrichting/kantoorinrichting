@@ -31,5 +31,7 @@ namespace Models {
             Width = width;
             Length = length;
         }
+
+        public Polygon GetPoly() => new Polygon(Width, Length);
     }
 }
