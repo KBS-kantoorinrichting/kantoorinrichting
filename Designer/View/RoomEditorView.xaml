@@ -50,6 +50,6 @@
             Command="{Binding AddWindows}" 
             IsChecked="{Binding AddWindowsChecked}"
             Style="{StaticResource MaterialDesignSwitchToggleButton}"
-            ToolTip="Deuren Toevoegen"/>
+            ToolTip="Ramen Toevoegen"/>
     </Grid>
 </Page>
