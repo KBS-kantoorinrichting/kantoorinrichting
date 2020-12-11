@@ -50,9 +50,9 @@ namespace Designer.ViewModel
             Reload();
         }
 
-        public void MakeRoom()
+        public List<Position> MakeRoom(Room selectedroom)
         {
-            SelectedPoints = Room.ToList(SelectedRoom.Positions);
+            SelectedPoints = Room.ToList(selectedroom.Positions);
             Position Last = new Position(-1, -1);
 
             foreach (Position pos in SelectedPoints)
@@ -100,7 +100,7 @@ namespace Designer.ViewModel
 
             }
             LastSelected = SelectedPoints.Last();
-            PaintRoom();
+            return SelectedPoints;
         }
 
         public void PaintRoom()
@@ -131,8 +131,16 @@ namespace Designer.ViewModel
 
         public void SetSelectedRoom(Room selectedroom)
         {
-            SelectedRoom = selectedroom;
-            MakeRoom();
+            if (MakeRoom(selectedroom) != null)
+            {
+                PaintRoom();
+            }
+            else
+            {
+                GeneralPopup warning = new GeneralPopup("Oeps, er is iets mis gegaan!");
+                warning.ShowDialog();
+            }
+            
         }
         public void Reload()
         { // Reload de items zodat de juiste te zien zijn
@@ -153,8 +161,11 @@ namespace Designer.ViewModel
                 counterror.ShowDialog();
                 return;
             }
+            // bepaal de kleinste x waarde
             var smallestX = SelectedPoints.Aggregate((p1, p2) => p1.X < p2.X ? p1 : p2);
+            // bepaal de kleinste y waarde
             var smallestY = SelectedPoints.Aggregate((p1, p2) => p1.Y < p2.Y ? p1 : p2);
+            // maakt de kamer zo hoog en links mogelijk
             List<Position> OffsetPositions = new List<Position>();
             foreach (var position in SelectedPoints)
             {
@@ -218,7 +229,7 @@ namespace Designer.ViewModel
                 }
             };
 
-            Action Bisqueinator = () =>
+            Action Hover = () =>
             {
                 RectangleDictionary[currentpoint].Fill = System.Windows.Media.Brushes.Bisque;
                 RectangleDictionary[currentpoint].Opacity = 0.5;
@@ -248,7 +259,7 @@ namespace Designer.ViewModel
                         //Thread.Sleep(23000);
                         UnHover();
                         //kleuren
-                        Bisqueinator();
+                        Hover();
                     }
                     // als het een border of hoek is
                     else
@@ -267,7 +278,7 @@ namespace Designer.ViewModel
                 Last3HoveredPoints.Add(currentpoint);
 
                 //kleuren
-                Bisqueinator();
+                Hover();
             }
 
         }
