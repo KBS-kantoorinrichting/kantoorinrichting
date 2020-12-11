@@ -22,7 +22,6 @@
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="DocumentFormat.OpenXml" Version="2.11.3" />
         <PackageReference Include="MaterialDesignThemes" Version="3.2.0" />
         <PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" Version="1.1.19" />
         <PackageReference Include="ShowMeTheXAML.MSBuild" Version="2.0.0" />

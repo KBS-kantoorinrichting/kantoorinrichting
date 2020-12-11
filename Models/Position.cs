@@ -16,7 +16,6 @@ namespace Models {
             Y = int.Parse(parts[1]);
         }
 
-
         public override string ToString() => $"{X},{Y}";
 
         protected bool Equals(Position other) {

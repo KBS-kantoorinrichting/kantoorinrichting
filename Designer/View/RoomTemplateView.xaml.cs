@@ -8,13 +8,11 @@ namespace Designer.View {
     /// </summary>
     public partial class RoomTemplateView : Page {
 
-        public BasicCommand GotoRoomTemplate { get; set; }
         public RoomTemplateView() {
             //pagina initializen
 
             InitializeComponent();
 
-            GotoRoomTemplate = new PageCommand(() => new RoomOverview());
         }
 
 
