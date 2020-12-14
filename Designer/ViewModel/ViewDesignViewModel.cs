@@ -16,7 +16,6 @@ using Models;
 using Models.Utils;
 using Services;
 using Polygon = System.Windows.Shapes.Polygon;
-using System.Diagnostics;
 
 namespace Designer.ViewModel {
     public class ViewDesignViewModel : INotifyPropertyChanged {
@@ -94,21 +93,9 @@ namespace Designer.ViewModel {
 
         public List<DistanceLine> PlexiLines = new List<DistanceLine>();
 
-        private bool _enabled;
         public bool PEnabled { get; set; }
 
-        public bool Enabled {
-            get => _enabled;
-            set => _enabled = value;
-        }
-
-        private Position _origin;
-
-        //private Position _pOrigin;
-        private Position _secondPoint;
-
         //private Position _pSecondPoint;
-        private DistanceLine _distanceLine;
         private DistanceLine _plexiLine;
 
         //Special constructor for unit tests
@@ -377,7 +364,7 @@ namespace Designer.ViewModel {
 
             //Tekend tijdelijk de lijn voor waar de muis nu is
             Point p = eventArgs.GetPosition(Editor);
-            if (_enabled && _origin != null) {
+            if (Enabled && _origin != null) {
                 RenderDistance(_origin, _secondPoint ?? new Position((int) p.X, (int) p.Y));
             }
 
@@ -1083,7 +1070,7 @@ namespace Designer.ViewModel {
             _line2.Y2 = P2.Y;
 
             Position center = P1.Center(P2);
-            _textBlock.Text = FormatText(P1.Distance(P2), "");
+            _textBlock.Text = _prefix + FormatText(P1.Distance(P2));
             Size size = MeasureString();
 
             double dx = size.Width / 2;
@@ -1122,10 +1109,10 @@ namespace Designer.ViewModel {
          */
         private static string FormatText(double distance) {
             if (distance < 100) {
-                return _prefix + distance.ToString("F0") + " cm";
+                return distance.ToString("F0") + " cm";
             }
 
-            return _prefix + (distance / 100).ToString("F2") + " m";
+            return (distance / 100).ToString("F2") + " m";
         }
 
         /**
