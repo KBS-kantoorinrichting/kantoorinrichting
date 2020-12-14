@@ -69,7 +69,9 @@ namespace Models {
         public override string ToString() { return Convert(); }
         IEnumerator IEnumerable.GetEnumerator() { return GetEnumerator(); }
 
-        protected bool Equals(Polygon other) { return Equals(_positions, other._positions); }
+        protected bool Equals(Polygon other) {
+            return Equals(_positions, other?._positions);
+        }
 
         public override bool Equals(object obj) {
             if (ReferenceEquals(null, obj)) return false;

@@ -28,7 +28,17 @@ namespace Models {
         
         private Polygon _route;
 
-        public Polygon GetRoutePoly() { return _route; }
+        public Polygon GetRoutePoly() {
+            List<Position> positions = new List<Position>();
+            Position offset = Room.GetPoly().Max().CopyMultiple(0.05, 0.05);
+            foreach (Position position in Room.GetPoly()) {
+                positions.Add(new Position((int) (position.X * 0.9), (int) (position.Y * 0.9)));
+            }
+            return new Polygon(positions).Offset(offset);
+            
+            
+            return _route;
+        }
         
         protected override ITuple Variables => (Id, Name, RoomId, Room, ProductPlacements);
     }

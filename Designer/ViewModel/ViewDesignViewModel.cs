@@ -154,7 +154,7 @@ namespace Designer.ViewModel {
             _routeLines.Clear();
             _ellipses.ForEach(Editor.Children.Remove);
             _ellipses.Clear();
-            if (_route == null) return;
+            if (_route.Count == 0) return;
             //Tekend de volledige lijn
             foreach ((Position p1, Position p2) in _route.GetLines()) {
                 _routeLines.Add(new DistanceLine(p1, p2));

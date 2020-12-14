@@ -64,5 +64,9 @@ namespace Models {
         public Position CopyAdd(int x = 0, int y = 0) {
             return new Position(X + x, Y + y);
         }
+
+        public Position CopyMultiple(double x = 1.0, double y = 1.0) {
+            return new Position((int) (X * x), (int) (Y * y));
+        }
     }
 }
