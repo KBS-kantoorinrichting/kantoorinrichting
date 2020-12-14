@@ -149,7 +149,6 @@ namespace Designer.ViewModel
             RoomEditorView edit = new RoomEditorView(SelectedRoom);
             Navigator.Instance.Replace(edit);
 
-
         }
 
         private void ScaleCanvas(double scale)

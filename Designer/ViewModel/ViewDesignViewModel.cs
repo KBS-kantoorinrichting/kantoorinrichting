@@ -577,6 +577,26 @@ namespace Designer.ViewModel {
                 if (PEnabled) {
                     PlacePointPlexi(e);
                     return;
+                } else
+                {
+                    if (!PlexiLines.Count.Equals(0))
+                    {
+                        if (sender.GetType() == typeof(Line))
+                        {
+                            var line = (System.Windows.Shapes.Line)sender;
+                            Position p1 = new Position((int)line.X1, (int)line.Y1);
+                            Position p2 = new Position((int)line.X2, (int)line.Y2);
+                            DistanceLine distanceline = new DistanceLine(p1, p2);
+                            if (PlexiLines.Contains(distanceline))
+                            {
+                                PlexiLines.Remove(distanceline);
+                            }
+
+
+                        }
+
+
+                    }
                 }
 
 
