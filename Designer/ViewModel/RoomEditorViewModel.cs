@@ -161,7 +161,7 @@ namespace Designer.ViewModel
                         {
                             Debug.WriteLine(frameFound);
                             Debug.WriteLine(frameFound.AttachedPosition);
-                            RectangleDictionary[frameFound.AttachedPosition].Fill = Brushes.Yellow;
+                            RectangleDictionary[frameFound.AttachedPosition].Fill = Brushes.Brown;
                         }
                     }
                     else if (frameFound.Type == FrameTypes.Window)
