@@ -31,7 +31,6 @@ namespace Designer.ViewModel
         public Room SelectedRoom = new Room();
         public Canvas Editor { get; set; }
         public Position LastSelected { get; set; } = new Position(-1, -1);
-
         public Border CanvasBorder { get; set; }
         public event PropertyChangedEventHandler PropertyChanged;
         public ArgumentCommand<MouseEventArgs> MouseOverCommand { get; set; }
@@ -117,6 +116,14 @@ namespace Designer.ViewModel
                 }
 
             }
+
+            // Voeg de room frames toe
+            foreach (RoomPlacement placement in selectedroom.RoomPlacements)
+            {
+                Position pos = RoomPlacement.ToPosition(placement.Positions);
+                FramePoints.Add(new Frame(pos.X, pos.Y, placement.Type));
+            }
+
             LastSelected = SelectedPoints.Last();
             return SelectedPoints;
         }
@@ -125,46 +132,47 @@ namespace Designer.ViewModel
         {
             foreach (Position pos in Points)
             {
-                if (!BorderPoints.Contains(pos) && !SelectedPoints.Contains(pos))
+                RectangleDictionary[pos].Fill = Brushes.White;
+                RectangleDictionary[pos].Opacity = 1;
+                if (SelectedPoints.Contains(pos))
                 {
-                    RectangleDictionary[pos].Fill = System.Windows.Media.Brushes.White;
+                    RectangleDictionary[pos].Fill = Brushes.DarkMagenta;
                     RectangleDictionary[pos].Opacity = 1;
                 }
-            }
-
-            foreach (Position pos in BorderPoints)
-            {
-                if(FramePoints.Exists(p => p.X == pos.X && p.Y == pos.Y))
+                else if(BorderPoints.Contains(pos))
                 {
+                    RectangleDictionary[pos].Fill = Brushes.DarkMagenta;
+                    RectangleDictionary[pos].Opacity = 0.5;
+                }
+                else
+                {
+                    //RectangleDictionary[pos].Fill = Brushes.White;
+                    //RectangleDictionary[pos].Opacity = 1;
+                }
+
+                if (FramePoints.Exists(p => p.X == pos.X && p.Y == pos.Y))
+                {
+                    // Zet de kleuren van de frames op basis van de types
                     Frame frameFound = FramePoints.Where(p => p.X == pos.X && p.Y == pos.Y).First();
-                    if(frameFound.Type == FrameTypes.Door)
+                    if (frameFound != null && frameFound.Type == FrameTypes.Door)
                     {
-                        RectangleDictionary[pos].Fill = System.Windows.Media.Brushes.Brown;
-                        if(RectangleDictionary.ContainsKey(frameFound.AttachedPosition))
+                        RectangleDictionary[pos].Fill = Brushes.Brown;
+                        if (frameFound.AttachedPosition != null && RectangleDictionary.ContainsKey(frameFound.AttachedPosition))
                         {
-                            RectangleDictionary[frameFound.AttachedPosition].Fill = Brushes.White;
+                            Debug.WriteLine(frameFound);
+                            Debug.WriteLine(frameFound.AttachedPosition);
+                            RectangleDictionary[frameFound.AttachedPosition].Fill = Brushes.Yellow;
                         }
                     }
                     else if (frameFound.Type == FrameTypes.Window)
                     {
-                        RectangleDictionary[pos].Fill = System.Windows.Media.Brushes.DarkBlue;
+                        RectangleDictionary[pos].Fill = Brushes.DarkBlue;
                     }
 
                     RectangleDictionary[pos].Opacity = 1;
-
-                } else
-                {
-                    RectangleDictionary[pos].Fill = System.Windows.Media.Brushes.DarkMagenta;
-                    RectangleDictionary[pos].Opacity = 0.5;
                 }
             }
-            foreach (Position pos in SelectedPoints)
-            {
-                RectangleDictionary[pos].Fill = System.Windows.Media.Brushes.DarkMagenta;
-                RectangleDictionary[pos].Opacity = 1;
-            }
-
-            RectangleDictionary[SelectedPoints.Last()].Fill = System.Windows.Media.Brushes.Bisque;
+            Debug.WriteLine("----------------------");
         }
 
         public void SetSelectedRoom(Room selectedroom)
@@ -210,6 +218,8 @@ namespace Designer.ViewModel
             {
                 OffsetPositions.Add(new Position(position.X - smallestX.X, position.Y - smallestY.Y));
             }
+
+            Debug.WriteLine(FramePoints.Count);
 
             List<RoomPlacement> framePositions = new List<RoomPlacement>();
             foreach (Frame frame in FramePoints)
@@ -266,12 +276,13 @@ namespace Designer.ViewModel
             Position point = new Position(x, y);
 
             // Sets hovered item (simplistic version of a hover)
-            if(_selectedPosition != null && RectangleDictionary.ContainsKey(_selectedPosition))
+            //if (_selectedPosition != null && RectangleDictionary.ContainsKey(_selectedPosition) && RectangleDictionary[_selectedPosition].Fill != Brushes.DarkMagenta)
+            if (_selectedPosition != null && RectangleDictionary.ContainsKey(_selectedPosition))
             {
                 RectangleDictionary[_selectedPosition].Fill = Brushes.White;
             }
 
-            if(RectangleDictionary.ContainsKey(point) && RectangleDictionary[point].Fill == Brushes.White)
+            if (RectangleDictionary.ContainsKey(point) && RectangleDictionary[point].Fill == Brushes.White)
             {
                 _selectedPosition = point;
                 RectangleDictionary[point].Fill = Brushes.Bisque;
@@ -326,8 +337,7 @@ namespace Designer.ViewModel
 
                         window.Rotation = rotation;
 
-                        RectangleDictionary[point].Fill = Brushes.DarkBlue;
-                        RectangleDictionary[point].Opacity = 1.0;
+                        AddWindow(window, point);
                     }
 
                     if (AddDoorsChecked)
@@ -341,20 +351,9 @@ namespace Designer.ViewModel
                         // Als de focus van horizontaal naar verticaal gaat moet de rotatie veranderen, anders mag de opgeslagen rotatie gebruikt worden. Dit is ook vice versa
                         door.Rotation = _angle == rotation || _angle == (rotation + 180) ? _angle : rotation;
 
-                        RectangleDictionary[point].Fill = Brushes.Brown;
-                        RectangleDictionary[point].Opacity = 1.0;
+                        AddDoor(door, point);
 
                         RotateDoor(door.Rotation, x, y);
-
-                        //Position attachedPosition = new Position(x, y);
-
-                        //// Haalt de framepoint op uit de framepoint selectie, vervolgens wordt er gekeken of het actieve punt wel bestaat in de framepoints
-                        //Frame frameInList = FramePoints.Where(p => p == attachedPosition).FirstOrDefault();
-
-                        //if (frameInList != null)
-                        //{
-                        //    RectangleDictionary[frameInList.AttachedPosition].Fill = Brushes.White;
-                        //}
                     }
                 }
             }
@@ -368,39 +367,42 @@ namespace Designer.ViewModel
                 {
                     if(frame.Type == FrameTypes.Door)
                     {
-                        Position doorPosition = new Position(frame.X, frame.Y);
                         Position doorOpenPosition = CalculateNextPositionFromAngle(frame.Rotation, frame.X, frame.Y);
 
-                        RectangleDictionary[doorPosition].Fill = Brushes.Brown;
-                        RectangleDictionary[doorPosition].Opacity = 1.0;
+                        AddDoor(frame);
 
-                        if(RectangleDictionary.ContainsKey(doorOpenPosition))
-                        {
-                            RectangleDictionary[doorOpenPosition].Fill = Brushes.Brown;
-                            RectangleDictionary[doorOpenPosition].Opacity = 1.0;
-                        }
+                        if(RectangleDictionary.ContainsKey(doorOpenPosition)) AddDoor(frame, doorOpenPosition);
                     }
 
-                    if(frame.Type == FrameTypes.Window)
-                    {
-                        Position windowPosition = new Position(frame.X, frame.Y);
-
-                        RectangleDictionary[windowPosition].Fill = Brushes.DarkBlue;
-                        RectangleDictionary[windowPosition].Opacity = 1.0;
-                    }
+                    if(frame.Type == FrameTypes.Window) AddWindow(frame);
                 }
             }
         }
 
+        private void AddWindow(Frame frame, Position position = null)
+        {
+            Position pos = position ?? new Position(frame.X, frame.Y);
+
+            if (!RectangleDictionary.ContainsKey(pos) && frame.Type == FrameTypes.Window) return;
+
+            RectangleDictionary[pos].Fill = Brushes.DarkBlue;
+            RectangleDictionary[pos].Opacity = 1.0;
+        }
+
+        private void AddDoor(Frame frame, Position position = null)
+        {
+            Position pos = position ?? new Position(frame.X, frame.Y);
+
+            if (!RectangleDictionary.ContainsKey(pos) && frame.Type == FrameTypes.Door) return;
+
+            RectangleDictionary[pos].Fill = Brushes.Brown;
+            RectangleDictionary[pos].Opacity = 1.0;
+        }
+
         public void RotateDoor(int angle, int x, int y)
         {
-            if(_activeFrame != null)
+            if (_activeFrame != null)
             {
-                //if(_activeFrame.AttachedPosition != null && RectangleDictionary.ContainsKey(_activeFrame.AttachedPosition))
-                //{
-                //    RectangleDictionary[_activeFrame.AttachedPosition].Fill = Brushes.White;
-                //}
-
                 Position doorOpenPos = CalculateNextPositionFromAngle(angle, x, y);
 
                 if (!FramePoints.Contains(_activeFrame))

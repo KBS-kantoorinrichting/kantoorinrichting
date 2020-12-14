@@ -64,6 +64,13 @@ namespace Models
             );
         }
 
+        public static Position ToPosition(string positions)
+        {
+            List<Position> list = positions.Split("|").Select(p => new Position(p)).ToList();
+
+            return list[0];
+        }
+
         //public Polygon FrameDimension()
         //{
 
