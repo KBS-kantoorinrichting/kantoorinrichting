@@ -35,4 +35,8 @@
         <Resource Include="Resources\Icons\rotate_left.png" CopyToOutputDirectory="Always" />
         <Resource Include="Resources\Icons\rotate_right.png" CopyToOutputDirectory="Always" />
     </ItemGroup>
+    
+    <ItemGroup>
+        <Resource Include="Resources\Images\Assets\home_*.jpg" CopyToOutputDirectory="Always" />
+    </ItemGroup>
 </Project>
