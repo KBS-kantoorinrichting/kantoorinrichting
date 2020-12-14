@@ -4,11 +4,11 @@ using System.ComponentModel;
 using System.Linq;
 using System.Windows.Controls;
 using System.Windows.Input;
-using System.Windows.Shapes;
 using Designer.Other;
 using Designer.View;
 using Models;
 using Services;
+using Line = System.Windows.Shapes.Line;
 
 //using System.Threading;
 

@@ -15,6 +15,7 @@ using Designer.View;
 using Models;
 using Models.Utils;
 using Services;
+using Line = System.Windows.Shapes.Line;
 using Polygon = System.Windows.Shapes.Polygon;
 
 namespace Designer.ViewModel {
@@ -156,8 +157,8 @@ namespace Designer.ViewModel {
             _ellipses.Clear();
             if (_route.Count == 0) return;
             //Tekend de volledige lijn
-            foreach ((Position p1, Position p2) in _route.GetLines()) {
-                _routeLines.Add(new DistanceLine(p1, p2));
+            foreach (Models.Line line in _route.GetLines()) {
+                _routeLines.Add(new DistanceLine(line.P1, line.P2));
             }
 
             //Tekend alle hoek punten
@@ -826,6 +827,8 @@ namespace Designer.ViewModel {
             Editor.Children.Add(RoomPoly);
         }
 
+        private Rectangle rectangle = new Rectangle();
+        
         public bool CheckRoomCollisions(Point point, Product product) {
             int yOffset = product.Length / 2;
             int xOffset = product.Width / 2;

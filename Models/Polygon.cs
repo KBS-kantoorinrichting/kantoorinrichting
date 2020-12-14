@@ -61,9 +61,9 @@ namespace Models {
         /**
          * Maakt alle opvolgende combinatie van lijnen
          */
-        public IEnumerable<(Position, Position)> GetLines() {
+        public IEnumerable<Line> GetLines() {
             for (int i = 0; i < _positions.Count; i++)
-                yield return (_positions[i], _positions[(i + 1) % _positions.Count]);
+                yield return new Line(_positions[i], _positions[(i + 1) % _positions.Count]);
         }
 
         public override string ToString() { return Convert(); }
@@ -119,5 +119,17 @@ namespace Models {
         public IEnumerator<Position> GetEnumerator() => _positions.GetEnumerator();
         public Position this[int index] => _positions[index];
         public int Count => _positions.Count;
+    }
+
+    public class Line {
+        public Position P1 { get; }
+        public Position P2 { get; }
+
+        public Line(Position p1, Position p2) {
+            P1 = p1;
+            P2 = p2;
+        }
+        
+        public (Position p1, Position p2) AsTuple => (P1, P2);
     }
 }

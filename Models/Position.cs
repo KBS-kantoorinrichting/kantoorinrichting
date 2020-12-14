@@ -68,5 +68,7 @@ namespace Models {
         public Position CopyMultiple(double x = 1.0, double y = 1.0) {
             return new Position((int) (X * x), (int) (Y * y));
         }
+
+        public (int x, int y) AsTuple => (X, Y);
     }
 }
