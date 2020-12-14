@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
 using System.Threading;
@@ -307,8 +308,12 @@ namespace Designer.ViewModel {
                 _secondPoint = null;
             } else {
                 _secondPoint = new Position((int) p.X, (int) p.Y);
+                _plexiLine.Remove(Editor);
                 _plexiLine = new DistanceLine(_origin, _secondPoint, "(Plexiglas)");
+                _plexiLine.Add(Editor);
                 PlexiLines.Add(_plexiLine);
+                
+                //Database conversie
                 Design.Plexiglass = FromList(PlexiLines);
                 PlexiLines = ToList(Design.Plexiglass);
                 PEnabled = false;
@@ -577,26 +582,29 @@ namespace Designer.ViewModel {
                 if (PEnabled) {
                     PlacePointPlexi(e);
                     return;
-                } else
+                }
+
+                if (!PlexiLines.Count.Equals(0))
                 {
-                    if (!PlexiLines.Count.Equals(0))
+                    if (sender is Line)
                     {
-                        if (sender.GetType() == typeof(Line))
+                        var line = (System.Windows.Shapes.Line) sender;
+                        Position p1 = new Position((int) line.X1, (int) line.Y1);
+                        Position p2 = new Position((int) line.X2, (int) line.Y2);
+
+                        int index = PlexiLines.FindIndex(i=>i.P1 .Equals(p1) && i.P2.Equals(p2));
+
+                        if (index == -1)
                         {
-                            var line = (System.Windows.Shapes.Line)sender;
-                            Position p1 = new Position((int)line.X1, (int)line.Y1);
-                            Position p2 = new Position((int)line.X2, (int)line.Y2);
-                            DistanceLine distanceline = new DistanceLine(p1, p2);
-                            if (PlexiLines.Contains(distanceline))
-                            {
-                                PlexiLines.Remove(distanceline);
-                            }
-
-
+                            return;
                         }
+                        PlexiLines[index].Remove(Editor);
+                        PlexiLines.RemoveAt(index);
 
 
                     }
+
+
                 }
 
 
