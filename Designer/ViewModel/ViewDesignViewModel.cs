@@ -147,21 +147,8 @@ namespace Designer.ViewModel {
                     Polygon poly = frame.GetPoly().GetPolygon();
                     Polygon newPoly = new Polygon();
 
-                    foreach (Point point in poly.Points)
-                    {
-                        //Debug.WriteLine($"{point.X} - {point.Y}");
-                    }
-
                     if(frame.Type == FrameTypes.Door)
                     {
-                        //PointCollection doorOffset = poly.Points.Clone();
-
-                        //Debug.WriteLine(frame.Rotation);
-                        //foreach (Point p in doorOffset)
-                        //{
-                        //    Debug.WriteLine(p);
-                        //}
-
                         int x = (int)poly.Points[0].X;
                         int y = (int)poly.Points[0].Y;
 
@@ -173,14 +160,35 @@ namespace Designer.ViewModel {
                             new Point(x, y),
                             new Point(x + 25, y),
                             new Point(x + 25, y + 25),
-                            new Point(x, y + 25),
+                            new Point(x, y + 25)
                         };
 
                         newPoly.Points = points;
+                        newPoly.Fill = Brushes.Brown;
+                        Editor.Children.Add(newPoly);
                     }
 
-                    newPoly.Fill = frame.Type == FrameTypes.Door ? Brushes.Brown : Brushes.DarkBlue;
-                    Editor.Children.Add(newPoly);
+                    if(frame.Type == FrameTypes.Window)
+                    {
+                        List<Position> roomPositions = Room.ToList(Design.Room.Positions);
+                        Debug.WriteLine(roomPositions);
+
+                        Position startPosition = RoomPlacement.ToPosition(frame.Positions);
+                        Position roomPosition = roomPositions.FirstOrDefault(p => p.X == startPosition.X || p.Y == startPosition.Y);
+
+                        bool vertical = startPosition.X == roomPosition.X;
+
+                        Line window = new Line
+                        {
+                            X1 = startPosition.X,
+                            Y1 = startPosition.Y,
+                            X2 = vertical ? startPosition.X : startPosition.X + 25,
+                            Y2 = vertical ? startPosition.Y + 25 : startPosition.Y,
+                            StrokeThickness = 8,
+                            Stroke = Brushes.DarkBlue
+                        };
+                        Editor.Children.Add(window);
+                    }
                 }
             }
         }
