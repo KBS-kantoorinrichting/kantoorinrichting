@@ -42,6 +42,7 @@ namespace Designer.ViewModel
         public bool AddDoorsChecked { get; set; } = false;
         public bool AddWindowsChecked { get; set; } = false;
         private Position _previousCanvasPosition { get; set; }
+        private Position _selectedPosition { get; set; }
         private Frame _activeFrame { get; set; }
         public List<Frame> FramePoints = new List<Frame>();
         private int _angle = 0;
@@ -264,6 +265,19 @@ namespace Designer.ViewModel
 
             Position point = new Position(x, y);
 
+            // Sets hovered item (simplistic version of a hover)
+            if(_selectedPosition != null && RectangleDictionary.ContainsKey(_selectedPosition))
+            {
+                RectangleDictionary[_selectedPosition].Fill = Brushes.White;
+            }
+
+            if(RectangleDictionary.ContainsKey(point) && RectangleDictionary[point].Fill == Brushes.White)
+            {
+                _selectedPosition = point;
+                RectangleDictionary[point].Fill = Brushes.Bisque;
+            }
+
+
             // Als de vorige positie is gezet wordt dit vervangen door de standaard kleur
             if (_previousCanvasPosition != null && !FramePoints.Exists(p => p.X == _previousCanvasPosition.X && p.Y == _previousCanvasPosition.Y))
             {
@@ -277,7 +291,7 @@ namespace Designer.ViewModel
                     int nextRotation = _activeFrame.Rotation + (_activeFrame.Rotation >= 180 ? -180 : 180);
                     Position oppositeSide = CalculateNextPositionFromAngle(nextRotation, _previousCanvasPosition.X, _previousCanvasPosition.Y);
 
-                    if(RectangleDictionary.ContainsKey(oppositeSide))
+                    if (RectangleDictionary.ContainsKey(oppositeSide))
                     {
                         RectangleDictionary[oppositeSide].Fill = Brushes.White;
                     }
@@ -299,7 +313,7 @@ namespace Designer.ViewModel
                     Position horiRight = new Position(x + 25, y);
 
                     // Als het object locaties naast zich heeft wordt de rotatie naar 0 gezet en anders 90
-                    int rotation = (RectangleDictionary[horiLeft] != null && RectangleDictionary[horiLeft].Fill != Brushes.White) || (RectangleDictionary[horiRight] != null && RectangleDictionary[horiRight].Fill != Brushes.White) ? 0 : 90;
+                    int rotation = (RectangleDictionary.ContainsKey(horiLeft) && RectangleDictionary[horiLeft].Fill != Brushes.White) || (RectangleDictionary.ContainsKey(horiRight) && RectangleDictionary[horiRight].Fill != Brushes.White) ? 0 : 90;
 
                     // Haalt de positie uit de lijst als die daar bestaat
                     if (AddWindowsChecked)
@@ -344,76 +358,6 @@ namespace Designer.ViewModel
                     }
                 }
             }
-
-            //int x = Convert.ToInt32(e.GetPosition(Editor).X);
-            // stel punt in dat op dit moment wordt behoverd
-            var currentpoint = new Position(x, y);
-
-
-            //Action UnHover = () =>
-            //{
-            //    foreach (Position pos in Last3HoveredPoints)
-            //    {
-            //        if (!SelectedPoints.Contains(pos) && !BorderPoints.Contains(pos))
-            //        // als als hij niet geselecteerd is en ook geen border is
-            //        {
-            //            //RectangleDictionary[pos].Fill = System.Windows.Media.Brushes.White;
-            //            RectangleDictionary[pos].Opacity = 1;
-            //        }
-            //    }
-            //};
-
-            //Action Hover = () =>
-            //{
-            //    RectangleDictionary[currentpoint].Fill = System.Windows.Media.Brushes.Bisque;
-            //    RectangleDictionary[currentpoint].Opacity = 0.5;
-            //};
-
-            //if (Last3HoveredPoints.Count > 0)
-            //// als er al iets is gehovered
-            //{
-            //    #region last3hoveredpoints
-            //    if (Last3HoveredPoints.Count() == 3)
-            //    // als de lijst al vol is
-            //    {
-            //        // verwijder de eerste van de 3
-            //        Last3HoveredPoints.Remove(Last3HoveredPoints.First());
-            //    }
-            //    // voeg nieuwe aan lijst van gehoverede punten toe
-            //    Last3HoveredPoints.Add(currentpoint);
-            //    #endregion
-
-            //    if (Last3HoveredPoints.Last().Equals(currentpoint) && RectangleDictionary.ContainsKey(currentpoint))
-            //    // als het item niet hetzelfde is al net behovered en als het hokje bestaat
-            //    {
-            //        if (!SelectedPoints.Contains(currentpoint) && !BorderPoints.Contains(currentpoint))
-            //        // als als hij niet geselecteerd is en ook geen border is
-            //        {
-
-            //            //Thread.Sleep(23000);
-            //            UnHover();
-            //            //kleuren
-            //            Hover();
-            //        }
-            //        // als het een border of hoek is
-            //        else
-            //        {
-            //            UnHover();
-            //            Last3HoveredPoints.Add(currentpoint);
-            //        }
-
-            //    }
-
-            //}
-            //else
-            //// als er nog niks is gehovered
-            //{
-            //    // voeg toe aan vorige 3 punten
-            //    Last3HoveredPoints.Add(currentpoint);
-
-            //    //kleuren
-            //    Hover();
-            //}
         }
 
         public void RenderFrames()
@@ -452,10 +396,10 @@ namespace Designer.ViewModel
         {
             if(_activeFrame != null)
             {
-                if(_activeFrame.AttachedPosition != null && RectangleDictionary.ContainsKey(_activeFrame.AttachedPosition))
-                {
-                    RectangleDictionary[_activeFrame.AttachedPosition].Fill = Brushes.White;
-                }
+                //if(_activeFrame.AttachedPosition != null && RectangleDictionary.ContainsKey(_activeFrame.AttachedPosition))
+                //{
+                //    RectangleDictionary[_activeFrame.AttachedPosition].Fill = Brushes.White;
+                //}
 
                 Position doorOpenPos = CalculateNextPositionFromAngle(angle, x, y);
 
