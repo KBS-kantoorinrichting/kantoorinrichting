@@ -1,0 +1,88 @@
+﻿<UserControl x:Class="Designer.View.Components.AddProductPopup"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:local="clr-namespace:Designer.View.Components"
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+             mc:Ignorable="d"
+             d:DesignHeight="300" d:DesignWidth="300">
+   <Grid Width="300" MaxWidth="300">
+        <Grid.RowDefinitions>
+            <RowDefinition
+                Height="Auto" />
+            <RowDefinition
+                Height="Auto" />
+        </Grid.RowDefinitions>
+        <StackPanel Grid.Row="0">
+            <materialDesign:ColorZone
+                Mode="PrimaryMid"
+                VerticalAlignment="Stretch">
+                <TextBlock
+                    Margin="10,10,0,10"
+                    Style="{StaticResource MaterialDesignHeadline5TextBlock}">
+                    Voeg product toe
+                </TextBlock>
+            </materialDesign:ColorZone>
+            <TextBox
+                materialDesign:HintAssist.Hint="Naam"
+                Style="{StaticResource MaterialDesignFloatingHintTextBox}"
+                Text="{Binding Name}"
+                Margin="8 0 0 0"
+                VerticalAlignment="Bottom" />
+            <TextBox
+                materialDesign:HintAssist.Hint="Prijs"
+                Style="{StaticResource MaterialDesignFloatingHintTextBox}"
+                Text="{Binding Price}"
+                Margin="8 0 0 0"
+                VerticalAlignment="Bottom" />
+            <StackPanel Orientation="Horizontal">
+                <TextBox
+                    Style="{StaticResource MaterialDesignFloatingHintTextBox}"
+                    Text="{Binding Photo}"
+                    Margin="8 0 10 0"
+                    Width="120"
+                    VerticalAlignment="Bottom" />
+                <Button Name="AddPhoto" Command="{Binding EditPhoto, UpdateSourceTrigger=PropertyChanged}"
+                        Content="Foto Toevoegen" Height="30"
+                    Width="150"/>
+            </StackPanel>
+            <TextBox
+                materialDesign:HintAssist.Hint="Breedte"
+                Style="{StaticResource MaterialDesignFloatingHintTextBox}"
+                Text="{Binding Width}"
+                Margin="8 0 0 0"
+                VerticalAlignment="Bottom" />
+            <TextBox
+                materialDesign:HintAssist.Hint="Lengte"
+                Style="{StaticResource MaterialDesignFloatingHintTextBox}"
+                Text="{Binding Length}"
+                Margin="8 0 0 0"
+                VerticalAlignment="Bottom" />
+            <StackPanel Orientation="Horizontal">
+                <Label Content="Heeft een zitplek: " Margin="8,0,0,0" />
+                <ToggleButton
+                    Style="{StaticResource MaterialDesignSwitchToggleButton}"
+                    ToolTip="MaterialDesignSwitchToggleButton"
+                    IsChecked="False"
+                    DataContext="{Binding HasPerson}" />
+            </StackPanel>
+        </StackPanel>
+        <StackPanel
+            Grid.Row="1"
+            Margin="8"
+            HorizontalAlignment="Right"
+            Orientation="Horizontal">
+            <Button
+                Command="{Binding CancelAdd}"
+                Style="{DynamicResource MaterialDesignFlatButton}">
+                ANNULEREN
+            </Button>
+            <Button
+                Command="{Binding Submit}"
+                Style="{DynamicResource MaterialDesignFlatButton}">
+                TOEVOEGEN
+            </Button>
+        </StackPanel>
+    </Grid>
+</UserControl>

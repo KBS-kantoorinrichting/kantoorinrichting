@@ -11,7 +11,7 @@ namespace DesignerTest {
         [Test]
         public void TestSaveProduct() {
             Product productTest = ViewProductsViewModel.SaveProduct(
-                TestProduct.Name, TestProduct.Price, TestProduct.Photo, TestProduct.Width, TestProduct.Length
+                TestProduct.Name, TestProduct.Price, TestProduct.Photo, TestProduct.Width, TestProduct.Length, TestProduct.HasPerson
             );
             
             Assert.IsNotNull(productTest);

@@ -200,6 +200,8 @@
                                       IsChecked="{Binding Enabled, Mode=TwoWay}" />
                         <ToggleButton Content="Plaats Plexiglas" VerticalAlignment="Top" Command="{Binding Plexiglass}"
                                       IsChecked="{Binding PEnabled, Mode=TwoWay}" />
+                        <ToggleButton Content="Loop route" VerticalAlignment="Top" IsChecked="{Binding RouteEnabled, Mode=TwoWay}"/>
+                        <Button Content="Verwijder loop route" VerticalAlignment="Top" Command="{Binding RemoveRoute}" />
                         <Button Content="GENERATE!!!!!" VerticalAlignment="Top" Command="{Binding Layout}" />
                         <Button Content="Verwijder alles" VerticalAlignment="Top" Command="{Binding ClearProducts}" />
                         <Label Content="Anderhalve meter score" />

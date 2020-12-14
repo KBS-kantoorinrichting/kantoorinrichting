@@ -16,13 +16,22 @@ namespace Models {
 
         public Design() { }
 
-        public Design(string name, Room room, List<ProductPlacement> productPlacements, string plexiglass) {
+        public Design(string name, Room room, List<ProductPlacement> productPlacements, string plexiglass = "") {
             Name = name;
             Plexiglass = plexiglass;
             Room = room;
             ProductPlacements = productPlacements;
         }
 
-        protected override ITuple Variables => (Id, Name, RoomId, Room, ProductPlacements, Plexiglass);
+        public string Route {
+            get => _route?.Convert();
+            set => _route = new Polygon(value);
+        }
+        
+        private Polygon _route;
+
+        public Polygon GetRoutePoly() { return _route; }
+        
+        protected override ITuple Variables => (Id, Name, RoomId, Room, ProductPlacements, Plexiglass, Route);
     }
 }
