@@ -145,13 +145,42 @@ namespace Designer.ViewModel {
                 foreach (RoomPlacement frame in Design.Room.RoomPlacements)
                 {
                     Polygon poly = frame.GetPoly().GetPolygon();
+                    Polygon newPoly = new Polygon();
 
                     foreach (Point point in poly.Points)
                     {
-                        Debug.WriteLine($"{point.X} - {point.Y}");
+                        //Debug.WriteLine($"{point.X} - {point.Y}");
                     }
-                    poly.Fill = frame.Type == FrameTypes.Door ? Brushes.Brown : Brushes.DarkBlue;
-                    Editor.Children.Add(poly);
+
+                    if(frame.Type == FrameTypes.Door)
+                    {
+                        //PointCollection doorOffset = poly.Points.Clone();
+
+                        //Debug.WriteLine(frame.Rotation);
+                        //foreach (Point p in doorOffset)
+                        //{
+                        //    Debug.WriteLine(p);
+                        //}
+
+                        int x = (int)poly.Points[0].X;
+                        int y = (int)poly.Points[0].Y;
+
+                        if (frame.Rotation == 0) y -= 25;
+                        if (frame.Rotation == 270) x -= 25;
+
+                        PointCollection points = new PointCollection()
+                        {
+                            new Point(x, y),
+                            new Point(x + 25, y),
+                            new Point(x + 25, y + 25),
+                            new Point(x, y + 25),
+                        };
+
+                        newPoly.Points = points;
+                    }
+
+                    newPoly.Fill = frame.Type == FrameTypes.Door ? Brushes.Brown : Brushes.DarkBlue;
+                    Editor.Children.Add(newPoly);
                 }
             }
         }

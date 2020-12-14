@@ -224,7 +224,7 @@ namespace Designer.ViewModel
             List<RoomPlacement> framePositions = new List<RoomPlacement>();
             foreach (Frame frame in FramePoints)
             {
-                framePositions.Add(new RoomPlacement(RoomPlacement.FromDimensions(frame.X - smallestX.X, frame.Y - smallestY.Y, frame.Type, frame.Rotation), frame.Rotation, frame.Type));
+                framePositions.Add(new RoomPlacement(RoomPlacement.FromDimensions(frame.X - smallestX.X, frame.Y - smallestY.Y), frame.Rotation, frame.Type));
             }
 
             Room room = new Room(Name, Room.FromList(OffsetPositions), framePositions);

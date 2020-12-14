@@ -52,7 +52,7 @@ namespace Models
 
         public Polygon GetPoly() { return _polygon; }
 
-        public static string FromDimensions(int x, int y, FrameTypes type, int? rotation)
+        public static string FromDimensions(int x, int y)
         {
             return Room.FromList(
                 new[] {
