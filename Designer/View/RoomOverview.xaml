@@ -20,8 +20,8 @@
             <ItemsControl
                 x:Name="RoomList"
                 ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-                ItemsSource="{Binding AllRooms}"
-                Margin="10,0,0,0">
+                ItemsSource="{Binding Rooms}"
+                Margin="10,0,10,10">
 
                 <ItemsControl.ItemsPanel>
                     <ItemsPanelTemplate>

@@ -3,8 +3,6 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:Designer.View"
-             xmlns:designer="clr-namespace:Designer"
              mc:Ignorable="d" 
              d:DesignHeight="256" d:DesignWidth="280">
     <materialDesign:Card>
@@ -14,9 +12,9 @@
                 <RowDefinition Height="*" />
             </Grid.RowDefinitions>
             <materialDesign:ColorZone
-                Mode="PrimaryLight"
+                Mode="Light"
                 VerticalAlignment="Stretch">
-                <Canvas>
+                <Canvas Margin="5">
                     <ContentPresenter Content="{Binding Path=Value}"></ContentPresenter>
                 </Canvas>
             </materialDesign:ColorZone>
@@ -30,7 +28,7 @@
                     <Button
                         Style="{StaticResource MaterialDesignRaisedButton}"
                         Command="{Binding ElementName=viewModel, Path=UpdateCommand}"
-                        CommandParameter="{Binding Id}"
+                        CommandParameter="{Binding Key.Id}"
                         Margin="0 4 5 0"
                         Content="AANPASSEN"/>
                     <Button
@@ -38,7 +36,7 @@
                         Background="Red"
                         BorderBrush="Red"
                         Command="{Binding ElementName=viewModel, Path=DeleteCommand}"
-                        CommandParameter="{Binding Id}"
+                        CommandParameter="{Binding Key.Id}"
                         Margin="0 4 0 0"
                         Content="VERWIJDER"/>
                 </StackPanel>
