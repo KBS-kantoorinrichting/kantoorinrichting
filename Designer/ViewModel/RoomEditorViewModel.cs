@@ -16,12 +16,14 @@ using System.Windows.Input;
 using System.Windows.Markup;
 using System.Windows.Media;
 using System.Windows.Shapes;
+using MaterialDesignThemes.Wpf;
 
 namespace Designer.ViewModel
 {
     public class RoomEditorViewModel : INotifyPropertyChanged
     {
         public string Name { get; set; }
+        public SnackbarMessageQueue MessageQueue { get; set; }
         public List<Line> GridLines { get; set; }
         public List<Position> Points = new List<Position>();
         public List<Position> SelectedPoints = new List<Position>();
@@ -64,6 +66,7 @@ namespace Designer.ViewModel
             AddDoors = new BasicCommand(AddDoorsClick);
             AddWindows = new BasicCommand(AddWindowsClick);
             Editor = new Canvas();
+            MessageQueue = new SnackbarMessageQueue();
             Reload();
         }
 
@@ -181,11 +184,7 @@ namespace Designer.ViewModel
             {
                 PaintRoom();
             }
-            else
-            {
-                GeneralPopup warning = new GeneralPopup("Oeps, er is iets mis gegaan!");
-                warning.ShowDialog();
-            }
+            else MessageQueue.Enqueue("Oeps, er is iets mis gegaan.");
             
         }
         public void Reload()
@@ -204,8 +203,7 @@ namespace Designer.ViewModel
         {
             if (SelectedPoints.Count() < 3)
             {
-                GeneralPopup counterror = new GeneralPopup("Voer aub meer dan 2 punten in!.");
-                counterror.ShowDialog();
+                MessageQueue.Enqueue("Voer a.u.b. meer dan 2 punten in.");
                 return;
             }
             // bepaal de kleinste x waarde
@@ -232,13 +230,11 @@ namespace Designer.ViewModel
             if (RoomService.Instance.Save(room) != null)
             {
                 //opent successvol dialoog
-                GeneralPopup popup = new GeneralPopup("De kamer is opgeslagen!");
-                popup.ShowDialog();
+                MessageQueue.Enqueue("De kamer is succesvol opgeslagen.");
                 return;
             }
             //opent onsuccesvol dialoog
-            GeneralPopup popuperror = new GeneralPopup("Er is iets misgegaan! probeer opnieuw.");
-            popuperror.ShowDialog();
+            MessageQueue.Enqueue("Er is iets misgegaan tijdens het opslaan, probeer het nog een keer.");
         }
 
         public void DrawGrid()
@@ -524,8 +520,7 @@ namespace Designer.ViewModel
 
             if (!previouslySelected && (LastSelected.X != currentpoint.X && LastSelected.Y != currentpoint.Y))
                 {  // Als je hem schuin zet
-                    GeneralPopup warning = new GeneralPopup("sorry, je kunt niet schuin neerzetten");
-                    warning.Show(); // Warning met "sorry, je kunt niet schuin neerzetten"
+                    MessageQueue.Enqueue("Sorry, je kunt niet schuin neerzetten.");
                     return;
                 }
 

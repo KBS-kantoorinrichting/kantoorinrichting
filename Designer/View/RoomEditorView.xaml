@@ -70,15 +70,16 @@
         </ToggleButton>
         <Button
             Style="{StaticResource MaterialDesignFloatingActionAccentButton}"
-            ToolTip="MaterialDesignFloatingActionAccentButton"
+            ToolTip="Ruimte opslaan"
             HorizontalAlignment="Right"
             VerticalAlignment="Bottom"
             Margin="0,0,20,20"
             Command="{Binding Submit}">
             <materialDesign:PackIcon
-                Kind="Plus"
+                Kind="ContentSave"
                 Height="32"
                 Width="32" />
         </Button>
+        <materialDesign:Snackbar HorizontalAlignment="Stretch" MessageQueue="{Binding MessageQueue}" />
     </Grid>
 </Page>
