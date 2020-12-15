@@ -8,6 +8,7 @@ using System.Windows.Controls;
 using Designer.View;
 using Microsoft.Win32;
 using System.Diagnostics;
+using System.Threading;
 using System.Windows;
 using Designer.View.Components;
 using MaterialDesignThemes.Wpf;
@@ -16,7 +17,6 @@ using Services;
 
 namespace Designer.ViewModel {
     public class ViewProductsViewModel : INotifyPropertyChanged {
-        public UIElement Popup { get; set; }
         public string Name { get; set; }
         public double Price { get; set; }
         public string Photo { get; set; }
@@ -34,8 +34,7 @@ namespace Designer.ViewModel {
         public BasicCommand EditPhoto { get; set; }
         public BasicCommand AddCommand { get; set; }
         public BasicCommand CancelAdd { get; set; }
-
-        public ArgumentCommand<MouseButtonEventArgs> MouseDownCommand { get; set; }
+        
         public event PropertyChangedEventHandler PropertyChanged;
         public Product SelectedProduct { get; set; }
 
@@ -47,12 +46,11 @@ namespace Designer.ViewModel {
 
         public List<Product> Products { get; set; }
         // Property van een lijst om de informatie vanuit de database op te slaan.
-
+        
+        public SnackbarMessageQueue MessageQueue { get; set; }
         public ViewProductsViewModel() {
             // Tekenen van de catalogus 
             Reload();
-            // Initialisatie van het MouseDownCommand
-            MouseDownCommand = new ArgumentCommand<MouseButtonEventArgs>(e => MouseDown(e.OriginalSource, e));
             // Initialisatie van alle knoppen
             AddPhoto = new BasicCommand(SelectPhoto);
             Submit = new BasicCommand(SubmitItem);
@@ -63,6 +61,13 @@ namespace Designer.ViewModel {
             SaveEdit = new BasicCommand(SubmitEditedItem);
             CancelEdit = new BasicCommand(CancelEditPopup);
             EditPhoto = new BasicCommand(SelectPhoto);
+            //Controleert of het niet in een unit test wordt gedraaid
+            if (Thread.CurrentThread.GetApartmentState() == ApartmentState.STA)
+            {
+                //Dit wordt gebruikt door de snackbar om feedback te geven op
+                //verwijderen, toevoegen en aanpassen van producten
+                MessageQueue = new SnackbarMessageQueue(); 
+            }
         }
 
         public void Reload() { // Reload de items zodat de juiste te zien zijn
@@ -99,6 +104,7 @@ namespace Designer.ViewModel {
             }
 
             ProductService.Instance.Delete(SelectedProduct);
+            MessageQueue.Enqueue("Het product is verwijderd");
             Reload();
         }
 
@@ -145,21 +151,9 @@ namespace Designer.ViewModel {
         {
             IsEditing = false;
             ProductService.Instance.Update(EditedItem);
+            //Laat bericht zien in snackbar
+            MessageQueue.Enqueue("Het product is aangepast");
             Reload();
-        }
-
-        public void MouseDown(object sender, MouseButtonEventArgs e) { // Wat er gebeurt als de muisknop ingedrukt wordt
-
-            // Linker muisknop moet ingdrukt zijn
-            if (e.LeftButton == MouseButtonState.Pressed) {
-                if (sender.GetType() != typeof(Image)) return;
-                var obj = (Product) ((Image) sender).DataContext;
-                //SelectedProduct = obj;
-                SelectProduct(obj.Id);
-                EditedItem = null;
-                Reload();
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(""));
-            }
         }
 
         public List<Product> LoadItems() {
@@ -195,11 +189,10 @@ namespace Designer.ViewModel {
         private void SubmitItem() {
             if (SaveProduct(Name, Price, Photo, Width, Length, HasPerson) != null) {
                 // Als de parameters niet null zijn dan:
-                GeneralPopup popup = new GeneralPopup("Het product is opgeslagen");
-                popup.ShowDialog();
+                // Laat bericht zien in de snackbar
+                MessageQueue.Enqueue("Het product is toegevoegd");
                 IsAdding = false;
                 Reload();
-                // Popup dialog met "Het product is opgeslagen"
             }
         }
 
