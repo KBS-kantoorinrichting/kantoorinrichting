@@ -141,6 +141,8 @@ namespace Designer.ViewModel {
         public void DeleteRoute() {
             _route = null;
 
+            int distance = 50;
+
             List<Models.Line> lines = Design.Room.GetPoly().GetLines().ToList();
             List<Models.Line> correct = lines.Select(l => (Models.Line) null).ToList();
             int start = -1;
@@ -151,8 +153,8 @@ namespace Designer.ViewModel {
                 Models.Line foundL1 = null;
                 Models.Line foundL2 = null;
                 for (int r = 0; r < 4; r++) {
-                    Models.Line tempL1 = l1.OffsetPerpendicular(50, r % 2 == 0);
-                    Models.Line tempL2 = l2.OffsetPerpendicular(50, r / 2 == 0);
+                    Models.Line tempL1 = l1.OffsetPerpendicular(distance, r % 2 == 0);
+                    Models.Line tempL2 = l2.OffsetPerpendicular(distance, r / 2 == 0);
 
                     Position inter = tempL1.Intersection(tempL2);
                     if (inter == null || !Design.Room.GetPoly().Inside(inter)) continue;
@@ -180,8 +182,8 @@ namespace Designer.ViewModel {
                 Models.Line before = correct[i];
                 Models.Line toTest = lines[j];
             
-                Models.Line l1 = toTest.OffsetPerpendicular(50, true);
-                Models.Line l2 = toTest.OffsetPerpendicular(50, false);
+                Models.Line l1 = toTest.OffsetPerpendicular(distance, true);
+                Models.Line l2 = toTest.OffsetPerpendicular(distance, false);
             
                 Position inter1 = before.Intersection(l1);
                 if (inter1 == null || !Design.Room.GetPoly().Inside(inter1)) {
@@ -226,7 +228,7 @@ namespace Designer.ViewModel {
             _routeLines.Clear();
             _ellipses.ForEach(Editor.Children.Remove);
             _ellipses.Clear();
-            if (_route.Count == 0) return;
+            if (_route == null || _route.Count == 0) return;
             //Tekend de volledige lijn
             foreach (Models.Line line in _route.GetLines()) {
                 _routeLines.Add(new DistanceLine(line.P1, line.P2));
