@@ -124,7 +124,11 @@ namespace Designer.ViewModel
             foreach (RoomPlacement placement in selectedroom.RoomPlacements)
             {
                 Position pos = RoomPlacement.ToPosition(placement.Positions);
-                FramePoints.Add(new Frame(pos.X, pos.Y, placement.Type));
+                Frame frame = new Frame(pos.X, pos.Y, placement.Type)
+                {
+                    AttachedPosition = CalculateNextPositionFromAngle(placement.Rotation, pos.X, pos.Y)
+                };
+                FramePoints.Add(frame);
             }
 
             LastSelected = SelectedPoints.Last();
@@ -201,7 +205,6 @@ namespace Designer.ViewModel
         {
             Editor.Children.Clear();
             DrawGrid();
-            RenderFrames();
             OnPropertyChanged();
         }
 
@@ -383,29 +386,6 @@ namespace Designer.ViewModel
         public bool OnBorder(Position p)
         {
             return BorderPoints.Count(border => border.X == p.X && border.Y == p.Y) > 0;
-        }
-
-        /**
-         * Renderd alle room placements
-         */
-        public void RenderFrames()
-        {
-            if (FramePoints != null)
-            {
-                foreach (Frame frame in FramePoints)
-                {
-                    if (frame.Type == FrameTypes.Door)
-                    {
-                        Position doorOpenPosition = CalculateNextPositionFromAngle(frame.Rotation, frame.X, frame.Y);
-
-                        AddDoor(frame);
-
-                        if (RectangleDictionary.ContainsKey(doorOpenPosition)) AddDoor(frame, doorOpenPosition);
-                    }
-
-                    if (frame.Type == FrameTypes.Window) AddWindow(frame);
-                }
-            }
         }
 
         /**
