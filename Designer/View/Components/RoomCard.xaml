@@ -30,7 +30,7 @@
                         Command="{Binding ElementName=viewModel, Path=UpdateCommand}"
                         CommandParameter="{Binding Key.Id}"
                         Margin="0 4 5 0"
-                        Content="AANPASSEN"/>
+                        Content="PAS AAN"/>
                     <Button
                         Style="{StaticResource MaterialDesignRaisedButton}"
                         Background="Red"
