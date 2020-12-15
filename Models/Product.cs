@@ -36,5 +36,10 @@ namespace Models {
         }
 
         public Polygon GetPoly() => new Polygon(Width, Length);
+        
+        public Product Clone()
+        {
+            return (Product)this.MemberwiseClone();
+        }
     }
 }

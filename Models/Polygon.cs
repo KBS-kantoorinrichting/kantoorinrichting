@@ -47,6 +47,9 @@ namespace Models {
 
         public Polygon Offset(Position position) { return Offset(position.X, position.Y); }
 
+        /**
+         * Zet de polygon om naar een tekst van die lijkt op 0,0|10,10|20,10
+         */
         public string Convert() {
             if (_positions == null) return null;
 
@@ -55,6 +58,9 @@ namespace Models {
                 .Aggregate((s1, s2) => $"{s1}|{s2}");
         }
 
+        /**
+         * Maakt alle opvolgende combinatie van lijnen
+         */
         public IEnumerable<(Position, Position)> GetLines() {
             for (int i = 0; i < _positions.Count; i++)
                 yield return (_positions[i], _positions[(i + 1) % _positions.Count]);

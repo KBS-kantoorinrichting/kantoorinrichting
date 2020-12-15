@@ -51,7 +51,7 @@ namespace Designer.ViewModel
         private double CanvasWidth = 1280;
 
         // Constructor specially for unit testing
-        public RoomEditorViewModel(string name) 
+        public RoomEditorViewModel(string name)
         {
             Name = name;
         }
@@ -131,6 +131,9 @@ namespace Designer.ViewModel
             return SelectedPoints;
         }
 
+        /**
+         * Kleurt alle grid points opnieuw in op basis van de opgeslagen punten
+         */
         public void PaintRoom()
         {
             foreach (Position pos in Points)
@@ -140,7 +143,7 @@ namespace Designer.ViewModel
                     RectangleDictionary[pos].Fill = Brushes.DarkMagenta;
                     RectangleDictionary[pos].Opacity = 1;
                 }
-                else if(BorderPoints.Contains(pos))
+                else if (BorderPoints.Contains(pos))
                 {
                     RectangleDictionary[pos].Fill = Brushes.DarkMagenta;
                     RectangleDictionary[pos].Opacity = 0.5;
@@ -178,6 +181,9 @@ namespace Designer.ViewModel
             }
         }
 
+        /**
+         * Zet de geselecteerde ruimte (deze functie wordt aangeroemen vanuit andere klassen)
+         */
         public void SetSelectedRoom(Room selectedroom)
         {
             if (MakeRoom(selectedroom) != null)
@@ -185,20 +191,31 @@ namespace Designer.ViewModel
                 PaintRoom();
             }
             else MessageQueue.Enqueue("Oeps, er is iets mis gegaan.");
-            
+
         }
+
+        /**
+         * Verwijderd alles uit het canvas en renders alles opnieuw
+         */
         public void Reload()
-        { // Reload de items zodat de juiste te zien zijn
+        {
             Editor.Children.Clear();
             DrawGrid();
             RenderFrames();
             OnPropertyChanged();
         }
+
+        /**
+         * Herlaad de hele pagina
+         */
         private void OnPropertyChanged(string propertyName = "")
         {
-            // herlaad de hele pagina
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
+
+        /**
+         * Functie om de huidige ruimte op te slaan
+         */
         public void SubmitRoom()
         {
             if (SelectedPoints.Count() < 3)
@@ -237,6 +254,9 @@ namespace Designer.ViewModel
             MessageQueue.Enqueue("Er is iets misgegaan tijdens het opslaan, probeer het nog een keer.");
         }
 
+        /**
+         * Genereert een grid in de canvas
+         */
         public void DrawGrid()
         {
 
@@ -262,6 +282,9 @@ namespace Designer.ViewModel
             }
         }
 
+        /**
+         * Mousemove event gebruikt om room placements te plaatsen en voor het hoveren van grid points
+         */
         public void MouseMove(object sender, MouseEventArgs e)
         {
             var mousePosition = e.GetPosition(Editor);
@@ -354,31 +377,40 @@ namespace Designer.ViewModel
             }
         }
 
+        /**
+         * Kijkt of de gegeven positie op een borderpoint staat
+         */
         public bool OnBorder(Position p)
         {
             return BorderPoints.Count(border => border.X == p.X && border.Y == p.Y) > 0;
         }
 
+        /**
+         * Renderd alle room placements
+         */
         public void RenderFrames()
         {
-            if(FramePoints != null)
+            if (FramePoints != null)
             {
                 foreach (Frame frame in FramePoints)
                 {
-                    if(frame.Type == FrameTypes.Door)
+                    if (frame.Type == FrameTypes.Door)
                     {
                         Position doorOpenPosition = CalculateNextPositionFromAngle(frame.Rotation, frame.X, frame.Y);
 
                         AddDoor(frame);
 
-                        if(RectangleDictionary.ContainsKey(doorOpenPosition)) AddDoor(frame, doorOpenPosition);
+                        if (RectangleDictionary.ContainsKey(doorOpenPosition)) AddDoor(frame, doorOpenPosition);
                     }
 
-                    if(frame.Type == FrameTypes.Window) AddWindow(frame);
+                    if (frame.Type == FrameTypes.Window) AddWindow(frame);
                 }
             }
         }
 
+        /**
+         * Voegt een raam toe (dmv het inkleuren van een grid point)
+         */
         private void AddWindow(Frame frame, Position position = null)
         {
             Position pos = position ?? new Position(frame.X, frame.Y);
@@ -389,6 +421,9 @@ namespace Designer.ViewModel
             RectangleDictionary[pos].Opacity = 1.0;
         }
 
+        /**
+         * Voegt een deur toe (dmv het inkleuren van een grid point)
+         */
         private void AddDoor(Frame frame, Position position = null)
         {
             Position pos = position ?? new Position(frame.X, frame.Y);
@@ -399,6 +434,9 @@ namespace Designer.ViewModel
             RectangleDictionary[pos].Opacity = 1.0;
         }
 
+        /**
+         * Roteert de deur op basis van een angle en xy coordinaten, kleurt vervolgens de point in die bij de deur hoort
+         */
         public void RotateDoor(int angle, int x, int y)
         {
             if (_activeFrame != null)
@@ -410,7 +448,7 @@ namespace Designer.ViewModel
                     _activeFrame.AttachedPosition = doorOpenPos;
 
                     // Als de positie niet in de editor bestaat wordt er niks ingekleurd
-                    if(RectangleDictionary.ContainsKey(doorOpenPos))
+                    if (RectangleDictionary.ContainsKey(doorOpenPos))
                     {
                         RectangleDictionary[doorOpenPos].Fill = Brushes.Brown;
                     }
@@ -418,6 +456,9 @@ namespace Designer.ViewModel
             }
         }
 
+        /**
+         * Berekend de aanliggende positie op basis van de angle
+         */
         public Position CalculateNextPositionFromAngle(int angle, int x, int y)
         {
             switch (angle)
@@ -438,6 +479,10 @@ namespace Designer.ViewModel
 
             return new Position(x, y);
         }
+
+        /**
+         * Click event voor het toevoegen van borderpoints en room placements
+         */
         public void MouseClick(object sender, MouseButtonEventArgs e)
         {
             int y = Convert.ToInt32(e.GetPosition(Editor).Y - (e.GetPosition(Editor).Y % 25));
@@ -447,7 +492,7 @@ namespace Designer.ViewModel
 
             if (e.RightButton == MouseButtonState.Pressed && _activeFrame != null)
             {
-                if(_activeFrame != null && _activeFrame.Type == FrameTypes.Door)
+                if (_activeFrame != null && _activeFrame.Type == FrameTypes.Door)
                 {
                     int nextRotation = _activeFrame.Rotation + (_activeFrame.Rotation >= 180 ? -180 : 180);
                     _activeFrame.Rotation = nextRotation;
@@ -459,12 +504,13 @@ namespace Designer.ViewModel
             // controleer of de linkermuisknop ingedrukt werdt
             if (e.LeftButton == MouseButtonState.Pressed)
             {
-                if(WithinSelectedPoints(x, y) && _activeFrame != null)
+                if (WithinSelectedPoints(x, y) && _activeFrame != null)
                 {
                     if (AddWindowsChecked)
                     {
                         _activeFrame.Type = FrameTypes.Window;
-                    } else if(AddDoorsChecked)
+                    }
+                    else if (AddDoorsChecked)
                     {
                         _activeFrame.Type = FrameTypes.Door;
                     }
@@ -518,7 +564,7 @@ namespace Designer.ViewModel
                     }
                 }
 
-            if (!previouslySelected && (LastSelected.X != currentpoint.X && LastSelected.Y != currentpoint.Y))
+                if (!previouslySelected && (LastSelected.X != currentpoint.X && LastSelected.Y != currentpoint.Y))
                 {  // Als je hem schuin zet
                     MessageQueue.Enqueue("Sorry, je kunt niet schuin neerzetten.");
                     return;
@@ -591,18 +637,27 @@ namespace Designer.ViewModel
             PaintRoom();
         }
 
+        /**
+         * Zet het toevoegen van deuren op inactief als deze actief is
+         */
         public void AddDoorsClick()
         {
-            if(AddDoorsChecked) AddWindowsChecked = false;
+            if (AddDoorsChecked) AddWindowsChecked = false;
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(""));
         }
 
+        /**
+         * Zet het toevoegen van ramen op inactief als deze actief is
+         */
         public void AddWindowsClick()
         {
-            if(AddWindowsChecked) AddDoorsChecked = false;
+            if (AddWindowsChecked) AddDoorsChecked = false;
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(""));
         }
 
+        /**
+         * Kijkt of de gegeven coordinaten binnen de SelectedPoints liggen
+         */
         public bool WithinSelectedPoints(int x, int y)
         {
             List<Position> points = SelectedPoints;
@@ -630,18 +685,19 @@ namespace Designer.ViewModel
         }
     }
 
+    /**
+     * Class voor roomplacements
+     */
     public class Frame : Position
     {
         public FrameTypes Type { get; set; }
         public int Rotation { get; set; }
 
-        public Position? AttachedPosition { get; set; }
+        public Position AttachedPosition { get; set; }
 
-        public Frame(int x, int y, FrameTypes type): base(x, y)
+        public Frame(int x, int y, FrameTypes type) : base(x, y)
         {
             Type = type;
         }
     }
 }
-
-
