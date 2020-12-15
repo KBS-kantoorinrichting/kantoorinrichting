@@ -21,11 +21,12 @@ namespace Designer.ViewModel
         public ArgumentCommand<MouseButtonEventArgs> MouseDownCommand { get; set; }
         public BasicCommand GotoRoomTemplate { get; set; }
         public BasicCommand GotoRoomEditor { get; set; }
-        public BasicCommand DeleteCommand { get; set; }
-        public BasicCommand ChangeCommand { get; set; }
+        public ArgumentCommand<int> DeleteCommand { get; set; }
+        public ArgumentCommand<int> UpdateCommand { get; set; }
         public BasicCommand Products { get; set; }
 
         public List<Room> Rooms { get; set; }
+        public Dictionary<Room, Canvas> AllRooms { get; set; }
         public Room SelectedRoom { get; set; }
 
         public Canvas Editor { get; set; }
@@ -47,8 +48,8 @@ namespace Designer.ViewModel
             // maakt nieuw canvas aan
             Editor = new Canvas();
             RoomPoly = new System.Windows.Shapes.Polygon();
-            DeleteCommand = new BasicCommand(Delete);
-            ChangeCommand = new BasicCommand(Change);
+            DeleteCommand = new ArgumentCommand<int>(DeleteRoom);
+            UpdateCommand = new ArgumentCommand<int>(UpdateRoom);
             ResizeCommand = new ArgumentCommand<SizeChangedEventArgs>(e => ResizePage(e.OriginalSource, e));
             // herlaad pagina
             Reload();
@@ -58,6 +59,7 @@ namespace Designer.ViewModel
         public void Reload()
         { // Reload de items zodat de juiste te zien zijn
             Rooms = LoadItems();
+            AllRooms = LoadRooms();
             Editor.Children.Clear();
             OnPropertyChanged();
         }
@@ -70,6 +72,22 @@ namespace Designer.ViewModel
             // this.Products is de lijst met producten
             // context.Products is de table Products van de database 
             return Rooms;
+        }
+
+        public Dictionary<Room, Canvas> LoadRooms()
+        {
+            Dictionary<Room, Canvas> dictionary = new Dictionary<Room, Canvas>();
+            // Linq om te zorgen dat de lijst gevuld wordt met de database content.
+            Rooms = RoomService.Instance.GetAll();
+
+            foreach (Room room in Rooms)
+            {
+                dictionary.Add(room, CreateRoomCanvas(room));
+            }
+
+            // this.Products is de lijst met producten
+            // context.Products is de table Products van de database 
+            return dictionary;
         }
 
         public void MouseDown(object sender, MouseButtonEventArgs e)
@@ -102,6 +120,32 @@ namespace Designer.ViewModel
             SelectedRoom = room;
         }
 
+        public Canvas CreateRoomCanvas(Room room)
+        {
+            Canvas canvas = new Canvas();
+            List<Position> coordinates = Room.ToList(room.Positions);
+
+            PointCollection points = new PointCollection();
+            for (int i = 0; i < coordinates.Count; i++)
+            {
+                points.Add(new Point(coordinates[i].X, coordinates[i].Y));
+            }
+
+            Polygon roomPolygon = new Polygon
+            {
+                Height = 120,
+                Width = 300,
+                Stroke = Brushes.Black,
+                Fill = Brushes.LightGray,
+                StrokeThickness = 1,
+                HorizontalAlignment = HorizontalAlignment.Left,
+                VerticalAlignment = VerticalAlignment.Center,
+                Points = points
+            };
+            canvas.Children.Add(roomPolygon);
+            return canvas;
+        }
+
         public void SetRoomDimensions()
         {
             Editor.Children.Clear();
@@ -126,30 +170,23 @@ namespace Designer.ViewModel
             Editor.Children.Add(RoomPoly);
 
         }
-        public void Delete()
+        public void DeleteRoom(int id)
         {
-            if (SelectedRoom == null || RoomService.Instance.Count() == 0)
-            {
-                return;
-            }
-            RoomService.Instance.Delete(SelectedRoom);
-            GeneralPopup warning = new GeneralPopup("Kamer is verwijderd!");
-            warning.ShowDialog();
-            SelectedRoom = null;
+            Room room = RoomService.Instance.Get(id);
+            if (room == null) return;
+
+            RoomService.Instance.Delete(room);
+            new GeneralPopup("Kamer is verwijderd!").ShowDialog();
         
             Reload();
-
         } 
-        public void Change()
+        public void UpdateRoom(int id)
         {
-            if (SelectedRoom == null || RoomService.Instance.Count() == 0)
-            {
-                return;
-            }
-            RoomEditorView edit = new RoomEditorView(SelectedRoom);
+            Room room = RoomService.Instance.Get(id);
+            if (room == null) return;
+
+            RoomEditorView edit = new RoomEditorView(room);
             Navigator.Instance.Replace(edit);
-
-
         }
 
         private void ScaleCanvas(double scale)
