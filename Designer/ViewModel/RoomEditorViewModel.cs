@@ -132,8 +132,6 @@ namespace Designer.ViewModel
         {
             foreach (Position pos in Points)
             {
-                //RectangleDictionary[pos].Fill = Brushes.White;
-                RectangleDictionary[pos].Opacity = 1;
                 if (SelectedPoints.Contains(pos))
                 {
                     RectangleDictionary[pos].Fill = Brushes.DarkMagenta;
@@ -150,6 +148,11 @@ namespace Designer.ViewModel
                     RectangleDictionary[pos].Opacity = 1;
                 }
 
+            }
+
+            foreach (Position pos in Points)
+            {
+
                 if (FramePoints.Exists(p => p.X == pos.X && p.Y == pos.Y))
                 {
                     // Zet de kleuren van de frames op basis van de types
@@ -159,8 +162,6 @@ namespace Designer.ViewModel
                         RectangleDictionary[pos].Fill = Brushes.Brown;
                         if (frameFound.AttachedPosition != null && RectangleDictionary.ContainsKey(frameFound.AttachedPosition))
                         {
-                            Debug.WriteLine(frameFound);
-                            Debug.WriteLine(frameFound.AttachedPosition);
                             RectangleDictionary[frameFound.AttachedPosition].Fill = Brushes.Brown;
                         }
                     }
@@ -172,7 +173,6 @@ namespace Designer.ViewModel
                     RectangleDictionary[pos].Opacity = 1;
                 }
             }
-            Debug.WriteLine("----------------------");
         }
 
         public void SetSelectedRoom(Room selectedroom)
@@ -276,7 +276,6 @@ namespace Designer.ViewModel
             Position point = new Position(x, y);
 
             // Sets hovered item (simplistic version of a hover)
-            //if (_selectedPosition != null && RectangleDictionary.ContainsKey(_selectedPosition) && RectangleDictionary[_selectedPosition].Fill != Brushes.DarkMagenta)
             if (_selectedPosition != null && RectangleDictionary.ContainsKey(_selectedPosition) && !OnBorder(_selectedPosition))
             {
                 RectangleDictionary[_selectedPosition].Fill = Brushes.White;
@@ -490,15 +489,11 @@ namespace Designer.ViewModel
                 Action AddPoint = () =>
                 {
                     // het geselecteerde punt kleuren en toevoegen aan de lijst van tussenpunten
-                    /*RectangleDictionary[LastSelected].Fill = System.Windows.Media.Brushes.DarkMagenta;
-                    RectangleDictionary[LastSelected].Opacity = 0.5;*/
                     BorderPoints.Add(LastSelected);
                 };
                 Action RemovePoint = () =>
                 {
                     // het geselecteerde punt wit kleuren en toevoegen aan de lijst van tussenpunten
-                    /*RectangleDictionary[LastSelected].Fill = System.Windows.Media.Brushes.White;
-                    RectangleDictionary[LastSelected].Opacity = 1;*/
                     BorderPoints.Remove(LastSelected);
                 };
 
@@ -506,8 +501,6 @@ namespace Designer.ViewModel
                 if (LastSelected.Y.Equals(-1))
                 {
                     // kleurt het hokje in
-                   // RectangleDictionary[currentpoint].Fill = System.Windows.Media.Brushes.DarkMagenta;
-                    // maakt dit het laatste geselecteerde punt
                     LastSelected = currentpoint;
                     // voegt het hokje toe aan de lijst
                     SelectedPoints.Add(currentpoint);
@@ -517,7 +510,6 @@ namespace Designer.ViewModel
                 var previouslySelected = LastSelected.Equals(currentpoint) /*|| SelectedPoints.Contains(currentpoint)*/;
                 if (previouslySelected)
                 {  // Als de laatst geselecteerde rectangle hetzelfde is als currentpoint
-                    //RectangleDictionary[currentpoint].Fill = System.Windows.Media.Brushes.White; // Maak deze rectactangle wit
                     SelectedPoints.Remove(currentpoint); // En verwijder hem van SelectedPoints
                     if (SelectedPoints.Count < 1)
                     { // Als het aantal selectedpoints kleiner dan 1 is
@@ -592,15 +584,11 @@ namespace Designer.ViewModel
                         // voegt hoekje toe aan lijst
                         SelectedPoints.Add(LastSelected);
                         // maakt hokje magenta
-                        //RectangleDictionary[currentpoint].Fill = System.Windows.Media.Brushes.DarkMagenta;
-                        // maakt dit het laatste geselecteerde punt
-                        
                     }
                     else
                     {
                         // vult vorige hokje weer in
                         LastSelected = SelectedPoints.Last();
-                        //RectangleDictionary[LastSelected].Fill = System.Windows.Media.Brushes.DarkMagenta;
                     }
                 }
 
