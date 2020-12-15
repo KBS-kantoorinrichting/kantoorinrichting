@@ -4,12 +4,9 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:viewModel="clr-namespace:Designer.ViewModel"
-    xmlns:model="clr-namespace:Models;assembly=Models"
     x:Class="Designer.View.RoomOverview"
-    xmlns:behaviors="http://schemas.microsoft.com/xaml/behaviors"
-    xmlns:designer="clr-namespace:Designer"
-    xmlns:gif="http://wpfanimatedgif.codeplex.com"
     xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+    xmlns:view="clr-namespace:Designer.View"
     mc:Ignorable="d"
     Title="Rooms"
     WindowHeight="-1">
@@ -17,98 +14,28 @@
     <Page.DataContext>
         <viewModel:RoomOverviewViewModel x:Name="viewModel" />
     </Page.DataContext>
-    <Page.Resources>
-        <designer:ImagePathConverter x:Key="ImagePathConverter" />
-    </Page.Resources>
 
     <Grid>
-        <TabControl x:Name="Tabs" Margin="884,20,0,0" HorizontalAlignment="Left" Width="260">
-            <TabItem Header="Ruimtes">
-                <Grid Background="#FFE5E5E5" Height="603">
+        <ScrollViewer>
+            <ItemsControl
+                x:Name="RoomList"
+                ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                ItemsSource="{Binding Rooms}"
+                Margin="10,0,10,10">
 
-                    <ScrollViewer>
-
-                        <ItemsControl
-                            x:Name="CatalogusList"
-                            ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-                            ItemsSource="{Binding Rooms}" Width="237" Height="2697">
-
-                            <ItemsControl.ItemsPanel>
-                                <ItemsPanelTemplate>
-                                    <WrapPanel />
-                                </ItemsPanelTemplate>
-                            </ItemsControl.ItemsPanel>
-
-                            <ItemsControl.ItemTemplate>
-                                <DataTemplate DataType="model:Product">
-                                    <Border
-                                        Uid="{Binding RoomId}"
-                                        Margin="5"
-                                        BorderThickness="0.2"
-                                        BorderBrush="Black">
-
-                                        <behaviors:Interaction.Triggers>
-                                            <behaviors:EventTrigger EventName="MouseDown">
-                                                <behaviors:InvokeCommandAction Command="{ Binding ElementName=viewModel, Path=MouseDownCommand}" PassEventArgsToCommand="True" />
-                                            </behaviors:EventTrigger>
-                                        </behaviors:Interaction.Triggers>
-
-                                        <StackPanel Orientation="Vertical" Width="108" Height="30">
-                                            <TextBlock
-
-                                                Text="{Binding Name}"
-                                                HorizontalAlignment="Center"
-                                                VerticalAlignment="Top"
-                                                FontSize="12"
-                                                TextWrapping="Wrap"
-                                                TextAlignment="Center"
-                                                FontWeight="DemiBold"
-                                                Width="108" Height="20" />
-
-                                        </StackPanel>
-                                    </Border>
-                                </DataTemplate>
-                            </ItemsControl.ItemTemplate>
-                        </ItemsControl>
-
-                    </ScrollViewer>
-                </Grid>
-            </TabItem>
-            <TabItem Header="Ruimte Toevoegen">
-                <StackPanel Margin="0,0,-2,28" RenderTransformOrigin="0.502,0.501">
-
-                    <Border />
-                    <Button Content="Genereer met template" Command="{Binding GotoRoomTemplate}" HorizontalAlignment="Stretch" Height="40" VerticalAlignment="Bottom" Margin="5,15,5,0" Background="#495464" BorderBrush="Gray" FontSize="14" Foreground="White"/>
-                    <Button Content="Maak kamer op maat" Command="{Binding GotoRoomEditor}" HorizontalAlignment="Stretch" Height="40" VerticalAlignment="Bottom" Margin="5,15,5,0" Background="#495464" BorderBrush="Gray" FontSize="14" Foreground="White"/>
-                    <Label Height="50" Visibility="Hidden" />
-                </StackPanel>
-
-            </TabItem>
-        </TabControl>
-
-        <Grid Background="White" HorizontalAlignment="Left" Height="634" Margin="0,20,0,0" VerticalAlignment="Top"
-              Width="879">
-            <Rectangle HorizontalAlignment="Left" Height="116" Margin="800,14,0,0" Stroke="Black" VerticalAlignment="Top" Width="79"/>
-            <Button Content="Verwijder&#xD;&#xA;kamer" Width="77" HorizontalAlignment="Right" Margin="0,26,1,570" Background="Red" Foreground="White"
-                    Command="{Binding DeleteCommand}" BorderThickness="0px" />
-
-            <Button Content="Wijzig&#xA;kamer" Width="77" HorizontalAlignment="Right" Margin="0,78,1,518" Background="Bisque" Foreground="White"
-                Command="{Binding ChangeCommand}" BorderThickness="0px" />
-
-            <Border HorizontalAlignment="Left" Height="610" Margin="10,14,0,0" VerticalAlignment="Top" Width="790"
-                    Background="White" BorderThickness="1px" BorderBrush="Black">
-                <StackPanel Margin="0,0,132,28">
-                    <Label Content="{Binding SelectedRoom.Name}"/>
-                    <Canvas Grid.Column="0" Name="Editor" AllowDrop="True" Background="Transparent" Margin="40,30,40,26">
-                        <ContentPresenter Content="{Binding Path=Editor}"></ContentPresenter>
-                    </Canvas>
-                </StackPanel>
-            </Border>
-
-
-
-
-        </Grid>
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <WrapPanel />
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <view:RoomCard Margin="0,10,10,0"/>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </ScrollViewer>
+        <materialDesign:Snackbar HorizontalAlignment="Stretch" MessageQueue="{Binding MessageQueue}" />
         <materialDesign:PopupBox 
             Style="{StaticResource MaterialDesignMultiFloatingActionAccentPopupBox}"
             PlacementMode="TopAndAlignCentres"
