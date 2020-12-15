@@ -22,7 +22,7 @@
             Width="Auto"
             Margin="5"
             Height="40"
-            materialDesign:HintAssist.Hint="Floating hint in a box"
+            materialDesign:HintAssist.Hint="Naam van de ruimte"
             />
         <Border Margin="7,50,0,0" Name="CanvasBorder">
 
