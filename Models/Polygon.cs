@@ -47,6 +47,14 @@ namespace Models {
 
         public Polygon Offset(Position position) { return Offset(position.X, position.Y); }
 
+        /*
+         * Geeft lijst van posities terug 
+         */
+        public List<Position> GetPositions()
+        {
+            return _positions;
+        }
+        
         /**
          * Zet de polygon om naar een tekst van die lijkt op 0,0|10,10|20,10
          */
