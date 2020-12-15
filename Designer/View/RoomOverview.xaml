@@ -35,6 +35,7 @@
                 </ItemsControl.ItemTemplate>
             </ItemsControl>
         </ScrollViewer>
+        <materialDesign:Snackbar HorizontalAlignment="Stretch" MessageQueue="{Binding MessageQueue}" />
         <materialDesign:PopupBox 
             Style="{StaticResource MaterialDesignMultiFloatingActionAccentPopupBox}"
             PlacementMode="TopAndAlignCentres"

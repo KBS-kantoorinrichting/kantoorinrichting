@@ -4,9 +4,13 @@ using Models;
 using Services;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Configuration;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
+using MaterialDesignThemes.Wpf;
 using Polygon = System.Windows.Shapes.Polygon;
 
 namespace Designer.ViewModel
@@ -20,12 +24,14 @@ namespace Designer.ViewModel
         public ArgumentCommand<int> DeleteCommand { get; set; }
         public ArgumentCommand<int> UpdateCommand { get; set; }
         public Dictionary<Room, Canvas> Rooms { get; set; }
+        public SnackbarMessageQueue MessageQueue { get; set; }
         public RoomOverviewViewModel()
         {
             GotoRoomTemplate = new PageCommand(() => new RoomTemplateView());
             GotoRoomEditor = new PageCommand(() => new RoomEditorView());
             DeleteCommand = new ArgumentCommand<int>(DeleteRoom);
             UpdateCommand = new ArgumentCommand<int>(UpdateRoom);
+            MessageQueue = new SnackbarMessageQueue();
             Reload();
         }
 
@@ -90,10 +96,10 @@ namespace Designer.ViewModel
             if (room == null) return;
 
             RoomService.Instance.Delete(room);
-            new GeneralPopup("Kamer is verwijderd!").ShowDialog();
-        
+            MessageQueue.Enqueue("Kamer is verwijderd!");
             Reload();
-        } 
+        }
+        
         public void UpdateRoom(int id)
         {
             Room room = RoomService.Instance.Get(id);
