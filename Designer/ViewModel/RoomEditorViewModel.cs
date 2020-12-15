@@ -132,7 +132,7 @@ namespace Designer.ViewModel
         {
             foreach (Position pos in Points)
             {
-                RectangleDictionary[pos].Fill = Brushes.White;
+                //RectangleDictionary[pos].Fill = Brushes.White;
                 RectangleDictionary[pos].Opacity = 1;
                 if (SelectedPoints.Contains(pos))
                 {
@@ -146,8 +146,8 @@ namespace Designer.ViewModel
                 }
                 else
                 {
-                    //RectangleDictionary[pos].Fill = Brushes.White;
-                    //RectangleDictionary[pos].Opacity = 1;
+                    RectangleDictionary[pos].Fill = Brushes.White;
+                    RectangleDictionary[pos].Opacity = 1;
                 }
 
                 if (FramePoints.Exists(p => p.X == pos.X && p.Y == pos.Y))
@@ -277,12 +277,12 @@ namespace Designer.ViewModel
 
             // Sets hovered item (simplistic version of a hover)
             //if (_selectedPosition != null && RectangleDictionary.ContainsKey(_selectedPosition) && RectangleDictionary[_selectedPosition].Fill != Brushes.DarkMagenta)
-            if (_selectedPosition != null && RectangleDictionary.ContainsKey(_selectedPosition))
+            if (_selectedPosition != null && RectangleDictionary.ContainsKey(_selectedPosition) && !OnBorder(_selectedPosition))
             {
                 RectangleDictionary[_selectedPosition].Fill = Brushes.White;
             }
 
-            if (RectangleDictionary.ContainsKey(point) && RectangleDictionary[point].Fill == Brushes.White)
+            if (RectangleDictionary.ContainsKey(point) && RectangleDictionary[point].Fill == Brushes.White && !OnBorder(point))
             {
                 _selectedPosition = point;
                 RectangleDictionary[point].Fill = Brushes.Bisque;
@@ -357,6 +357,11 @@ namespace Designer.ViewModel
                     }
                 }
             }
+        }
+
+        public bool OnBorder(Position p)
+        {
+            return BorderPoints.Count(border => border.X == p.X && border.Y == p.Y) > 0;
         }
 
         public void RenderFrames()
@@ -541,36 +546,43 @@ namespace Designer.ViewModel
                         var toRight = LastSelected.X - currentpoint.X >= 0;
                         // zolang het vorige coordinaat kleiner is
                         int i = (int)LastSelected.X;
+                        if (toRight)
+                            i += 25;
+                        else
+                            i -= 25;
                         while (i != currentpoint.X)
                         {
+                            if (toRight)
+                                i -= 25;
+                            else
+                                i += 25;
                             LastSelected = new Position(i, LastSelected.Y);
                             if (previouslySelected)
                                 RemovePoint();
                             else
                                 AddPoint();
-                            if (toRight)
-                                i -= 25;
-                            else
-                                i += 25;
                         }
                     }
                     else
                     {
                         var toBottom = LastSelected.Y - currentpoint.Y >= 0;
                         int i = (int)LastSelected.Y;
-
+                        if (toBottom)
+                            i += 25;
+                        else
+                            i -= 25;
                         // zolang het vorige coordinaat kleiner is
                         while (i != currentpoint.Y)
                         {
+                            if (toBottom)
+                                i -= 25;
+                            else
+                                i += 25;
                             LastSelected = new Position(LastSelected.X, i);
                             if (previouslySelected)
                                 RemovePoint();
                             else
                                 AddPoint();
-                            if (toBottom)
-                                i -= 25;
-                            else
-                                i += 25;
                         }
                     }
 
@@ -590,7 +602,6 @@ namespace Designer.ViewModel
                         LastSelected = SelectedPoints.Last();
                         //RectangleDictionary[LastSelected].Fill = System.Windows.Media.Brushes.DarkMagenta;
                     }
-
                 }
 
             }
