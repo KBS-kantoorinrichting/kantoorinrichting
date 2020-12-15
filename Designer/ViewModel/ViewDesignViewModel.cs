@@ -140,12 +140,83 @@ namespace Designer.ViewModel {
          */
         public void DeleteRoute() {
             _route = null;
+
+            List<Models.Line> lines = Design.Room.GetPoly().GetLines().ToList();
+            List<Models.Line> correct = lines.Select(l => (Models.Line) null).ToList();
+            int start = -1;
+            for (int i = 0; i < lines.Count; i++) {
+                Models.Line l1 = lines[i];
+                Models.Line l2 = lines[(i + 1) % lines.Count];
+
+                Models.Line foundL1 = null;
+                Models.Line foundL2 = null;
+                for (int r = 0; r < 4; r++) {
+                    Models.Line tempL1 = l1.OffsetPerpendicular(50, r % 2 == 0);
+                    Models.Line tempL2 = l2.OffsetPerpendicular(50, r / 2 == 0);
+
+                    Position inter = tempL1.Intersection(tempL2);
+                    if (inter == null || !Design.Room.GetPoly().Inside(inter)) continue;
+                    if (foundL1 != null) {
+                        foundL1 = null;
+                        foundL2 = null;
+                        break;
+                    }
+
+                    foundL1 = tempL1;
+                    foundL2 = tempL2;
+                }
+
+                if (foundL1 == null) continue;
+                correct[i] = foundL1;
+                start = (i + 1) % lines.Count;
+                correct[start] = foundL2;
+                break;
+            }
+            
+            
+            for (int i = start; i != start - 1; i = (i + 1) % lines.Count) {
+                int j = (i + 1) % lines.Count;
+                if (correct[j] != null) break;
+                Models.Line before = correct[i];
+                Models.Line toTest = lines[j];
+            
+                Models.Line l1 = toTest.OffsetPerpendicular(50, true);
+                Models.Line l2 = toTest.OffsetPerpendicular(50, false);
+            
+                Position inter1 = before.Intersection(l1);
+                if (inter1 == null || !Design.Room.GetPoly().Inside(inter1)) {
+                    correct[j] = l2;
+                    continue;
+                }
+                Position inter2 = before.Intersection(l2);
+                if (inter2 == null || !Design.Room.GetPoly().Inside(inter2)) {
+                    correct[j] = l1;
+                    continue;
+                }
+            
+                double d1 = before.P1.Distance(inter1);
+                double d2 = before.P1.Distance(inter2);
+            
+                correct[j] = d1 > d2 ? l1 : l2;
+            }
+
+            List<Position> positions = new List<Position>(); 
+            for (int i = 0; i < correct.Count; i++) {
+                Models.Line l1 = correct[i];
+                Models.Line l2 = correct[(i + 1) % lines.Count];
+                positions.Add(l1.Intersection(l2));
+            }
+
+            positions.RemoveAll(p => p == null);
+
+            _route = new Models.Polygon(positions);
+
             ShowRoute();
         }
 
         List<DistanceLine> _routeLines = new List<DistanceLine>();
         List<Ellipse> _ellipses = new List<Ellipse>();
-        
+
         /**
          * Tekent de volledige route
          */
@@ -248,11 +319,13 @@ namespace Designer.ViewModel {
                                     Editor.Dispatcher.Invoke(
                                         () => {
                                             DrawProduct(placement, ProductPlacements.IndexOf(placement));
-                                        });
+                                        }
+                                    );
                                 }
                             }
                         }
                     }
+
                     PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(""));
                 }
             ).Start();
@@ -286,7 +359,7 @@ namespace Designer.ViewModel {
             Position position = new Position((int) Math.Round(p.X / acc) * acc, (int) Math.Round(p.Y / acc) * acc);
             //Als het nieuwe punt buiten de ruimte zit stopt die
             if (!Design.Room.GetPoly().Inside(position)) return;
-            
+
             //Voegt het nieuwe punt toe aan het begin van de route
             List<Position> positions = new List<Position> {position};
             if (_route != null) positions.AddRange(_route);
@@ -364,15 +437,16 @@ namespace Designer.ViewModel {
 
             //Gaat door alle producten heen behalve zichzelf en skip
             foreach (ProductPlacement placement in toCheck) {
-                if (Equals(placement, changed) || (skip != null && Equals(placement, skip)) || placement.GetPoly() == null) continue;
-                
+                if (Equals(placement, changed) || (skip != null && Equals(placement, skip)) ||
+                    placement.GetPoly() == null) continue;
+
                 //Controlleerd door middel van snelle minder accuraten functies hoe het nodig is om te checken
                 (bool needed, bool safe) = placement.GetPoly().PreciseNeeded(changed.GetPoly(), 150);
                 if (!needed && safe) continue;
 
                 //Kijkt accuraat wat de afstand is
                 (Position p1, Position p2) = placement.GetPoly().MinDistance(changed.GetPoly());
-                
+
                 //Maakt een nieuwe lijn aan als deze nog niet bestond en anders pakt die de oude lijn
                 DistanceLine line = _lines[changed].ContainsKey(placement)
                     ? _lines[changed][placement]
@@ -380,7 +454,7 @@ namespace Designer.ViewModel {
 
                 //Vervangt de lijn met de vorige
                 _lines[changed][placement] = line;
-                
+
                 //Als de mee vergelijken nog niet bestaat wordt deze aan gemaakt
                 if (!_lines.ContainsKey(placement))
                     _lines[placement] = new Dictionary<ProductPlacement, DistanceLine>();
@@ -453,7 +527,7 @@ namespace Designer.ViewModel {
             //Zodat het product in het midden van de cursor staat
             placement.X = newX;
             placement.Y = newY;
-            
+
             //Verwijderd de corona lijnen van de preview
             RemoveCorona(ProductPlacements[index]);
             //Na het aanpassen wordt het weer toegevoegd om de illusie te geven dat het in de lijst wordt aangepast
@@ -575,7 +649,7 @@ namespace Designer.ViewModel {
                 );
                 RenderRoom();
             }
-            
+
             //Hier wordt een product dat al in het design zit verplaatst
             else if (e.Data.GetDataPresent(typeof(ProductPlacement))) {
                 ProductPlacement placement = (ProductPlacement) e.Data.GetData(typeof(ProductPlacement));
@@ -665,7 +739,7 @@ namespace Designer.ViewModel {
                 Editor.Children.Remove(_screen);
                 _screen = null;
             }
-            
+
             foreach (Image image in _images.Values) {
                 Editor.Children.Remove(image);
             }
@@ -791,7 +865,7 @@ namespace Designer.ViewModel {
             //Slaat de foto op met placement als key zodat die makkerlijker te verwijderen is
             _images[placement] = image;
 
-            
+
             return (image, rect);
         }
 
@@ -827,8 +901,6 @@ namespace Designer.ViewModel {
             Editor.Children.Add(RoomPoly);
         }
 
-        private Rectangle rectangle = new Rectangle();
-        
         public bool CheckRoomCollisions(Point point, Product product) {
             int yOffset = product.Length / 2;
             int xOffset = product.Width / 2;

@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Drawing;
 using System.Linq;
 
 namespace Models.Utils {
@@ -127,13 +126,11 @@ namespace Models.Utils {
 
             return result;
         }
-
-        private static PointF Point(this Position position) { return new PointF(position.X, position.Y); }
     }
 
     public static class LineUtil {
-        public static int DeltaX(this Line line) => Math.Abs(line.P1.X - line.P2.X);
-        public static int DeltaY(this Line line) => Math.Abs(line.P1.Y - line.P2.Y);
+        public static int DeltaX(this Line line) => line.P1.X - line.P2.X;
+        public static int DeltaY(this Line line) => line.P1.Y - line.P2.Y;
 
         public static (double a, double b)? AsFormulaX(this Line line) {
             int dx = line.DeltaX();
@@ -157,6 +154,20 @@ namespace Models.Utils {
             double b = line.P1.X - a * line.P1.Y;
 
             return (a, b);
+        }
+
+        public static Line OffsetPerpendicular(this Line line, int distance, bool up = true) {
+            (double a, double b)? f = line.AsFormulaX();
+            bool x = f.HasValue;
+            if (!x) f = line.AsFormulaY();
+            if (!f.HasValue) return null;
+
+            (double a, double _) = f.Value;
+
+            double r = distance * a;
+            int dB = (int) Math.Sqrt(r * r + distance * distance) * (up ? 1 : -1);
+
+            return x ? line.Offset(y: dB) : line.Offset(x: dB);
         }
 
         public static Position IntersectionLineSegment(this Line line1, Line line2) {
@@ -187,8 +198,9 @@ namespace Models.Utils {
             if (l1Fx.HasValue && l2Fx.HasValue) {
                 (double a1, double b1) = l1Fx.Value;
                 (double a2, double b2) = l2Fx.Value;
+                if (a1 - a2 == 0) return null;
 
-                double x = (b1 + b2) / (a1 + a2);
+                double x = (b2 - b1) / (a1 - a2);
                 double y = x * a1 + b1;
 
                 return new Position((int) x, (int) y);
@@ -200,8 +212,9 @@ namespace Models.Utils {
             if (l1Fy.HasValue && l2Fy.HasValue) {
                 (double a1, double b1) = l1Fy.Value;
                 (double a2, double b2) = l2Fy.Value;
+                if (a1 - a2 == 0) return null;
 
-                double y = (b1 + b2) / (a1 + a2);
+                double y = (b2 - b1) / (a1 - a2);
                 double x = y * a1 + b1;
 
                 return new Position((int) x, (int) y);
