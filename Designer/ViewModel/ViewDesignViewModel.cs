@@ -92,12 +92,12 @@ namespace Designer.ViewModel {
         private readonly MatrixTransform _transform = new MatrixTransform();
         private Point _initialMousePosition;
 
-        public List<DistanceLine> PlexiLines = new List<DistanceLine>();
+        public List<Models.Polygon> PlexiLines = new List<Models.Polygon>();
 
         public bool PEnabled { get; set; }
 
         //private Position _pSecondPoint;
-        private DistanceLine _plexiLine;
+        private Models.Polygon _plexiLine;
 
         //Special constructor for unit tests
         public ViewDesignViewModel(Design design) {
@@ -127,7 +127,7 @@ namespace Designer.ViewModel {
             _productOverview = new Dictionary<Product, ProductData>();
 
             _distanceLine = new DistanceLine(null, null);
-            _plexiLine = new DistanceLine(null, null, "(Plexiglas)");
+            //_plexiLine = new Models.Polygon();
         }
 
         public bool Enabled { get; set; }
@@ -308,14 +308,23 @@ namespace Designer.ViewModel {
                 _secondPoint = null;
             } else {
                 _secondPoint = new Position((int) p.X, (int) p.Y);
-                _plexiLine.Remove(Editor);
-                _plexiLine = new DistanceLine(_origin, _secondPoint, "(Plexiglas)");
+                /*_plexiLine.Remove(Editor);
+                _plexiLine = new Polygon(_origin, _secondPoint, "(Plexiglas)");
                 _plexiLine.Add(Editor);
-                PlexiLines.Add(_plexiLine);
-                
+                PlexiLines.Add(_plexiLine);*/
+                List<Position> pauperlijst = new List<Position>();
+                pauperlijst.Add(_origin);
+                pauperlijst.Add(_secondPoint);
+                _plexiLine = new Models.Polygon(pauperlijst);
+
                 //Database conversie
-                Design.Plexiglass = FromList(PlexiLines);
-                PlexiLines = ToList(Design.Plexiglass);
+                string PlexiLinesString = "";
+                foreach (Models.Polygon poly in PlexiLines)
+                {
+                    PlexiLinesString += "|" + poly.Convert();
+                }
+                Design.Plexiglass = PlexiLinesString;
+               // PlexiLines = ToList(Design.Plexiglass);
                 PEnabled = false;
                 OnPropertyChanged();
             }
@@ -351,9 +360,13 @@ namespace Designer.ViewModel {
         }
 
         public void RenderPlexiglass(Position p1, Position p2) {
-            if (!_plexiLine.Shows) _plexiLine.Add(Editor);
-            _plexiLine.P1 = p1;
-            _plexiLine.P2 = p2;
+            /* if (!_plexiLine.Shows) _plexiLine.Add(Editor);
+             _plexiLine.P1 = p1;
+             _plexiLine.P2 = p2;*/
+            List<Position> f = new List<Position>();
+            f.Add(p1);
+            f.Add(p2);
+            _plexiLine = new Models.Polygon(f);
             // _plexiLine.Remove(Editor);
         }
 
@@ -459,7 +472,12 @@ namespace Designer.ViewModel {
         public void SetDesign(Design design) {
             Design = design;
             ProductPlacements = design.ProductPlacements;
-            PlexiLines = ToList(Design.Plexiglass);
+            string PlexiLinesString = "";
+            foreach (Models.Polygon poly in PlexiLines)
+            {
+                PlexiLinesString += "|" + poly.Convert();
+            }
+            Design.Plexiglass = PlexiLinesString;
             Console.WriteLine(PlexiLines.Count);
             ProductPlacements ??= new List<ProductPlacement>();
             _productOverview = new Dictionary<Product, ProductData>();
@@ -472,7 +490,7 @@ namespace Designer.ViewModel {
                 //Tekend de route en alle corona lijnen
                 ProductPlacements.ForEach(p => CheckCorona(p));
                 ShowRoute();
-                PlexiLines.ForEach(p => p.Add(Editor));
+                //PlexiLines.ForEach(p => p.Add(Editor));
 
                 // Zet de schaal van de ruimte op basis van de dimensies, dit moet na het zetten van het design
                 SetRoomScale();
@@ -583,7 +601,7 @@ namespace Designer.ViewModel {
                     PlacePointPlexi(e);
                     return;
                 }
-
+/*
                 if (!PlexiLines.Count.Equals(0))
                 {
                     if (sender is Line)
@@ -600,12 +618,8 @@ namespace Designer.ViewModel {
                         }
                         PlexiLines[index].Remove(Editor);
                         PlexiLines.RemoveAt(index);
-
-
-                    }
-
-
-                }
+                    }*/
+                //}
 
 
                 if (sender.GetType() != typeof(Image)) return;
