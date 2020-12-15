@@ -60,6 +60,7 @@
             </ScrollViewer>
         </materialDesign:DialogHost>
         </materialDesign:DialogHost>
+        <materialDesign:Snackbar HorizontalAlignment="Stretch" MessageQueue="{Binding MessageQueue}" />
         <Button
             Style="{StaticResource MaterialDesignFloatingActionAccentButton}"
             ToolTip="MaterialDesignFloatingActionAccentButton"

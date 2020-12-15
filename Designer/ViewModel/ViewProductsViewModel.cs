@@ -16,7 +16,6 @@ using Services;
 
 namespace Designer.ViewModel {
     public class ViewProductsViewModel : INotifyPropertyChanged {
-        public UIElement Popup { get; set; }
         public string Name { get; set; }
         public double Price { get; set; }
         public string Photo { get; set; }
@@ -47,7 +46,8 @@ namespace Designer.ViewModel {
 
         public List<Product> Products { get; set; }
         // Property van een lijst om de informatie vanuit de database op te slaan.
-
+        
+        public SnackbarMessageQueue MessageQueue { get; set; }
         public ViewProductsViewModel() {
             // Tekenen van de catalogus 
             Reload();
@@ -63,6 +63,7 @@ namespace Designer.ViewModel {
             SaveEdit = new BasicCommand(SubmitEditedItem);
             CancelEdit = new BasicCommand(CancelEditPopup);
             EditPhoto = new BasicCommand(SelectPhoto);
+            MessageQueue = new SnackbarMessageQueue();
         }
 
         public void Reload() { // Reload de items zodat de juiste te zien zijn
@@ -99,6 +100,7 @@ namespace Designer.ViewModel {
             }
 
             ProductService.Instance.Delete(SelectedProduct);
+            MessageQueue.Enqueue("Het product is verwijderd");
             Reload();
         }
 
@@ -145,6 +147,7 @@ namespace Designer.ViewModel {
         {
             IsEditing = false;
             ProductService.Instance.Update(EditedItem);
+            MessageQueue.Enqueue("Het product is aangepast");
             Reload();
         }
 
@@ -195,8 +198,7 @@ namespace Designer.ViewModel {
         private void SubmitItem() {
             if (SaveProduct(Name, Price, Photo, Width, Length, HasPerson) != null) {
                 // Als de parameters niet null zijn dan:
-                GeneralPopup popup = new GeneralPopup("Het product is opgeslagen");
-                popup.ShowDialog();
+                MessageQueue.Enqueue("Het product is toegevoegd");
                 IsAdding = false;
                 Reload();
                 // Popup dialog met "Het product is opgeslagen"
