@@ -4,24 +4,30 @@
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:behaviors="http://schemas.microsoft.com/xaml/behaviors"
-      xmlns:smtx="clr-namespace:ShowMeTheXAML;assembly=ShowMeTheXAML"
-      xmlns:local="clr-namespace:Designer.View" xmlns:viewModel="clr-namespace:Designer.ViewModel"
+      xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+      xmlns:viewModel="clr-namespace:Designer.ViewModel"
       mc:Ignorable="d" 
-      d:DesignHeight="720" d:DesignWidth="1280"
+      WindowHeight="-1"
       Title="RoomEditorView">
     <Page.DataContext>
         <viewModel:RoomEditorViewModel x:Name="viewModel" />
     </Page.DataContext>
     <Grid>
-        <TextBox MaxLength="25" HorizontalAlignment="Left"
-                 TextWrapping="Wrap" VerticalAlignment="Top" Width="178"
-                 Text="{Binding Name, UpdateSourceTrigger = PropertyChanged}" Margin="87,8,0,0"/>
-        <Label Content="Ruimte naam:" HorizontalAlignment="Left" VerticalAlignment="Top" Width="114" />
-        <Border BorderThickness="1px" BorderBrush="Black" Margin="0,33,0,0" Name="CanvasBorder">
+        <TextBox
+            Style="{StaticResource MaterialDesignOutlinedTextFieldTextBox}"
+            VerticalAlignment="Top"
+            AcceptsReturn="True"
+            TextWrapping="Wrap"
+            Text="{Binding Name, UpdateSourceTrigger = PropertyChanged}"
+            Width="Auto"
+            Margin="5"
+            Height="40"
+            materialDesign:HintAssist.Hint="Floating hint in a box"
+            />
+        <Border Margin="7,50,0,0" Name="CanvasBorder">
 
             <Canvas Margin="0,-1,0,32" Name="Editor">
-                <ContentPresenter Content="{Binding Path=Editor}">
-                </ContentPresenter>
+                <ContentPresenter Content="{Binding Path=Editor}" />
                 <behaviors:Interaction.Triggers>
                     <behaviors:EventTrigger EventName="MouseMove" SourceObject="{Binding ElementName=Editor}">
                         <behaviors:InvokeCommandAction Command="{Binding MouseOverCommand}" PassEventArgsToCommand="True"/>
@@ -32,24 +38,47 @@
                 </behaviors:Interaction.Triggers>
             </Canvas>
         </Border>
-        <Button Content="Opslaan" Background="Bisque" VerticalAlignment="Top" Height="23"
-                RenderTransformOrigin="0.906,0.372" Margin="270,5,455,0"
-                Command="{Binding Submit}" />
         <ToggleButton
-            Margin="770,8,155,0"
-            VerticalAlignment="Top"
-            HorizontalAlignment="Center"
+            Margin="0,0,180,20"
+            Width="56"
+            Height="56"
+            HorizontalAlignment="Right"
+            VerticalAlignment="Bottom"
             Command="{Binding AddDoors}" 
             IsChecked="{Binding AddDoorsChecked}"
-            Style="{StaticResource MaterialDesignSwitchToggleButton}"
-            ToolTip="Deuren Toevoegen"/>
+            Style="{StaticResource MaterialDesignActionLightToggleButton}"
+            ToolTip="Deuren Toevoegen">
+            <materialDesign:PackIcon
+                Kind="Door"
+                Height="32"
+                Width="32" />
+        </ToggleButton>
         <ToggleButton
-            VerticalAlignment="Top"
-            HorizontalAlignment="Center"
-            Margin="870,8,0,0"
+            HorizontalAlignment="Right"
+            VerticalAlignment="Bottom"
+            Margin="0,0,100,20"
+            Width="56"
+            Height="56"
             Command="{Binding AddWindows}" 
             IsChecked="{Binding AddWindowsChecked}"
-            Style="{StaticResource MaterialDesignSwitchToggleButton}"
-            ToolTip="Ramen Toevoegen"/>
+            Style="{StaticResource MaterialDesignActionLightToggleButton}"
+            ToolTip="Ramen Toevoegen">
+            <materialDesign:PackIcon
+                Kind="Blinds"
+                Height="32"
+                Width="32" />
+        </ToggleButton>
+        <Button
+            Style="{StaticResource MaterialDesignFloatingActionAccentButton}"
+            ToolTip="MaterialDesignFloatingActionAccentButton"
+            HorizontalAlignment="Right"
+            VerticalAlignment="Bottom"
+            Margin="0,0,20,20"
+            Command="{Binding Submit}">
+            <materialDesign:PackIcon
+                Kind="Plus"
+                Height="32"
+                Width="32" />
+        </Button>
     </Grid>
 </Page>
