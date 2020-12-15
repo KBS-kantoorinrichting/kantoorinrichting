@@ -8,6 +8,7 @@ using System.Windows.Controls;
 using Designer.View;
 using Microsoft.Win32;
 using System.Diagnostics;
+using System.Threading;
 using System.Windows;
 using Designer.View.Components;
 using MaterialDesignThemes.Wpf;
@@ -63,7 +64,10 @@ namespace Designer.ViewModel {
             SaveEdit = new BasicCommand(SubmitEditedItem);
             CancelEdit = new BasicCommand(CancelEditPopup);
             EditPhoto = new BasicCommand(SelectPhoto);
-            MessageQueue = new SnackbarMessageQueue();
+            if (Thread.CurrentThread.GetApartmentState() == ApartmentState.STA)
+            {
+                MessageQueue = new SnackbarMessageQueue(); 
+            }
         }
 
         public void Reload() { // Reload de items zodat de juiste te zien zijn
