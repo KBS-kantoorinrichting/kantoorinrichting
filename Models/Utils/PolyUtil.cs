@@ -85,7 +85,7 @@ namespace Models.Utils {
         public static bool DoesCollide(this Polygon poly1, Polygon poly2) {
             return poly1.DoesOutsideCollide(poly2) || poly1.InsideNoOutside(poly2) || poly2.InsideNoOutside(poly1);
         }
-
+        
         private static bool DoesOutsideCollide(this Polygon poly1, Polygon poly2) {
             foreach (Line line1 in poly1.GetLines())
             foreach (Line line2 in poly2.GetLines()) {
@@ -103,6 +103,9 @@ namespace Models.Utils {
             return poly1.InsideNoOutside(poly2) && !poly2.DoesOutsideCollide(poly1);
         }
 
+        /**
+         * Checked of alle coordinaten van poly 2 in poly 1 zitten
+         */
         private static bool InsideNoOutside(this Polygon poly1, Polygon poly2) { return poly2.All(poly1.Inside); }
 
         public static bool Inside(this Polygon poly, Position position) {
@@ -129,13 +132,24 @@ namespace Models.Utils {
     }
 
     public static class LineUtil {
-        public static int DeltaX(this Line line) => line.P1.X - line.P2.X;
-        public static int DeltaY(this Line line) => line.P1.Y - line.P2.Y;
+        /**
+         * Berekend het verschil in X. Kan negatief zijn
+         */
+        private static int DeltaX(this Line line) => line.P1.X - line.P2.X;
 
+        /**
+         * Berekend het verschil in y. Kan negatief zijn
+         */
+        private static int DeltaY(this Line line) => line.P1.Y - line.P2.Y;
+
+        /**
+         * Ontbind de lijn na de vorm y = ax + b
+         */
         public static (double a, double b)? AsFormulaX(this Line line) {
             int dx = line.DeltaX();
             int dy = line.DeltaY();
 
+            //Als er geen verschil is op de x as dan is het een verticale lijne en kan die niet ontbonden worden naar y = ax + b
             if (dx == 0) return null;
 
             double a = (double) dy / dx;
@@ -144,10 +158,14 @@ namespace Models.Utils {
             return (a, b);
         }
 
+        /**
+         * Ontbind de lijn na de vorm x = ay + b
+         */
         public static (double a, double b)? AsFormulaY(this Line line) {
             int dx = line.DeltaX();
             int dy = line.DeltaY();
 
+            //Als er geen verschil is op de y as dan is het een horizontale lijne en kan die niet ontbonden worden naar x = ay + b
             if (dy == 0) return null;
 
             double a = (double) dx / dy;
@@ -156,7 +174,11 @@ namespace Models.Utils {
             return (a, b);
         }
 
+        /**
+         * Berekend de lijn die evenredig is aan line met een afstand van distance
+         */
         public static Line OffsetPerpendicular(this Line line, int distance, bool up = true) {
+            //Ontbind de lijn op het x,y coordinaten systeem of y,x coordinaten systeem
             (double a, double b)? f = line.AsFormulaX();
             bool x = f.HasValue;
             if (!x) f = line.AsFormulaY();
@@ -164,18 +186,24 @@ namespace Models.Utils {
 
             (double a, double _) = f.Value;
 
+            //Berekend de afstand met de bepaalde hoek
             double r = distance * a;
             int dB = (int) Math.Sqrt(r * r + distance * distance) * (up ? 1 : -1);
 
+            //Geeft de juiste offset op basis van het coordinaten systeem
             return x ? line.Offset(y: dB) : line.Offset(x: dB);
         }
 
+        /**
+         * Berekend de snijpunt van twee lijnen die op het lijndeel zelf licht
+         */
         public static Position IntersectionLineSegment(this Line line1, Line line2) {
             Position i = line1.Intersection(line2);
             if (i == null) return null;
 
             (Position p1, Position p2) = line1.AsTuple;
 
+            //Als het punt niet binnen het gebied licht van de lijn geeft die geen punt terug 
             if (p1.X > p2.X && (p1.X < i.X || i.X < p2.X)) return null;
             if (p2.X > p1.X && (p2.X < i.X || i.X < p1.X)) return null;
             if (p1.Y > p2.Y && (p1.Y < i.Y || i.Y < p2.Y)) return null;
@@ -191,16 +219,29 @@ namespace Models.Utils {
             return i;
         }
 
+        /**
+         * Berekend het snijpunt van 2 lijnen, deze hoefd niet op het lijndeel te liggen
+         */
         public static Position Intersection(this Line line1, Line line2) {
             (double a, double b)? l1Fx = line1.AsFormulaX();
             (double a, double b)? l2Fx = line2.AsFormulaX();
 
+            //Als beide lijnen een valide ontbinding hebben op het x,y coordinaten systeem
             if (l1Fx.HasValue && l2Fx.HasValue) {
                 (double a1, double b1) = l1Fx.Value;
                 (double a2, double b2) = l2Fx.Value;
+                //Als de lijnen evenredig zijn is er geen snijpunt
                 if (a1 - a2 == 0) return null;
 
+                // Berekend het snijpunt door middel van:
+                // y = a1x + b1, y = a2x + b2
+                // a1x + b1 = a2x + b2
+                // a1x - a2x = b2 - b1
+                // (a1 - a2)x = b2 - b1
+                // x = (b2 - b1) / (a1 - a2)
                 double x = (b2 - b1) / (a1 - a2);
+                
+                //Vult de x in bij de eerste formule om y te berekenen
                 double y = x * a1 + b1;
 
                 return new Position((int) x, (int) y);
@@ -209,29 +250,45 @@ namespace Models.Utils {
             (double a, double b)? l1Fy = line1.AsFormulaY();
             (double a, double b)? l2Fy = line2.AsFormulaY();
 
+            //Als beide lijnen een valide ontbinding hebben op het y,x coordinaten systeem
             if (l1Fy.HasValue && l2Fy.HasValue) {
                 (double a1, double b1) = l1Fy.Value;
                 (double a2, double b2) = l2Fy.Value;
+                //Als de lijnen evenredig zijn is er geen snijpunt
                 if (a1 - a2 == 0) return null;
 
+                // Berekend het snijpunt door middel van:
+                // x = a1y + b1, x = a2y + b2
+                // a1y + b1 = a2y + b2
+                // a1y - a2y = b2 - b1
+                // (a1 - a2)y = b2 - b1
+                // y = (b2 - b1) / (a1 - a2)
                 double y = (b2 - b1) / (a1 - a2);
+                
+                //Vult de y in bij de eerste formule om x te berekenen
                 double x = y * a1 + b1;
 
                 return new Position((int) x, (int) y);
             }
 
+            //Als lijn1 op het x,y systeem zit en lijn2 op het y,x systeem
+            //Dit kan alleen gebruiken als lijn1 een horizontale lijn is en lijn2 een verticale
             if (l1Fx.HasValue && l2Fy.HasValue) {
                 (_, double b1) = l1Fx.Value;
                 (_, double b2) = l2Fy.Value;
                 return new Position((int) b2, (int) b1);
             }
 
+            //Als lijn1 op het y,x systeem zit en lijn2 op het x,y systeem
+            //Dit kan alleen gebruiken als lijn1 een verticale lijn is en lijn2 een horizontale
             if (l1Fy.HasValue && l2Fx.HasValue) {
                 (_, double b1) = l1Fy.Value;
                 (_, double b2) = l2Fx.Value;
                 return new Position((int) b1, (int) b2);
             }
 
+            //Alle andere mogelijkheden zouden geen snijpunt hebben
+            //bijv: een lijn die uit 2x het zelfde coordinaat bestaat
             return null;
         }
     }

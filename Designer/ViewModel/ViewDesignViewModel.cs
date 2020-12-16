@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
 using System.Threading;
@@ -17,7 +18,6 @@ using Models.Utils;
 using Services;
 using Line = System.Windows.Shapes.Line;
 using Polygon = System.Windows.Shapes.Polygon;
-using System.Diagnostics;
 
 namespace Designer.ViewModel {
     public class ViewDesignViewModel : INotifyPropertyChanged {
@@ -144,14 +144,16 @@ namespace Designer.ViewModel {
         public void DeleteRoute() {
             _route = null;
 
-            ShowRoute();
+            RendeRoute();
         }
-
+        
         public void GenerateWalkRoute() {
             int distance = 50;
-
+            
             List<Models.Line> lines = Design.Room.GetPoly().GetLines().ToList();
             List<Models.Line> correct = lines.Select(l => (Models.Line) null).ToList();
+            
+            //Gaat door alle hoeken (lijn paren) heen om te kijken waar maar 1 mogelijk is, om hiervandaan te starten
             int start = -1;
             for (int i = 0; i < lines.Count; i++) {
                 Models.Line l1 = lines[i];
@@ -165,6 +167,7 @@ namespace Designer.ViewModel {
 
                     Position inter = tempL1.Intersection(tempL2);
                     if (inter == null || !Design.Room.GetPoly().Inside(inter)) continue;
+                    //Als die een tweede punt vind dan is dit geen geldige hoek
                     if (foundL1 != null) {
                         foundL1 = null;
                         foundL2 = null;
@@ -182,7 +185,7 @@ namespace Designer.ViewModel {
                 break;
             }
             
-            
+            //Start bij de eerste hoek waar maar 1 mogelijk punt is en pakt vervolgens altijd de verste afstand hiervan voor de volgende lijn
             for (int i = start; i != start - 1; i = (i + 1) % lines.Count) {
                 int j = (i + 1) % lines.Count;
                 if (correct[j] != null) break;
@@ -209,6 +212,7 @@ namespace Designer.ViewModel {
                 correct[j] = d1 > d2 ? l1 : l2;
             }
 
+            //Zoekt voor alle lijn de snijpunten om de route te maken
             List<Position> positions = new List<Position>(); 
             for (int i = 0; i < correct.Count; i++) {
                 Models.Line l1 = correct[i];
@@ -217,7 +221,7 @@ namespace Designer.ViewModel {
             }
 
             _route = new Models.Polygon(positions);
-            ShowRoute();
+            RendeRoute();
         }
 
         List<DistanceLine> _routeLines = new List<DistanceLine>();
@@ -226,7 +230,7 @@ namespace Designer.ViewModel {
         /**
          * Tekent de volledige route
          */
-        public void ShowRoute() {
+        public void RendeRoute() {
             //Verwijderd eerst de volledige lijn
             _routeLines.ForEach(l => l.Remove(Editor));
             _routeLines.Clear();
@@ -428,7 +432,7 @@ namespace Designer.ViewModel {
             List<Position> positions = new List<Position> {position};
             if (_route != null) positions.AddRange(_route);
             _route = new Models.Polygon(positions);
-            ShowRoute();
+            RendeRoute();
         }
 
         /**
@@ -552,7 +556,7 @@ namespace Designer.ViewModel {
 
                 //Tekend de route en alle corona lijnen
                 ProductPlacements.ForEach(p => CheckCorona(p));
-                ShowRoute();
+                RendeRoute();
 
                 // Zet de schaal van de ruimte op basis van de dimensies, dit moet na het zetten van het design
                 SetRoomScale();
@@ -616,7 +620,7 @@ namespace Designer.ViewModel {
                     List<Position> positions = _route.ToList();
                     positions.RemoveAt(pos);
                     _route = new Models.Polygon(positions);
-                    ShowRoute();
+                    RendeRoute();
 
                     return;
                 }
@@ -698,7 +702,7 @@ namespace Designer.ViewModel {
                 List<Position> positions = _route.ToList();
                 positions[pos] = position;
                 _route = new Models.Polygon(positions);
-                ShowRoute();
+                RendeRoute();
                 return;
             }
 
