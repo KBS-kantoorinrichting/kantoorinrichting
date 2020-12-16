@@ -16,6 +16,7 @@ using Models;
 using Models.Utils;
 using Services;
 using Polygon = System.Windows.Shapes.Polygon;
+using System.Diagnostics;
 
 namespace Designer.ViewModel {
     public class ViewDesignViewModel : INotifyPropertyChanged {
@@ -193,6 +194,64 @@ namespace Designer.ViewModel {
             ProductPlacements.Clear();
 
             RenderRoom();
+        }
+
+        /**
+         * Plaatst alle deuren en ramen die in de ruimte zitten
+         */
+        public void RenderRoomFrames()
+        {
+            if(Design.Room.RoomPlacements != null)
+            {
+                foreach (RoomPlacement frame in Design.Room.RoomPlacements)
+                {
+                    Position pos = RoomPlacement.ToPosition(frame.Positions);
+                    Polygon newPoly = new Polygon();
+
+                    if(frame.Type == FrameTypes.Door)
+                    {
+                        int x = (int)pos.X;
+                        int y = (int)pos.Y;
+
+                        if (frame.Rotation == 0) y -= 25;
+                        if (frame.Rotation == 270) x -= 25;
+
+                        PointCollection points = new PointCollection()
+                        {
+                            new Point(x, y),
+                            new Point(x + 25, y),
+                            new Point(x + 25, y + 25),
+                            new Point(x, y + 25)
+                        };
+
+                        newPoly.Points = points;
+                        newPoly.Fill = Brushes.Brown;
+                        Editor.Children.Add(newPoly);
+                    }
+
+                    if(frame.Type == FrameTypes.Window)
+                    {
+                        List<Position> roomPositions = Room.ToList(Design.Room.Positions);
+                        Debug.WriteLine(roomPositions);
+
+                        Position startPosition = RoomPlacement.ToPosition(frame.Positions);
+                        Position roomPosition = roomPositions.FirstOrDefault(p => p.X == startPosition.X || p.Y == startPosition.Y);
+
+                        bool vertical = startPosition.X == roomPosition.X;
+
+                        Line window = new Line
+                        {
+                            X1 = startPosition.X,
+                            Y1 = startPosition.Y,
+                            X2 = vertical ? startPosition.X : startPosition.X + 25,
+                            Y2 = vertical ? startPosition.Y + 25 : startPosition.Y,
+                            StrokeThickness = 8,
+                            Stroke = Brushes.DarkBlue
+                        };
+                        Editor.Children.Add(window);
+                    }
+                }
+            }
         }
 
         /**
@@ -408,6 +467,8 @@ namespace Designer.ViewModel {
                 // Sets the dimensions of the current room
                 SetRoomDimensions();
                 RenderRoom();
+
+                RenderRoomFrames();
 
                 //Tekend de route en alle corona lijnen
                 ProductPlacements.ForEach(p => CheckCorona(p));

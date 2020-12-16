@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
+using System.Windows.Media;
 
 namespace Models.Utils {
     public static class PolyUtil {
@@ -135,6 +136,21 @@ namespace Models.Utils {
         }
 
         private static PointF Point(this Position position) { return new PointF(position.X, position.Y); }
+    
+        public static System.Windows.Shapes.Polygon GetPolygon(this Polygon polygon)
+        {
+            System.Windows.Shapes.Polygon newPolygon = new System.Windows.Shapes.Polygon();
+
+            PointCollection points = new PointCollection();
+            foreach (Position position in polygon)
+            {
+                points.Add(new System.Windows.Point(position.X, position.Y));
+            }
+
+            newPolygon.Points = points;
+
+            return newPolygon;
+        }
     }
 
     // port of this JavaScript code with some changes:

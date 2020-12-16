@@ -27,6 +27,7 @@ namespace Services {
         public virtual DbSet<Design> Designs { get; set; }
         public virtual DbSet<Product> Products { get; set; }
         public virtual DbSet<ProductPlacement> ProductPlacements { get; set; }
+        public virtual DbSet<RoomPlacement> RoomPlacements { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder options) {
             // todo options.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
