@@ -457,6 +457,7 @@ namespace Designer.ViewModel {
                 DistancePlexiLines.Add(new DistanceLine(p1, p2, "(Plexiglas)"));
             }
             DistancePlexiLines.ForEach(l => l.Add(Editor));
+            ProductPlacements.ForEach(p => CheckCorona(p));
             OnPropertyChanged();
         }
 
@@ -470,9 +471,16 @@ namespace Designer.ViewModel {
                 
             } else {
                 if (!Design.Room.GetPoly().Inside(new Position((int)p.X, (int)p.Y))) return;
-                _secondPoint = new Position((int) p.X, (int) p.Y);
+                
                 _temppositions.Add(_origin);
-                _temppositions.Add(_secondPoint);
+                _temppositions.Add(new Position((int)p.X, (int)p.Y));
+                
+                //if (!Design.Room.GetPoly().Inside(position))
+                    if (!Design.Room.GetPoly().Inside(new Models.Polygon(_temppositions)))
+                {
+                    return;
+                }
+                _secondPoint = new Position((int)p.X, (int)p.Y);
                 Models.Polygon PlexiLine = new Models.Polygon(_temppositions);
                 PlexiLines.Add(PlexiLine);
                 DistancePlexiLines.Add(_plexiLine);
@@ -483,8 +491,9 @@ namespace Designer.ViewModel {
 
                 PEnabled = false;
                 RenderPolyPlexi();
-                
-                
+
+                ProductPlacements.ForEach(p => CheckCorona(p));
+
             }
         }
 
@@ -512,7 +521,7 @@ namespace Designer.ViewModel {
         { 
 
         List<Models.Polygon> returnlist = new List<Models.Polygon>();
-            if (polylist == "")
+            if (polylist == "" || polylist == null)
             {
                 return returnlist;
             }
@@ -576,7 +585,6 @@ namespace Designer.ViewModel {
             if (!_plexiLine.Shows) _plexiLine.Add(Editor);
              _plexiLine.P1 = p1;
              _plexiLine.P2 = p2;
-             
         }
 
         public void HandleMouseMove(MouseEventArgs eventArgs) {
@@ -650,7 +658,24 @@ namespace Designer.ViewModel {
                 if (!needed && safe) continue;
 
                 //Kijkt accuraat wat de afstand is
+                
                 (Position p1, Position p2) = placement.GetPoly().MinDistance(changed.GetPoly());
+                Models.Line lin = new Models.Line(p1, p2);
+                bool plexicheck = false;
+                foreach (Models.Polygon poly in PlexiLines)
+                {
+                    IEnumerable<Models.Line> linenum = poly.GetLines();
+                    Models.Line polyline = linenum.First();
+                    if (lin.IntersectionLineSegment(polyline) != null)
+                    {
+                        plexicheck = true;
+                        break;
+                        
+                    }
+
+                    
+                }
+                if (plexicheck) continue;
 
                 //Maakt een nieuwe lijn aan als deze nog niet bestond en anders pakt die de oude lijn
                 DistanceLine line = _lines[changed].ContainsKey(placement)
