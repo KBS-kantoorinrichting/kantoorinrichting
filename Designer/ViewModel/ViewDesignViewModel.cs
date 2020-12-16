@@ -36,6 +36,7 @@ namespace Designer.ViewModel {
         public BasicCommand Measure { get; set; }
         public BasicCommand Layout { get; set; }
         public BasicCommand ClearProducts { get; set; }
+        public BasicCommand GenerateRoute { get; set; }
         public BasicCommand RemoveRoute { get; set; }
         public ArgumentCommand<MouseWheelEventArgs> CanvasMouseScrollCommand { get; set; }
         public Product SelectedProduct => _selectedPlacement.Product;
@@ -105,6 +106,7 @@ namespace Designer.ViewModel {
             MouseMoveCommand = new ArgumentCommand<MouseEventArgs>(HandleMouseMove);
             Measure = new BasicCommand(StartMeasure);
             Layout = new BasicCommand(GenerateLayout);
+            GenerateRoute = new BasicCommand(GenerateWalkRoute);
             RemoveRoute = new BasicCommand(DeleteRoute);
             ClearProducts = new BasicCommand(Clear);
             CanvasMouseScrollCommand =
@@ -141,6 +143,10 @@ namespace Designer.ViewModel {
         public void DeleteRoute() {
             _route = null;
 
+            ShowRoute();
+        }
+
+        public void GenerateWalkRoute() {
             int distance = 50;
 
             List<Models.Line> lines = Design.Room.GetPoly().GetLines().ToList();
@@ -209,10 +215,7 @@ namespace Designer.ViewModel {
                 positions.Add(l1.Intersection(l2));
             }
 
-            positions.RemoveAll(p => p == null);
-
             _route = new Models.Polygon(positions);
-
             ShowRoute();
         }
 
