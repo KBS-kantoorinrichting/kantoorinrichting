@@ -325,20 +325,19 @@ namespace Designer.ViewModel {
             Point p = eventArgs.GetPosition(Editor);
             List<Position> _temppositions = new List<Position>();
             if (_origin == null || _secondPoint != null) {
+                if (!Design.Room.GetPoly().Inside(new Position((int)p.X, (int)p.Y))) return;
                 _origin = new Position((int) p.X, (int) p.Y);
                 _secondPoint = null;
-                _temppositions.Add(_origin);
-                _temppositions.Add(_secondPoint);
-                Models.Polygon PlexiLine = new Models.Polygon(_temppositions);
-                if (!Design.Room.GetPoly().Inside(PlexiLine)) return;
+                
             } else {
+                if (!Design.Room.GetPoly().Inside(new Position((int)p.X, (int)p.Y))) return;
                 _secondPoint = new Position((int) p.X, (int) p.Y);
                 _temppositions.Add(_origin);
                 _temppositions.Add(_secondPoint);
                 Models.Polygon PlexiLine = new Models.Polygon(_temppositions);
-                if (!Design.Room.GetPoly().Inside(PlexiLine)) return;
                 PlexiLines.Add(PlexiLine);
-                _plexiLine.Remove(Editor);
+                DistancePlexiLines.Add(_plexiLine);
+                //_plexiLine.Remove(Editor);
 
                 //Database conversie
                 updatedbPlexiglass();
