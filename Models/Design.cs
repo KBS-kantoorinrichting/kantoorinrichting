@@ -28,7 +28,9 @@ namespace Models {
         
         private Polygon _route;
 
-        public Polygon GetRoutePoly() { return _route; }
+        public Polygon GetRoutePoly() {
+            return _route;
+        }
         
         protected override ITuple Variables => (Id, Name, RoomId, Room, ProductPlacements);
     }
