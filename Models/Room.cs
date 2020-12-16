@@ -16,6 +16,8 @@ namespace Models {
             set => _polygon = new Polygon(value);
         }
 
+        public List<RoomPlacement> RoomPlacements { get; set; } = new List<RoomPlacement>();
+
         public Room(
             string name = default,
             int width = default,
@@ -28,15 +30,20 @@ namespace Models {
             Positions = positions ?? FromDimensions(width, length);
         }
 
-        protected override ITuple Variables => (Id, Name, Positions);
+        protected override ITuple Variables => (Id, Name, Positions, RoomPlacements);
 
         private Polygon _polygon;
 
         public Polygon GetPoly() { return _polygon; }
 
-        public Room(string name, string positions) {
+        public Room(string name, string positions)
+        {
             Name = name;
             Positions = positions;
+        }
+
+        public Room(string name, string positions, List<RoomPlacement> roomPlacements) : this(name, positions) {
+            RoomPlacements = roomPlacements;
         }
 
         public static List<Position> ToList(string positions) {

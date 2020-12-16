@@ -17,6 +17,7 @@ using Microsoft.EntityFrameworkCore;
 using Models;
 using Models.Utils;
 using Services;
+using Line = System.Windows.Shapes.Line;
 using Polygon = System.Windows.Shapes.Polygon;
 
 namespace Designer.ViewModel {
@@ -38,6 +39,7 @@ namespace Designer.ViewModel {
         public BasicCommand Plexiglass { get; set; }
         public BasicCommand Layout { get; set; }
         public BasicCommand ClearProducts { get; set; }
+        public BasicCommand GenerateRoute { get; set; }
         public BasicCommand RemoveRoute { get; set; }
         public BasicCommand Save { get; set; }
         public ArgumentCommand<MouseWheelEventArgs> CanvasMouseScrollCommand { get; set; }
@@ -121,6 +123,7 @@ namespace Designer.ViewModel {
             Measure = new BasicCommand(StartMeasure);
             Plexiglass = new BasicCommand(StartPlexiglass);
             Layout = new BasicCommand(GenerateLayout);
+            GenerateRoute = new BasicCommand(GenerateWalkRoute);
             RemoveRoute = new BasicCommand(DeleteRoute);
             ClearProducts = new BasicCommand(Clear);
             Save = new BasicCommand(() => DesignService.Instance.SaveChanges());
@@ -164,7 +167,85 @@ namespace Designer.ViewModel {
          */
         public void DeleteRoute() {
             _route = null;
-            ShowRoute();
+
+            RenderRoute();
+        }
+        
+        public void GenerateWalkRoute() {
+            int distance = 50;
+            
+            List<Models.Line> lines = Design.Room.GetPoly().GetLines().ToList();
+            List<Models.Line> correct = lines.Select(l => (Models.Line) null).ToList();
+            
+            //Gaat door alle hoeken (lijn paren) heen om te kijken waar maar 1 mogelijk is, om hiervandaan te starten
+            int start = -1;
+            for (int i = 0; i < lines.Count; i++) {
+                Models.Line l1 = lines[i];
+                Models.Line l2 = lines[(i + 1) % lines.Count];
+
+                Models.Line foundL1 = null;
+                Models.Line foundL2 = null;
+                for (int r = 0; r < 4; r++) {
+                    Models.Line tempL1 = l1.OffsetPerpendicular(distance, r % 2 == 0);
+                    Models.Line tempL2 = l2.OffsetPerpendicular(distance, r / 2 == 0);
+
+                    Position inter = tempL1.Intersection(tempL2);
+                    if (inter == null || !Design.Room.GetPoly().Inside(inter)) continue;
+                    //Als die een tweede punt vind dan is dit geen geldige hoek
+                    if (foundL1 != null) {
+                        foundL1 = null;
+                        foundL2 = null;
+                        break;
+                    }
+
+                    foundL1 = tempL1;
+                    foundL2 = tempL2;
+                }
+
+                if (foundL1 == null) continue;
+                correct[i] = foundL1;
+                start = (i + 1) % lines.Count;
+                correct[start] = foundL2;
+                break;
+            }
+            
+            //Start bij de eerste hoek waar maar 1 mogelijk punt is en pakt vervolgens altijd de verste afstand hiervan voor de volgende lijn
+            for (int i = start; i != start - 1; i = (i + 1) % lines.Count) {
+                int j = (i + 1) % lines.Count;
+                if (correct[j] != null) break;
+                Models.Line before = correct[i];
+                Models.Line toTest = lines[j];
+            
+                Models.Line l1 = toTest.OffsetPerpendicular(distance, true);
+                Models.Line l2 = toTest.OffsetPerpendicular(distance, false);
+            
+                Position inter1 = before.Intersection(l1);
+                if (inter1 == null || !Design.Room.GetPoly().Inside(inter1)) {
+                    correct[j] = l2;
+                    continue;
+                }
+                Position inter2 = before.Intersection(l2);
+                if (inter2 == null || !Design.Room.GetPoly().Inside(inter2)) {
+                    correct[j] = l1;
+                    continue;
+                }
+            
+                double d1 = before.P1.Distance(inter1);
+                double d2 = before.P1.Distance(inter2);
+            
+                correct[j] = d1 > d2 ? l1 : l2;
+            }
+
+            //Zoekt voor alle lijn de snijpunten om de route te maken
+            List<Position> positions = new List<Position>(); 
+            for (int i = 0; i < correct.Count; i++) {
+                Models.Line l1 = correct[i];
+                Models.Line l2 = correct[(i + 1) % lines.Count];
+                positions.Add(l1.Intersection(l2));
+            }
+
+            _route = new Models.Polygon(positions);
+            RenderRoute();
         }
 
         List<DistanceLine> _routeLines = new List<DistanceLine>();
@@ -173,16 +254,16 @@ namespace Designer.ViewModel {
         /**
          * Tekent de volledige route
          */
-        public void ShowRoute() {
+        public void RenderRoute() {
             //Verwijderd eerst de volledige lijn
             _routeLines.ForEach(l => l.Remove(Editor));
             _routeLines.Clear();
             _ellipses.ForEach(Editor.Children.Remove);
             _ellipses.Clear();
-            if (_route == null) return;
+            if (_route == null || _route.Count == 0) return;
             //Tekend de volledige lijn
-            foreach ((Position p1, Position p2) in _route.GetLines()) {
-                _routeLines.Add(new DistanceLine(p1, p2));
+            foreach (Models.Line line in _route.GetLines()) {
+                _routeLines.Add(new DistanceLine(line.P1, line.P2));
             }
 
             //Tekend alle hoek punten
@@ -220,6 +301,64 @@ namespace Designer.ViewModel {
             RenderRoom();
         }
 
+
+        /**
+         * Plaatst alle deuren en ramen die in de ruimte zitten
+         */
+        public void RenderRoomFrames()
+        {
+            if(Design.Room.RoomPlacements != null)
+            {
+                foreach (RoomPlacement frame in Design.Room.RoomPlacements)
+                {
+                    Position pos = RoomPlacement.ToPosition(frame.Positions);
+                    Polygon newPoly = new Polygon();
+
+                    if(frame.Type == FrameTypes.Door)
+                    {
+                        int x = (int)pos.X;
+                        int y = (int)pos.Y;
+
+                        if (frame.Rotation == 0) y -= 25;
+                        if (frame.Rotation == 270) x -= 25;
+
+                        PointCollection points = new PointCollection()
+                        {
+                            new Point(x, y),
+                            new Point(x + 25, y),
+                            new Point(x + 25, y + 25),
+                            new Point(x, y + 25)
+                        };
+
+                        newPoly.Points = points;
+                        newPoly.Fill = Brushes.Brown;
+                        Editor.Children.Add(newPoly);
+                    }
+
+                    if(frame.Type == FrameTypes.Window)
+                    {
+                        List<Position> roomPositions = Room.ToList(Design.Room.Positions);
+                        Debug.WriteLine(roomPositions);
+
+                        Position startPosition = RoomPlacement.ToPosition(frame.Positions);
+                        Position roomPosition = roomPositions.FirstOrDefault(p => p.X == startPosition.X || p.Y == startPosition.Y);
+
+                        bool vertical = startPosition.X == roomPosition.X;
+
+                        Line window = new Line
+                        {
+                            X1 = startPosition.X,
+                            Y1 = startPosition.Y,
+                            X2 = vertical ? startPosition.X : startPosition.X + 25,
+                            Y2 = vertical ? startPosition.Y + 25 : startPosition.Y,
+                            StrokeThickness = 8,
+                            Stroke = Brushes.DarkBlue
+                        };
+                        Editor.Children.Add(window);
+                    }
+                }
+            }
+        }
 
         /**
          * Loopt alle mogelijke plaatsingen door om vervolgens de kamer zo vol mogelijk te krijgen
@@ -420,7 +559,7 @@ namespace Designer.ViewModel {
             List<Position> positions = new List<Position> {position};
             if (_route != null) positions.AddRange(_route);
             _route = new Models.Polygon(positions);
-            ShowRoute();
+            RenderRoute();
         }
 
         /**
@@ -550,10 +689,13 @@ namespace Designer.ViewModel {
                 // Sets the dimensions of the current room
                 SetRoomDimensions();
                 RenderRoom();
+
+                RenderRoomFrames();
+
                 RenderPolyPlexi();
                 //Tekend de route en alle corona lijnen
                 ProductPlacements.ForEach(p => CheckCorona(p));
-                ShowRoute();
+                RenderRoute();
                 //PlexiLines.ForEach(p => p.Add(Editor));
 
                 // Zet de schaal van de ruimte op basis van de dimensies, dit moet na het zetten van het design
@@ -618,7 +760,7 @@ namespace Designer.ViewModel {
                     List<Position> positions = _route.ToList();
                     positions.RemoveAt(pos);
                     _route = new Models.Polygon(positions);
-                    ShowRoute();
+                    RenderRoute();
 
                     return;
                 }
@@ -727,7 +869,7 @@ namespace Designer.ViewModel {
                 List<Position> positions = _route.ToList();
                 positions[pos] = position;
                 _route = new Models.Polygon(positions);
-                ShowRoute();
+                RenderRoute();
                 return;
             }
 

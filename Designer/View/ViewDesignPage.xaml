@@ -202,6 +202,7 @@
                                       IsChecked="{Binding PEnabled, Mode=TwoWay}" />
                         <ToggleButton Content="Loop route" VerticalAlignment="Top" IsChecked="{Binding RouteEnabled, Mode=TwoWay}"/>
                         <Button Content="Verwijder loop route" VerticalAlignment="Top" Command="{Binding RemoveRoute}" />
+                        <Button Content="Genereer loop route" VerticalAlignment="Top" Command="{Binding GenerateRoute}" />
                         <Button Content="GENERATE!!!!!" VerticalAlignment="Top" Command="{Binding Layout}" />
                         <Button Content="Verwijder alles" VerticalAlignment="Top" Command="{Binding ClearProducts}" />
                         <Label Content="Anderhalve meter score" />

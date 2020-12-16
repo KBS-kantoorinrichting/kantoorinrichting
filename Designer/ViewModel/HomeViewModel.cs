@@ -16,6 +16,7 @@ namespace Designer.ViewModel
         public string TotalRooms => RoomService.Instance.Count().ToString();
         public BasicCommand GotoDesigns { get; set; }
         public BasicCommand GotoProducts { get; set; }
+        public BasicCommand GotoRooms { get; set; }
 
         public HomeViewModel() {
             GotoDesigns = new PageCommand(() => {
@@ -27,6 +28,7 @@ namespace Designer.ViewModel
                 return DesignCatalog;
             });
             GotoProducts = new PageCommand(() => new ViewProductsView());
+            GotoRooms = new PageCommand(() => new RoomOverview());
         }
     }
 }

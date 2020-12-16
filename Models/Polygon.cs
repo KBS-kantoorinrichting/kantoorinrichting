@@ -79,15 +79,20 @@ namespace Models {
         /**
          * Maakt alle opvolgende combinatie van lijnen
          */
-        public IEnumerable<(Position, Position)> GetLines() {
-            for (int i = 0; i < _positions.Count; i++)
-                yield return (_positions[i], _positions[(i + 1) % _positions.Count]);
+        public IEnumerable<Line> GetLines() {
+            for (int i = 0; i < _positions.Count; i++) {
+                Position p1 = _positions[i];
+                Position p2 = _positions[(i + 1) % _positions.Count];
+                if (!Equals(p1, p2)) yield return new Line(_positions[i], _positions[(i + 1) % _positions.Count]);
+            }
         }
 
         public override string ToString() { return Convert(); }
         IEnumerator IEnumerable.GetEnumerator() { return GetEnumerator(); }
 
-        protected bool Equals(Polygon other) { return Equals(_positions, other._positions); }
+        protected bool Equals(Polygon other) {
+            return Equals(_positions, other?._positions);
+        }
 
         public override bool Equals(object obj) {
             if (ReferenceEquals(null, obj)) return false;
@@ -135,5 +140,19 @@ namespace Models {
         public IEnumerator<Position> GetEnumerator() => _positions.GetEnumerator();
         public Position this[int index] => _positions[index];
         public int Count => _positions.Count;
+    }
+
+    public class Line {
+        public Position P1 { get; }
+        public Position P2 { get; }
+
+        public Line(Position p1, Position p2) {
+            P1 = p1;
+            P2 = p2;
+        }
+
+        public Line Offset(int x = 0, int y = 0) => new Line(P1.CopyAdd(x, y), P2.CopyAdd(x, y));
+        
+        public (Position p1, Position p2) AsTuple => (P1, P2);
     }
 }
