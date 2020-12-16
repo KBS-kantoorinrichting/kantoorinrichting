@@ -65,6 +65,16 @@ namespace Models {
             return _positions.Select(p => p.ToString())
                 .Aggregate((s1, s2) => $"{s1}|{s2}");
         }
+        public string BetterConvert()
+        {
+            if (_positions == null) return null;
+
+            if (!_positions.Any()) return "";
+            return _positions.Select(p => p.ToString())
+                .Aggregate((s1, s2) => $"{s1};{s2}");
+        }
+
+
 
         /**
          * Maakt alle opvolgende combinatie van lijnen
