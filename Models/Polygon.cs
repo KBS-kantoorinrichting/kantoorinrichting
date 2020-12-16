@@ -5,7 +5,7 @@ using System.Linq;
 
 namespace Models {
     public class Polygon : IReadOnlyList<Position> {
-        public readonly List<Position> _positions;
+        private readonly List<Position> _positions;
 
         public Polygon(List<Position> positions) { _positions = positions; }
 

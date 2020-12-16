@@ -203,16 +203,15 @@ namespace Designer.ViewModel {
         {
             if(Design.Room.RoomPlacements != null)
             {
-                Debug.WriteLine(Design.Room.RoomPlacements.Count);
                 foreach (RoomPlacement frame in Design.Room.RoomPlacements)
                 {
-                    Polygon poly = frame.GetPoly().GetPolygon();
+                    Position pos = RoomPlacement.ToPosition(frame.Positions);
                     Polygon newPoly = new Polygon();
 
                     if(frame.Type == FrameTypes.Door)
                     {
-                        int x = (int)poly.Points[0].X;
-                        int y = (int)poly.Points[0].Y;
+                        int x = (int)pos.X;
+                        int y = (int)pos.Y;
 
                         if (frame.Rotation == 0) y -= 25;
                         if (frame.Rotation == 270) x -= 25;
