@@ -5,6 +5,16 @@ using ServicesTest;
 
 namespace DesignerTest {
     public class MakeRoomTest : DatabaseTest {
+        private static readonly RoomEditorViewModel ViewModel = new RoomEditorViewModel("test");
+
+        [SetUp]
+        public void Init()
+        {
+            ViewModel.SelectedPoints.Add(new Position(0, 0));
+            ViewModel.SelectedPoints.Add(new Position(0, 150));
+            ViewModel.SelectedPoints.Add(new Position(150, 0));
+            ViewModel.SelectedPoints.Add(new Position(150, 150));
+        }
 
         [Test]
         [TestCase("kamernaam_test", 40, 1000)]
@@ -96,7 +106,24 @@ namespace DesignerTest {
 
         }
 
+        [Test]
+        [TestCase(50, 150, ExpectedResult = true)]
+        [TestCase(24, 150, ExpectedResult = true)]
+        [TestCase(46, 150, ExpectedResult = true)]
+        [TestCase(50, 50, ExpectedResult = false)]
+        [TestCase(150, 0, ExpectedResult = false)]
+        public bool RoomEditorViewModel_WithinSelectedPoints_ShouldReturnBoolean(int x, int y)
+        {
+            return ViewModel.WithinSelectedPoints(x, y);
+        }
 
+        [Test]
+        public void RoomEditorViewModel_CalculateNextPositionExample_ShouldReturnPosition()
+        {
+            Position nextPosition = ViewModel.CalculateNextPositionFromAngle(180, 25, 50);
 
+            Assert.IsNotNull(nextPosition);
+            Assert.AreEqual(nextPosition, new Position(25, 75));
+        }
     }
 }

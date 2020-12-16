@@ -8,6 +8,10 @@ using System.Windows.Controls;
 using Designer.View;
 using Microsoft.Win32;
 using System.Diagnostics;
+using System.Threading;
+using System.Windows;
+using Designer.View.Components;
+using MaterialDesignThemes.Wpf;
 using Models;
 using Services;
 
@@ -21,39 +25,49 @@ namespace Designer.ViewModel {
         public bool HasPerson { get; set; }
 
         public BasicCommand Submit { get; set; }
-        public BasicCommand DeleteCommand { get; set; }
+        public ArgumentCommand<int> DeleteCommand { get; set; }
         public BasicCommand AddPhoto { get; set; }
 
-        public BasicCommand EditCommand { get; set; }
+        public ArgumentCommand<int> EditCommand { get; set; }
         public BasicCommand SaveEdit { get; set; }
+        public BasicCommand CancelEdit { get; set; }
         public BasicCommand EditPhoto { get; set; }
-
-        public ArgumentCommand<MouseButtonEventArgs> MouseDownCommand { get; set; }
+        public BasicCommand AddCommand { get; set; }
+        public BasicCommand CancelAdd { get; set; }
+        
         public event PropertyChangedEventHandler PropertyChanged;
         public Product SelectedProduct { get; set; }
 
         public Product EditedItem { get; set; }
 
         public bool IsEditedRead => EditedItem == null;
-        public bool IsEditedNotRead => !IsEditedRead;
-        public string IsEditedVis => EditedItem == null ? "Hidden" : "Visible";
-        public string ItemIsSelected => SelectedProduct == null ? "Hidden" : "Visible";
+        public bool IsAdding { get; set; } = false;
+        public bool IsEditing { get; set; } = false;
 
         public List<Product> Products { get; set; }
         // Property van een lijst om de informatie vanuit de database op te slaan.
-
+        
+        public SnackbarMessageQueue MessageQueue { get; set; }
         public ViewProductsViewModel() {
             // Tekenen van de catalogus 
             Reload();
-            // Initialisatie van het MouseDownCommand
-            MouseDownCommand = new ArgumentCommand<MouseButtonEventArgs>(e => MouseDown(e.OriginalSource, e));
             // Initialisatie van alle knoppen
             AddPhoto = new BasicCommand(SelectPhoto);
             Submit = new BasicCommand(SubmitItem);
-            DeleteCommand = new BasicCommand(Delete);
-            EditCommand = new BasicCommand(EditItem);
+            DeleteCommand = new ArgumentCommand<int>(Delete);
+            EditCommand = new ArgumentCommand<int>(EditItem);
+            AddCommand = new BasicCommand(AddItem);
+            CancelAdd = new BasicCommand(CancelAddItem);
             SaveEdit = new BasicCommand(SubmitEditedItem);
+            CancelEdit = new BasicCommand(CancelEditPopup);
             EditPhoto = new BasicCommand(SelectPhoto);
+            //Controleert of het niet in een unit test wordt gedraaid
+            if (Thread.CurrentThread.GetApartmentState() == ApartmentState.STA)
+            {
+                //Dit wordt gebruikt door de snackbar om feedback te geven op
+                //verwijderen, toevoegen en aanpassen van producten
+                MessageQueue = new SnackbarMessageQueue(); 
+            }
         }
 
         public void Reload() { // Reload de items zodat de juiste te zien zijn
@@ -82,40 +96,64 @@ namespace Designer.ViewModel {
             }
         }
 
-        public void Delete() // Verwijderd geselecteerde item uit database 
+        public void Delete(int id) // Verwijderd geselecteerde item uit database 
         {
+            SelectProduct(id);
             if (SelectedProduct == null || ProductService.Instance.Count() == 0) {
                 return;
             }
 
             ProductService.Instance.Delete(SelectedProduct);
+            MessageQueue.Enqueue("Het product is verwijderd");
             Reload();
         }
 
-        public void EditItem() // Maakt de geselecteerde item editbaar
+        public void AddItem()
         {
-            EditedItem = SelectedProduct;
+            IsAdding = true;
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(""));
+        }
+
+        public void CancelAddItem()
+        {
+            IsAdding = false;
+            ResetFields();
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(""));
+        }
+
+        public void ResetFields()
+        {
+            Name = "";
+            Price = 0;
+            Photo = "";
+            Width = 0;
+            Length = 0;
+            HasPerson = false;
+        }
+
+        public void EditItem(int id) // Maakt de geselecteerde item editbaar
+        {
+            SelectProduct(id);
+            EditedItem = SelectedProduct;
+            IsEditing = true;
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(""));
+        }
+
+        public void CancelEditPopup()
+        {
+            IsEditing = false;
+            OnPropertyChanged();
+            EditedItem = null;
+            SelectedProduct = null;
         }
 
         public void SubmitEditedItem() // vervangt het geselecteerde item met de bijgewerkte item in de database
         {
+            IsEditing = false;
             ProductService.Instance.Update(EditedItem);
+            //Laat bericht zien in snackbar
+            MessageQueue.Enqueue("Het product is aangepast");
             Reload();
-        }
-
-        public void MouseDown(object sender, MouseButtonEventArgs e) { // Wat er gebeurt als de muisknop ingedrukt wordt
-
-            // Linker muisknop moet ingdrukt zijn
-            if (e.LeftButton == MouseButtonState.Pressed) {
-                if (sender.GetType() != typeof(Image)) return;
-                var obj = (Product) ((Image) sender).DataContext;
-                //SelectedProduct = obj;
-                SelectProduct(obj.Id);
-                EditedItem = null;
-                Reload();
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(""));
-            }
         }
 
         public List<Product> LoadItems() {
@@ -151,10 +189,10 @@ namespace Designer.ViewModel {
         private void SubmitItem() {
             if (SaveProduct(Name, Price, Photo, Width, Length, HasPerson) != null) {
                 // Als de parameters niet null zijn dan:
-                GeneralPopup popup = new GeneralPopup("Het product is opgeslagen");
-                popup.ShowDialog();
+                // Laat bericht zien in de snackbar
+                MessageQueue.Enqueue("Het product is toegevoegd");
+                IsAdding = false;
                 Reload();
-                // Popup dialog met "Het product is opgeslagen"
             }
         }
 

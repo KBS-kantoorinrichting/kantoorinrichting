@@ -9,7 +9,7 @@
         Style="{DynamicResource MaterialDesignWindow}"
         Title="Kantoor Ontwerper" Width="1280" Height="720">
     <Window.DataContext>
-        <viewModel:MainViewModel />
+        <viewModel:MainViewModel x:Name="MainViewModel"/>
     </Window.DataContext>
     <Grid>
         <materialDesign:ColorZone
@@ -20,25 +20,25 @@
                 <RadioButton
                     Style="{StaticResource MaterialDesignTabRadioButton}"
                     Margin="4"
-                    IsChecked="True"
-                    Content="Home" 
+                    IsChecked="{Binding OnHome, Mode=OneWay}"
+                    Content="Home"
                     Command="{Binding GotoHome}"/>
                 <RadioButton
                     Style="{StaticResource MaterialDesignTabRadioButton}"
                     Margin="4"
-                    IsChecked="False"
+                    IsChecked="{Binding OnProducts, Mode=OneWay}"
                     Content="Producten"
                     Command="{Binding GotoProducts}"/>
                 <RadioButton
                     Style="{StaticResource MaterialDesignTabRadioButton}"
                     Margin="4"
-                    IsChecked="False"
+                    IsChecked="{Binding OnDesigns, Mode=OneWay}"
                     Content="Ontwerpen" 
                     Command="{Binding GotoDesigns}"/>
                 <RadioButton
                     Style="{StaticResource MaterialDesignTabRadioButton}"
                     Margin="4"
-                    IsChecked="False"
+                    IsChecked="{Binding OnRooms, Mode=OneWay}"
                     Content="Ruimtes"
                     Command="{Binding GotoRooms}"/> 
             </StackPanel>
