@@ -2,8 +2,11 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using System.Windows.Controls;
 using Designer.Other;
+using Designer.Utils;
 using Designer.View;
+using MaterialDesignThemes.Wpf;
 using Models;
 using Services;
 
@@ -13,16 +16,17 @@ namespace Designer.ViewModel {
         public event EventHandler<BasicEventArgs<Design>> DesignSelected;
         public event PropertyChangedEventHandler PropertyChanged;
 
-        private List<Design> _designs { get; set; }
+        private Dictionary<Design, Canvas> _designs { get; set; }
 
-        public List<Design> Designs
+        public Dictionary<Design, Canvas> Designs
         {
             get
             {
                 if (SelectedFilter != null)
-                    return _designs.Where(d => d.Room.Id == SelectedFilter.Id).ToList();
+                    return _designs.Where(d => d.Key.Room.Id == SelectedFilter.Id)
+                        .ToDictionary(d => d.Key, d => d.Value);
                 else
-                    return _designs;
+                    return _designs; 
             }
         }
 
@@ -35,11 +39,19 @@ namespace Designer.ViewModel {
                 OnPropertyChanged();
             }
         }
-        
-        public BasicCommand AddDesign { get; set; }
+
+        public ArgumentCommand<Design> EditCommand { get; set; }
+        public ArgumentCommand<Design> DeleteCommand { get; set; }
+        public BasicCommand CancelCommand { get; set; } 
+        public BasicCommand AddDesignCommand { get; set; }
         public BasicCommand ReloadCommand { get; set; }
-        public BasicCommand ClearFilterCommand { get; set; }
+        public SnackbarMessageQueue MessageQueue { get; set; }
         public Navigator Navigator { get; set; }
+        
+        public string EnteredName { get; set; }
+        public Room SelectedRoom { get; set; }
+        public BasicCommand OpenPopup { get; set; }
+        public bool IsAdding { get; set; } = false;
 
         public Design Selected {
             get => null;
@@ -48,11 +60,52 @@ namespace Designer.ViewModel {
 
         public DesignCatalogModel() {
             Navigator = Navigator.Instance;
-            _designs = LoadDesigns();
+            LoadDesigns();
             Rooms = LoadRooms();
-            AddDesign = new PageCommand(AddDesignPage, NavigationType.Push);
+            EditCommand = new ArgumentCommand<Design>(design =>
+            {
+                Navigator.Push(new ViewDesignPage((Design)design.Clone()));;
+            });
+            DeleteCommand = new ArgumentCommand<Design>(DeleteDesign);
+            CancelCommand = new BasicCommand(ClosePopup);
+            AddDesignCommand = new BasicCommand(AddDesign);
             ReloadCommand = new BasicCommand(Reload);
-            ClearFilterCommand = new BasicCommand(ClearFilter);
+            OpenPopup = new BasicCommand(() =>
+            {
+                IsAdding = true;
+                OnPropertyChanged();
+            });
+            MessageQueue = new SnackbarMessageQueue();
+        }
+
+        private void ClosePopup()
+        {
+            IsAdding = false;
+            EnteredName = "";
+            SelectedRoom = null;
+            OnPropertyChanged();
+        }
+
+        private void DeleteDesign(Design design)
+        {
+            DesignService.Instance.Delete(design);
+            MessageQueue.Enqueue("Het ontwerp is verwijderd");
+            Reload();
+            OnPropertyChanged();
+        }
+
+        private void AddDesign()
+        {
+            if (EnteredName == "" || SelectedRoom == null)
+                return;
+            var design = new Design(EnteredName, SelectedRoom, new List<ProductPlacement>());
+            DesignService.Instance.Add(design);
+            DesignService.Instance.SaveChanges();
+            IsAdding = false;
+            EnteredName = "";
+            SelectedRoom = null;
+            Reload();
+            MessageQueue.Enqueue("Het ontwerp is toegevoegd");
         }
 
         private AddDesign AddDesignPage() {
@@ -63,14 +116,8 @@ namespace Designer.ViewModel {
         }
 
         public void Reload() {
-            _designs = LoadDesigns();
+            LoadDesigns();
             Rooms = LoadRooms();
-            OnPropertyChanged();
-        }
-
-        public void ClearFilter()
-        {
-            _selected = null;
             OnPropertyChanged();
         }
 
@@ -84,10 +131,17 @@ namespace Designer.ViewModel {
             DesignSelected?.Invoke(this, new BasicEventArgs<Design>(design));
         }
 
-        public static List<Design> LoadDesigns() {
+        public void LoadDesigns() {
             //Doesn't load productplacements without this, it's weird
             ProductPlacementService.Instance.GetAll();
-            return DesignService.Instance.GetAll();
+            ProductService.Instance.GetAll();
+            List<Design> designs = DesignService.Instance.GetAll();
+            _designs = new Dictionary<Design, Canvas>();
+            foreach (var design in designs)
+            {
+                var canvas = CanvasUtil.CreateRoomCanvas(design.Room);
+                _designs.Add(design, CanvasUtil.FillCanvas(design, canvas));
+            }
         }
 
         public static List<Room> LoadRooms()

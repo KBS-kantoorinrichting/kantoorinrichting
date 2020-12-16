@@ -1,9 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Runtime.CompilerServices;
 
 namespace Models {
-    public class Design : Data, IEntity {
+    public class Design : Data, IEntity, ICloneable {
         [Column("DesignId")] public int Id { get; set; }
 
         public string Name { get; set; }
@@ -31,5 +32,9 @@ namespace Models {
         public Polygon GetRoutePoly() { return _route; }
         
         protected override ITuple Variables => (Id, Name, RoomId, Room, ProductPlacements);
+        public object Clone()
+        {
+            return this.MemberwiseClone();
+        }
     }
 }

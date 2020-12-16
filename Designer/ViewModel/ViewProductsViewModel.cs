@@ -67,6 +67,7 @@ namespace Designer.ViewModel {
                 //Dit wordt gebruikt door de snackbar om feedback te geven op
                 //verwijderen, toevoegen en aanpassen van producten
                 MessageQueue = new SnackbarMessageQueue(); 
+                MessageQueue.Enqueue("Wie is hier nou de snackbar, gij of ik?");
             }
         }
 
