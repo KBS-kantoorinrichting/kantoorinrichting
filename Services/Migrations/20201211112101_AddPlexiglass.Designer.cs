@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Services;
 
 namespace Services.Migrations
 {
     [DbContext(typeof(RoomDesignContext))]
-    partial class RoomDesignContextModelSnapshot : ModelSnapshot
+    [Migration("20201211112101_AddPlexiglass")]
+    partial class AddPlexiglass
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -30,11 +32,11 @@ namespace Services.Migrations
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("Plexiglass")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<int>("RoomId")
                         .HasColumnType("int");
-
-                    b.Property<string>("Route")
-                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 

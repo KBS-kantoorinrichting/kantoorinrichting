@@ -35,10 +35,12 @@ namespace Designer.ViewModel {
         public ArgumentCommand<MouseButtonEventArgs> CanvasMouseDownCommand { get; set; }
         public ArgumentCommand<MouseEventArgs> MouseMoveCommand { get; set; }
         public BasicCommand Measure { get; set; }
+        public BasicCommand Plexiglass { get; set; }
         public BasicCommand Layout { get; set; }
         public BasicCommand ClearProducts { get; set; }
         public BasicCommand GenerateRoute { get; set; }
         public BasicCommand RemoveRoute { get; set; }
+        public BasicCommand Save { get; set; }
         public ArgumentCommand<MouseWheelEventArgs> CanvasMouseScrollCommand { get; set; }
         public Product SelectedProduct => _selectedPlacement.Product;
         public Design Design { get; set; }
@@ -89,6 +91,14 @@ namespace Designer.ViewModel {
         private readonly MatrixTransform _transform = new MatrixTransform();
         private Point _initialMousePosition;
 
+        public List<Models.Polygon> PlexiLines = new List<Models.Polygon>();
+        public List<DistanceLine> DistancePlexiLines = new List<DistanceLine>();
+
+        public bool PlexiEnabled { get; set; }
+
+        //private Position _pSecondPoint;
+        private DistanceLine _plexiLine;
+
         //Special constructor for unit tests
         public ViewDesignViewModel(Design design) {
             SetDesign(design);
@@ -107,15 +117,18 @@ namespace Designer.ViewModel {
             DragOverCommand = new ArgumentCommand<DragEventArgs>(e => CanvasDragOver(e.OriginalSource, e));
             MouseMoveCommand = new ArgumentCommand<MouseEventArgs>(HandleMouseMove);
             Measure = new BasicCommand(StartMeasure);
+            Plexiglass = new BasicCommand(StartPlexiglass);
             Layout = new BasicCommand(GenerateLayout);
             GenerateRoute = new BasicCommand(GenerateWalkRoute);
             RemoveRoute = new BasicCommand(DeleteRoute);
             ClearProducts = new BasicCommand(Clear);
+            Save = new BasicCommand(() => DesignService.Instance.SaveChanges());
             CanvasMouseScrollCommand =
                 new ArgumentCommand<MouseWheelEventArgs>(e => CanvasMouseScroll(e.OriginalSource, e));
             _productOverview = new Dictionary<Product, ProductData>();
 
             _distanceLine = new DistanceLine(null, null);
+            _plexiLine = new DistanceLine(null, null, "(Plexiglas)");
         }
 
         public bool Enabled { get; set; }
@@ -128,6 +141,12 @@ namespace Designer.ViewModel {
         public void StartMeasure() {
             if (!Enabled) return;
             _distanceLine.Remove(Editor);
+            _origin = null;
+            _secondPoint = null;
+        }
+
+        public void StartPlexiglass() {
+            // initializeerd de waardes gebruikt voor het plaatsen van plexiglas
             _origin = null;
             _secondPoint = null;
         }
@@ -145,6 +164,7 @@ namespace Designer.ViewModel {
         public void DeleteRoute() {
             _route = null;
 
+            RemoveCorona(_fakeRoute);
             RenderRoute();
         }
 
@@ -230,7 +250,7 @@ namespace Designer.ViewModel {
         List<Ellipse> _ellipses = new List<Ellipse>();
 
         /**
-         * Tekent de volledige route
+         * Tekend de volledige route
          */
         public void RenderRoute() {
             //Verwijderd eerst de volledige lijn
@@ -418,10 +438,74 @@ namespace Designer.ViewModel {
             }
         }
 
+        private void RenderPolyPlexi() {
+            PlexiLines = StringToList(Design.Plexiglass);
+
+            DistancePlexiLines.ForEach(l => l.Remove(Editor));
+            DistancePlexiLines.Clear();
+            if (DistancePlexiLines == null) return;
+            //Tekend de volledige lijn
+            foreach (Models.Polygon Pol in PlexiLines) {
+                Position p1 = Pol.GetPositions().First();
+                Position p2 = Pol.GetPositions().Last();
+                DistancePlexiLines.Add(new DistanceLine(p1, p2, "(Plexiglas)"));
+            }
+
+            DistancePlexiLines.ForEach(l => l.Add(Editor));
+            ProductPlacements.ForEach(p => CheckCorona(p));
+            OnPropertyChanged();
+        }
+
+        private void PlacePointPlexi(MouseButtonEventArgs eventArgs) {
+            Point p = eventArgs.GetPosition(Editor);
+            List<Position> _temppositions = new List<Position>();
+            if (_origin == null || _secondPoint != null) {
+                if (!Design.Room.GetPoly().Inside(new Position((int) p.X, (int) p.Y))) return;
+                _origin = new Position((int) p.X, (int) p.Y);
+                _secondPoint = null;
+            } else {
+                if (!Design.Room.GetPoly().Inside(new Position((int) p.X, (int) p.Y))) return;
+
+                _temppositions.Add(_origin);
+                _temppositions.Add(new Position((int) p.X, (int) p.Y));
+
+                //if (!Design.Room.GetPoly().Inside(position))
+                if (!Design.Room.GetPoly().Inside(new Models.Polygon(_temppositions))) {
+                    return;
+                }
+
+                _secondPoint = new Position((int) p.X, (int) p.Y);
+                Models.Polygon PlexiLine = new Models.Polygon(_temppositions);
+                PlexiLines.Add(PlexiLine);
+                DistancePlexiLines.Add(_plexiLine);
+                //_plexiLine.Remove(Editor);
+
+                //Database conversie
+                updateDbPlexiglass();
+
+                PlexiEnabled = false;
+                RenderPolyPlexi();
+            }
+        }
+
+        public void updateDbPlexiglass() {
+            string plexiLinesString = (PlexiLines?.Count ?? 0) == 0 ? "" : PlexiLines
+                .Select(p => p.Convert())
+                .Aggregate((s1, s2) => $"{s1};{s2}");
+
+            Design.Plexiglass = plexiLinesString;
+        }
+
+        public static List<Models.Polygon> StringToList(string polyList) {
+            List<Models.Polygon> returnList = new List<Models.Polygon>();
+            if (string.IsNullOrEmpty(polyList)) return returnList;
+            return polyList.Split(";").Select(s => new Models.Polygon(s)).ToList();
+        }
+
         /**
          * Plaatst een nieuwe hoek punt voor de route
          */
-        private void PlaceRoutePoint(MouseButtonEventArgs eventArgs) {
+        private void PlaceRoutePoint(MouseEventArgs eventArgs) {
             Point p = eventArgs.GetPosition(Editor);
             //De hoeveelheid pixels waar die naar snapt
             int acc = 1;
@@ -447,6 +531,12 @@ namespace Designer.ViewModel {
             _distanceLine.P2 = p2;
         }
 
+        public void RenderPlexiglass(Position p1, Position p2) {
+            if (!_plexiLine.Shows) _plexiLine.Add(Editor);
+            _plexiLine.P1 = p1;
+            _plexiLine.P2 = p2;
+        }
+
         public void HandleMouseMove(MouseEventArgs eventArgs) {
             if (eventArgs.RightButton == MouseButtonState.Pressed) {
                 Point mousePosition = eventArgs.GetPosition(Editor);
@@ -457,12 +547,15 @@ namespace Designer.ViewModel {
                 Editor.RenderTransform = _transform;
             }
 
-            //Wanneer meetlat niet aan staat of er geen begin punt is van de lijn stopt die
-            if (!Enabled || _origin == null) return;
-
             //Tekend tijdelijk de lijn voor waar de muis nu is
             Point p = eventArgs.GetPosition(Editor);
-            RenderDistance(_origin, _secondPoint ?? new Position((int) p.X, (int) p.Y));
+            if (Enabled && _origin != null) {
+                RenderDistance(_origin, _secondPoint ?? new Position((int) p.X, (int) p.Y));
+            }
+
+            if (PlexiEnabled && _origin != null) {
+                RenderPlexiglass(_origin, _secondPoint ?? new Position((int) p.X, (int) p.Y));
+            }
         }
 
         /**
@@ -516,6 +609,10 @@ namespace Designer.ViewModel {
 
                 //Kijkt accuraat wat de afstand is
                 (Position p1, Position p2) = placement.GetPoly().MinDistance(changed.GetPoly());
+                Models.Line lin = new Models.Line(p1, p2);
+                bool plexiCheck = PlexiLines
+                    .Select(poly => poly.GetLines().First())
+                    .Any(polyline => lin.IntersectionLineSegment(polyline) != null);
 
                 //Maakt een nieuwe lijn aan als deze nog niet bestond en anders pakt die de oude lijn
                 DistanceLine line = _lines[changed].ContainsKey(placement)
@@ -532,7 +629,7 @@ namespace Designer.ViewModel {
                 _lines[placement][changed] = line;
 
                 //Als het binnen de bepaalde afstand zit wordt de lijn getekend en anders weggehaalt
-                if (p1.Distance(p2) >= 150) {
+                if (p1.Distance(p2) >= 150 || plexiCheck) {
                     line.Remove(Editor);
                 } else {
                     line.P1 = p1;
@@ -546,6 +643,7 @@ namespace Designer.ViewModel {
         public void SetDesign(Design design) {
             Design = design;
             ProductPlacements = design.ProductPlacements;
+            Console.WriteLine(PlexiLines.Count);
             ProductPlacements ??= new List<ProductPlacement>();
             _productOverview = new Dictionary<Product, ProductData>();
             //Wanneer niet in test env render die de ruimte
@@ -556,6 +654,7 @@ namespace Designer.ViewModel {
 
                 RenderRoomFrames();
 
+                RenderPolyPlexi();
                 //Tekend de route en alle corona lijnen
                 ProductPlacements.ForEach(p => CheckCorona(p));
                 RenderRoute();
@@ -588,7 +687,7 @@ namespace Designer.ViewModel {
             RemoveCorona(_tempPlacement);
             //Alleen als een object naar het nieuwe punt verplaatst mag worden, wordt het vervangen.
             if (!AllowDrop) {
-                //Tekent de corona lijnen van de orginele plaatsin
+                //Tekend de corona lijnen van de orginele plaatsin
                 CheckCorona(placement);
                 return;
             }
@@ -627,6 +726,25 @@ namespace Designer.ViewModel {
                     return;
                 }
 
+                if (sender is Line) {
+                    var line = (System.Windows.Shapes.Line) sender;
+                    Position p1 = new Position((int) line.X1, (int) line.Y1);
+                    Position p2 = new Position((int) line.X2, (int) line.Y2);
+
+                    int index = DistancePlexiLines.FindIndex(i => i.P1.Equals(p1) && i.P2.Equals(p2));
+
+                    if (index == -1) {
+                        return;
+                    }
+
+                    DistancePlexiLines[index].Remove(Editor);
+                    DistancePlexiLines.RemoveAt(index);
+                    PlexiLines.RemoveAt(index);
+                    updateDbPlexiglass();
+
+                    //Editor.Children.Remove();
+                }
+
                 if (sender.GetType() == typeof(Canvas)) {
                     _selectedPlacement = null;
                     RenderRoom();
@@ -644,7 +762,7 @@ namespace Designer.ViewModel {
 
                 RenderRoom();
             }
-            //Linkermuisknop betekent dat het product wordt verplaatst
+            //Linkermuisknop betekend dat het product wordt verplaatst
             else {
                 //Als meetlat aanstaat vervangt die deze behavivoer
                 if (Enabled) {
@@ -664,6 +782,12 @@ namespace Designer.ViewModel {
 
                     return;
                 }
+
+                if (PlexiEnabled) {
+                    PlacePointPlexi(e);
+                    return;
+                }
+
 
                 if (sender.GetType() != typeof(Image)) return;
                 var image = sender as Image;
@@ -1037,6 +1161,42 @@ namespace Designer.ViewModel {
         private void OnPropertyChanged(string propertyName = "") {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
+
+        public static string FromList(List<DistanceLine> distancelines) {
+            string returnstring = "";
+            if (distancelines == null) return null;
+            //IEnumerable<Position> enumerable = positions.ToList();
+            foreach (DistanceLine position in distancelines) {
+                returnstring = $"{returnstring}{position.P1};{position.P2}|";
+            }
+
+            return returnstring;
+        }
+
+        public static List<DistanceLine> ToList(string DistanceLines) {
+            switch (DistanceLines) {
+                case null:
+                case "": {
+                    return new List<DistanceLine>();
+                }
+                default: {
+                    var list = new List<DistanceLine>();
+                    var lines = DistanceLines.Split("|").ToList();
+                    foreach (var line in lines) {
+                        if (line == "") continue;
+                        var positions = line.Split(";")
+                            .Select(p => p.Split(",").Select(Int32.Parse).ToList())
+                            .Select(p => new Position(p[0], p[1]))
+                            .ToList();
+                        list.Add(new DistanceLine(positions[0], positions[1]));
+                    }
+
+                    return list;
+                }
+            }
+
+            ;
+        }
     }
 
     public class ProductData {
@@ -1048,6 +1208,7 @@ namespace Designer.ViewModel {
         private Line _line;
         private Line _line2;
         private TextBlock _textBlock;
+        private string _prefix;
         private Position _p1;
         private Position _p2;
 
@@ -1069,12 +1230,14 @@ namespace Designer.ViewModel {
 
         public bool Shows { get; private set; }
 
-        public DistanceLine(Position p1, Position p2) {
+        public DistanceLine(Position p1, Position p2, string prefix = "") {
             _p1 = p1;
             _p2 = p2;
             _line = new Line();
             _line2 = new Line();
             _textBlock = new TextBlock();
+            _prefix = prefix;
+
 
             _line.Stroke = Brushes.White;
             _line.StrokeThickness = 3;
@@ -1122,7 +1285,7 @@ namespace Designer.ViewModel {
             _line2.Y2 = P2.Y;
 
             Position center = P1.Center(P2);
-            _textBlock.Text = FormatText(P1.Distance(P2));
+            _textBlock.Text = _prefix + FormatText(P1.Distance(P2));
             Size size = MeasureString();
 
             double dx = size.Width / 2;

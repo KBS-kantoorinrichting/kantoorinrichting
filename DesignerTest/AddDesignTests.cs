@@ -35,7 +35,7 @@ namespace DesignerTest {
         }
 
         private void CreateDesign(string name, Room room) {
-            Design design = AddDesignModel.CreateDesign(name, room);
+            Design design = AddDesignModel.CreateDesign(name, room, "");
             Assert.AreEqual(name, design.Name);
             Assert.AreEqual(room.Name, design.Room.Name);
             Assert.AreEqual(room.Id, design.Room.Id);

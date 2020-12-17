@@ -47,15 +47,23 @@ namespace Models {
 
         public Polygon Offset(Position position) { return Offset(position.X, position.Y); }
 
+        /*
+         * Geeft lijst van posities terug 
+         */
+        public List<Position> GetPositions()
+        {
+            return _positions;
+        }
+        
         /**
          * Zet de polygon om naar een tekst van die lijkt op 0,0|10,10|20,10
          */
-        public string Convert() {
+        public string Convert(string separator = "|") {
             if (_positions == null) return null;
 
             if (!_positions.Any()) return "";
             return _positions.Select(p => p.ToString())
-                .Aggregate((s1, s2) => $"{s1}|{s2}");
+                .Aggregate((s1, s2) => $"{s1}{separator}{s2}");
         }
 
         /**
