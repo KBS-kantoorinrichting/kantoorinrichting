@@ -13,7 +13,6 @@ using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using Designer.Other;
 using Designer.View;
-using Microsoft.EntityFrameworkCore;
 using Models;
 using Models.Utils;
 using Services;
@@ -168,15 +167,16 @@ namespace Designer.ViewModel {
         public void DeleteRoute() {
             _route = null;
 
+            RemoveCorona(_fakeRoute);
             RenderRoute();
         }
-        
+
         public void GenerateWalkRoute() {
             int distance = 50;
-            
+
             List<Models.Line> lines = Design.Room.GetPoly().GetLines().ToList();
             List<Models.Line> correct = lines.Select(l => (Models.Line) null).ToList();
-            
+
             //Gaat door alle hoeken (lijn paren) heen om te kijken waar maar 1 mogelijk is, om hiervandaan te starten
             int start = -1;
             for (int i = 0; i < lines.Count; i++) {
@@ -208,36 +208,37 @@ namespace Designer.ViewModel {
                 correct[start] = foundL2;
                 break;
             }
-            
+
             //Start bij de eerste hoek waar maar 1 mogelijk punt is en pakt vervolgens altijd de verste afstand hiervan voor de volgende lijn
             for (int i = start; i != start - 1; i = (i + 1) % lines.Count) {
                 int j = (i + 1) % lines.Count;
                 if (correct[j] != null) break;
                 Models.Line before = correct[i];
                 Models.Line toTest = lines[j];
-            
+
                 Models.Line l1 = toTest.OffsetPerpendicular(distance, true);
                 Models.Line l2 = toTest.OffsetPerpendicular(distance, false);
-            
+
                 Position inter1 = before.Intersection(l1);
                 if (inter1 == null || !Design.Room.GetPoly().Inside(inter1)) {
                     correct[j] = l2;
                     continue;
                 }
+
                 Position inter2 = before.Intersection(l2);
                 if (inter2 == null || !Design.Room.GetPoly().Inside(inter2)) {
                     correct[j] = l1;
                     continue;
                 }
-            
+
                 double d1 = before.P1.Distance(inter1);
                 double d2 = before.P1.Distance(inter2);
-            
+
                 correct[j] = d1 > d2 ? l1 : l2;
             }
 
             //Zoekt voor alle lijn de snijpunten om de route te maken
-            List<Position> positions = new List<Position>(); 
+            List<Position> positions = new List<Position>();
             for (int i = 0; i < correct.Count; i++) {
                 Models.Line l1 = correct[i];
                 Models.Line l2 = correct[(i + 1) % lines.Count];
@@ -301,29 +302,23 @@ namespace Designer.ViewModel {
             RenderRoom();
         }
 
-
         /**
          * Plaatst alle deuren en ramen die in de ruimte zitten
          */
-        public void RenderRoomFrames()
-        {
-            if(Design.Room.RoomPlacements != null)
-            {
-                foreach (RoomPlacement frame in Design.Room.RoomPlacements)
-                {
+        public void RenderRoomFrames() {
+            if (Design.Room.RoomPlacements != null) {
+                foreach (RoomPlacement frame in Design.Room.RoomPlacements) {
                     Position pos = RoomPlacement.ToPosition(frame.Positions);
                     Polygon newPoly = new Polygon();
 
-                    if(frame.Type == FrameTypes.Door)
-                    {
-                        int x = (int)pos.X;
-                        int y = (int)pos.Y;
+                    if (frame.Type == FrameTypes.Door) {
+                        int x = (int) pos.X;
+                        int y = (int) pos.Y;
 
                         if (frame.Rotation == 0) y -= 25;
                         if (frame.Rotation == 270) x -= 25;
 
-                        PointCollection points = new PointCollection()
-                        {
+                        PointCollection points = new PointCollection() {
                             new Point(x, y),
                             new Point(x + 25, y),
                             new Point(x + 25, y + 25),
@@ -335,18 +330,17 @@ namespace Designer.ViewModel {
                         Editor.Children.Add(newPoly);
                     }
 
-                    if(frame.Type == FrameTypes.Window)
-                    {
+                    if (frame.Type == FrameTypes.Window) {
                         List<Position> roomPositions = Room.ToList(Design.Room.Positions);
                         Debug.WriteLine(roomPositions);
 
                         Position startPosition = RoomPlacement.ToPosition(frame.Positions);
-                        Position roomPosition = roomPositions.FirstOrDefault(p => p.X == startPosition.X || p.Y == startPosition.Y);
+                        Position roomPosition =
+                            roomPositions.FirstOrDefault(p => p.X == startPosition.X || p.Y == startPosition.Y);
 
                         bool vertical = startPosition.X == roomPosition.X;
 
-                        Line window = new Line
-                        {
+                        Line window = new Line {
                             X1 = startPosition.X,
                             Y1 = startPosition.Y,
                             X2 = vertical ? startPosition.X : startPosition.X + 25,
@@ -438,24 +432,22 @@ namespace Designer.ViewModel {
                 _secondPoint = new Position((int) p.X, (int) p.Y);
                 Enabled = false;
                 OnPropertyChanged();
-                
             }
         }
 
-        private void RenderPolyPlexi()
-        {
+        private void RenderPolyPlexi() {
             PlexiLines = StringToList(Design.Plexiglass);
 
             DistancePlexiLines.ForEach(l => l.Remove(Editor));
             DistancePlexiLines.Clear();
             if (DistancePlexiLines == null) return;
             //Tekend de volledige lijn
-            foreach (Models.Polygon Pol in PlexiLines)
-            {
+            foreach (Models.Polygon Pol in PlexiLines) {
                 Position p1 = Pol.GetPositions().First();
                 Position p2 = Pol.GetPositions().Last();
                 DistancePlexiLines.Add(new DistanceLine(p1, p2, "(Plexiglas)"));
             }
+
             DistancePlexiLines.ForEach(l => l.Add(Editor));
             ProductPlacements.ForEach(p => CheckCorona(p));
             OnPropertyChanged();
@@ -465,97 +457,52 @@ namespace Designer.ViewModel {
             Point p = eventArgs.GetPosition(Editor);
             List<Position> _temppositions = new List<Position>();
             if (_origin == null || _secondPoint != null) {
-                if (!Design.Room.GetPoly().Inside(new Position((int)p.X, (int)p.Y))) return;
+                if (!Design.Room.GetPoly().Inside(new Position((int) p.X, (int) p.Y))) return;
                 _origin = new Position((int) p.X, (int) p.Y);
                 _secondPoint = null;
-                
             } else {
-                if (!Design.Room.GetPoly().Inside(new Position((int)p.X, (int)p.Y))) return;
-                
+                if (!Design.Room.GetPoly().Inside(new Position((int) p.X, (int) p.Y))) return;
+
                 _temppositions.Add(_origin);
-                _temppositions.Add(new Position((int)p.X, (int)p.Y));
-                
+                _temppositions.Add(new Position((int) p.X, (int) p.Y));
+
                 //if (!Design.Room.GetPoly().Inside(position))
-                    if (!Design.Room.GetPoly().Inside(new Models.Polygon(_temppositions)))
-                {
+                if (!Design.Room.GetPoly().Inside(new Models.Polygon(_temppositions))) {
                     return;
                 }
-                _secondPoint = new Position((int)p.X, (int)p.Y);
+
+                _secondPoint = new Position((int) p.X, (int) p.Y);
                 Models.Polygon PlexiLine = new Models.Polygon(_temppositions);
                 PlexiLines.Add(PlexiLine);
                 DistancePlexiLines.Add(_plexiLine);
                 //_plexiLine.Remove(Editor);
 
                 //Database conversie
-                updatedbPlexiglass();
+                updateDbPlexiglass();
 
                 PEnabled = false;
                 RenderPolyPlexi();
-
-                ProductPlacements.ForEach(p => CheckCorona(p));
-
             }
         }
 
-        public void updatedbPlexiglass()
-        {
-            
-            string PlexiLinesString = "";
-            foreach (Models.Polygon poly in PlexiLines)
-            {
-                if (PlexiLinesString == "")
-                {
-                    PlexiLinesString += poly.BetterConvert();
-                }
-                else
-                {
-                    PlexiLinesString += "|" + poly.BetterConvert();
-                }
+        public void updateDbPlexiglass() {
+            string plexiLinesString = (PlexiLines?.Count ?? 0) == 0 ? "" : PlexiLines
+                .Select(p => p.Convert())
+                .Aggregate((s1, s2) => $"{s1};{s2}");
 
-            }
-
-            Design.Plexiglass = PlexiLinesString;
+            Design.Plexiglass = plexiLinesString;
         }
 
-        public List<Models.Polygon> StringToList(string polylist)
-        { 
-
-        List<Models.Polygon> returnlist = new List<Models.Polygon>();
-            if (polylist == "" || polylist == null)
-            {
-                return returnlist;
-            }
-            
-            // 225,381;542,772|447,863;787,636
-            string[] polylistarray;
-            polylistarray = polylist.Split("|");
-            // 225,381;542,772
-            foreach (string str in polylistarray)
-            {
-                string[] polylistarrayarray;
-                // 225,381
-                polylistarrayarray = str.Split(";");
-                List<Position> poslist = new List<Position>();
-                foreach (string stri in polylistarrayarray)
-                {
-                    string[] polylistarrayarrayarray;
-                    polylistarrayarrayarray = stri.Split(",");
-                    //position
-                    poslist.Add(new Position(int.Parse(polylistarrayarrayarray[0]), int.Parse(polylistarrayarrayarray[1])));
-                }
-
-                returnlist.Add(new Models.Polygon(poslist));
-
-                // poly
-            }
-            // lijst poly
-            return returnlist;
-
+        public static List<Models.Polygon> StringToList(string polyList) {
+            List<Models.Polygon> returnList = new List<Models.Polygon>();
+            if (string.IsNullOrEmpty(polyList)) return returnList;
+            return polyList.Split(";").Select(s => new Models.Polygon(s)).ToList();
         }
+
         /**
          * Plaatst een nieuwe hoek punt voor de route
          */
-        private void PlaceRoutePoint(MouseButtonEventArgs eventArgs) {
+        private void PlaceRoutePoint(MouseEventArgs eventArgs) {
             Point p = eventArgs.GetPosition(Editor);
             //De hoeveelheid pixels waar die naar snapt
             int acc = 1;
@@ -583,8 +530,8 @@ namespace Designer.ViewModel {
 
         public void RenderPlexiglass(Position p1, Position p2) {
             if (!_plexiLine.Shows) _plexiLine.Add(Editor);
-             _plexiLine.P1 = p1;
-             _plexiLine.P2 = p2;
+            _plexiLine.P1 = p1;
+            _plexiLine.P2 = p2;
         }
 
         public void HandleMouseMove(MouseEventArgs eventArgs) {
@@ -658,24 +605,11 @@ namespace Designer.ViewModel {
                 if (!needed && safe) continue;
 
                 //Kijkt accuraat wat de afstand is
-                
                 (Position p1, Position p2) = placement.GetPoly().MinDistance(changed.GetPoly());
                 Models.Line lin = new Models.Line(p1, p2);
-                bool plexicheck = false;
-                foreach (Models.Polygon poly in PlexiLines)
-                {
-                    IEnumerable<Models.Line> linenum = poly.GetLines();
-                    Models.Line polyline = linenum.First();
-                    if (lin.IntersectionLineSegment(polyline) != null)
-                    {
-                        plexicheck = true;
-                        break;
-                        
-                    }
-
-                    
-                }
-                if (plexicheck) continue;
+                bool plexiCheck = PlexiLines
+                    .Select(poly => poly.GetLines().First())
+                    .Any(polyline => lin.IntersectionLineSegment(polyline) != null);
 
                 //Maakt een nieuwe lijn aan als deze nog niet bestond en anders pakt die de oude lijn
                 DistanceLine line = _lines[changed].ContainsKey(placement)
@@ -692,7 +626,7 @@ namespace Designer.ViewModel {
                 _lines[placement][changed] = line;
 
                 //Als het binnen de bepaalde afstand zit wordt de lijn getekend en anders weggehaalt
-                if (p1.Distance(p2) >= 150) {
+                if (p1.Distance(p2) >= 150 || plexiCheck) {
                     line.Remove(Editor);
                 } else {
                     line.P1 = p1;
@@ -790,6 +724,25 @@ namespace Designer.ViewModel {
                     return;
                 }
 
+                if (sender is Line) {
+                    var line = (System.Windows.Shapes.Line) sender;
+                    Position p1 = new Position((int) line.X1, (int) line.Y1);
+                    Position p2 = new Position((int) line.X2, (int) line.Y2);
+
+                    int index = DistancePlexiLines.FindIndex(i => i.P1.Equals(p1) && i.P2.Equals(p2));
+
+                    if (index == -1) {
+                        return;
+                    }
+
+                    DistancePlexiLines[index].Remove(Editor);
+                    DistancePlexiLines.RemoveAt(index);
+                    PlexiLines.RemoveAt(index);
+                    updateDbPlexiglass();
+
+                    //Editor.Children.Remove();
+                }
+
                 if (sender.GetType() == typeof(Canvas)) {
                     _selectedPlacement = null;
                     RenderRoom();
@@ -832,30 +785,9 @@ namespace Designer.ViewModel {
                     PlacePointPlexi(e);
                     return;
                 }
-                
-                    if (sender is Line)
-                    {
-                        var line = (System.Windows.Shapes.Line) sender;
-                        Position p1 = new Position((int) line.X1, (int) line.Y1);
-                        Position p2 = new Position((int) line.X2, (int) line.Y2);
-
-                        int index = DistancePlexiLines.FindIndex(i=>i.P1.Equals(p1) && i.P2.Equals(p2));
-
-                        if (index == -1)
-                        {
-                            return;
-                        }
-                        DistancePlexiLines[index].Remove(Editor);
-                        DistancePlexiLines.RemoveAt(index);
-                        PlexiLines.RemoveAt(index);
-                        updatedbPlexiglass();
-                        
-                    //Editor.Children.Remove();
-
-                }
 
 
-                    if (sender.GetType() != typeof(Image)) return;
+                if (sender.GetType() != typeof(Image)) return;
                 var image = sender as Image;
                 var placement = ProductPlacements.Where(
                     placement =>
