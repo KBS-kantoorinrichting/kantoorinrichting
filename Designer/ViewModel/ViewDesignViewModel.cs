@@ -74,13 +74,18 @@ namespace Designer.ViewModel {
 
         public int RouteScore {
             get {
-                if (ProductPlacements == null || ProductPlacements.Count == 0 || _route == null || _route.Count == 0) return 100;
-                double count = ProductPlacements
-                    .Select(p => p.GetPoly())
-                    .Select(p => p.MinDistance(_route))
-                    .Select(l => l.p1.Distance(l.p2))
-                    .Count(d => d > 150);
-                return (int) (count / ProductPlacements.Count * 100);
+                List<DistanceLine> distanceLines = _lines
+                    .Where(e => e.Key == _fakeRoute)
+                    .Select(e => e.Value)
+                    .SelectMany(v => v.Values)
+                    .Distinct()
+                    .ToList();
+                
+                if (distanceLines.Count == 0) return 100;
+
+                double count = distanceLines.Count(l => !l.Shows);
+
+                return (int) (count / distanceLines.Count * 100);
             }
         }
         
