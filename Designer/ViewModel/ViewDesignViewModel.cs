@@ -25,10 +25,10 @@ namespace Designer.ViewModel {
 
         public List<Product> Products { get; set; }
         private Dictionary<Product, ProductData> _productOverview { get; set; }
-
         public List<KeyValuePair<Product, ProductData>> ProductOverview => _productOverview.ToList();
         public double TotalPrice => _productOverview.Sum(p => p.Value.TotalPrice);
         public List<ProductPlacement> ProductPlacements { get; set; }
+        public List<RoomPlacement> RoomPlacements { get; set; }
         public ArgumentCommand<DragEventArgs> DragDropCommand { get; set; }
         public ArgumentCommand<DragEventArgs> DragOverCommand { get; set; }
         public ArgumentCommand<MouseButtonEventArgs> CatalogusMouseDownCommand { get; set; }
@@ -79,8 +79,112 @@ namespace Designer.ViewModel {
             }
         }
 
-        public int VentilationScore { get; set; } = 80;
+        public int VentilationScore
+        {
+            get
+            {
+                if (RoomPlacements == null || RoomPlacements.Count == 0) return 0;
+                if (RoomPlacements.Count < 2) return 0;
+                // sinds cm2 met complexe kamers een gigantische uitdaging is
+                // gaan wij uit van hoe lang de muren zijn
+                // lange muren = grote kamer
+                // dus ik calculeer de lengte en breedte en ga daar vanuit
+                // en maak een gebalanceerde berekening door de ventilatiescore
+                List<Position> roompositions = new List<Position>();
+                roompositions = Room.ToList(Design.Room.Positions);
+                List<int> xlist = new List<int>();
+                roompositions.ForEach(l => xlist.Add((int)l.X));
+                List<int> ylist = new List<int>();
+                roompositions.ForEach(l => ylist.Add((int)l.Y));
+                xlist.Add(roompositions.First().X);
+                ylist.Add(roompositions.First().Y);
+                int i = 0;
+                double cm2 = 0;
+                foreach(Position pos in roompositions)
+                {
+                    cm2 += (((xlist[i] * ylist[i + 1]) - (ylist[i] * xlist[i + 1])) / 2);
+                    i ++;
+                }
+                if (cm2 < 0) { cm2 = cm2 * -1; }
+                int m = (int)(cm2 / 10000);
+                m = 100 - (m - (int)RoomPlacements.Count);
+                //m = ((m * 130) / 100);
+                if (m > 100)
+                {
+                    return 100;
+                } else if (m < 0){
+                    return 0;
+                }
+                else
+                {
+                    return m;
+                }
+            }
+        }
+
+
         public int RouteScore { get; set; } = 20;
+
+        public Brush DistanceColour
+        {
+            get
+            {
+                return (SolidColorBrush)(new BrushConverter().ConvertFrom("#FF320B86"));
+            }
+            set
+            {
+                if (DistanceScore > 55)
+                {
+                    DistanceColour = Brushes.Green;
+                }
+                else
+                {
+                    DistanceColour = (SolidColorBrush)(new BrushConverter().ConvertFrom("#FF320B86"));
+                }
+                
+            }
+        }
+
+        public Brush VentilationColour
+        {
+            get
+            {
+                return (SolidColorBrush)(new BrushConverter().ConvertFrom("#FF320B86"));
+            }
+            set
+            {
+                if (VentilationScore > 55)
+                {
+                    VentilationColour = Brushes.Green;
+                }
+                else
+                {
+                    VentilationColour = (SolidColorBrush)(new BrushConverter().ConvertFrom("#FF320B86"));
+                }
+              
+            }
+        }
+
+        public Brush RouteColour
+        {
+            get
+            {
+                return (SolidColorBrush)(new BrushConverter().ConvertFrom("#FF320B86"));
+            }
+            set
+            {
+                    if (VentilationScore > 55)
+                    {
+                        RouteColour = Brushes.Green;
+                }
+                else
+                {
+                    RouteColour = (SolidColorBrush)(new BrushConverter().ConvertFrom("#FF320B86"));
+                }
+               
+            }
+        }
+
         public double Scale = 1.0;
         private double _canvasHeight => Navigator.Instance.CurrentPage.ActualHeight - 20;
 
@@ -542,8 +646,13 @@ namespace Designer.ViewModel {
         }
 
         public void SetDesign(Design design) {
+            DistanceColour = (SolidColorBrush)(new BrushConverter().ConvertFrom("#FF320B86"));
+            VentilationColour = (SolidColorBrush)(new BrushConverter().ConvertFrom("#FF320B86"));
+            RouteColour = (SolidColorBrush)(new BrushConverter().ConvertFrom("#FF320B86"));
             Design = design;
             ProductPlacements = design.ProductPlacements;
+            ProductPlacements ??= new List<ProductPlacement>();
+            RoomPlacements = design.Room.RoomPlacements;
             ProductPlacements ??= new List<ProductPlacement>();
             _productOverview = new Dictionary<Product, ProductData>();
             //Wanneer niet in test env render die de ruimte

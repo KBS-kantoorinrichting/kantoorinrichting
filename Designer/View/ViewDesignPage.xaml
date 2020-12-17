@@ -185,13 +185,13 @@
                         <Button Content="GENERATE!!!!!" VerticalAlignment="Top" Command="{Binding Layout}" />
                         <Button Content="Verwijder alles" VerticalAlignment="Top" Command="{Binding ClearProducts}" />
                         <Label Content="Anderhalve meter score" />
-                        <ProgressBar Height="20" Value="{Binding DistanceScore, Mode=OneWay}" />
+                        <ProgressBar Foreground="{Binding DistanceColour}" Height="20" Value="{Binding DistanceScore, Mode=OneWay}" />
                         <TextBlock Margin="0,-18,0,0" HorizontalAlignment="Center" Text="{Binding DistanceScore, StringFormat={}{0} %}" />
                         <Label Content="Ventilatie score" />
-                        <ProgressBar Height="20" Value="{Binding VentilationScore, Mode=OneWay}"/>
+                        <ProgressBar Height="20" Foreground="{Binding ScoreColour}" Value="{Binding VentilationScore, Mode=OneWay}"/>
                         <TextBlock Margin="0,-18,0,0" HorizontalAlignment="Center" Text="{Binding VentilationScore, StringFormat={}{0} %}" />
                         <Label Content="Looproute score" />
-                        <ProgressBar Height="20" Value="{Binding RouteScore, Mode=OneWay}"/>
+                        <ProgressBar Foreground="{Binding RouteColour}" Height="20" Value="{Binding RouteScore, Mode=OneWay}"/>
                         <TextBlock Margin="0,-18,0,0" HorizontalAlignment="Center" Text="{Binding RouteScore, StringFormat={}{0} %}" />
                     </StackPanel>
                 </Grid>
