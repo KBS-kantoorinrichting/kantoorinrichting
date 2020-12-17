@@ -306,29 +306,32 @@ namespace Models.Utils {
             if (!f.HasValue) return null;
 
             (double a, double b) = f.Value;
-
-            Position p1;
-            Position p2;
+            (int cX, int cY) = line.Center.AsTuple;
             
-            if (x && a != 0) {
-                //Als de lijn de hoek is
-                (int x2, int y2) = line.Center.AsTuple;
-                a = -1 / a;
-                b = y2 - x2 * a;
-                
-                double d = Math.Sqrt(1 + a * a);
-                double dx =  (dis / d);
-                
-                p1 = new Position((int) (x2 - dx), (int) ((x2 - dx) * a + b));
-                p2 = new Position((int) (x2 - dx), (int) ((x2 + dx) * a + b));
-            } else if (x) {
+            Position p1, p2;
+            
+            switch (x) {
                 //Als de lijn horizontaal is
-                p1 = new Position(line.Center.X, (int) b - dis);
-                p2 = new Position(line.Center.X, (int) b + dis);
-            } else {
+                case true when a == 0:
+                    p1 = new Position(cX, (int) b - dis);
+                    p2 = new Position(cX, (int) b + dis);
+                    break;
                 //Als de lijn verticaal is
-                p1 = new Position((int) b - dis, line.Center.Y);
-                p2 = new Position((int) b + dis, line.Center.Y);
+                case false:
+                    p1 = new Position((int) b - dis, cY);
+                    p2 = new Position((int) b + dis, cY);
+                    break;
+                //Als de lijn niet recht is
+                default: 
+                    a = -1 / a;
+                    b = cY - cX * a;
+                
+                    double d = Math.Sqrt(1 + a * a);
+                    double dx =  (dis / d);
+                
+                    p1 = new Position((int) (cX - dx), (int) ((cX - dx) * a + b));
+                    p2 = new Position((int) (cX + dx), (int) ((cX + dx) * a + b));
+                    break;
             }
             
             return new Line(p1, p2);
