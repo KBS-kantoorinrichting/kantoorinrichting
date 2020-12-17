@@ -199,7 +199,7 @@
                         <ToggleButton Content="Meetlat" VerticalAlignment="Top" Command="{Binding Measure}"
                                       IsChecked="{Binding Enabled, Mode=TwoWay}" />
                         <ToggleButton Content="Plaats Plexiglas" VerticalAlignment="Top" Command="{Binding Plexiglass}"
-                                      IsChecked="{Binding PEnabled, Mode=TwoWay}" />
+                                      IsChecked="{Binding PlexiEnabled, Mode=TwoWay}" />
                         <ToggleButton Content="Loop route" VerticalAlignment="Top" IsChecked="{Binding RouteEnabled, Mode=TwoWay}"/>
                         <Button Content="Verwijder loop route" VerticalAlignment="Top" Command="{Binding RemoveRoute}" />
                         <Button Content="Genereer loop route" VerticalAlignment="Top" Command="{Binding GenerateRoute}" />

@@ -97,7 +97,7 @@ namespace Designer.ViewModel {
         public List<Models.Polygon> PlexiLines = new List<Models.Polygon>();
         public List<DistanceLine> DistancePlexiLines = new List<DistanceLine>();
 
-        public bool PEnabled { get; set; }
+        public bool PlexiEnabled { get; set; }
 
         //private Position _pSecondPoint;
         private DistanceLine _plexiLine;
@@ -253,7 +253,7 @@ namespace Designer.ViewModel {
         List<Ellipse> _ellipses = new List<Ellipse>();
 
         /**
-         * Tekent de volledige route
+         * Tekend de volledige route
          */
         public void RenderRoute() {
             //Verwijderd eerst de volledige lijn
@@ -480,7 +480,7 @@ namespace Designer.ViewModel {
                 //Database conversie
                 updateDbPlexiglass();
 
-                PEnabled = false;
+                PlexiEnabled = false;
                 RenderPolyPlexi();
             }
         }
@@ -550,7 +550,7 @@ namespace Designer.ViewModel {
                 RenderDistance(_origin, _secondPoint ?? new Position((int) p.X, (int) p.Y));
             }
 
-            if (PEnabled && _origin != null) {
+            if (PlexiEnabled && _origin != null) {
                 RenderPlexiglass(_origin, _secondPoint ?? new Position((int) p.X, (int) p.Y));
             }
         }
@@ -685,7 +685,7 @@ namespace Designer.ViewModel {
             RemoveCorona(_tempPlacement);
             //Alleen als een object naar het nieuwe punt verplaatst mag worden, wordt het vervangen.
             if (!AllowDrop) {
-                //Tekent de corona lijnen van de orginele plaatsin
+                //Tekend de corona lijnen van de orginele plaatsin
                 CheckCorona(placement);
                 return;
             }
@@ -760,7 +760,7 @@ namespace Designer.ViewModel {
 
                 RenderRoom();
             }
-            //Linkermuisknop betekent dat het product wordt verplaatst
+            //Linkermuisknop betekend dat het product wordt verplaatst
             else {
                 //Als meetlat aanstaat vervangt die deze behavivoer
                 if (Enabled) {
@@ -781,7 +781,7 @@ namespace Designer.ViewModel {
                     return;
                 }
 
-                if (PEnabled) {
+                if (PlexiEnabled) {
                     PlacePointPlexi(e);
                     return;
                 }
