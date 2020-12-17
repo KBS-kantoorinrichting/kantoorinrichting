@@ -34,6 +34,9 @@ namespace Models.Utils {
             (Position p1, Position p2) best1 = MinDistanceOneDirection(poly1, poly2);
             (Position p1, Position p2) best2 = MinDistanceOneDirection(poly2, poly1);
 
+            if (best1.p1 == null) return best2;
+            if (best2.p1 == null) return best1;
+            
             //Returned de beste variant
             return best1.p1.Distance(best1.p2) > best2.p1.Distance(best2.p2) ? best2 : best1;
         }

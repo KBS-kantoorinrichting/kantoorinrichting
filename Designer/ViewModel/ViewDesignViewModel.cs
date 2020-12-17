@@ -53,40 +53,42 @@ namespace Designer.ViewModel {
 
         public int DistanceScore {
             get {
-                int increment = 0;
-                if (ProductPlacements == null) return 0;
+                List<DistanceLine> distanceLines = _lines
+                    .Where(e => e.Key != _fakeRoute)
+                    .Select(e => e.Value)
+                    .SelectMany(v => v)
+                    .Where(e => e.Key != _fakeRoute)
+                    .Select(e => e.Value)
+                    .Distinct()
+                    .ToList();
+                
+                if (distanceLines.Count == 0) return 100;
 
-                List<ProductPlacement> placements = ProductPlacements.ToList();
+                double count = distanceLines.Count(l => !l.Shows);
 
-                //Loopt door alle paren van producten zonder overbodige stappen zoals p1 -> p1 en p1 -> p2, p2 -> p1
-                for (int i = 0; i < placements.Count; i++) {
-                    bool noDistance = false;
-                    ProductPlacement placement1 = placements[i];
-                    for (int j = 0; j < placements.Count; j++) {
-                        ProductPlacement placement2 = placements[j];
-                        if (j != i) {
-                            (Position p1, Position p2) = placement1.GetPoly().MinDistance(placement2.GetPoly());
-
-                            double distance = p1.Distance(p2);
-                            if (!noDistance) noDistance = distance <= 150;
-                        }
-                    }
-
-                    if (noDistance) increment++;
-                }
-
-                double reversedIncrement = ProductPlacements.Count - increment;
-
-                if (ProductPlacements.Count == 0) {
-                    return 100;
-                }
-
-                return (int) (reversedIncrement / ProductPlacements.Count * 100);
+                return (int) (count / distanceLines.Count * 100);
             }
         }
 
         public int VentilationScore { get; set; } = 80;
-        public int RouteScore { get; set; } = 20;
+
+        public int RouteScore {
+            get {
+                List<DistanceLine> distanceLines = _lines
+                    .Where(e => e.Key == _fakeRoute)
+                    .Select(e => e.Value)
+                    .SelectMany(v => v.Values)
+                    .Distinct()
+                    .ToList();
+                
+                if (distanceLines.Count == 0) return 100;
+
+                double count = distanceLines.Count(l => !l.Shows);
+
+                return (int) (count / distanceLines.Count * 100);
+            }
+        }
+        
         public double Scale = 1.0;
         private double _canvasHeight => Navigator.Instance.CurrentPage.ActualHeight - 20;
 
@@ -282,7 +284,13 @@ namespace Designer.ViewModel {
                 Editor.Children.Add(ellipse);
                 Canvas.SetLeft(ellipse, position.X - size / 2);
                 Canvas.SetTop(ellipse, position.Y - size / 2);
-                Canvas.SetZIndex(ellipse, 300);
+                Panel.SetZIndex(ellipse, 300);
+            }
+
+            foreach (RoomPlacement placement in Design.Room.RoomPlacements) {
+                if (placement.Type != FrameTypes.Door) continue;
+                (Position p1, Position p2) = placement.GetPoly().MinDistance(_route);
+                _routeLines.Add(new DistanceLine(p1, p2));
             }
 
             _routeLines.ForEach(l => l.Add(Editor));
@@ -592,7 +600,7 @@ namespace Designer.ViewModel {
             }
 
             //Voegd route toe aan de placements zodat deze ook gecontrolleerd wordt
-            List<ProductPlacement> toCheck = new List<ProductPlacement>(ProductPlacements);
+            List<ProductPlacement> toCheck = ProductPlacements.ToList();
             if (_route != null && _route.Count >= 2) toCheck.Add(_fakeRoute);
 
             //Gaat door alle producten heen behalve zichzelf en skip
@@ -655,7 +663,6 @@ namespace Designer.ViewModel {
                 //Tekend de route en alle corona lijnen
                 ProductPlacements.ForEach(p => CheckCorona(p));
                 RenderRoute();
-                //PlexiLines.ForEach(p => p.Add(Editor));
 
                 // Zet de schaal van de ruimte op basis van de dimensies, dit moet na het zetten van het design
                 SetRoomScale();
@@ -1099,8 +1106,14 @@ namespace Designer.ViewModel {
             int yOffset = product.Length / 2;
             int xOffset = product.Width / 2;
 
+            Models.Polygon p = product.GetPoly().Offset((int) point.X - xOffset, (int) point.Y - yOffset);
+
+            foreach (RoomPlacement placement in Design.Room.RoomPlacements) {
+                if (placement.GetPoly().DoesCollide(p)) return false;
+            }
+
             return Design.Room.GetPoly()
-                .Inside(product.GetPoly().Offset((int) point.X - xOffset, (int) point.Y - yOffset));
+                .Inside(p);
         }
 
         public bool CheckProductCollisions(ProductPlacement placement) {
