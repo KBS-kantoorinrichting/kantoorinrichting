@@ -39,7 +39,6 @@ namespace Designer.ViewModel {
         public BasicCommand Layout { get; set; }
         public BasicCommand ClearProducts { get; set; }
         public BasicCommand GenerateRoute { get; set; }
-        public BasicCommand GeneratePlexiline { get; set; }
         public BasicCommand RemoveRoute { get; set; }
         public BasicCommand Save { get; set; }
         public ArgumentCommand<MouseWheelEventArgs> CanvasMouseScrollCommand { get; set; }
@@ -126,7 +125,6 @@ namespace Designer.ViewModel {
             Plexiglass = new BasicCommand(StartPlexiglass);
             Layout = new BasicCommand(GenerateLayout);
             GenerateRoute = new BasicCommand(GenerateWalkRoute);
-            GeneratePlexiline = new BasicCommand(GeneratePlexi);
             RemoveRoute = new BasicCommand(DeleteRoute);
             ClearProducts = new BasicCommand(Clear);
             Save = new BasicCommand(() => DesignService.Instance.SaveChanges());
@@ -170,22 +168,9 @@ namespace Designer.ViewModel {
          */
         public void DeleteRoute() {
             _route = null;
-            
+
             RemoveCorona(_fakeRoute);
             RenderRoute();
-        }
-
-        public void GeneratePlexi() {
-            foreach (DistanceLine distanceLine in _lines.Values
-                .SelectMany(d => d.Values)
-                .Distinct()) {
-                Models.Line line = new Models.Line(distanceLine.P1, distanceLine.P2);
-                line = line.RightAngleLine();
-                if (line == null) continue;
-                PlexiLines.Add(new Models.Polygon(line.AsList()));
-            }
-            UpdateDbPlexiglass();
-            RenderPolyPlexi();
         }
 
         public void GenerateWalkRoute() {
@@ -501,14 +486,14 @@ namespace Designer.ViewModel {
                 //_plexiLine.Remove(Editor);
 
                 //Database conversie
-                UpdateDbPlexiglass();
+                updateDbPlexiglass();
 
                 PlexiEnabled = false;
                 RenderPolyPlexi();
             }
         }
 
-        public void UpdateDbPlexiglass() {
+        public void updateDbPlexiglass() {
             string plexiLinesString = (PlexiLines?.Count ?? 0) == 0 ? "" : PlexiLines
                 .Select(p => p.Convert())
                 .Aggregate((s1, s2) => $"{s1};{s2}");
@@ -756,11 +741,12 @@ namespace Designer.ViewModel {
                     if (index == -1) {
                         return;
                     }
-                    
-                    PlexiLines.RemoveAt(index);
-                    UpdateDbPlexiglass();
 
-                    RenderPolyPlexi();
+                    DistancePlexiLines[index].Remove(Editor);
+                    DistancePlexiLines.RemoveAt(index);
+                    PlexiLines.RemoveAt(index);
+                    updateDbPlexiglass();
+
                     //Editor.Children.Remove();
                 }
 
