@@ -144,7 +144,7 @@ namespace Designer.ViewModel {
         public void DeleteRoute() {
             _route = null;
 
-            RendeRoute();
+            RenderRoute();
         }
         
         public void GenerateWalkRoute() {
@@ -221,7 +221,7 @@ namespace Designer.ViewModel {
             }
 
             _route = new Models.Polygon(positions);
-            RendeRoute();
+            RenderRoute();
         }
 
         List<DistanceLine> _routeLines = new List<DistanceLine>();
@@ -230,7 +230,7 @@ namespace Designer.ViewModel {
         /**
          * Tekent de volledige route
          */
-        public void RendeRoute() {
+        public void RenderRoute() {
             //Verwijderd eerst de volledige lijn
             _routeLines.ForEach(l => l.Remove(Editor));
             _routeLines.Clear();
@@ -257,7 +257,13 @@ namespace Designer.ViewModel {
                 Editor.Children.Add(ellipse);
                 Canvas.SetLeft(ellipse, position.X - size / 2);
                 Canvas.SetTop(ellipse, position.Y - size / 2);
-                Canvas.SetZIndex(ellipse, 300);
+                Panel.SetZIndex(ellipse, 300);
+            }
+            
+            foreach (RoomPlacement placement in Design.Room.RoomPlacements) {
+                if (placement.Type != FrameTypes.Door) continue;
+                (Position p1, Position p2) = placement.GetPoly().MinDistance(_route);
+                _routeLines.Add(new DistanceLine(p1, p2));
             }
 
             _routeLines.ForEach(l => l.Add(Editor));
@@ -432,7 +438,7 @@ namespace Designer.ViewModel {
             List<Position> positions = new List<Position> {position};
             if (_route != null) positions.AddRange(_route);
             _route = new Models.Polygon(positions);
-            RendeRoute();
+            RenderRoute();
         }
 
         /**
@@ -556,7 +562,7 @@ namespace Designer.ViewModel {
 
                 //Tekend de route en alle corona lijnen
                 ProductPlacements.ForEach(p => CheckCorona(p));
-                RendeRoute();
+                RenderRoute();
 
                 // Zet de schaal van de ruimte op basis van de dimensies, dit moet na het zetten van het design
                 SetRoomScale();
@@ -620,7 +626,7 @@ namespace Designer.ViewModel {
                     List<Position> positions = _route.ToList();
                     positions.RemoveAt(pos);
                     _route = new Models.Polygon(positions);
-                    RendeRoute();
+                    RenderRoute();
 
                     return;
                 }
@@ -702,7 +708,7 @@ namespace Designer.ViewModel {
                 List<Position> positions = _route.ToList();
                 positions[pos] = position;
                 _route = new Models.Polygon(positions);
-                RendeRoute();
+                RenderRoute();
                 return;
             }
 
@@ -975,8 +981,14 @@ namespace Designer.ViewModel {
             int yOffset = product.Length / 2;
             int xOffset = product.Width / 2;
 
+            Models.Polygon p = product.GetPoly().Offset((int) point.X - xOffset, (int) point.Y - yOffset);
+            
+            foreach (RoomPlacement placement in Design.Room.RoomPlacements) {
+                if (placement.GetPoly().DoesCollide(p)) return false;
+            }
+            
             return Design.Room.GetPoly()
-                .Inside(product.GetPoly().Offset((int) point.X - xOffset, (int) point.Y - yOffset));
+                .Inside(p);
         }
 
         public bool CheckProductCollisions(ProductPlacement placement) {
