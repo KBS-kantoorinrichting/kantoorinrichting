@@ -36,7 +36,7 @@ namespace Models.Utils {
 
             if (best1.p1 == null) return best2;
             if (best2.p1 == null) return best1;
-            
+
             //Returned de beste variant
             return best1.p1.Distance(best1.p2) > best2.p1.Distance(best2.p2) ? best2 : best1;
         }
@@ -88,7 +88,7 @@ namespace Models.Utils {
         public static bool DoesCollide(this Polygon poly1, Polygon poly2) {
             return poly1.DoesOutsideCollide(poly2) || poly1.InsideNoOutside(poly2) || poly2.InsideNoOutside(poly1);
         }
-        
+
         private static bool DoesOutsideCollide(this Polygon poly1, Polygon poly2) {
             foreach (Line line1 in poly1.GetLines())
             foreach (Line line2 in poly2.GetLines()) {
@@ -243,7 +243,7 @@ namespace Models.Utils {
                 // (a1 - a2)x = b2 - b1
                 // x = (b2 - b1) / (a1 - a2)
                 double x = (b2 - b1) / (a1 - a2);
-                
+
                 //Vult de x in bij de eerste formule om y te berekenen
                 double y = x * a1 + b1;
 
@@ -267,7 +267,7 @@ namespace Models.Utils {
                 // (a1 - a2)y = b2 - b1
                 // y = (b2 - b1) / (a1 - a2)
                 double y = (b2 - b1) / (a1 - a2);
-                
+
                 //Vult de y in bij de eerste formule om x te berekenen
                 double x = y * a1 + b1;
 
@@ -293,6 +293,48 @@ namespace Models.Utils {
             //Alle andere mogelijkheden zouden geen snijpunt hebben
             //bijv: een lijn die uit 2x het zelfde coordinaat bestaat
             return null;
+        }
+
+        /**
+         * Berekend de haakse lijn op een lijn met een bepaalde afstand vanaf het midden
+         */
+        public static Line RightAngleLine(this Line line, int dis = 50) {
+            if (line.P1 == null || line.P2 == null) return null;
+            (double a, double b)? f = line.AsFormulaX();
+            bool x = f.HasValue;
+            if (!x) f = line.AsFormulaY();
+            if (!f.HasValue) return null;
+
+            (double a, double b) = f.Value;
+            (int cX, int cY) = line.Center.AsTuple;
+            
+            Position p1, p2;
+            
+            switch (x) {
+                //Als de lijn horizontaal is
+                case true when a == 0:
+                    p1 = new Position(cX, (int) b - dis);
+                    p2 = new Position(cX, (int) b + dis);
+                    break;
+                //Als de lijn verticaal is
+                case false:
+                    p1 = new Position((int) b - dis, cY);
+                    p2 = new Position((int) b + dis, cY);
+                    break;
+                //Als de lijn niet recht is
+                default: 
+                    a = -1 / a;
+                    b = cY - cX * a;
+                
+                    double d = Math.Sqrt(1 + a * a);
+                    double dx =  (dis / d);
+                
+                    p1 = new Position((int) (cX - dx), (int) ((cX - dx) * a + b));
+                    p2 = new Position((int) (cX + dx), (int) ((cX + dx) * a + b));
+                    break;
+            }
+            
+            return new Line(p1, p2);
         }
     }
 }
