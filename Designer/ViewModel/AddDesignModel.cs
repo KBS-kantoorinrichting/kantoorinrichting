@@ -51,7 +51,7 @@ namespace Designer.ViewModel {
                 return;
             }
 
-            Design design = CreateDesign(Name, Selected);
+            Design design = CreateDesign(Name, Selected, null);
             SaveDesign(design);
             DesignAdded?.Invoke(this, new BasicEventArgs<Design>(design));
         }
@@ -71,8 +71,8 @@ namespace Designer.ViewModel {
             return RoomService.Instance.GetAll();
         }
 
-        public static Design CreateDesign(string name, Room room) {
-            return new Design(name, room, new List<ProductPlacement>());
+        public static Design CreateDesign(string name, Room room, string plexiglass) {
+            return new Design(name, room, new List<ProductPlacement>(), plexiglass);
         }
 
         public static Design SaveDesign(Design design) {
