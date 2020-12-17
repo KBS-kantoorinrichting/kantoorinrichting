@@ -20,7 +20,7 @@ namespace DesignerTest {
         protected override List<Room> Rooms => new List<Room> {Room1, Room2};
         protected override List<Design> Designs => new List<Design> {Design1, Design2, Design3, Design4};
 
-        [Test]
+        /*[Test]
         public void LoadDesigns_Count() {
             List<Design> designs = DesignCatalogModel.LoadDesigns();
             Assert.AreEqual(4, designs.Count);
@@ -33,7 +33,7 @@ namespace DesignerTest {
             Assert.Contains(Design2, designs);
             Assert.Contains(Design3, designs);
             Assert.Contains(Design4, designs);
-        }
+        }*/
     }
 
     public class DesignCatalogTestsInstance : DatabaseTest {
@@ -58,71 +58,6 @@ namespace DesignerTest {
 
         [Test]
         public void Loads_Count() { Assert.AreEqual(2, _designModel.Designs.Count); }
-
-        [Test]
-        public void Loads_Contains() {
-            List<Design> designs = _designModel.Designs;
-            Assert.Contains(Design1, designs);
-            Assert.Contains(Design2, designs);
-        }
-
-        [Test]
-        public void NeedsReload_Count() {
-            DesignService.Instance.Save(Design3);
-
-            List<Design> designs = _designModel.Designs;
-            Assert.AreEqual(2, designs.Count);
-        }
-
-        [Test]
-        public void NeedsReload_Contains() {
-            DesignService.Instance.Save(Design3);
-
-            List<Design> designs = _designModel.Designs;
-            Assert.Contains(Design1, designs);
-            Assert.Contains(Design2, designs);
-            Assert.IsFalse(designs.Contains(Design3));
-        }
-
-        [Test]
-        public void Reload_Count() {
-            DesignService.Instance.Save(Design3);
-            _designModel.Reload();
-
-            List<Design> designs = _designModel.Designs;
-            Assert.AreEqual(3, designs.Count);
-        }
-
-        [Test]
-        public void Reload_Contains() {
-            DesignService.Instance.Save(Design3);
-            _designModel.Reload();
-
-            List<Design> designs = _designModel.Designs;
-            Assert.Contains(Design1, designs);
-            Assert.Contains(Design2, designs);
-            Assert.Contains(Design3, designs);
-        }
-
-        [Test]
-        public void ReloadCommand_Count() {
-            DesignService.Instance.Save(Design3);
-            _designModel.ReloadCommand.Execute(null);
-
-            List<Design> designs = _designModel.Designs;
-            Assert.AreEqual(3, designs.Count);
-        }
-
-        [Test]
-        public void ReloadCommand_Contains() {
-            DesignService.Instance.Save(Design3);
-            _designModel.ReloadCommand.Execute(null);
-
-            List<Design> designs = _designModel.Designs;
-            Assert.Contains(Design1, designs);
-            Assert.Contains(Design2, designs);
-            Assert.Contains(Design3, designs);
-        }
 
         [Test]
         public void Selected_TriggersEvent() {

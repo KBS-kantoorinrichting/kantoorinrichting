@@ -5,9 +5,10 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:local="clr-namespace:Designer.View.Components"
              xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+             xmlns:utils="clr-namespace:Designer.Utils"
              mc:Ignorable="d"
              d:DesignHeight="440" d:DesignWidth="420">
-      <Grid Width="440" MaxWidth="440">
+    <Grid Width="440" MaxWidth="440">
         <Grid.RowDefinitions>
             <RowDefinition
                 Height="Auto" />
@@ -30,9 +31,19 @@
                 Naam
             </TextBlock>
             <TextBox
-                Text="{Binding EnteredName}"
                 Margin="10 0 10 0"
-                VerticalAlignment="Bottom" />
+                VerticalAlignment="Bottom">
+                <TextBox.Text>
+                    <Binding
+                        Path="EnteredName"
+                        UpdateSourceTrigger="PropertyChanged">
+                        <Binding.ValidationRules>
+                            <utils:StringNotEmpty
+                                ValidatesOnTargetUpdated="True" ObjectName="ontwerp" FieldName="naam"/>
+                        </Binding.ValidationRules>
+                    </Binding>
+                </TextBox.Text>
+            </TextBox>
             <TextBlock
                 Style="{StaticResource MaterialDesignSubtitle2TextBlock}"
                 Margin="10 0 0 0">
@@ -47,8 +58,19 @@
                 ItemsSource="{Binding Rooms}"
                 DisplayMemberPath="Name"
                 SelectedValue="{Binding SelectedRoom}"
-                Margin="10 0 10 0"
-            />
+                Margin="10 0 10 0">
+                <ComboBox.Text>
+                    <Binding
+                        Path="SelectedRoom"
+                        Mode="TwoWay"
+                        UpdateSourceTrigger="PropertyChanged">
+                        <Binding.ValidationRules>
+                            <utils:ObjectNotNull
+                                ValidatesOnTargetUpdated="True" ObjectName="ontwerp" FieldName="ruimte"/>
+                        </Binding.ValidationRules>
+                    </Binding> 
+                </ComboBox.Text>
+            </ComboBox>
         </StackPanel>
         <StackPanel
             Grid.Row="1"

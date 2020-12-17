@@ -44,7 +44,7 @@ namespace Designer.Utils
             var scaleY = 150.00 / maxY;
             double scale = scaleX < scaleY ? scaleX : scaleY;
             canvas.RenderTransform = new ScaleTransform(scale, scale);
-
+            canvas.HorizontalAlignment = HorizontalAlignment.Center; 
             return canvas;
         }
 

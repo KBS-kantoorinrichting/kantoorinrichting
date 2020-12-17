@@ -7,8 +7,7 @@
              xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
              mc:Ignorable="d" 
              d:DesignHeight="290" d:DesignWidth="280">
-    <materialDesign:Card
-        Background="#673AB7">
+    <materialDesign:Card>
         <Grid Height="290" Width="280" Margin="0,0,0,0">
             <Grid.RowDefinitions>
                 <RowDefinition Height="160" />
@@ -18,26 +17,23 @@
             <materialDesign:ColorZone
                 Mode="Light"
                 VerticalAlignment="Stretch"
-                BorderBrush="#673AB7"
                 BorderThickness="5">
                 <Canvas Margin="0" MaxHeight="160">
                     <ContentPresenter HorizontalAlignment="Center" Content="{Binding Path=Value}"></ContentPresenter>
                 </Canvas>
             </materialDesign:ColorZone>
             <StackPanel Grid.Row="1" Orientation="Vertical">
-                <TextBlock Style="{StaticResource MaterialDesignHeadline6TextBlock}" 
-                           Foreground="White"
+                <TextBlock FontSize="20" 
                            Text="{Binding Key.Name}"
                            Margin="10 0 0 0"/>
-                <TextBlock Style="{StaticResource MaterialDesignSubtitle2TextBlock}" 
-                           Foreground="White"
+                <TextBlock FontSize="15"
                            Text="{Binding Key.Room.Name}"
                            Margin="10 0 0 0"/>
             </StackPanel>
                 <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Stretch" Width="250" Margin="0 0 0 10">
                     <Button
                         HorizontalAlignment="Left"
-                        Style="{StaticResource MaterialDesignRaisedAccentButton}"
+                        Style="{StaticResource MaterialDesignRaisedButton}"
                         Command="{Binding ElementName=viewModel, Path=EditCommand}"
                         CommandParameter="{Binding Key}"
                         Margin="30 4 6 0"
