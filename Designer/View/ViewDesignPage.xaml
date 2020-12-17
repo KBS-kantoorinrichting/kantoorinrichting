@@ -202,8 +202,9 @@
                                       IsChecked="{Binding PlexiEnabled, Mode=TwoWay}" />
                         <ToggleButton Content="Loop route" VerticalAlignment="Top" IsChecked="{Binding RouteEnabled, Mode=TwoWay}"/>
                         <Button Content="Verwijder loop route" VerticalAlignment="Top" Command="{Binding RemoveRoute}" />
-                        <Button Content="Genereer loop route" VerticalAlignment="Top" Command="{Binding GenerateRoute}" />
+                        <Button Content="Genereer loop route" VerticalAlignment="Top" Command="{Binding GeneratePlexiline}" />
                         <Button Content="Genereer design" VerticalAlignment="Top" Command="{Binding Layout}" />
+                        <Button Content="Genereer plexiglas" VerticalAlignment="Top" Command="{Binding GeneratePlexiline}" />
                         <Button Content="Verwijder alles" VerticalAlignment="Top" Command="{Binding ClearProducts}" />
                         <Label Content="Anderhalve meter score" />
                         <ProgressBar Height="20" Value="{Binding DistanceScore, Mode=OneWay}" />
