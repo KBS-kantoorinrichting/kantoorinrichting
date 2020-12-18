@@ -69,29 +69,12 @@ namespace Designer.ViewModel
                     .ToList();
 
                 // telt lijnen
-                int m = distanceLines.Count;
-                if (m != 0)
-                {
-                    double count = distanceLines.Count(l => !l.Shows);
-                    m = (int)(count / distanceLines.Count * 100);
-                    if (m != 100)
-                    {
-                        // rood
-                        DistanceColour = (SolidColorBrush)(new BrushConverter().ConvertFrom("#d00037"));
-                        OnPropertyChanged("DistanceColour");
-                        return m;
-                    }
-                    RouteColour = (SolidColorBrush)(new BrushConverter().ConvertFrom("#00D092"));
-                    OnPropertyChanged("DistanceColour");
-                }
-                else
-                {
-                    m = 100;
-                    // groen
-                    DistanceColour = (SolidColorBrush)(new BrushConverter().ConvertFrom("#00D092"));
-                    OnPropertyChanged("DistanceColour");
-                }
+                double count = distanceLines.Count(l => !l.Shows);
+                int m = distanceLines.Count == 0 ? 100 : (int)(count / distanceLines.Count * 100);
 
+                //                                                                             Groen       Rood
+                DistanceColour = (SolidColorBrush) new BrushConverter().ConvertFrom(m > 99 ? "#00D092" : "#d00037");
+                OnPropertyChanged("DistanceColour");
                 
                 return m;
             }
@@ -107,31 +90,15 @@ namespace Designer.ViewModel
                     .SelectMany(v => v.Values)
                     .Distinct()
                     .ToList();
-                
+
                 // telt lijnen
-                int m = distanceLines.Count;
-                if (m != 0)
-                {
-                    double count = distanceLines.Count(l => !l.Shows);
-                     m = (int)(count / distanceLines.Count * 100);
-                    if ( m != 100)
-                    {
-                        // rood
-                        RouteColour = (SolidColorBrush)(new BrushConverter().ConvertFrom("#d00037"));
-                        OnPropertyChanged("RouteColour");
-                        return m;
-                    }
-                    RouteColour = (SolidColorBrush)(new BrushConverter().ConvertFrom("#00D092"));
-                    OnPropertyChanged("RouteColour");
-                } else
-                {
-                    m = 100;
-                    // groen
-                    RouteColour = (SolidColorBrush)(new BrushConverter().ConvertFrom("#00D092"));
-                    OnPropertyChanged("RouteColour");
-                }
+                double count = distanceLines.Count(l => !l.Shows);
+                int m = distanceLines.Count == 0 ? 100 : (int)(count / distanceLines.Count * 100);
 
-
+                //                                                                            Groen       Rood
+                RouteColour = (SolidColorBrush) new BrushConverter().ConvertFrom(m == 100 ? "#00D092" : "#d00037");
+                OnPropertyChanged("RouteColour");
+                
                 return m;
             }
         }
@@ -165,35 +132,13 @@ namespace Designer.ViewModel
                 // convert negatief getal naar positief
                 if (cm2 < 0) { cm2 = cm2 * -1; }
                 int m = (int)(cm2 / 10000);
-                m = 100 - (m - (int)RoomPlacements.Count);
-                //m = ((m * 130) / 100);
-                if (m > 100)
-                {
-                    //groen
-                    VentilationColour = (SolidColorBrush)(new BrushConverter().ConvertFrom("#00D092"));
-                    OnPropertyChanged("VentilationColour");
-                    return 100;
-                }
-                else if (m < 0)
-                {
-                    // rood
-                    VentilationColour = (SolidColorBrush)(new BrushConverter().ConvertFrom("#d00037"));
-                    OnPropertyChanged("VentilationColour");
-                    return 0;
-                } else if (m > 55)
-                {
-                    // maakt groen
-                    VentilationColour = (SolidColorBrush)(new BrushConverter().ConvertFrom("#00D092"));
-                    OnPropertyChanged("VentilationColour");
-                    return m;
-                }
-                else
-                {
-                    // maakt rood
-                    VentilationColour = (SolidColorBrush)(new BrushConverter().ConvertFrom("#d00037"));
-                    OnPropertyChanged("VentilationColour");
-                    return m;
-                }
+                m = 100 - (m - RoomPlacements.Count);
+                
+                //                                                                                Groen       Rood
+                VentilationColour = (SolidColorBrush) new BrushConverter().ConvertFrom(m > 55 ? "#00D092" : "#d00037");
+                OnPropertyChanged("VentilationColour");
+                
+                return m;
             }
         }
 
