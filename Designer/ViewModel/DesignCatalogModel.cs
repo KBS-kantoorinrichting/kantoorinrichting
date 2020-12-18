@@ -61,7 +61,6 @@ namespace Designer.ViewModel {
 
         public DesignCatalogModel() {
             Navigator = Navigator.Instance;
-            LoadDesigns();
             Rooms = LoadRooms();
             EditCommand = new ArgumentCommand<Design>(design =>
             {
@@ -79,6 +78,7 @@ namespace Designer.ViewModel {
             //Om te voorkomen dat unit tests falen
             if (Thread.CurrentThread.GetApartmentState() == ApartmentState.STA)
             {
+                RenderDesigns();
                 MessageQueue = new SnackbarMessageQueue(); 
             }
         }
