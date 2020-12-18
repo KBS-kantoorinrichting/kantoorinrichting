@@ -106,7 +106,7 @@
 
                         </ToolBar>
                     </ToolBarTray>
-                    <Canvas Grid.Column="1" Name="Editor" AllowDrop="True" Background="Transparent"
+                    <Canvas Grid.Column="1" Name="Editor" AllowDrop="True" 
                             HorizontalAlignment="Stretch"
                             VerticalAlignment="Stretch"
                             Margin="10" Panel.ZIndex="-1">
@@ -159,6 +159,7 @@
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="200" />
+                    <RowDefinition Height="600" />
                     <RowDefinition Height="*" />
                 </Grid.RowDefinitions>
                 <materialDesign:Card Grid.Row="0">
@@ -342,6 +343,171 @@
                         </ScrollViewer>
                     </Grid>
                 </materialDesign:Card>
+                
+                <materialDesign:Card Grid.Row="2" Margin="0,10,0,0 ">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="70" />
+                            <RowDefinition Height="*" />
+                            <RowDefinition Height="70" />
+                        </Grid.RowDefinitions>
+                        <materialDesign:ColorZone
+                            Grid.Row="0"
+                            Mode="PrimaryDark"
+                            Background="#673AB7"
+                            Padding="18"
+                            materialDesign:ShadowAssist.ShadowDepth="Depth3"
+                            ClipToBounds="False">
+                            <Label HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="White"
+                                   FontSize="17"
+                                   FontFamily="Roboto"
+                                   FontWeight="Bold"
+                                   Content="Financiën" />
+                        </materialDesign:ColorZone>
+                        <ScrollViewer
+                            ScrollViewer.VerticalScrollBarVisibility="Hidden"
+
+                            Grid.Row="1">
+                            <ItemsControl
+                                x:Name="ProductOverview"
+                                ItemsSource="{Binding ProductOverview}" Width="300">
+
+                                <ItemsControl.ItemsPanel>
+                                    <ItemsPanelTemplate>
+                                        <WrapPanel />
+                                    </ItemsPanelTemplate>
+                                </ItemsControl.ItemsPanel>
+
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate DataType="model:Product">
+                                        <Border
+                                            Margin="0">
+                                            <behaviors:Interaction.Triggers>
+                                                <behaviors:EventTrigger EventName="MouseDown">
+                                                    <behaviors:InvokeCommandAction
+                                                        Command="{ Binding ElementName=viewModel, Path=CatalogusMouseDownCommand}"
+                                                        PassEventArgsToCommand="True" />
+                                                </behaviors:EventTrigger>
+                                            </behaviors:Interaction.Triggers>
+                                            <StackPanel Margin="0,5,0,0">
+
+                                                <StackPanel Orientation="Horizontal">
+
+
+                                                    <Image Height="70" Width="70"
+                                                           Source="{Binding Path=Key.Photo, Converter={StaticResource ImagePathConverter}}" />
+                                                    <StackPanel Margin="10,0,0,0" Width="180">
+
+                                                        <TextBlock
+                                                            Text="{Binding Key.Name}"
+                                                            HorizontalAlignment="Left"
+                                                            VerticalAlignment="Top"
+                                                            FontFamily="Roboto"
+                                                            FontSize="17"
+                                                            TextWrapping="Wrap"
+                                                            FontWeight="Bold" />
+
+
+                                                        <StackPanel Orientation="Horizontal">
+                                                            <TextBlock
+                                                                Text="{Binding Key.Length}"
+                                                                Foreground="#B8B8B8"
+                                                                HorizontalAlignment="Left"
+                                                                VerticalAlignment="Top"
+                                                                FontFamily="Roboto"
+                                                                FontSize="13"
+                                                                TextWrapping="Wrap"
+                                                                FontWeight="Bold" />
+                                                            <TextBlock
+                                                                Text="/"
+                                                                Foreground="#B8B8B8"
+                                                                HorizontalAlignment="Left"
+                                                                VerticalAlignment="Top"
+                                                                FontFamily="Roboto"
+                                                                FontSize="13"
+                                                                TextWrapping="Wrap"
+                                                                FontWeight="Bold" />
+                                                            <TextBlock
+                                                                Text="{Binding Key.Width}"
+                                                                Foreground="#B8B8B8"
+                                                                HorizontalAlignment="Left"
+                                                                VerticalAlignment="Top"
+                                                                FontFamily="Roboto"
+                                                                FontSize="13"
+                                                                TextWrapping="Wrap"
+                                                                FontWeight="Bold" />
+                                                        </StackPanel>
+
+                                                        <TextBlock
+                                                            VerticalAlignment="Top"
+                                                            FontFamily="Roboto"
+                                                            FontSize="13"
+                                                            TextWrapping="Wrap"
+                                                            TextAlignment="Left"
+                                                            FontWeight="Bold"
+                                                            HorizontalAlignment="Left">
+                                                            <TextBlock.Text>
+                                                                <MultiBinding StringFormat="(€{0} x {1})">
+                                                                    <Binding Path="Key.Price" />
+                                                                    <Binding Path="Value.Total" />
+                                                                </MultiBinding>
+                                                            </TextBlock.Text>
+                                                        </TextBlock>
+
+                                                        <TextBlock
+                                                            Text="Heeft zitplek"
+                                                            Visibility="{Binding Key.HasPerson , Converter={StaticResource BooleanToVisibilityConverter}}"
+                                                            Foreground="#B8B8B8"
+                                                            HorizontalAlignment="Left"
+                                                            VerticalAlignment="Top"
+                                                            FontFamily="Roboto"
+                                                            FontSize="13"
+                                                            TextWrapping="Wrap"
+                                                            FontWeight="Bold">
+                                                        </TextBlock>
+
+
+                                                    </StackPanel>
+
+                                                    <TextBlock
+                                                        Text="{Binding Key.Id}"
+                                                        Foreground="#B8B8B8"
+                                                        HorizontalAlignment="Left"
+                                                        VerticalAlignment="Top"
+                                                        FontFamily="Roboto"
+                                                        FontSize="17"
+                                                        TextWrapping="Wrap"
+                                                        FontWeight="Bold" />
+                                                </StackPanel>
+
+                                                <Separator
+                                                    Margin="80,0,0,0"
+                                                    HorizontalAlignment="Stretch" Width="300"
+                                                    Background="#B8B8B8">
+                                                    
+                                                </Separator>
+                                                
+                                            </StackPanel>
+
+
+                                        </Border>
+                                        
+
+
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </ScrollViewer>
+                        <StackPanel Grid.Row="2">
+                            <TextBlock Text="{Binding TotalPrice, StringFormat='Totaal: €{0}'}" VerticalAlignment="Center"  HorizontalAlignment="Center" FontFamily="Roboto" FontSize="13" FontWeight="Bold"/>
+                            <Button Content="Bestellen" HorizontalAlignment="Center" VerticalAlignment="Bottom" Width="234" FontFamily="Roboto" FontSize="13" FontWeight="Bold" />
+                        </StackPanel>
+                       
+                    </Grid>
+                    
+                </materialDesign:Card>
+                
+                
 
             </Grid>
 
