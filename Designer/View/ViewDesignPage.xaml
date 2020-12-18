@@ -65,30 +65,35 @@
                             </ToggleButton>
                             <Separator HorizontalAlignment="Right" />
 
-                            <Button Background="#00D092" VerticalAlignment="Center" HorizontalAlignment="Right"
+                            <Button Content="Genereren looproute"
+                                    Style="{StaticResource MaterialDesignFlatButton}"
+                                    Background="#00D092" VerticalAlignment="Center" HorizontalAlignment="Right"
+                                    materialDesign:ButtonAssist.CornerRadius="7"
                                     Foreground="White"
-                                    Style="{StaticResource MaterialDesignFlatAccentBgButton}"
+
                                     Command="{Binding GenerateRoute}">
-                                Genereren looproute
                             </Button>
                             <Separator />
-                            <Button Background="#00D092" VerticalAlignment="Center" HorizontalAlignment="Right"
+                            <Button Content="Genereren layout" Background="#00D092" VerticalAlignment="Center"
+                                    HorizontalAlignment="Right"
+                                    materialDesign:ButtonAssist.CornerRadius="7"
                                     Foreground="White"
-                                    Style="{StaticResource MaterialDesignFlatAccentBgButton}"
+                                    Style="{StaticResource MaterialDesignFlatButton}"
                                     Command="{Binding Layout}">
-                                Genereren layout
                             </Button>
 
                             <Separator />
                             <Button Content="Verwijder loop route" Command="{Binding RemoveRoute}"
-                                    Background="#00D092" VerticalAlignment="Center"
+                                    materialDesign:ButtonAssist.CornerRadius="7"
+                                    Background="#d00037" VerticalAlignment="Center"
                                     Foreground="White"
-                                    Style="{StaticResource MaterialDesignFlatAccentBgButton}" />
+                                    Style="{StaticResource MaterialDesignFlatButton}" />
                             <Separator />
                             <Button Content="Verwijder meubels" Command="{Binding ClearProducts}"
-                                    Background="#00D092" VerticalAlignment="Center"
+                                    materialDesign:ButtonAssist.CornerRadius="7"
+                                    Background="#d00037" VerticalAlignment="Center"
                                     Foreground="White"
-                                    Style="{StaticResource MaterialDesignFlatAccentBgButton}" />
+                                    Style="{StaticResource MaterialDesignFlatButton}" />
 
                         </ToolBar>
                     </ToolBarTray>
@@ -125,13 +130,14 @@
             </materialDesign:Card>
             <Button
                 Grid.Column="0"
-                Style="{StaticResource MaterialDesignFloatingActionAccentButton}"
+                Style="{StaticResource MaterialDesignIconButton}"
                 HorizontalAlignment="Right"
                 VerticalAlignment="Bottom"
+                Background="#00D092"
                 Margin="0,0,20,20"
                 Command="{Binding Save}">
                 <materialDesign:PackIcon
-                    Background="#00D092"
+
                     Foreground="White"
                     Kind="Floppy"
                     Height="24"
@@ -155,20 +161,23 @@
                             materialDesign:ShadowAssist.ShadowDepth="Depth3"
                             ClipToBounds="False">
                             <Label HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="White"
+                                   FontSize="17"
+                                   FontFamily="Roboto"
+                                   FontWeight="Bold"
                                    Content="Corona" />
 
                         </materialDesign:ColorZone>
-                        <Label Content="Anderhalve meter score" />
+                        <Label Content="Anderhalve meter score" FontFamily="Roboto" FontWeight="Bold" Margin="0,10,0,0"/>
                         <ProgressBar Height="20" Value="{Binding DistanceScore, Mode=OneWay }" Background="White"
                                      Foreground="#673AB7" />
                         <TextBlock Margin="0,-18,0,0" HorizontalAlignment="Center"
                                    Text="{Binding DistanceScore, StringFormat={}{0} %}" />
-                        <Label Content="Ventilatie score" />
+                        <Label Content="Ventilatie score" FontFamily="Roboto" FontWeight="Bold" />
                         <ProgressBar Height="20" Value="{Binding VentilationScore, Mode=OneWay}" Background="White"
                                      Foreground="#673AB7" />
                         <TextBlock Margin="0,-18,0,0" HorizontalAlignment="Center"
                                    Text="{Binding VentilationScore, StringFormat={}{0} %}" />
-                        <Label Content="Looproute score" />
+                        <Label Content="Looproute score" FontFamily="Roboto" FontWeight="Bold" />
                         <ProgressBar Height="20" Value="{Binding RouteScore, Mode=OneWay}" Background="White"
                                      Foreground="#673AB7" />
                         <TextBlock Margin="0,-18,0,0" HorizontalAlignment="Center"
@@ -191,14 +200,17 @@
                             materialDesign:ShadowAssist.ShadowDepth="Depth3"
                             ClipToBounds="False">
                             <Label HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="White"
+                                   FontSize="17"
+                                   FontFamily="Roboto"
+                                   FontWeight="Bold"
                                    Content="Producten" />
                         </materialDesign:ColorZone>
                         <ScrollViewer
+                            ScrollViewer.VerticalScrollBarVisibility="Hidden"
+
                             Grid.Row="1">
                             <ItemsControl
-                                x:Name="CatalogusList"
-                                ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-                                ItemsSource="{Binding Products}" Width="237">
+                                ItemsSource="{Binding Products}" Width="300">
 
                                 <ItemsControl.ItemsPanel>
                                     <ItemsPanelTemplate>
@@ -209,23 +221,23 @@
                                 <ItemsControl.ItemTemplate>
                                     <DataTemplate DataType="model:Product">
                                         <Border
-                                            Margin="2">
-                                        <behaviors:Interaction.Triggers>
+                                            Margin="0">
+                                            <behaviors:Interaction.Triggers>
                                                 <behaviors:EventTrigger EventName="MouseDown">
                                                     <behaviors:InvokeCommandAction
                                                         Command="{ Binding ElementName=viewModel, Path=CatalogusMouseDownCommand}"
                                                         PassEventArgsToCommand="True" />
                                                 </behaviors:EventTrigger>
                                             </behaviors:Interaction.Triggers>
-                                            <StackPanel>
-                                                <Grid HorizontalAlignment="Left">
-                                                    <StackPanel Orientation="Horizontal">
-                                                        
-                                                        <Image Height="80" Width="80"
-                                                               Source="{Binding Path=Photo, Converter={StaticResource ImagePathConverter}}" />
-                                                        <StackPanel Margin="10,0,0,0">
-                                                            
-                                                        
+                                            <StackPanel Margin="0,5,0,0">
+
+                                                <StackPanel Orientation="Horizontal">
+
+
+                                                    <Image Height="70" Width="70"
+                                                           Source="{Binding Path=Photo, Converter={StaticResource ImagePathConverter}}" />
+                                                    <StackPanel Margin="10,0,0,0" Width="180">
+
                                                         <TextBlock
                                                             Text="{Binding Name}"
                                                             HorizontalAlignment="Left"
@@ -233,7 +245,9 @@
                                                             FontFamily="Roboto"
                                                             FontSize="17"
                                                             TextWrapping="Wrap"
-                                                            FontWeight="Bold"/>
+                                                            FontWeight="Bold" />
+
+
                                                         <StackPanel Orientation="Horizontal">
                                                             <TextBlock
                                                                 Text="{Binding Length}"
@@ -241,38 +255,38 @@
                                                                 HorizontalAlignment="Left"
                                                                 VerticalAlignment="Top"
                                                                 FontFamily="Roboto"
-                                                                FontSize="12"
+                                                                FontSize="13"
                                                                 TextWrapping="Wrap"
-                                                                FontWeight="Bold"/>
+                                                                FontWeight="Bold" />
                                                             <TextBlock
                                                                 Text="/"
                                                                 Foreground="#B8B8B8"
                                                                 HorizontalAlignment="Left"
                                                                 VerticalAlignment="Top"
                                                                 FontFamily="Roboto"
-                                                                FontSize="12"
+                                                                FontSize="13"
                                                                 TextWrapping="Wrap"
-                                                                FontWeight="Bold"/>
+                                                                FontWeight="Bold" />
                                                             <TextBlock
                                                                 Text="{Binding Width}"
                                                                 Foreground="#B8B8B8"
                                                                 HorizontalAlignment="Left"
                                                                 VerticalAlignment="Top"
                                                                 FontFamily="Roboto"
-                                                                FontSize="12"
+                                                                FontSize="13"
                                                                 TextWrapping="Wrap"
-                                                                FontWeight="Bold"/>
+                                                                FontWeight="Bold" />
                                                         </StackPanel>
-                                                       
+
                                                         <TextBlock
                                                             Text="{Binding Price}"
                                                             Foreground="#B8B8B8"
                                                             HorizontalAlignment="Left"
                                                             VerticalAlignment="Top"
                                                             FontFamily="Roboto"
-                                                            FontSize="12"
+                                                            FontSize="13"
                                                             TextWrapping="Wrap"
-                                                            FontWeight="Bold"/>
+                                                            FontWeight="Bold" />
 
                                                         <TextBlock
                                                             Text="Heeft zitplek"
@@ -281,21 +295,37 @@
                                                             HorizontalAlignment="Left"
                                                             VerticalAlignment="Top"
                                                             FontFamily="Roboto"
-                                                            FontSize="12"
+                                                            FontSize="13"
                                                             TextWrapping="Wrap"
                                                             FontWeight="Bold">
                                                         </TextBlock>
-                                                        </StackPanel>
-                                                        
+
+
                                                     </StackPanel>
-                                                    <!--<Line>
-                                                        <Border Background="Black" BorderThickness="1" Width="400"/> 
-                                                    </Line>-->
-                                                    
-                                                </Grid>
-                                                
+
+                                                    <TextBlock
+                                                        Text="{Binding Id}"
+                                                        Foreground="#B8B8B8"
+                                                        HorizontalAlignment="Left"
+                                                        VerticalAlignment="Top"
+                                                        FontFamily="Roboto"
+                                                        FontSize="17"
+                                                        TextWrapping="Wrap"
+                                                        FontWeight="Bold" />
+                                                </StackPanel>
+
+                                                <Separator
+                                                    Margin="80,0,0,0"
+                                                    HorizontalAlignment="Stretch" Width="300"
+                                                    Background="#B8B8B8">
+
+                                                </Separator>
                                             </StackPanel>
+
+
                                         </Border>
+
+
                                     </DataTemplate>
                                 </ItemsControl.ItemTemplate>
                             </ItemsControl>
