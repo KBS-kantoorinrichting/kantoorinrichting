@@ -1,0 +1,92 @@
+﻿<UserControl x:Class="Designer.View.Components.AddDesignPopup"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:local="clr-namespace:Designer.View.Components"
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+             xmlns:utils="clr-namespace:Designer.Utils"
+             mc:Ignorable="d"
+             d:DesignHeight="440" d:DesignWidth="420">
+    <Grid Width="440" MaxWidth="440">
+        <Grid.RowDefinitions>
+            <RowDefinition
+                Height="Auto" />
+            <RowDefinition
+                Height="Auto" />
+        </Grid.RowDefinitions>
+        <StackPanel Grid.Row="0">
+            <materialDesign:ColorZone
+                Mode="PrimaryMid"
+                VerticalAlignment="Stretch">
+                <TextBlock
+                    Margin="10,10,0,10"
+                    Style="{StaticResource MaterialDesignHeadline5TextBlock}">
+                    Nieuw ontwerp toevoegen
+                </TextBlock>
+            </materialDesign:ColorZone>
+            <TextBlock
+                Style="{StaticResource MaterialDesignSubtitle2TextBlock}"
+                Margin="10 0 0 0">
+                Naam
+            </TextBlock>
+            <TextBox
+                Margin="10 0 10 0"
+                VerticalAlignment="Bottom">
+                <TextBox.Text>
+                    <Binding
+                        Path="EnteredName"
+                        UpdateSourceTrigger="PropertyChanged">
+                        <Binding.ValidationRules>
+                            <utils:StringNotEmpty
+                                ValidatesOnTargetUpdated="True" ObjectName="ontwerp" FieldName="naam"/>
+                        </Binding.ValidationRules>
+                    </Binding>
+                </TextBox.Text>
+            </TextBox>
+            <TextBlock
+                Style="{StaticResource MaterialDesignSubtitle2TextBlock}"
+                Margin="10 0 0 0">
+                Van ruimte:
+            </TextBlock>
+            <ComboBox
+                HorizontalAlignment="Stretch"
+                materialDesign:HintAssist.Hint="Zoeken"
+                materialDesign:HintAssist.HintOpacity=".26"
+                materialDesign:TextFieldAssist.HasClearButton="True"
+                IsEditable="True"
+                ItemsSource="{Binding Rooms}"
+                DisplayMemberPath="Name"
+                SelectedValue="{Binding SelectedRoom}"
+                Margin="10 0 10 0">
+                <ComboBox.Text>
+                    <Binding
+                        Path="SelectedRoom"
+                        Mode="TwoWay"
+                        UpdateSourceTrigger="PropertyChanged">
+                        <Binding.ValidationRules>
+                            <utils:ObjectNotNull
+                                ValidatesOnTargetUpdated="True" ObjectName="ontwerp" FieldName="ruimte"/>
+                        </Binding.ValidationRules>
+                    </Binding> 
+                </ComboBox.Text>
+            </ComboBox>
+        </StackPanel>
+        <StackPanel
+            Grid.Row="1"
+            Margin="8"
+            HorizontalAlignment="Right"
+            Orientation="Horizontal">
+            <Button
+                Command="{Binding CancelCommand}"
+                Style="{DynamicResource MaterialDesignFlatButton}">
+                ANNULEREN
+            </Button>
+            <Button
+                Command="{Binding AddDesignCommand}"
+                Style="{DynamicResource MaterialDesignFlatButton}">
+                TOEVOEGEN
+            </Button>
+        </StackPanel>
+    </Grid>
+</UserControl>

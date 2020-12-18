@@ -1,0 +1,53 @@
+﻿<UserControl x:Class="Designer.View.Components.DesignCard"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:Designer.View.Components"
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+             mc:Ignorable="d" 
+             d:DesignHeight="290" d:DesignWidth="280">
+    <materialDesign:Card>
+        <Grid Height="290" Width="280" Margin="0,0,0,0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="160" />
+                <RowDefinition Height="65"/>
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+            <materialDesign:ColorZone
+                Mode="Light"
+                VerticalAlignment="Stretch"
+                BorderThickness="5">
+                <Canvas Margin="0" MaxHeight="160">
+                    <ContentPresenter HorizontalAlignment="Center" Content="{Binding Path=Value}"></ContentPresenter>
+                </Canvas>
+            </materialDesign:ColorZone>
+            <StackPanel Grid.Row="1" Orientation="Vertical">
+                <TextBlock FontSize="20" 
+                           Text="{Binding Key.Name}"
+                           Margin="10 0 0 0"/>
+                <TextBlock FontSize="15"
+                           Text="{Binding Key.Room.Name}"
+                           Margin="10 0 0 0"/>
+            </StackPanel>
+                <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Stretch" Width="250" Margin="0 0 0 10">
+                    <Button
+                        HorizontalAlignment="Left"
+                        Style="{StaticResource MaterialDesignRaisedButton}"
+                        Command="{Binding ElementName=viewModel, Path=EditCommand}"
+                        CommandParameter="{Binding Key}"
+                        Margin="30 4 6 0"
+                        Content="PAS AAN"/>
+                    <Button
+                        HorizontalAlignment="Right"
+                        Style="{StaticResource MaterialDesignRaisedButton}"
+                        Background="Red"
+                        BorderBrush="Red"
+                        Command="{Binding ElementName=viewModel, Path=DeleteCommand}"
+                        CommandParameter="{Binding Key}"
+                        Margin="0 4 30 0"
+                        Content="VERWIJDER"/>
+                </StackPanel>
+        </Grid>
+    </materialDesign:Card>
+</UserControl>

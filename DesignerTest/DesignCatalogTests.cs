@@ -57,74 +57,6 @@ namespace DesignerTest {
         }
 
         [Test]
-        public void Loads_Count() { Assert.AreEqual(2, _designModel.Designs.Count); }
-
-        [Test]
-        public void Loads_Contains() {
-            List<Design> designs = _designModel.Designs;
-            Assert.Contains(Design1, designs);
-            Assert.Contains(Design2, designs);
-        }
-
-        [Test]
-        public void NeedsReload_Count() {
-            DesignService.Instance.Save(Design3);
-
-            List<Design> designs = _designModel.Designs;
-            Assert.AreEqual(2, designs.Count);
-        }
-
-        [Test]
-        public void NeedsReload_Contains() {
-            DesignService.Instance.Save(Design3);
-
-            List<Design> designs = _designModel.Designs;
-            Assert.Contains(Design1, designs);
-            Assert.Contains(Design2, designs);
-            Assert.IsFalse(designs.Contains(Design3));
-        }
-
-        [Test]
-        public void Reload_Count() {
-            DesignService.Instance.Save(Design3);
-            _designModel.Reload();
-
-            List<Design> designs = _designModel.Designs;
-            Assert.AreEqual(3, designs.Count);
-        }
-
-        [Test]
-        public void Reload_Contains() {
-            DesignService.Instance.Save(Design3);
-            _designModel.Reload();
-
-            List<Design> designs = _designModel.Designs;
-            Assert.Contains(Design1, designs);
-            Assert.Contains(Design2, designs);
-            Assert.Contains(Design3, designs);
-        }
-
-        [Test]
-        public void ReloadCommand_Count() {
-            DesignService.Instance.Save(Design3);
-            _designModel.ReloadCommand.Execute(null);
-
-            List<Design> designs = _designModel.Designs;
-            Assert.AreEqual(3, designs.Count);
-        }
-
-        [Test]
-        public void ReloadCommand_Contains() {
-            DesignService.Instance.Save(Design3);
-            _designModel.ReloadCommand.Execute(null);
-
-            List<Design> designs = _designModel.Designs;
-            Assert.Contains(Design1, designs);
-            Assert.Contains(Design2, designs);
-            Assert.Contains(Design3, designs);
-        }
-
-        [Test]
         public void Selected_TriggersEvent() {
             bool triggered = false;
 
@@ -145,16 +77,6 @@ namespace DesignerTest {
         }
 
         [Test]
-        public void PageOnDesignAdded_TriggersEvent() {
-            bool triggered = false;
-
-            _designModel.DesignSelected += (sender, args) => triggered = true;
-            _designModel.PageOnDesignAdded(this, new BasicEventArgs<Design>(Design1));
-
-            Assert.IsTrue(triggered);
-        }
-
-        [Test]
         public void DesignSelected_DesignCorrect() {
             _designModel.DesignSelected += (sender, args) => {
                 Assert.NotNull(args.Value);
@@ -165,70 +87,6 @@ namespace DesignerTest {
             };
 
             _designModel.GotoDesign(Design1);
-        }
-    }
-
-    public class DesignCatalogTestsAddDesignIntegration : DatabaseTest {
-        private static readonly Room Room1 = Room.FromDimensions("TestRoom1", 1, 1);
-        private static readonly Room Room2 = Room.FromDimensions("TestRoom2", 2, 4);
-
-        private static readonly Design Design1 = new Design("TestDesign1", Room1, null);
-        private static readonly Design Design2 = new Design("TestDesign2", Room1, null);
-
-        private const string TestName = "TestDesign";
-
-        protected override List<Room> Rooms => new List<Room> {Room1, Room2};
-        protected override List<Design> Designs => new List<Design> {Design1, Design2};
-
-        private AddDesignModel _addDesignModel;
-        private DesignCatalogModel _designCatalogModel;
-
-        [SetUp]
-        public void Setup() {
-            _addDesignModel = new AddDesignModel();
-            _designCatalogModel = new DesignCatalogModel();
-
-            _addDesignModel.DesignAdded += _designCatalogModel.PageOnDesignAdded;
-        }
-
-        [Test]
-        public void DesignAdded_TriggersSelectedEvent() {
-            _addDesignModel.Name = TestName;
-            _addDesignModel.Selected = Room1;
-
-            bool triggered = false;
-
-            _designCatalogModel.DesignSelected += (sender, args) => triggered = true;
-            _addDesignModel.AddDesign();
-
-            Assert.IsTrue(triggered);
-        }
-
-        [Test]
-        public void DesignAdded_DesignCorrect() {
-            _addDesignModel.Name = TestName;
-            _addDesignModel.Selected = Room1;
-
-            _designCatalogModel.DesignSelected += (sender, args) => {
-                Assert.NotNull(args.Value);
-                Assert.AreEqual(TestName, args.Value.Name);
-                Assert.AreEqual(Room1, args.Value.Room);
-                Assert.IsEmpty(args.Value.ProductPlacements);
-            };
-
-            _addDesignModel.AddDesign();
-        }
-
-        [Test]
-        public void DesignAdded_DesignsUpdates() {
-            _addDesignModel.Name = TestName;
-            _addDesignModel.Selected = Room1;
-
-            _designCatalogModel.DesignSelected += (sender, args) => {
-                Assert.Contains(args.Value, _designCatalogModel.Designs);
-            };
-
-            _addDesignModel.AddDesign();
         }
     }
 }

@@ -4,59 +4,73 @@
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
       xmlns:viewModel="clr-namespace:Designer.ViewModel"
+      xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+      xmlns:models="clr-namespace:Models;assembly=Models"
+      xmlns:components="clr-namespace:Designer.View.Components"
       mc:Ignorable="d"
       Title="DesignCatalog">
     <Page.DataContext>
-        <viewModel:DesignCatalogModel />
+        <viewModel:DesignCatalogModel x:Name="viewModel" />
     </Page.DataContext>
-    <Grid>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="*" />
-            <ColumnDefinition Width="*" />
-            <ColumnDefinition Width="200" />
-            <ColumnDefinition Width="30" />
-        </Grid.ColumnDefinitions>
+    <materialDesign:DialogHost Identifier="AddPopup" x:Name="DialogHost" IsOpen="{Binding IsAdding}"
+                               CloseOnClickAway="True">
+        <materialDesign:DialogHost.DialogContent>
+            <components:AddDesignPopup />
+        </materialDesign:DialogHost.DialogContent>
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="40" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
 
-        <Label Content="Ontwerpen:" Margin="10,35,10,0" VerticalAlignment="Top"
-               Grid.ColumnSpan="2" Grid.Column="0" />
+            <StackPanel Width="420" HorizontalAlignment="Right" Grid.Column="1" Orientation="Horizontal">
+                <TextBlock Margin="0 0 10 0 " VerticalAlignment="Center">Toon alleen ontwerpen van ruimte:</TextBlock>
+                <ComboBox
+                    VerticalAlignment="Center"
+                    HorizontalAlignment="Right"
+                    materialDesign:HintAssist.Hint="Zoeken"
+                    materialDesign:HintAssist.HintOpacity=".26"
+                    materialDesign:TextFieldAssist.HasClearButton="True"
+                    IsEditable="True"
+                    ItemsSource="{Binding Rooms}"
+                    DisplayMemberPath="Name"
+                    SelectedValue="{Binding SelectedFilter}"
+                    Margin="0 0 0 0"
+                    Width="200" />
+            </StackPanel>
+            <ScrollViewer Grid.Row="1">
+                <ItemsControl
+                    x:Name="CatalogusList"
+                    ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                    ItemsSource="{Binding Designs}"
+                    Margin="10,0,0,0">
 
-        <ListView Margin="10,65,10,10"
-                  ItemsSource="{Binding Designs}"
-                  SelectedValue="{Binding Selected}"
-                  Grid.ColumnSpan="4" Grid.Column="0">
-            <ListView.ItemTemplate>
-                <DataTemplate>
-                    <Grid HorizontalAlignment="Stretch">
-                        <TextBlock Text="{Binding Name}" />
-                        <TextBlock Text="{Binding Room.Name}" HorizontalAlignment="Right" />
-                    </Grid>
-                </DataTemplate>
-            </ListView.ItemTemplate>
-            <ListView.ItemContainerStyle>
-                <Style TargetType="ListViewItem">
-                    <Setter Property="HorizontalContentAlignment" Value="Stretch" />
-                </Style>
-            </ListView.ItemContainerStyle>
-        </ListView>
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <WrapPanel />
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate DataType="models:Design">
+                            <components:DesignCard Margin="0,10,10,0" />
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </ScrollViewer>
+            <materialDesign:Snackbar Grid.Row="1" HorizontalAlignment="Stretch" MessageQueue="{Binding MessageQueue}" />
+            <Button Grid.Row="1"
+                    Style="{StaticResource MaterialDesignFloatingActionAccentButton}"
+                    ToolTip="MaterialDesignFloatingActionAccentButton"
+                    HorizontalAlignment="Right"
+                    VerticalAlignment="Bottom"
+                    Margin="0,0,20,20"
+                    Command="{Binding OpenPopup}">
+                <materialDesign:PackIcon
+                    Kind="Plus"
+                    Height="24"
+                    Width="24" />
+            </Button>
+        </Grid>
+    </materialDesign:DialogHost>
 
-        <Button Content="Nieuw ontwerp" Margin="10,10,10,0" VerticalAlignment="Top"
-                Command="{Binding AddDesign}"
-                Grid.Column="0" />
-        <Button Content="Herlaad" Margin="10,10,10,0" VerticalAlignment="Top"
-                Command="{Binding ReloadCommand}"
-                Grid.Column="1" />
-        <ComboBox
-            Margin="10,10,10,0"
-            VerticalAlignment="Top"
-            DisplayMemberPath="Name"
-            Grid.Column="2"
-            SelectedValue="{Binding SelectedFilter}"
-            ItemsSource="{Binding Rooms}"
-            >
-        </ComboBox>
-         <Button Content="X" Margin="0,10,10,0" VerticalAlignment="Top"
-                Command="{Binding ClearFilterCommand}"
-                Grid.Column="3"
-         />
-    </Grid>
 </Page>
