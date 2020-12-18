@@ -36,7 +36,7 @@
                                  Style="{DynamicResource MaterialDesignToolBar}"
                                  ClipToBounds="False">
 
-                            <Button Foreground="White">
+                            <Button Foreground="White" Command="{Binding GotoDesigns}">
                                 <materialDesign:PackIcon Kind="FolderOpen"
                                                          Height="15" />
                             </Button>
@@ -52,7 +52,7 @@
                             <ToggleButton Foreground="White"
                                           Style="{StaticResource MaterialDesignActionToggleButton}"
                                           Command="{Binding Plexiglass}"
-                                          IsChecked="{Binding PEnabled, Mode=TwoWay}">
+                                          IsChecked="{Binding PlexiEnabled, Mode=TwoWay}">
                                 <materialDesign:PackIcon Kind="CarWindshield"
                                                          Height="15" />
                             </ToggleButton>
@@ -191,6 +191,7 @@
                                      Foreground="{Binding RouteColour}" />
                         <TextBlock Margin="0,-18,0,0" HorizontalAlignment="Center"
                                    Text="{Binding RouteScore, StringFormat={}{0} %}" />
+
                     </StackPanel>
                 </materialDesign:Card>
 
