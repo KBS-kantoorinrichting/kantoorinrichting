@@ -52,8 +52,8 @@ namespace Designer.ViewModel
         private Frame _activeFrame { get; set; }
         public List<Frame> FramePoints = new List<Frame>();
         private int _angle = 0;
-        private double CanvasHeight = 500;
-        private double CanvasWidth = 1280;
+        private double CanvasHeight = 1000;
+        private double CanvasWidth = 2000;
 
         // Constructor specially for unit testing
         public RoomEditorViewModel(string name)
@@ -268,8 +268,8 @@ namespace Designer.ViewModel
         public void DrawGrid()
         {
 
-            var y = 25 * 25; // Scherm is 25 vakjes hoog
-            var x = 50 * 25; // Scherm is 50 vakjes breed
+            var y = 50 * 25; // Scherm is 25 vakjes hoog
+            var x = 100 * 25; // Scherm is 50 vakjes breed
             for (int row = 0; row < y; row += 25)
             { // Voor elke rij
                 for (int column = 0; column < x; column += 25)

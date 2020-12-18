@@ -106,7 +106,7 @@
 
                         </ToolBar>
                     </ToolBarTray>
-                    <Canvas Grid.Column="1" Name="Editor" AllowDrop="True" Background="Transparent"
+                    <Canvas Grid.Column="1" Name="Editor" AllowDrop="True" 
                             HorizontalAlignment="Stretch"
                             VerticalAlignment="Stretch"
                             Margin="10" Panel.ZIndex="-1">

@@ -182,6 +182,7 @@ namespace Designer.ViewModel
             });
             Products = LoadProducts();
             Editor = new Canvas();
+           
             RoomPoly = new Polygon();
             CatalogusMouseDownCommand =
                 new ArgumentCommand<MouseButtonEventArgs>(e => CatalogusMouseDown(e.OriginalSource, e));
@@ -1267,9 +1268,13 @@ namespace Designer.ViewModel
                 DistanceLine line = new DistanceLine(coordinates[i], coordinates[(i + 1) % coordinates.Count]);
                 line.Add(Editor);
             }
+            
+            ImageBrush imgBrush = new ImageBrush();  
+            imgBrush.ImageSource = new BitmapImage(new Uri( "../../../Resources/Images/Assets/BluePrint.png" , UriKind.Relative)); 
 
             RoomPoly.Stroke = Brushes.Black;
-            RoomPoly.Fill = Brushes.LightGray;
+            //RoomPoly.Fill = (SolidColorBrush)(new BrushConverter().ConvertFrom("#4A6de5"));
+            RoomPoly.Fill = imgBrush;
             RoomPoly.StrokeThickness = 1;
             RoomPoly.HorizontalAlignment = HorizontalAlignment.Left;
             RoomPoly.VerticalAlignment = VerticalAlignment.Center;
