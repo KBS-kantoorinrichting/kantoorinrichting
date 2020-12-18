@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
+using Designer.Utils;
 using MaterialDesignThemes.Wpf;
 using Polygon = System.Windows.Shapes.Polygon;
 
@@ -50,7 +51,7 @@ namespace Designer.ViewModel
 
             foreach (Room room in rooms)
             {
-                dictionary.Add(room, CreateRoomCanvas(room));
+                dictionary.Add(room, CanvasUtil.CreateRoomCanvas(room));
             }
 
             return dictionary;
