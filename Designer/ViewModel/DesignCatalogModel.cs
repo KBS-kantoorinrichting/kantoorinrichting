@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using System.Threading;
 using System.Windows.Controls;
 using Designer.Other;
 using Designer.Utils;
@@ -75,7 +76,11 @@ namespace Designer.ViewModel {
                 IsAdding = true;
                 OnPropertyChanged();
             });
-            MessageQueue = new SnackbarMessageQueue();
+            //Om te voorkomen dat unit tests falen
+            if (Thread.CurrentThread.GetApartmentState() == ApartmentState.STA)
+            {
+                MessageQueue = new SnackbarMessageQueue(); 
+            }
         }
 
         private void ClosePopup()
@@ -108,15 +113,8 @@ namespace Designer.ViewModel {
             MessageQueue.Enqueue("Het ontwerp is toegevoegd");
         }
 
-        private AddDesign AddDesignPage() {
-            //Maak de toevoegen design pagina aan en registeerd de event listeren
-            AddDesign page = new AddDesign();
-            page.DesignAdded += PageOnDesignAdded;
-            return page;
-        }
-
         public void Reload() {
-            LoadDesigns();
+            RenderDesigns(); 
             Rooms = LoadRooms();
             OnPropertyChanged();
         }
@@ -131,11 +129,18 @@ namespace Designer.ViewModel {
             DesignSelected?.Invoke(this, new BasicEventArgs<Design>(design));
         }
 
-        public void LoadDesigns() {
-            //Doesn't load productplacements without this, it's weird
+        public static List<Design> LoadDesigns()
+        {
+            //Doesn't load productplacements and products without this,
+            //due to EF lazy loading
             ProductPlacementService.Instance.GetAll();
             ProductService.Instance.GetAll();
-            List<Design> designs = DesignService.Instance.GetAll();
+            return DesignService.Instance.GetAll(); 
+        }
+
+        public void RenderDesigns()
+        {
+            List<Design> designs = LoadDesigns();
             _designs = new Dictionary<Design, Canvas>();
             foreach (var design in designs)
             {
