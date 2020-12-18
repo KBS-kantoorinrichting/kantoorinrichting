@@ -30,13 +30,6 @@ namespace Designer.ViewModel {
                 Submit.Disabled = _selected == null || Name == null;
             }
         }
-        private string _plexiglass;
-        public string Plexiglass {
-            get => _plexiglass;
-            set {
-                _plexiglass = value;
-            }
-        }
         
         public BasicCommand Submit { get; set; }
         public BasicCommand Cancel { get; set; }
@@ -58,7 +51,7 @@ namespace Designer.ViewModel {
                 return;
             }
 
-            Design design = CreateDesign(Name, Selected, Plexiglass);
+            Design design = CreateDesign(Name, Selected, null);
             SaveDesign(design);
             DesignAdded?.Invoke(this, new BasicEventArgs<Design>(design));
         }
