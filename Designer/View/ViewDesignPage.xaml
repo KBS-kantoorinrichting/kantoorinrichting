@@ -81,6 +81,15 @@
                                     Style="{StaticResource MaterialDesignFlatButton}"
                                     Command="{Binding Layout}">
                             </Button>
+                            <Separator/>
+                            
+                            <Button Content="Genereer plexiglas" Background="#00D092" VerticalAlignment="Center"
+                                    HorizontalAlignment="Right"
+                                    materialDesign:ButtonAssist.CornerRadius="7"
+                                    Foreground="White"
+                                    Style="{StaticResource MaterialDesignFlatButton}"
+                                    Command="{Binding GeneratePlexiline}">
+                            </Button>
 
                             <Separator />
                             <Button Content="Verwijder loop route" Command="{Binding RemoveRoute}"
@@ -169,17 +178,17 @@
                         </materialDesign:ColorZone>
                         <Label Content="Anderhalve meter score" FontFamily="Roboto" FontWeight="Bold" Margin="0,10,0,0"/>
                         <ProgressBar Height="20" Value="{Binding DistanceScore, Mode=OneWay }" Background="White"
-                                     Foreground="#673AB7" />
+                                     Foreground="{Binding DistanceColour}" />
                         <TextBlock Margin="0,-18,0,0" HorizontalAlignment="Center"
                                    Text="{Binding DistanceScore, StringFormat={}{0} %}" />
                         <Label Content="Ventilatie score" FontFamily="Roboto" FontWeight="Bold" />
                         <ProgressBar Height="20" Value="{Binding VentilationScore, Mode=OneWay}" Background="White"
-                                     Foreground="#673AB7" />
+                                     Foreground="{Binding VentilationColour}" />
                         <TextBlock Margin="0,-18,0,0" HorizontalAlignment="Center"
                                    Text="{Binding VentilationScore, StringFormat={}{0} %}" />
                         <Label Content="Looproute score" FontFamily="Roboto" FontWeight="Bold" />
                         <ProgressBar Height="20" Value="{Binding RouteScore, Mode=OneWay}" Background="White"
-                                     Foreground="#673AB7" />
+                                     Foreground="{Binding RouteColour}" />
                         <TextBlock Margin="0,-18,0,0" HorizontalAlignment="Center"
                                    Text="{Binding RouteScore, StringFormat={}{0} %}" />
                     </StackPanel>
