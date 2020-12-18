@@ -47,29 +47,42 @@ namespace Models {
 
         public Polygon Offset(Position position) { return Offset(position.X, position.Y); }
 
+        /*
+         * Geeft lijst van posities terug 
+         */
+        public List<Position> GetPositions()
+        {
+            return _positions;
+        }
+        
         /**
          * Zet de polygon om naar een tekst van die lijkt op 0,0|10,10|20,10
          */
-        public string Convert() {
+        public string Convert(string separator = "|") {
             if (_positions == null) return null;
 
             if (!_positions.Any()) return "";
             return _positions.Select(p => p.ToString())
-                .Aggregate((s1, s2) => $"{s1}|{s2}");
+                .Aggregate((s1, s2) => $"{s1}{separator}{s2}");
         }
 
         /**
          * Maakt alle opvolgende combinatie van lijnen
          */
-        public IEnumerable<(Position, Position)> GetLines() {
-            for (int i = 0; i < _positions.Count; i++)
-                yield return (_positions[i], _positions[(i + 1) % _positions.Count]);
+        public IEnumerable<Line> GetLines() {
+            for (int i = 0; i < _positions.Count; i++) {
+                Position p1 = _positions[i];
+                Position p2 = _positions[(i + 1) % _positions.Count];
+                if (!Equals(p1, p2)) yield return new Line(_positions[i], _positions[(i + 1) % _positions.Count]);
+            }
         }
 
         public override string ToString() { return Convert(); }
         IEnumerator IEnumerable.GetEnumerator() { return GetEnumerator(); }
 
-        protected bool Equals(Polygon other) { return Equals(_positions, other._positions); }
+        protected bool Equals(Polygon other) {
+            return Equals(_positions, other?._positions);
+        }
 
         public override bool Equals(object obj) {
             if (ReferenceEquals(null, obj)) return false;
@@ -117,5 +130,23 @@ namespace Models {
         public IEnumerator<Position> GetEnumerator() => _positions.GetEnumerator();
         public Position this[int index] => _positions[index];
         public int Count => _positions.Count;
+    }
+
+    public class Line {
+        public Position P1 { get; }
+        public Position P2 { get; }
+
+        public Line(Position p1, Position p2) {
+            P1 = p1;
+            P2 = p2;
+        }
+
+        public Line Offset(int x = 0, int y = 0) => new Line(P1.CopyAdd(x, y), P2.CopyAdd(x, y));
+        
+        public (Position p1, Position p2) AsTuple => (P1, P2);
+
+        public Position Center => new Position((P1.X + P2.X) / 2, (P1.Y + P2.Y) / 2);
+        
+        public List<Position> AsList() => new List<Position> {P1, P2};
     }
 }

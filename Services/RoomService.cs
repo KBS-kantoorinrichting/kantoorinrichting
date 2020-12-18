@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System.Linq;
+using Microsoft.EntityFrameworkCore;
 using Models;
 
 namespace Services {
@@ -10,7 +11,13 @@ namespace Services {
             set => _instance = value;
         }
 
-        protected override DbSet<Room> DbSet => RoomDesignContext.Instance.Rooms;
+        protected override DbSet<Room> DbSet {
+            get {
+                RoomDesignContext.Instance.RoomPlacements.ToList();
+                return RoomDesignContext.Instance.Rooms;
+            }
+        }
+
         protected override DbContext DbContext => RoomDesignContext.Instance;
     }
 }
