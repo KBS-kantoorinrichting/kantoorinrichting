@@ -37,6 +37,7 @@ namespace Designer.ViewModel
         public ArgumentCommand<MouseButtonEventArgs> CanvasMouseDownCommand { get; set; }
         public ArgumentCommand<MouseEventArgs> MouseMoveCommand { get; set; }
         public BasicCommand Measure { get; set; }
+        public BasicCommand GotoDesigns { get; set; }
         public BasicCommand Plexiglass { get; set; }
         public BasicCommand Layout { get; set; }
         public BasicCommand ClearProducts { get; set; }
@@ -171,6 +172,14 @@ namespace Designer.ViewModel
 
         public ViewDesignViewModel()
         {
+            GotoDesigns = new PageCommand(() => {
+                DesignCatalog DesignCatalog = new DesignCatalog();
+                DesignCatalog.DesignSelected += (o, e) =>
+                {
+                    Navigator.Instance.Replace(new ViewDesignPage(e.Value));
+                };
+                return DesignCatalog;
+            });
             Products = LoadProducts();
             Editor = new Canvas();
             RoomPoly = new Polygon();
