@@ -144,5 +144,9 @@ namespace Models {
         public Line Offset(int x = 0, int y = 0) => new Line(P1.CopyAdd(x, y), P2.CopyAdd(x, y));
         
         public (Position p1, Position p2) AsTuple => (P1, P2);
+
+        public Position Center => new Position((P1.X + P2.X) / 2, (P1.Y + P2.Y) / 2);
+        
+        public List<Position> AsList() => new List<Position> {P1, P2};
     }
 }
