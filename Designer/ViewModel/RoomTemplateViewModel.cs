@@ -6,6 +6,7 @@ using Designer.Other;
 using Designer.View;
 using Models;
 using Services;
+using MaterialDesignThemes.Wpf;
 
 namespace Designer.ViewModel {
     public class RoomTemplateViewModel : INotifyPropertyChanged {
@@ -25,12 +26,14 @@ namespace Designer.ViewModel {
 
         public BasicCommand Submit { get; set; }
         public BasicCommand TemplateButton { get; set; }
+        public SnackbarMessageQueue MessageQueue { get; set; }
 
         public RoomTemplateViewModel() {
             // submit command van submitknop
             Submit = new BasicCommand(SubmitRoom);
             // bind het templatecommand van de templateknoppen
             TemplateButton = new ArgumentCommand<int>(SetTemplate);
+            MessageQueue = new SnackbarMessageQueue();
         }
 
         private void OnPropertyChanged(string propertyName = "") {
@@ -60,8 +63,7 @@ namespace Designer.ViewModel {
                 if (Template == 1) {
                     if (SaveRoom(Name, width, length, Template) != null) {
                         //opent successvol dialoog
-                        GeneralPopup popup = new GeneralPopup("De kamer is opgeslagen!");
-                        popup.ShowDialog();
+                        MessageQueue.Enqueue("De kamer is opgeslagen.");
                         return;
                     }
 
@@ -70,18 +72,14 @@ namespace Designer.ViewModel {
 
                 if (SaveRoom(Name, width, length) != null) {
                     //opent successvol dialoog
-                    GeneralPopup popup = new GeneralPopup("De kamer is opgeslagen!");
-                    popup.ShowDialog();
+                    MessageQueue.Enqueue("De kamer is opgeslagen.");
                     return;
                 }
 
                 // opslaan van de ruimte als het aan de condities voldoet
             }
 
-
-            //opent onsuccesvol dialoog
-            GeneralPopup popuperror = new GeneralPopup("Er is iets misgegaan! probeer opnieuw.");
-            popuperror.ShowDialog();
+            MessageQueue.Enqueue("Er is iets misgegaan! probeer opnieuw.");
         }
 
         // methode om de kamer op te slaan
