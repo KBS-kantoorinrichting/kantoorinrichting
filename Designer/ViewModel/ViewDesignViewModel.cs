@@ -176,7 +176,7 @@ namespace Designer.ViewModel
                 DesignCatalog DesignCatalog = new DesignCatalog();
                 DesignCatalog.DesignSelected += (o, e) =>
                 {
-                    Navigator.Instance.Replace(new ViewDesignPage(e.Value));
+                    Navigator.Instance.Replace(new ViewDesignPage( e.Value));
                 };
                 return DesignCatalog;
             });
