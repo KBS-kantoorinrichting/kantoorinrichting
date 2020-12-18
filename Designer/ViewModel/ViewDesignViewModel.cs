@@ -81,8 +81,32 @@ namespace Designer.ViewModel
                 }
 
                 double reversedIncrement = ProductPlacements.Count - increment;
+                int m = (int)(reversedIncrement / ProductPlacements.Count * 100);
+                if (m > 100)
+                {
+                    // rood
+                    DistanceColour = (SolidColorBrush)(new BrushConverter().ConvertFrom("#d00037"));
+                    OnPropertyChanged("DistanceColour");
+                    m = 100;
+                } else if (m < 0)
+                {
+                    // rood
+                    DistanceColour = (SolidColorBrush)(new BrushConverter().ConvertFrom("#d00037"));
+                    OnPropertyChanged("DistanceColour");
+                    m = 0;
+                } else if (m == 100)
+                {
+                    //groen
+                    DistanceColour = (SolidColorBrush)(new BrushConverter().ConvertFrom("#00D092"));
+                    OnPropertyChanged("DistanceColour");
+                } else
+                {
+                    // rood
+                    DistanceColour = (SolidColorBrush)(new BrushConverter().ConvertFrom("#d00037"));
+                    OnPropertyChanged("DistanceColour");
+                }
 
-                return (int)(reversedIncrement / ProductPlacements.Count * 100);
+                return m;
             }
         }
 
@@ -92,11 +116,6 @@ namespace Designer.ViewModel
             {
                 if (RoomPlacements == null || RoomPlacements.Count == 0) return 0;
                 if (RoomPlacements.Count < 2) return 0;
-                // sinds cm2 met complexe kamers een gigantische uitdaging is
-                // gaan wij uit van hoe lang de muren zijn
-                // lange muren = grote kamer
-                // dus ik calculeer de lengte en breedte en ga daar vanuit
-                // en maak een gebalanceerde berekening door de ventilatiescore
                 List<Position> roompositions = new List<Position>();
                 roompositions = Room.ToList(Design.Room.Positions);
                 List<int> xlist = new List<int>();
@@ -118,14 +137,29 @@ namespace Designer.ViewModel
                 //m = ((m * 130) / 100);
                 if (m > 100)
                 {
+                    //groen
+                    VentilationColour = (SolidColorBrush)(new BrushConverter().ConvertFrom("#00D092"));
+                    OnPropertyChanged("VentilationColour");
                     return 100;
                 }
                 else if (m < 0)
                 {
+                    // rood
+                    VentilationColour = (SolidColorBrush)(new BrushConverter().ConvertFrom("#d00037"));
+                    OnPropertyChanged("VentilationColour");
                     return 0;
+                } else if (m > 55)
+                {
+                    // maakt groen
+                    VentilationColour = (SolidColorBrush)(new BrushConverter().ConvertFrom("#00D092"));
+                    OnPropertyChanged("VentilationColour");
+                    return m;
                 }
                 else
                 {
+                    // maakt rood
+                    VentilationColour = (SolidColorBrush)(new BrushConverter().ConvertFrom("#d00037"));
+                    OnPropertyChanged("VentilationColour");
                     return m;
                 }
             }
@@ -133,69 +167,9 @@ namespace Designer.ViewModel
 
 
         public int RouteScore { get; set; } = 20;
-
-        Brush _distancecolour;
-        public Brush DistanceColour
-        {
-            get
-            {
-                return _distancecolour;
-            }
-            set
-            {
-                if (DistanceScore > 55)
-                {
-                    _distancecolour = Brushes.Green;
-                }
-                else
-                {
-                    _distancecolour = (SolidColorBrush)(new BrushConverter().ConvertFrom("#FF320B86"));
-                }
-
-            }
-        }
-
-        Brush _ventilationcolour;
-        public Brush VentilationColour
-        {
-            get
-            {
-                return _ventilationcolour;
-            }
-            set
-            {
-                if (VentilationScore > 55)
-                {
-                    _ventilationcolour = Brushes.Green;
-                }
-                else
-                {
-                    _ventilationcolour = (SolidColorBrush)(new BrushConverter().ConvertFrom("#FF320B86"));
-                }
-
-            }
-        }
-
-        Brush _routecolour;
-        public Brush RouteColour
-        {
-            get
-            {
-                return _routecolour;
-            }
-            set
-            {
-                if (VentilationScore > 55)
-                {
-                    _routecolour = Brushes.Green;
-                }
-                else
-                {
-                    _routecolour = (SolidColorBrush)(new BrushConverter().ConvertFrom("#FF320B86"));
-                }
-
-            }
-        }
+        public Brush DistanceColour { get; set; }
+        public Brush VentilationColour { get; set; }
+        public Brush RouteColour { get; set; }
 
         public double Scale = 1.0;
         private double _canvasHeight => Navigator.Instance.CurrentPage.ActualHeight - 20;
@@ -407,7 +381,7 @@ namespace Designer.ViewModel
         {
             ProductPlacements.ForEach(RemoveCorona);
             ProductPlacements.Clear();
-
+            OnPropertyChanged();
             RenderRoom();
         }
 
@@ -702,9 +676,6 @@ namespace Designer.ViewModel
 
         public void SetDesign(Design design)
         {
-            DistanceColour = (SolidColorBrush)(new BrushConverter().ConvertFrom("#FF320B86"));
-            VentilationColour = (SolidColorBrush)(new BrushConverter().ConvertFrom("#FF320B86"));
-            RouteColour = (SolidColorBrush)(new BrushConverter().ConvertFrom("#FF320B86"));
             Design = design;
             ProductPlacements = design.ProductPlacements;
             ProductPlacements ??= new List<ProductPlacement>();
