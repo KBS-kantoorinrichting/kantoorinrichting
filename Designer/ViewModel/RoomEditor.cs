@@ -1,5 +1,4 @@
 ﻿using Designer.Other;
-using Designer.View;
 using Models;
 using Services;
 using System;
@@ -7,25 +6,17 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
-using System.Text;
 //using System.Threading;
-using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Documents;
 using System.Windows.Input;
-using Designer.Other;
-using Designer.View;
-using Models;
-using Services;
 using Line = System.Windows.Shapes.Line;
-using System.Windows.Markup;
 using System.Windows.Media;
 using System.Windows.Shapes;
 using MaterialDesignThemes.Wpf;
 
 namespace Designer.ViewModel
 {
-    public class RoomEditorViewModel : INotifyPropertyChanged
+    public class RoomEditor : INotifyPropertyChanged
     {
         public string Name { get; set; }
         public SnackbarMessageQueue MessageQueue { get; set; }
@@ -56,12 +47,12 @@ namespace Designer.ViewModel
         private double CanvasWidth = 2000;
 
         // Constructor specially for unit testing
-        public RoomEditorViewModel(string name)
+        public RoomEditor(string name)
         {
             Name = name;
         }
 
-        public RoomEditorViewModel()
+        public RoomEditor()
         {
             GridLines = new List<Line>();
             RectangleDictionary = new Dictionary<Position, Rectangle>();

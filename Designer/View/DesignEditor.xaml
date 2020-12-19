@@ -5,7 +5,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:viewModel="clr-namespace:Designer.ViewModel"
     xmlns:model="clr-namespace:Models;assembly=Models"
-    x:Class="Designer.View.ViewDesignPage"
+    x:Class="Designer.View.DesignEditorView"
     xmlns:behaviors="http://schemas.microsoft.com/xaml/behaviors"
     xmlns:designer="clr-namespace:Designer"
     xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
@@ -15,7 +15,7 @@
     Title="ViewDesignPage"
     WindowHeight="-1">
     <Page.DataContext>
-        <viewModel:ViewDesignViewModel x:Name="viewModel" />
+        <viewModel:DesignEditor x:Name="viewModel" />
     </Page.DataContext>
     <Page.Resources>
         <other:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
@@ -36,12 +36,14 @@
                                  Style="{DynamicResource MaterialDesignToolBar}"
                                  ClipToBounds="False">
 
-                            <Button Foreground="White" Command="{Binding GotoDesigns}">
+                            <Button Foreground="White" Command="{Binding GotoDesigns}"
+                                    ToolTip="Terug naar design overzicht">
                                 <materialDesign:PackIcon Kind="FolderOpen"
                                                          Height="15" />
                             </Button>
                             <Separator />
                             <ToggleButton Foreground="White"
+                                          ToolTip="Meetlat gebruiken"
                                           Style="{StaticResource MaterialDesignActionToggleButton}"
                                           Command="{Binding Measure}"
                                           IsChecked="{Binding Enabled, Mode=TwoWay}">
@@ -50,6 +52,7 @@
                             </ToggleButton>
                             <Separator />
                             <ToggleButton Foreground="White"
+                                          ToolTip="Plexiglas toevoegen"
                                           Style="{StaticResource MaterialDesignActionToggleButton}"
                                           Command="{Binding Plexiglass}"
                                           IsChecked="{Binding PlexiEnabled, Mode=TwoWay}">
@@ -58,6 +61,7 @@
                             </ToggleButton>
                             <Separator />
                             <ToggleButton Foreground="White"
+                                          ToolTip="Route aanmaken"
                                           Style="{StaticResource MaterialDesignActionToggleButton}"
                                           IsChecked="{Binding RouteEnabled, Mode=TwoWay}">
                                 <materialDesign:PackIcon Kind="Walk"

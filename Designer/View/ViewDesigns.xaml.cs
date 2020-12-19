@@ -5,13 +5,13 @@ using Designer.ViewModel;
 using Models;
 
 namespace Designer.View {
-    public partial class DesignCatalog : Page {
+    public partial class ViewDesignsView : Page {
         //Wordt aangeroepen wanneer er eem design geselecteerd is
         public event EventHandler<BasicEventArgs<Design>> DesignSelected;
 
-        public DesignCatalog() {
+        public ViewDesignsView() {
             InitializeComponent();
-            if (!(DataContext is DesignCatalogModel model)) throw new NotSupportedException();
+            if (!(DataContext is ViewDesigns model)) throw new NotSupportedException();
             model.DesignSelected += (sender, args) => DesignSelected?.Invoke(sender, args);
         }
     }
