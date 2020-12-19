@@ -5,10 +5,9 @@ namespace Designer.View {
     /// <summary>
     /// Interaction logic for ViewProductsView.xaml
     /// </summary>
-    public partial class RoomOverview : Page {
-        public RoomOverview() { 
+    public partial class ViewRoomsView : Page {
+        public ViewRoomsView() { 
             InitializeComponent(); 
         }
-
     }
 }

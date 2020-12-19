@@ -20,15 +20,15 @@ namespace Designer.ViewModel
 
         public Home() {
             GotoDesigns = new PageCommand(() => {
-                DesignCatalog DesignCatalog = new DesignCatalog();
+                ViewDesignsView DesignCatalog = new ViewDesignsView();
                 DesignCatalog.DesignSelected += (o, e) =>
                 {
-                    Navigator.Instance.Replace(new ViewDesignPage(e.Value));
+                    Navigator.Instance.Replace(new View.DesignEditorView(e.Value));
                 };
                 return DesignCatalog;
             });
             GotoProducts = new PageCommand(() => new ViewProductsView());
-            GotoRooms = new PageCommand(() => new RoomOverview());
+            GotoRooms = new PageCommand(() => new ViewRoomsView());
         }
     }
 }

@@ -5,7 +5,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:viewModel="clr-namespace:Designer.ViewModel"
     xmlns:model="clr-namespace:Models;assembly=Models"
-    x:Class="Designer.View.ViewDesignPage"
+    x:Class="Designer.View.DesignEditorView"
     xmlns:behaviors="http://schemas.microsoft.com/xaml/behaviors"
     xmlns:designer="clr-namespace:Designer"
     xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"

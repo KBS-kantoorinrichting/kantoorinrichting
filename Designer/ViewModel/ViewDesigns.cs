@@ -64,7 +64,7 @@ namespace Designer.ViewModel {
             Rooms = LoadRooms();
             EditCommand = new ArgumentCommand<Design>(design =>
             {
-                Navigator.Push(new ViewDesignPage(design));;
+                Navigator.Push(new View.DesignEditorView(design));;
             });
             DeleteCommand = new ArgumentCommand<Design>(DeleteDesign);
             CancelCommand = new BasicCommand(ClosePopup);
