@@ -139,7 +139,7 @@ namespace Designer.ViewModel
                 VentilationColour = (SolidColorBrush) new BrushConverter().ConvertFrom(m > 55 ? "#00D092" : "#d00037");
                 OnPropertyChanged("VentilationColour");
                 
-                return 50;
+                return m;
             }
         }
 
