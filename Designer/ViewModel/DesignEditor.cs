@@ -605,9 +605,9 @@ namespace Designer.ViewModel
 
         public void SetDesign(Design design)
         {
-            Design = design;
+            // Haalt het design uit de database
+            Design = DesignService.Instance.Get(design.Id);
             ProductPlacements = design.ProductPlacements;
-            Console.WriteLine(PlexiLines.Count);
             ProductPlacements ??= new List<ProductPlacement>();
             RoomPlacements = design.Room.RoomPlacements;
             ProductPlacements ??= new List<ProductPlacement>();
@@ -629,7 +629,7 @@ namespace Designer.ViewModel
                 // Zet de schaal van de ruimte op basis van de dimensies, dit moet na het zetten van het design
                 SetRoomScale();
             }
-
+            
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(""));
         }
 
