@@ -257,6 +257,7 @@ namespace Designer.ViewModel
                 if (line == null) continue;
                 PlexiLines.Add(new Models.Polygon(line.AsList()));
             }
+            Debug.WriteLine(PlexiLines.Count);
             UpdateDbPlexiglass();
             RenderPolyPlexi();
         }
