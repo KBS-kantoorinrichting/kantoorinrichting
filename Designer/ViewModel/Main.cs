@@ -5,7 +5,7 @@ using Designer.View;
 using Services;
 
 namespace Designer.ViewModel {
-    public class MainViewModel : INotifyPropertyChanged {
+    public class Main : INotifyPropertyChanged {
         public event PropertyChangedEventHandler PropertyChanged;
 
         public BasicCommand GotoHome { get; set; }
@@ -22,7 +22,7 @@ namespace Designer.ViewModel {
         public bool OnDesigns => Navigator.CurrentPage.GetType() == typeof(DesignCatalog);
         public bool OnRooms => Navigator.CurrentPage.GetType() == typeof(RoomOverview);
 
-        public MainViewModel() {
+        public Main() {
             //Maak de db connectie aan
             RoomService.Instance.Get(0);
             

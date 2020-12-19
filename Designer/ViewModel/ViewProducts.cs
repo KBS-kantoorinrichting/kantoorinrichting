@@ -16,7 +16,7 @@ using Models;
 using Services;
 
 namespace Designer.ViewModel {
-    public class ViewProductsViewModel : INotifyPropertyChanged {
+    public class ViewProducts : INotifyPropertyChanged {
         public string Name { get; set; }
         public double Price { get; set; }
         public string Photo { get; set; }
@@ -48,7 +48,7 @@ namespace Designer.ViewModel {
         // Property van een lijst om de informatie vanuit de database op te slaan.
         
         public SnackbarMessageQueue MessageQueue { get; set; }
-        public ViewProductsViewModel() {
+        public ViewProducts() {
             // Tekenen van de catalogus 
             Reload();
             // Initialisatie van alle knoppen

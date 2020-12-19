@@ -11,7 +11,7 @@ namespace Designer.View {
 
         public DesignCatalog() {
             InitializeComponent();
-            if (!(DataContext is DesignCatalogModel model)) throw new NotSupportedException();
+            if (!(DataContext is ViewDesigns model)) throw new NotSupportedException();
             model.DesignSelected += (sender, args) => DesignSelected?.Invoke(sender, args);
         }
     }

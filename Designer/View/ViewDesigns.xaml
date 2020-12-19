@@ -10,7 +10,7 @@
       mc:Ignorable="d"
       Title="DesignCatalog">
     <Page.DataContext>
-        <viewModel:DesignCatalogModel x:Name="viewModel" />
+        <viewModel:ViewDesigns x:Name="viewModel" />
     </Page.DataContext>
     <materialDesign:DialogHost Identifier="AddPopup" x:Name="DialogHost" IsOpen="{Binding IsAdding}"
                                CloseOnClickAway="True">

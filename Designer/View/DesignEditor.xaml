@@ -15,7 +15,7 @@
     Title="ViewDesignPage"
     WindowHeight="-1">
     <Page.DataContext>
-        <viewModel:ViewDesignViewModel x:Name="viewModel" />
+        <viewModel:DesignEditor x:Name="viewModel" />
     </Page.DataContext>
     <Page.Resources>
         <other:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />

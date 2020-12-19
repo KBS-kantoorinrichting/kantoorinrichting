@@ -21,7 +21,7 @@ using Polygon = System.Windows.Shapes.Polygon;
 
 namespace Designer.ViewModel
 {
-    public class ViewDesignViewModel : INotifyPropertyChanged
+    public class DesignEditor : INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -164,13 +164,13 @@ namespace Designer.ViewModel
         private DistanceLine _plexiLine;
 
         //Special constructor for unit tests
-        public ViewDesignViewModel(Design design)
+        public DesignEditor(Design design)
         {
             SetDesign(design);
             Products = LoadProducts();
         }
 
-        public ViewDesignViewModel()
+        public DesignEditor()
         {
             GotoDesigns = new PageCommand(() => {
                 DesignCatalog DesignCatalog = new DesignCatalog();

@@ -22,13 +22,13 @@ namespace DesignerTest {
 
         [Test]
         public void LoadDesigns_Count() {
-            List<Design> designs = DesignCatalogModel.LoadDesigns();
+            List<Design> designs = ViewDesigns.LoadDesigns();
             Assert.AreEqual(4, designs.Count);
         }
 
         [Test]
         public void LoadDesigns_Contains() {
-            List<Design> designs = DesignCatalogModel.LoadDesigns();
+            List<Design> designs = ViewDesigns.LoadDesigns();
             Assert.Contains(Design1, designs);
             Assert.Contains(Design2, designs);
             Assert.Contains(Design3, designs);
@@ -49,11 +49,11 @@ namespace DesignerTest {
         protected override List<Room> Rooms => new List<Room> {Room1, Room2};
         protected override List<Design> Designs => new List<Design> {Design1, Design2};
         
-        private DesignCatalogModel _designModel;
+        private ViewDesigns _designModel;
 
         [SetUp]
         public void Setup() {
-            _designModel = new DesignCatalogModel();
+            _designModel = new ViewDesigns();
         }
 
         [Test]

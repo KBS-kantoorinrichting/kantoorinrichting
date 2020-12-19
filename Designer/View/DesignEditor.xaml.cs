@@ -7,7 +7,7 @@ namespace Designer.View {
     /// Interaction logic for ViewDesignPage.xaml
     /// </summary>
     public partial class ViewDesignPage : Page {
-        private ViewDesignViewModel ViewModel => DataContext as ViewDesignViewModel;
+        private DesignEditor ViewModel => DataContext as DesignEditor;
 
         public ViewDesignPage(Design design) {
             InitializeComponent();

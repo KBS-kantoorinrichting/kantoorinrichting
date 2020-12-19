@@ -14,7 +14,7 @@
 
 
     <Page.DataContext>
-        <viewModel:RoomTemplateViewModel />
+        <viewModel:RoomTemplate />
     </Page.DataContext>
     <Page.Resources>
         <designer:ImagePathConverter x:Key="ImagePathConverter"/>

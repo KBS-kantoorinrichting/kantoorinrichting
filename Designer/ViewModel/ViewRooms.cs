@@ -16,7 +16,7 @@ using Polygon = System.Windows.Shapes.Polygon;
 
 namespace Designer.ViewModel
 {
-    class RoomOverviewViewModel : INotifyPropertyChanged
+    class ViewRooms : INotifyPropertyChanged
     {
 
         public event PropertyChangedEventHandler PropertyChanged;
@@ -26,7 +26,7 @@ namespace Designer.ViewModel
         public ArgumentCommand<int> UpdateCommand { get; set; }
         public Dictionary<Room, Canvas> Rooms { get; set; }
         public SnackbarMessageQueue MessageQueue { get; set; }
-        public RoomOverviewViewModel()
+        public ViewRooms()
         {
             GotoRoomTemplate = new PageCommand(() => new RoomTemplateView());
             GotoRoomEditor = new PageCommand(() => new RoomEditorView());

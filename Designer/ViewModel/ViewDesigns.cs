@@ -12,7 +12,7 @@ using Models;
 using Services;
 
 namespace Designer.ViewModel {
-    public class DesignCatalogModel : INotifyPropertyChanged {
+    public class ViewDesigns : INotifyPropertyChanged {
         //Wordt aangeroepen wanneer er eem design geselecteerd is
         public event EventHandler<BasicEventArgs<Design>> DesignSelected;
         public event PropertyChangedEventHandler PropertyChanged;
@@ -59,7 +59,7 @@ namespace Designer.ViewModel {
             set => GotoDesign(value);
         }
 
-        public DesignCatalogModel() {
+        public ViewDesigns() {
             Navigator = Navigator.Instance;
             Rooms = LoadRooms();
             EditCommand = new ArgumentCommand<Design>(design =>

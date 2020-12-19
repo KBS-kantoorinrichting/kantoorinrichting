@@ -12,7 +12,7 @@
     WindowHeight="-1">
 
     <Page.DataContext>
-        <viewModel:RoomOverviewViewModel x:Name="viewModel" />
+        <viewModel:ViewRooms x:Name="viewModel" />
     </Page.DataContext>
 
     <Grid>

@@ -7,7 +7,7 @@ using System.Windows;
 
 namespace Designer.ViewModel
 {
-    public class HomeViewModel : INotifyPropertyChanged
+    public class Home : INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -18,7 +18,7 @@ namespace Designer.ViewModel
         public BasicCommand GotoProducts { get; set; }
         public BasicCommand GotoRooms { get; set; }
 
-        public HomeViewModel() {
+        public Home() {
             GotoDesigns = new PageCommand(() => {
                 DesignCatalog DesignCatalog = new DesignCatalog();
                 DesignCatalog.DesignSelected += (o, e) =>

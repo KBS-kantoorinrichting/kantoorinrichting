@@ -25,7 +25,7 @@ using MaterialDesignThemes.Wpf;
 
 namespace Designer.ViewModel
 {
-    public class RoomEditorViewModel : INotifyPropertyChanged
+    public class RoomEditor : INotifyPropertyChanged
     {
         public string Name { get; set; }
         public SnackbarMessageQueue MessageQueue { get; set; }
@@ -56,12 +56,12 @@ namespace Designer.ViewModel
         private double CanvasWidth = 2000;
 
         // Constructor specially for unit testing
-        public RoomEditorViewModel(string name)
+        public RoomEditor(string name)
         {
             Name = name;
         }
 
-        public RoomEditorViewModel()
+        public RoomEditor()
         {
             GridLines = new List<Line>();
             RectangleDictionary = new Dictionary<Position, Rectangle>();
