@@ -158,9 +158,9 @@
         <Grid Grid.Column="1" Margin="0,0,10,0">
             <Grid>
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="200" />
-                    <RowDefinition Height="600" />
-                    <RowDefinition Height="*" />
+                    <RowDefinition Height="3*" />
+                    <RowDefinition Height="4*" />
+                    <RowDefinition Height="3*" />
                 </Grid.RowDefinitions>
                 <materialDesign:Card Grid.Row="0">
                     <StackPanel>

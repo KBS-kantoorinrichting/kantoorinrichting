@@ -4,11 +4,12 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:s="clr-namespace:System;assembly=mscorlib"
+    xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
     xmlns:viewModel="clr-namespace:Designer.ViewModel"
     xmlns:designer="clr-namespace:Designer"
     x:Class="Designer.View.RoomTemplateView"
     mc:Ignorable="d"
-    d:DesignHeight="720" d:DesignWidth="1280"
+    WindowHeight="-1"
     Title="KantoorInrichting - Ruimte Editor">
 
 
@@ -19,50 +20,34 @@
         <designer:ImagePathConverter x:Key="ImagePathConverter"/>
     </Page.Resources>
 
-    <Grid Margin="0,0,0,0">
-        <Grid.RowDefinitions>
-            <RowDefinition Height="29*"/>
-            <RowDefinition Height="31*"/>
-        </Grid.RowDefinitions>
+    <Grid>
         <!--Naam Pagina-->
-        <Label Content="Ruimte Toevoegen" HorizontalAlignment="Left" FontSize="35" Margin="10,10,0,0"
-               VerticalAlignment="Top" />
+        <Label 
+            Content="Ruimte Toevoegen" 
+            HorizontalAlignment="Left" 
+            FontSize="35" 
+            Margin="10,10,0,0"
+            VerticalAlignment="Top" />
 
         <!--naam invoerveld -->
-        <TextBox MaxLength="25" HorizontalAlignment="Left" Margin="46,262,0,0"
-                 TextWrapping="Wrap" VerticalAlignment="Top" Width="178"
-                 Text="{Binding Name, UpdateSourceTrigger = PropertyChanged}"/>
+        <TextBox 
+            MaxLength="25" HorizontalAlignment="Left" Margin="20,80,0,0"
+            TextWrapping="Wrap" VerticalAlignment="Top" Width="250"
+            Style="{StaticResource MaterialDesignOutlinedTextFieldTextBox}"
+            materialDesign:HintAssist.Hint="Naam van de ruimte"
+            Text="{Binding Name, UpdateSourceTrigger = PropertyChanged}" />
 
-        <Label Content="Ruimte naam:" HorizontalAlignment="Left" Margin="39,225,0,0" VerticalAlignment="Top" Width="114" />
-
-        <!-- template knoppen -->
-
-
-        <Button BorderThickness="0" Command="{Binding TemplateButton}" Margin="326,86,554,137" Grid.RowSpan="2" Background="{x:Null}" BorderBrush="{x:Null}" Foreground="{x:Null}">
-            <Button.CommandParameter>
-                <s:Int32>0</s:Int32>
-            </Button.CommandParameter>
-            <StackPanel>
-                <Image Name="TemplateButton0" Source="{Binding Image0, Converter={StaticResource ImagePathConverter}}"  
-                       Stretch="Fill" HorizontalAlignment="Left" VerticalAlignment="Top" />
-            </StackPanel>
-        </Button>
-
-
-        <Button BorderThickness="0" Command="{Binding TemplateButton}" Margin="777,86,103,137" Grid.RowSpan="2" Background="{x:Null}" BorderBrush="{x:Null}" Foreground="{x:Null}">
-            <Button.CommandParameter>
-                <s:Int32>1</s:Int32>
-            </Button.CommandParameter>
-            <StackPanel>
-                <Image Name="TemplateButton1" Source="{Binding Image1, Converter={StaticResource ImagePathConverter}}" />
-            </StackPanel>
-        </Button>
-
-        <!--Breedte invoerveld-->
-        <Label Content="Ruimte breedte:" HorizontalAlignment="Left" Margin="42,324,0,0" VerticalAlignment="Top" Grid.RowSpan="2" Width="278" />
-
-        <TextBox Name="Width" MaxLength="25" HorizontalAlignment="Left" Margin="49,39,0,0"
-                 TextWrapping="Wrap" VerticalAlignment="Top" Width="88" Grid.Row="1">
+        <!--breedte invoer -->
+        <TextBox 
+            Name="Width" 
+            MaxLength="25" 
+            HorizontalAlignment="Left" 
+            Margin="20,150,0,0"
+            Style="{StaticResource MaterialDesignOutlinedTextFieldTextBox}"
+            materialDesign:HintAssist.Hint="Breedte"
+            TextWrapping="Wrap" 
+            VerticalAlignment="Top" 
+            Width="150">
             <TextBox.Text>
                 <Binding Path="Width" UpdateSourceTrigger="PropertyChanged">
                     <Binding.ValidationRules>
@@ -71,16 +56,18 @@
                 </Binding>
             </TextBox.Text>
         </TextBox>
-
-        <TextBlock Foreground="Red" Text="{Binding (Validation.Errors)[0].ErrorContent, ElementName=Width}"
-                   Margin="54,73,974,185" Grid.Row="1" />
-
-
-        <!--Lengte invoerveld-->
-        <Label Content="Ruimte lengte" HorizontalAlignment="Left" Margin="49,199,0,0" VerticalAlignment="Top" Grid.Row="1" Width="246" />
-
-        <TextBox Name="Length" MaxLength="25" HorizontalAlignment="Left" Margin="51,240,0,0" TextWrapping="Wrap"
-                 VerticalAlignment="Top" Width="85" Grid.Row="1">
+        
+        <!--lengte invoer -->
+        <TextBox 
+            Name="Length" 
+            MaxLength="25" 
+            HorizontalAlignment="Left" 
+            Margin="20,220,0,0"
+            Style="{StaticResource MaterialDesignOutlinedTextFieldTextBox}"
+            materialDesign:HintAssist.Hint="Lengte"
+            TextWrapping="Wrap" 
+            VerticalAlignment="Top" 
+            Width="150">
             <TextBox.Text>
                 <Binding Path="Length" UpdateSourceTrigger="PropertyChanged">
                     <Binding.ValidationRules>
@@ -90,15 +77,64 @@
             </TextBox.Text>
         </TextBox>
 
-        <TextBlock Foreground="Red" Text="{Binding (Validation.Errors)[0].ErrorContent, ElementName=Length}"
-                   Margin="55,279,978,20" Grid.Row="1" />
+        <Label 
+            Content="Selecteer een template" 
+            HorizontalAlignment="Left" 
+            FontSize="18" 
+            Margin="20,270,0,0"
+            VerticalAlignment="Top" />
 
-        <!--Opslaan knop-->
-        <Button Content="Opslaan" Background="Bisque" FontFamily="Verdana" FontSize="30"
-                HorizontalAlignment="Left" VerticalAlignment="Top" Height="52" Width="190"
-                RenderTransformOrigin="0.906,0.372" Margin="698,240,0,0"
-                Command="{Binding Submit}" Grid.Row="1" />
-        <TextBlock HorizontalAlignment="Left" Margin="706,51,0,0" Text="Kies een Template" TextWrapping="Wrap" VerticalAlignment="Top"/>
+        <!-- template knoppen -->
+        <Button 
+            BorderThickness="0" 
+            Command="{Binding TemplateButton}" 
+            Grid.Column="1"  
+            Background="{x:Null}" 
+            BorderBrush="{x:Null}" 
+            Foreground="{x:Null}"  
+            Margin="20,280,0,0" 
+            Height="250" 
+            MaxWidth="250" 
+            HorizontalAlignment="Left">
+            <Button.CommandParameter>
+                <s:Int32>0</s:Int32>
+            </Button.CommandParameter>
+            <StackPanel>
+                <Image Name="TemplateButton0" Source="{Binding Image0, Converter={StaticResource ImagePathConverter}}" />
+            </StackPanel>
+        </Button>
+        <Button 
+            BorderThickness="0" 
+            Command="{Binding TemplateButton}" 
+            Grid.Column="2" 
+            Background="{x:Null}" 
+            BorderBrush="{x:Null}" 
+            Foreground="{x:Null}"  
+            Margin="270,280,0,0" 
+            Height="250" 
+            MaxWidth="250" 
+            HorizontalAlignment="Left">
+            <Button.CommandParameter>
+                <s:Int32>1</s:Int32>
+            </Button.CommandParameter>
+            <StackPanel>
+                <Image Name="TemplateButton1" Source="{Binding Image1, Converter={StaticResource ImagePathConverter}}" />
+            </StackPanel>
+        </Button>
 
+        <Button
+            Style="{StaticResource MaterialDesignFloatingActionAccentButton}"
+            ToolTip="Ruimte opslaan"
+            HorizontalAlignment="Right"
+            VerticalAlignment="Bottom"
+            Margin="0,0,20,20"
+            Command="{Binding Submit}">
+            <materialDesign:PackIcon
+                Kind="ContentSave"
+                Height="32"
+                Width="32" />
+        </Button>
+
+        <materialDesign:Snackbar HorizontalAlignment="Stretch" MessageQueue="{Binding MessageQueue}" />
     </Grid>
 </Page>
