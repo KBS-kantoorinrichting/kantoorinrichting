@@ -780,6 +780,11 @@ namespace Designer.ViewModel
             RoomPlacements = design.Room.RoomPlacements;
             ProductPlacements ??= new List<ProductPlacement>();
             _productOverview = new Dictionary<Product, ProductData>();
+
+            foreach (ProductPlacement placement in ProductPlacements)
+            {
+                AddToOverview(placement.Product);
+            }
             //Wanneer niet in test env render die de ruimte
             if (Editor != null)
             {
