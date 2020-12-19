@@ -23,6 +23,7 @@ namespace Designer.ViewModel {
         public bool OnRooms => Navigator.CurrentPage.GetType() == typeof(RoomOverview);
 
         public MainViewModel() {
+            Application.Current.MainWindow.WindowState = WindowState.Maximized;
             //Maak de db connectie aan
             RoomService.Instance.Get(0);
             
@@ -43,6 +44,7 @@ namespace Designer.ViewModel {
                 return DesignCatalog;
             });
             GotoRooms = new PageCommand(() => new RoomOverview());
+
         }
 
         private void OnNavigatorChange(object o, PropertyChangedEventArgs e)
