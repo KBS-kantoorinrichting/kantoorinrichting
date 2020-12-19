@@ -39,7 +39,6 @@
 
         <!--breedte invoer -->
         <TextBox 
-            Name="Width" 
             MaxLength="25" 
             HorizontalAlignment="Left" 
             Margin="20,150,0,0"
@@ -59,7 +58,6 @@
         
         <!--lengte invoer -->
         <TextBox 
-            Name="Length" 
             MaxLength="25" 
             HorizontalAlignment="Left" 
             Margin="20,220,0,0"

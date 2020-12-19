@@ -11,7 +11,7 @@
              d:DesignHeight="130" d:DesignWidth="160">
 
     <UserControl.DataContext>
-        <viewModel:ViewDesignViewModel x:Name="viewModel"/>
+        <viewModel:ViewDesigns x:Name="viewModel"/>
     </UserControl.DataContext>
     <UserControl.Resources>
         <designer:ImagePathConverter x:Key="ImagePathConverter"/>

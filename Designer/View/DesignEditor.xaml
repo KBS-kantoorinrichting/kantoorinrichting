@@ -36,12 +36,14 @@
                                  Style="{DynamicResource MaterialDesignToolBar}"
                                  ClipToBounds="False">
 
-                            <Button Foreground="White" Command="{Binding GotoDesigns}">
+                            <Button Foreground="White" Command="{Binding GotoDesigns}"
+                                    ToolTip="Terug naar design overzicht">
                                 <materialDesign:PackIcon Kind="FolderOpen"
                                                          Height="15" />
                             </Button>
                             <Separator />
                             <ToggleButton Foreground="White"
+                                          ToolTip="Meetlat gebruiken"
                                           Style="{StaticResource MaterialDesignActionToggleButton}"
                                           Command="{Binding Measure}"
                                           IsChecked="{Binding Enabled, Mode=TwoWay}">
@@ -50,6 +52,7 @@
                             </ToggleButton>
                             <Separator />
                             <ToggleButton Foreground="White"
+                                          ToolTip="Plexiglas toevoegen"
                                           Style="{StaticResource MaterialDesignActionToggleButton}"
                                           Command="{Binding Plexiglass}"
                                           IsChecked="{Binding PlexiEnabled, Mode=TwoWay}">
@@ -58,6 +61,7 @@
                             </ToggleButton>
                             <Separator />
                             <ToggleButton Foreground="White"
+                                          ToolTip="Route aanmaken"
                                           Style="{StaticResource MaterialDesignActionToggleButton}"
                                           IsChecked="{Binding RouteEnabled, Mode=TwoWay}">
                                 <materialDesign:PackIcon Kind="Walk"
