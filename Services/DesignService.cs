@@ -9,7 +9,7 @@ namespace Services {
             get => _instance ??= new DesignService();
             set => _instance = value;
         }
-        
+
         protected override DbSet<Design> DbSet => RoomDesignContext.Instance.Designs;
         protected override DbContext DbContext => RoomDesignContext.Instance;
     }

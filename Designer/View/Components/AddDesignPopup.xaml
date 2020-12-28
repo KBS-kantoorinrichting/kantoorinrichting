@@ -3,7 +3,6 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:local="clr-namespace:Designer.View.Components"
              xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
              xmlns:utils="clr-namespace:Designer.Utils"
              mc:Ignorable="d"
@@ -39,7 +38,7 @@
                         UpdateSourceTrigger="PropertyChanged">
                         <Binding.ValidationRules>
                             <utils:StringNotEmpty
-                                ValidatesOnTargetUpdated="True" ObjectName="ontwerp" FieldName="naam"/>
+                                ValidatesOnTargetUpdated="True" ObjectName="ontwerp" FieldName="naam" />
                         </Binding.ValidationRules>
                     </Binding>
                 </TextBox.Text>
@@ -66,9 +65,9 @@
                         UpdateSourceTrigger="PropertyChanged">
                         <Binding.ValidationRules>
                             <utils:ObjectNotNull
-                                ValidatesOnTargetUpdated="True" ObjectName="ontwerp" FieldName="ruimte"/>
+                                ValidatesOnTargetUpdated="True" ObjectName="ontwerp" FieldName="ruimte" />
                         </Binding.ValidationRules>
-                    </Binding> 
+                    </Binding>
                 </ComboBox.Text>
             </ComboBox>
         </StackPanel>

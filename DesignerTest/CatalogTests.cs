@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
-using NUnit.Framework;
 using Designer.ViewModel;
 using Models;
+using NUnit.Framework;
 using ServicesTest;
 
 namespace DesignerTest {

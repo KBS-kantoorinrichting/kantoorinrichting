@@ -3,7 +3,6 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:local="clr-namespace:Designer.View"
     xmlns:ViewModel="clr-namespace:Designer.ViewModel"
     xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
     x:Class="Designer.View.HomeView"
@@ -27,11 +26,14 @@
                 Mode="PrimaryLight"
                 VerticalAlignment="Stretch">
                 <StackPanel Orientation="Vertical">
-                    <Image Margin="0" Source="\Resources\Images\Assets\home_meubels.jpg" Stretch="Fill" Height="291" Width="370"  />
-                    <StackPanel Grid.Row="1" Orientation="Vertical">
-                        <TextBlock Foreground="White" FontWeight="Medium" Text="{Binding TotalProducts}" FontSize="48" HorizontalAlignment="Center"/>
-                        <TextBlock Foreground="White" FontWeight="Medium" Text="Producten" FontSize="32" HorizontalAlignment="Center"/>
-                    
+                    <Image Margin="0" Source="\Resources\Images\Assets\home_meubels.jpg" Stretch="Fill" Height="291"
+                           Width="370" />
+                    <StackPanel Orientation="Vertical">
+                        <TextBlock Foreground="White" FontWeight="Medium" Text="{Binding TotalProducts}" FontSize="48"
+                                   HorizontalAlignment="Center" />
+                        <TextBlock Foreground="White" FontWeight="Medium" Text="Producten" FontSize="32"
+                                   HorizontalAlignment="Center" />
+
                         <Button
                             Style="{StaticResource MaterialDesignRaisedAccentButton}"
                             Width="233"
@@ -43,23 +45,26 @@
                             Command="{Binding GotoProducts}">
                             Ga naar alle producten
                         </Button>
-                    </StackPanel> 
+                    </StackPanel>
                 </StackPanel>
-                </materialDesign:ColorZone>
+            </materialDesign:ColorZone>
         </materialDesign:Card>
-        <materialDesign:Card 
+        <materialDesign:Card
             Grid.Column="1"
             Margin="30 0 0 0"
             Width="370">
             <materialDesign:ColorZone
                 Mode="PrimaryLight"
                 VerticalAlignment="Stretch">
-                <StackPanel Orientation="Vertical"> 
-                    <Image Margin="0" Source="\Resources\Images\Assets\home_ontwerpen.jpg" Stretch="Fill" Height="291" Width="370" />
-                    <StackPanel Grid.Row="1" Orientation="Vertical">
-                        <TextBlock Foreground="White" FontWeight="Medium" Text="{Binding TotalDesigns}" FontSize="48" HorizontalAlignment="Center"/>
-                        <TextBlock Foreground="White" FontWeight="Medium" Text="Ontwerpen" FontSize="32" HorizontalAlignment="Center"/>
-                    
+                <StackPanel Orientation="Vertical">
+                    <Image Margin="0" Source="\Resources\Images\Assets\home_ontwerpen.jpg" Stretch="Fill" Height="291"
+                           Width="370" />
+                    <StackPanel Orientation="Vertical">
+                        <TextBlock Foreground="White" FontWeight="Medium" Text="{Binding TotalDesigns}" FontSize="48"
+                                   HorizontalAlignment="Center" />
+                        <TextBlock Foreground="White" FontWeight="Medium" Text="Ontwerpen" FontSize="32"
+                                   HorizontalAlignment="Center" />
+
                         <Button
                             Style="{StaticResource MaterialDesignRaisedAccentButton}"
                             Width="233"
@@ -83,11 +88,13 @@
                 Mode="PrimaryLight"
                 VerticalAlignment="Stretch">
                 <StackPanel Orientation="Vertical">
-                    <Image Margin="0" Source="\Resources\Images\Assets\home_ruimtes.jpg"/>
-                    <StackPanel Grid.Row="1" Orientation="Vertical">
-                        <TextBlock Foreground="White" FontWeight="Medium" Text="{Binding TotalRooms}" FontSize="48" HorizontalAlignment="Center"/>
-                        <TextBlock Foreground="White" FontWeight="Medium" Text="Ruimtes" FontSize="32" HorizontalAlignment="Center"/>
-                    
+                    <Image Margin="0" Source="\Resources\Images\Assets\home_ruimtes.jpg" />
+                    <StackPanel Orientation="Vertical">
+                        <TextBlock Foreground="White" FontWeight="Medium" Text="{Binding TotalRooms}" FontSize="48"
+                                   HorizontalAlignment="Center" />
+                        <TextBlock Foreground="White" FontWeight="Medium" Text="Ruimtes" FontSize="32"
+                                   HorizontalAlignment="Center" />
+
                         <Button
                             Style="{StaticResource MaterialDesignRaisedAccentButton}"
                             Width="233"

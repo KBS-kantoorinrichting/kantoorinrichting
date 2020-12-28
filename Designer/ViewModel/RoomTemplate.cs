@@ -1,32 +1,17 @@
 ﻿using System;
 using System.ComponentModel;
-using System.Configuration;
+using System.Globalization;
 using System.Windows.Controls;
 using Designer.Other;
-using Designer.View;
+using MaterialDesignThemes.Wpf;
 using Models;
 using Services;
-using MaterialDesignThemes.Wpf;
 
 namespace Designer.ViewModel {
     public class RoomTemplate : INotifyPropertyChanged {
-        public string Name { get; set; }
-        public string Width { get; set; }
-        public string Length { get; set; }
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        public static int Template { get; set; }
         public static int x;
         public static int y;
         public static string Position;
-
-        // image toevoegen aan knop
-        public string Image0 { get; set; } = "Assets/Vierhoek_Clicked.jpg";
-        public string Image1 { get; set; } = "Assets/Hoekvormig.jpg";
-
-        public BasicCommand Submit { get; set; }
-        public BasicCommand TemplateButton { get; set; }
-        public SnackbarMessageQueue MessageQueue { get; set; }
 
         public RoomTemplate() {
             // submit command van submitknop
@@ -35,6 +20,21 @@ namespace Designer.ViewModel {
             TemplateButton = new ArgumentCommand<int>(SetTemplate);
             MessageQueue = new SnackbarMessageQueue();
         }
+
+        public string Name { get; set; }
+        public string Width { get; set; }
+        public string Length { get; set; }
+
+        public static int Template { get; set; }
+
+        // image toevoegen aan knop
+        public string Image0 { get; set; } = "Assets/Vierhoek_Clicked.jpg";
+        public string Image1 { get; set; } = "Assets/Hoekvormig.jpg";
+
+        public BasicCommand Submit { get; set; }
+        public BasicCommand TemplateButton { get; set; }
+        public SnackbarMessageQueue MessageQueue { get; set; }
+        public event PropertyChangedEventHandler PropertyChanged;
 
         private void OnPropertyChanged(string propertyName = "") {
             // herlaad de hele pagina
@@ -114,10 +114,9 @@ namespace Designer.ViewModel {
 
     // data type validatie voor de lengte
     public class StringToIntValidationRule : ValidationRule {
-        public override ValidationResult Validate(object value, System.Globalization.CultureInfo cultureInfo) {
-            if (value?.ToString() == null || value.ToString().Equals("")) {
+        public override ValidationResult Validate(object value, CultureInfo cultureInfo) {
+            if (value?.ToString() == null || value.ToString().Equals(""))
                 return new ValidationResult(false, "Dit veld is verplicht");
-            }
 
             bool isInt = int.TryParse(value?.ToString(), out int _);
             return new ValidationResult(isInt, isInt ? null : "Dit veld mag alleen cijfers bevatten.");

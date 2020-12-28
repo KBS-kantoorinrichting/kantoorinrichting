@@ -8,11 +8,10 @@ namespace DesignerTest {
         private static readonly RoomEditor ViewModel = new RoomEditor("test");
 
         [SetUp]
-        public void Init()
-        {
-            ViewModel.SelectedPoints.Add(new Position(0, 0));
+        public void Init() {
+            ViewModel.SelectedPoints.Add(new Position());
             ViewModel.SelectedPoints.Add(new Position(0, 150));
-            ViewModel.SelectedPoints.Add(new Position(150, 0));
+            ViewModel.SelectedPoints.Add(new Position(150));
             ViewModel.SelectedPoints.Add(new Position(150, 150));
         }
 
@@ -25,7 +24,7 @@ namespace DesignerTest {
         public void SaveRoomWithoutTemplate_SameAsReturn(string name, int width, int length) {
             // deze methode slaat de kamer op.
             Room room = RoomTemplate.SaveRoom(name, width, length);
-            
+
             Assert.NotNull(room);
             Assert.AreEqual(room.Name, name);
             Assert.AreEqual(room.Positions, Room.FromDimensions(width, length));
@@ -43,8 +42,7 @@ namespace DesignerTest {
         [TestCase("kamernaam_test12", 10, 150, 1)]
         [TestCase("kamernaam_test13", 1, 530, 1)]
         [TestCase("kamernaam_test14", 340, 69, 1)]
-        public void SaveRoomWithTemplate_SameAsReturn(string name, int width, int length, int template)
-        {
+        public void SaveRoomWithTemplate_SameAsReturn(string name, int width, int length, int template) {
             // deze methode slaat de kamer op.
             Room room = RoomTemplate.SaveRoom(name, width, length, template);
 
@@ -54,12 +52,12 @@ namespace DesignerTest {
             Assert.NotNull(room.Id);
         }
 
-      /*  [Test]
-        public void RoomFromList_SameAsReturn(IEnumerable<Position> positions)
-        {
-            string room = Room.FromList(positions);
-            niet mogelijk?
-        }*/
+        /*  [Test]
+          public void RoomFromList_SameAsReturn(IEnumerable<Position> positions)
+          {
+              string room = Room.FromList(positions);
+              niet mogelijk?
+          }*/
 
         [Test]
         [TestCase("kamernaam_test5", 40, 1000)]
@@ -72,14 +70,12 @@ namespace DesignerTest {
         [TestCase("kamernaam_test12", 10, 150)]
         [TestCase("kamernaam_test13", 1, 530)]
         [TestCase("kamernaam_test14", 340, 69)]
-        public void RoomFromDimensions_SameAsReturn(string name, int width, int length)
-        {
+        public void RoomFromDimensions_SameAsReturn(string name, int width, int length) {
             Room room = Room.FromDimensions(name, width, length);
 
             Assert.NotNull(room);
             Assert.AreEqual(room.Name, name);
-            Assert.AreEqual(room.Positions, Room.FromDimensions(width,length));
-
+            Assert.AreEqual(room.Positions, Room.FromDimensions(width, length));
         }
 
         // ui error
@@ -94,8 +90,7 @@ namespace DesignerTest {
         [TestCase("kamernaam_test12", 10, 150)]
         [TestCase("kamernaam_test13", 1, 530)]
         [TestCase("kamernaam_test14", 340, 69)]
-        public void MakeRoom_Test(string name, int width, int length)
-        {
+        public void MakeRoom_Test(string name, int width, int length) {
             //TODO
             Assert.Inconclusive("Deze test werkt niet!");
             Room room = Room.FromDimensions(name, width, length);
@@ -103,7 +98,6 @@ namespace DesignerTest {
 
             Assert.NotNull(revm.MakeRoom(room));
             Assert.AreEqual(revm.MakeRoom(room), room.Positions);
-
         }
 
         [Test]
@@ -112,14 +106,12 @@ namespace DesignerTest {
         [TestCase(46, 150, ExpectedResult = true)]
         [TestCase(50, 50, ExpectedResult = false)]
         [TestCase(150, 0, ExpectedResult = false)]
-        public bool RoomEditorViewModel_WithinSelectedPoints_ShouldReturnBoolean(int x, int y)
-        {
+        public bool RoomEditorViewModel_WithinSelectedPoints_ShouldReturnBoolean(int x, int y) {
             return ViewModel.WithinSelectedPoints(x, y);
         }
 
         [Test]
-        public void RoomEditorViewModel_CalculateNextPositionExample_ShouldReturnPosition()
-        {
+        public void RoomEditorViewModel_CalculateNextPositionExample_ShouldReturnPosition() {
             Position nextPosition = ViewModel.CalculateNextPositionFromAngle(180, 25, 50);
 
             Assert.IsNotNull(nextPosition);

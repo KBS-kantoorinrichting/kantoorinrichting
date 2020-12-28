@@ -19,7 +19,7 @@ namespace Services {
             Console.WriteLine("[RoomDesignContext] Currently running in: " + Environment.CurrentDirectory);
             //Load the .env file from the project root
             DotEnv.Config(true, Environment.CurrentDirectory + @"\.env");
-            var envReader = new EnvReader();
+            EnvReader envReader = new EnvReader();
 
             //Use the CONNECTION_STRING from the .env file
             return new DbContextOptionsBuilder()

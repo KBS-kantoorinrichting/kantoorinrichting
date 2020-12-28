@@ -1,120 +1,122 @@
 ﻿using Microsoft.EntityFrameworkCore.Migrations;
 
-namespace Services.Migrations
-{
-    public partial class InitialCreate : Migration
-    {
-        protected override void Up(MigrationBuilder migrationBuilder)
-        {
+namespace Services.Migrations {
+    public partial class InitialCreate : Migration {
+        protected override void Up(MigrationBuilder migrationBuilder) {
             migrationBuilder.CreateTable(
-                name: "Products",
-                columns: table => new
-                {
-                    ProductId = table.Column<int>(type: "int", nullable: false)
+                "Products",
+                table => new {
+                    ProductId = table.Column<int>("int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Price = table.Column<double>(type: "float", nullable: true),
-                    Photo = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Width = table.Column<int>(type: "int", nullable: false),
-                    Length = table.Column<int>(type: "int", nullable: false)
+                    Name = table.Column<string>("nvarchar(max)", nullable: true),
+                    Price = table.Column<double>("float", nullable: true),
+                    Photo = table.Column<string>("nvarchar(max)", nullable: true),
+                    Width = table.Column<int>("int", nullable: false),
+                    Length = table.Column<int>("int", nullable: false)
                 },
-                constraints: table =>
-                {
+                constraints: table => {
                     table.PrimaryKey("PK_Products", x => x.ProductId);
-                });
+                }
+            );
 
             migrationBuilder.CreateTable(
-                name: "Rooms",
-                columns: table => new
-                {
-                    RoomId = table.Column<int>(type: "int", nullable: false)
+                "Rooms",
+                table => new {
+                    RoomId = table.Column<int>("int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Width = table.Column<int>(type: "int", nullable: false),
-                    Length = table.Column<int>(type: "int", nullable: false)
+                    Name = table.Column<string>("nvarchar(max)", nullable: true),
+                    Width = table.Column<int>("int", nullable: false),
+                    Length = table.Column<int>("int", nullable: false)
                 },
-                constraints: table =>
-                {
+                constraints: table => {
                     table.PrimaryKey("PK_Rooms", x => x.RoomId);
-                });
+                }
+            );
 
             migrationBuilder.CreateTable(
-                name: "Designs",
-                columns: table => new
-                {
-                    DesignId = table.Column<int>(type: "int", nullable: false)
+                "Designs",
+                table => new {
+                    DesignId = table.Column<int>("int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    RoomId = table.Column<int>(type: "int", nullable: false)
+                    Name = table.Column<string>("nvarchar(max)", nullable: true),
+                    RoomId = table.Column<int>("int", nullable: false)
                 },
-                constraints: table =>
-                {
+                constraints: table => {
                     table.PrimaryKey("PK_Designs", x => x.DesignId);
                     table.ForeignKey(
-                        name: "FK_Designs_Rooms_RoomId",
-                        column: x => x.RoomId,
-                        principalTable: "Rooms",
-                        principalColumn: "RoomId",
-                        onDelete: ReferentialAction.Cascade);
-                });
+                        "FK_Designs_Rooms_RoomId",
+                        x => x.RoomId,
+                        "Rooms",
+                        "RoomId",
+                        onDelete: ReferentialAction.Cascade
+                    );
+                }
+            );
 
             migrationBuilder.CreateTable(
-                name: "ProductPlacements",
-                columns: table => new
-                {
-                    ProductPlacementId = table.Column<int>(type: "int", nullable: false)
+                "ProductPlacements",
+                table => new {
+                    ProductPlacementId = table.Column<int>("int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    X = table.Column<int>(type: "int", nullable: false),
-                    Y = table.Column<int>(type: "int", nullable: false),
-                    ProductId = table.Column<int>(type: "int", nullable: false),
-                    DesignId = table.Column<int>(type: "int", nullable: false)
+                    X = table.Column<int>("int", nullable: false),
+                    Y = table.Column<int>("int", nullable: false),
+                    ProductId = table.Column<int>("int", nullable: false),
+                    DesignId = table.Column<int>("int", nullable: false)
                 },
-                constraints: table =>
-                {
+                constraints: table => {
                     table.PrimaryKey("PK_ProductPlacements", x => x.ProductPlacementId);
                     table.ForeignKey(
-                        name: "FK_ProductPlacements_Designs_DesignId",
-                        column: x => x.DesignId,
-                        principalTable: "Designs",
-                        principalColumn: "DesignId",
-                        onDelete: ReferentialAction.Cascade);
+                        "FK_ProductPlacements_Designs_DesignId",
+                        x => x.DesignId,
+                        "Designs",
+                        "DesignId",
+                        onDelete: ReferentialAction.Cascade
+                    );
                     table.ForeignKey(
-                        name: "FK_ProductPlacements_Products_ProductId",
-                        column: x => x.ProductId,
-                        principalTable: "Products",
-                        principalColumn: "ProductId",
-                        onDelete: ReferentialAction.Cascade);
-                });
+                        "FK_ProductPlacements_Products_ProductId",
+                        x => x.ProductId,
+                        "Products",
+                        "ProductId",
+                        onDelete: ReferentialAction.Cascade
+                    );
+                }
+            );
 
             migrationBuilder.CreateIndex(
-                name: "IX_Designs_RoomId",
-                table: "Designs",
-                column: "RoomId");
+                "IX_Designs_RoomId",
+                "Designs",
+                "RoomId"
+            );
 
             migrationBuilder.CreateIndex(
-                name: "IX_ProductPlacements_DesignId",
-                table: "ProductPlacements",
-                column: "DesignId");
+                "IX_ProductPlacements_DesignId",
+                "ProductPlacements",
+                "DesignId"
+            );
 
             migrationBuilder.CreateIndex(
-                name: "IX_ProductPlacements_ProductId",
-                table: "ProductPlacements",
-                column: "ProductId");
+                "IX_ProductPlacements_ProductId",
+                "ProductPlacements",
+                "ProductId"
+            );
         }
 
-        protected override void Down(MigrationBuilder migrationBuilder)
-        {
+        protected override void Down(MigrationBuilder migrationBuilder) {
             migrationBuilder.DropTable(
-                name: "ProductPlacements");
+                "ProductPlacements"
+            );
 
             migrationBuilder.DropTable(
-                name: "Designs");
+                "Designs"
+            );
 
             migrationBuilder.DropTable(
-                name: "Products");
+                "Products"
+            );
 
             migrationBuilder.DropTable(
-                name: "Rooms");
+                "Rooms"
+            );
         }
     }
 }

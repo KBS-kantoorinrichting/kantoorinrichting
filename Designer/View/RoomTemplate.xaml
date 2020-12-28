@@ -17,20 +17,20 @@
         <viewModel:RoomTemplate />
     </Page.DataContext>
     <Page.Resources>
-        <designer:ImagePathConverter x:Key="ImagePathConverter"/>
+        <designer:ImagePathConverter x:Key="ImagePathConverter" />
     </Page.Resources>
 
     <Grid>
         <!--Naam Pagina-->
-        <Label 
-            Content="Ruimte Toevoegen" 
-            HorizontalAlignment="Left" 
-            FontSize="35" 
+        <Label
+            Content="Ruimte Toevoegen"
+            HorizontalAlignment="Left"
+            FontSize="35"
             Margin="10,10,0,0"
             VerticalAlignment="Top" />
 
         <!--naam invoerveld -->
-        <TextBox 
+        <TextBox
             MaxLength="25" HorizontalAlignment="Left" Margin="20,80,0,0"
             TextWrapping="Wrap" VerticalAlignment="Top" Width="250"
             Style="{StaticResource MaterialDesignOutlinedTextFieldTextBox}"
@@ -38,14 +38,14 @@
             Text="{Binding Name, UpdateSourceTrigger = PropertyChanged}" />
 
         <!--breedte invoer -->
-        <TextBox 
-            MaxLength="25" 
-            HorizontalAlignment="Left" 
+        <TextBox
+            MaxLength="25"
+            HorizontalAlignment="Left"
             Margin="20,150,0,0"
             Style="{StaticResource MaterialDesignOutlinedTextFieldTextBox}"
             materialDesign:HintAssist.Hint="Breedte"
-            TextWrapping="Wrap" 
-            VerticalAlignment="Top" 
+            TextWrapping="Wrap"
+            VerticalAlignment="Top"
             Width="150">
             <TextBox.Text>
                 <Binding Path="Width" UpdateSourceTrigger="PropertyChanged">
@@ -55,16 +55,16 @@
                 </Binding>
             </TextBox.Text>
         </TextBox>
-        
+
         <!--lengte invoer -->
-        <TextBox 
-            MaxLength="25" 
-            HorizontalAlignment="Left" 
+        <TextBox
+            MaxLength="25"
+            HorizontalAlignment="Left"
             Margin="20,220,0,0"
             Style="{StaticResource MaterialDesignOutlinedTextFieldTextBox}"
             materialDesign:HintAssist.Hint="Lengte"
-            TextWrapping="Wrap" 
-            VerticalAlignment="Top" 
+            TextWrapping="Wrap"
+            VerticalAlignment="Top"
             Width="150">
             <TextBox.Text>
                 <Binding Path="Length" UpdateSourceTrigger="PropertyChanged">
@@ -75,24 +75,24 @@
             </TextBox.Text>
         </TextBox>
 
-        <Label 
-            Content="Selecteer een template" 
-            HorizontalAlignment="Left" 
-            FontSize="18" 
+        <Label
+            Content="Selecteer een template"
+            HorizontalAlignment="Left"
+            FontSize="18"
             Margin="20,270,0,0"
             VerticalAlignment="Top" />
 
         <!-- template knoppen -->
-        <Button 
-            BorderThickness="0" 
-            Command="{Binding TemplateButton}" 
-            Grid.Column="1"  
-            Background="{x:Null}" 
-            BorderBrush="{x:Null}" 
-            Foreground="{x:Null}"  
-            Margin="20,280,0,0" 
-            Height="250" 
-            MaxWidth="250" 
+        <Button
+            BorderThickness="0"
+            Command="{Binding TemplateButton}"
+            Grid.Column="1"
+            Background="{x:Null}"
+            BorderBrush="{x:Null}"
+            Foreground="{x:Null}"
+            Margin="20,280,0,0"
+            Height="250"
+            MaxWidth="250"
             HorizontalAlignment="Left">
             <Button.CommandParameter>
                 <s:Int32>0</s:Int32>
@@ -101,16 +101,16 @@
                 <Image Name="TemplateButton0" Source="{Binding Image0, Converter={StaticResource ImagePathConverter}}" />
             </StackPanel>
         </Button>
-        <Button 
-            BorderThickness="0" 
-            Command="{Binding TemplateButton}" 
-            Grid.Column="2" 
-            Background="{x:Null}" 
-            BorderBrush="{x:Null}" 
-            Foreground="{x:Null}"  
-            Margin="270,280,0,0" 
-            Height="250" 
-            MaxWidth="250" 
+        <Button
+            BorderThickness="0"
+            Command="{Binding TemplateButton}"
+            Grid.Column="2"
+            Background="{x:Null}"
+            BorderBrush="{x:Null}"
+            Foreground="{x:Null}"
+            Margin="270,280,0,0"
+            Height="250"
+            MaxWidth="250"
             HorizontalAlignment="Left">
             <Button.CommandParameter>
                 <s:Int32>1</s:Int32>

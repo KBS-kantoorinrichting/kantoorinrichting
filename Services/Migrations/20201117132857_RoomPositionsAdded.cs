@@ -1,45 +1,47 @@
 ﻿using Microsoft.EntityFrameworkCore.Migrations;
 
-namespace Services.Migrations
-{
-    public partial class RoomPositionsAdded : Migration
-    {
-        protected override void Up(MigrationBuilder migrationBuilder)
-        {
+namespace Services.Migrations {
+    public partial class RoomPositionsAdded : Migration {
+        protected override void Up(MigrationBuilder migrationBuilder) {
             migrationBuilder.DropColumn(
-                name: "Length",
-                table: "Rooms");
+                "Length",
+                "Rooms"
+            );
 
             migrationBuilder.DropColumn(
-                name: "Width",
-                table: "Rooms");
+                "Width",
+                "Rooms"
+            );
 
             migrationBuilder.AddColumn<string>(
-                name: "Positions",
-                table: "Rooms",
-                type: "nvarchar(max)",
-                nullable: true);
+                "Positions",
+                "Rooms",
+                "nvarchar(max)",
+                nullable: true
+            );
         }
 
-        protected override void Down(MigrationBuilder migrationBuilder)
-        {
+        protected override void Down(MigrationBuilder migrationBuilder) {
             migrationBuilder.DropColumn(
-                name: "Positions",
-                table: "Rooms");
+                "Positions",
+                "Rooms"
+            );
 
             migrationBuilder.AddColumn<int>(
-                name: "Length",
-                table: "Rooms",
-                type: "int",
+                "Length",
+                "Rooms",
+                "int",
                 nullable: false,
-                defaultValue: 0);
+                defaultValue: 0
+            );
 
             migrationBuilder.AddColumn<int>(
-                name: "Width",
-                table: "Rooms",
-                type: "int",
+                "Width",
+                "Rooms",
+                "int",
                 nullable: false,
-                defaultValue: 0);
+                defaultValue: 0
+            );
         }
     }
 }

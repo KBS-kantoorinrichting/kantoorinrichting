@@ -1,14 +1,11 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Models;
 
-namespace Services
-{
-    public class RoomPlacementService : BasicService<RoomPlacement>
-    {
+namespace Services {
+    public class RoomPlacementService : BasicService<RoomPlacement> {
         private static RoomPlacementService _instance;
 
-        public static RoomPlacementService Instance
-        {
+        public static RoomPlacementService Instance {
             get => _instance ??= new RoomPlacementService();
             set => _instance = value;
         }

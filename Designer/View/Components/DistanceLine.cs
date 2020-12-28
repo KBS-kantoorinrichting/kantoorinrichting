@@ -8,12 +8,29 @@ using Line = System.Windows.Shapes.Line;
 
 namespace Designer.View.Components {
     public class DistanceLine {
-        private Line _line;
-        private Line _line2;
-        private TextBlock _textBlock;
-        private string _prefix;
+        private readonly Line _line;
+        private readonly Line _line2;
         private Position _p1;
         private Position _p2;
+        private readonly string _prefix;
+        private readonly TextBlock _textBlock;
+
+        public DistanceLine(Position p1, Position p2, string prefix = "") {
+            _p1 = p1;
+            _p2 = p2;
+            _line = new Line();
+            _line2 = new Line();
+            _textBlock = new TextBlock();
+            _prefix = prefix;
+
+
+            _line.Stroke = Brushes.White;
+            _line.StrokeThickness = 3;
+            _line2.Stroke = Brushes.Black;
+            _line2.StrokeThickness = 1;
+            _textBlock.Foreground = new SolidColorBrush(Colors.Black);
+            _textBlock.Background = new SolidColorBrush(Colors.White);
+        }
 
         public Position P1 {
             get => _p1;
@@ -32,23 +49,6 @@ namespace Designer.View.Components {
         }
 
         public bool Shows { get; private set; }
-
-        public DistanceLine(Position p1, Position p2, string prefix = "") {
-            _p1 = p1;
-            _p2 = p2;
-            _line = new Line();
-            _line2 = new Line();
-            _textBlock = new TextBlock();
-            _prefix = prefix;
-
-
-            _line.Stroke = Brushes.White;
-            _line.StrokeThickness = 3;
-            _line2.Stroke = Brushes.Black;
-            _line2.StrokeThickness = 1;
-            _textBlock.Foreground = new SolidColorBrush(Colors.Black);
-            _textBlock.Background = new SolidColorBrush(Colors.White);
-        }
 
         /**
          * Renders the line on the canvas
@@ -106,7 +106,7 @@ namespace Designer.View.Components {
          * Measaures the length of the text, this is needed to properly rotate the text block
          */
         private Size MeasureString() {
-            var formattedText = new FormattedText(
+            FormattedText formattedText = new FormattedText(
                 _textBlock.Text,
                 CultureInfo.CurrentCulture,
                 FlowDirection.LeftToRight,
@@ -126,9 +126,7 @@ namespace Designer.View.Components {
          * Generate the text is the correct format
          */
         private static string FormatText(double distance) {
-            if (distance < 100) {
-                return distance.ToString("F0") + " cm";
-            }
+            if (distance < 100) return distance.ToString("F0") + " cm";
 
             return (distance / 100).ToString("F2") + " m";
         }

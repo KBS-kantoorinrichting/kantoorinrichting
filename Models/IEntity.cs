@@ -17,6 +17,6 @@ namespace Models {
         //
         // public override int GetHashCode() => Variables.GetHashCode();
 
-        public override string ToString() => Variables.ToString();
+        public override string ToString() { return Variables.ToString(); }
     }
 }

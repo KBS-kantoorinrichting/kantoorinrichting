@@ -23,9 +23,7 @@ namespace Designer.Other {
 
         public bool CanExecute(object parameter) { return !Disabled; }
 
-        public virtual void Execute(object parameter) {
-            _action?.Invoke();
-        }
+        public virtual void Execute(object parameter) { _action?.Invoke(); }
 
         public event EventHandler CanExecuteChanged;
     }

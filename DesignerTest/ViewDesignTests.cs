@@ -1,9 +1,8 @@
-﻿using Designer.ViewModel;
-using NUnit.Framework;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Windows;
-using System.Windows.Media;
+using Designer.ViewModel;
 using Models;
+using NUnit.Framework;
 using ServicesTest;
 
 namespace DesignerTest {
@@ -31,7 +30,7 @@ namespace DesignerTest {
                 Id = 1,
                 Name = "test"
             };
-            ViewModel.Products = new List<Product>() {product};
+            ViewModel.Products = new List<Product> {product};
             //ViewModel.SelectProduct(product.ProductId);
             //Assert.AreEqual(ViewModel.SelectedProduct.ProductId, product.ProductId);
         }
@@ -85,15 +84,13 @@ namespace DesignerTest {
         }
 
         [Test]
-        [TestCase(0,0,5,0, ExpectedResult = false)]
-        [TestCase(0,0,6,0, ExpectedResult = true)]
-        [TestCase(0,0,0,5, ExpectedResult = false)]
-        [TestCase(0,0,0, 6, ExpectedResult = true)]
-        public bool ViewDesign_CheckProductCollisions_ReturnBoolean(int x1, int y1, int x2, int y2)
-        {
-            ViewModel.ProductPlacements = new List<ProductPlacement>()
-            {
-                new ProductPlacement(x2,y2,Product1, Design)
+        [TestCase(0, 0, 5, 0, ExpectedResult = false)]
+        [TestCase(0, 0, 6, 0, ExpectedResult = true)]
+        [TestCase(0, 0, 0, 5, ExpectedResult = false)]
+        [TestCase(0, 0, 0, 6, ExpectedResult = true)]
+        public bool ViewDesign_CheckProductCollisions_ReturnBoolean(int x1, int y1, int x2, int y2) {
+            ViewModel.ProductPlacements = new List<ProductPlacement> {
+                new ProductPlacement(x2, y2, Product1, Design)
             };
             return ViewModel.CheckProductCollisions(new ProductPlacement(x1, x2, Product1));
         }
@@ -107,15 +104,14 @@ namespace DesignerTest {
             ViewModel.SetDesign(Design);
             // TODO: needs fixing
             int increment = 5;
-            for (int i = 0; i < increment; i++) {
+            for (int i = 0; i < increment; i++)
                 ViewModel.AddToOverview(
-                    new Product() {
+                    new Product {
                         Id = i,
                         Price = price
                     }
                 );
-            }
-            
+
             Assert.AreEqual(price * increment, ViewModel.TotalPrice);
         }
     }
