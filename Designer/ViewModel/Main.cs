@@ -5,7 +5,7 @@ using Designer.View;
 using Services;
 
 namespace Designer.ViewModel {
-    public class MainViewModel : INotifyPropertyChanged {
+    public class Main : INotifyPropertyChanged {
         public event PropertyChangedEventHandler PropertyChanged;
 
         public BasicCommand GotoHome { get; set; }
@@ -19,10 +19,10 @@ namespace Designer.ViewModel {
 
         public bool OnHome => Navigator.CurrentPage.GetType() == typeof(HomeView);
         public bool OnProducts => Navigator.CurrentPage.GetType() == typeof(ViewProductsView);
-        public bool OnDesigns => Navigator.CurrentPage.GetType() == typeof(DesignCatalog);
-        public bool OnRooms => Navigator.CurrentPage.GetType() == typeof(RoomOverview);
+        public bool OnDesigns => Navigator.CurrentPage.GetType() == typeof(ViewDesignsView);
+        public bool OnRooms => Navigator.CurrentPage.GetType() == typeof(ViewRoomsView);
 
-        public MainViewModel() {
+        public Main() {
             Application.Current.MainWindow.WindowState = WindowState.Maximized;
             //Maak de db connectie aan
             RoomService.Instance.Get(0);
@@ -36,15 +36,14 @@ namespace Designer.ViewModel {
             GotoHome = new PageCommand(() => new HomeView());
             GotoProducts = new PageCommand(() => new ViewProductsView());
             GotoDesigns = new PageCommand(() => {
-                DesignCatalog DesignCatalog = new DesignCatalog();
+                ViewDesignsView DesignCatalog = new ViewDesignsView();
                 DesignCatalog.DesignSelected += (o, e) =>
                 {
-                    Navigator.Instance.Replace(new ViewDesignPage(e.Value));
+                    Navigator.Instance.Replace(new View.DesignEditorView(e.Value));
                 };
                 return DesignCatalog;
             });
-            GotoRooms = new PageCommand(() => new RoomOverview());
-
+            GotoRooms = new PageCommand(() => new ViewRoomsView());
         }
 
         private void OnNavigatorChange(object o, PropertyChangedEventArgs e)

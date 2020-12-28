@@ -7,7 +7,7 @@ using System.Windows;
 
 namespace Designer.ViewModel
 {
-    public class HomeViewModel : INotifyPropertyChanged
+    public class Home : INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -18,17 +18,17 @@ namespace Designer.ViewModel
         public BasicCommand GotoProducts { get; set; }
         public BasicCommand GotoRooms { get; set; }
 
-        public HomeViewModel() {
+        public Home() {
             GotoDesigns = new PageCommand(() => {
-                DesignCatalog DesignCatalog = new DesignCatalog();
+                ViewDesignsView DesignCatalog = new ViewDesignsView();
                 DesignCatalog.DesignSelected += (o, e) =>
                 {
-                    Navigator.Instance.Replace(new ViewDesignPage(e.Value));
+                    Navigator.Instance.Replace(new View.DesignEditorView(e.Value));
                 };
                 return DesignCatalog;
             });
             GotoProducts = new PageCommand(() => new ViewProductsView());
-            GotoRooms = new PageCommand(() => new RoomOverview());
+            GotoRooms = new PageCommand(() => new ViewRoomsView());
         }
     }
 }

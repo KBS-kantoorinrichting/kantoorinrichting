@@ -10,7 +10,7 @@ namespace DesignerTest {
 
         [Test]
         public void TestSaveProduct() {
-            Product productTest = ViewProductsViewModel.SaveProduct(
+            Product productTest = ViewProducts.SaveProduct(
                 TestProduct.Name, TestProduct.Price, TestProduct.Photo, TestProduct.Width, TestProduct.Length, TestProduct.HasPerson
             );
             

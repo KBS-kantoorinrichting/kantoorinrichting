@@ -9,7 +9,7 @@ using Services;
 using MaterialDesignThemes.Wpf;
 
 namespace Designer.ViewModel {
-    public class RoomTemplateViewModel : INotifyPropertyChanged {
+    public class RoomTemplate : INotifyPropertyChanged {
         public string Name { get; set; }
         public string Width { get; set; }
         public string Length { get; set; }
@@ -28,7 +28,7 @@ namespace Designer.ViewModel {
         public BasicCommand TemplateButton { get; set; }
         public SnackbarMessageQueue MessageQueue { get; set; }
 
-        public RoomTemplateViewModel() {
+        public RoomTemplate() {
             // submit command van submitknop
             Submit = new BasicCommand(SubmitRoom);
             // bind het templatecommand van de templateknoppen

@@ -4,7 +4,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:viewModel="clr-namespace:Designer.ViewModel"
-    x:Class="Designer.View.RoomOverview"
+    x:Class="Designer.View.ViewRoomsView"
     xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
     xmlns:view="clr-namespace:Designer.View"
     mc:Ignorable="d"
@@ -12,7 +12,7 @@
     WindowHeight="-1">
 
     <Page.DataContext>
-        <viewModel:RoomOverviewViewModel x:Name="viewModel" />
+        <viewModel:ViewRooms x:Name="viewModel" />
     </Page.DataContext>
 
     <Grid>

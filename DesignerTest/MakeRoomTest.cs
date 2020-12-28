@@ -5,7 +5,7 @@ using ServicesTest;
 
 namespace DesignerTest {
     public class MakeRoomTest : DatabaseTest {
-        private static readonly RoomEditorViewModel ViewModel = new RoomEditorViewModel("test");
+        private static readonly RoomEditor ViewModel = new RoomEditor("test");
 
         [SetUp]
         public void Init()
@@ -24,7 +24,7 @@ namespace DesignerTest {
         [TestCase("kamernaam_test4", 340, 69)]
         public void SaveRoomWithoutTemplate_SameAsReturn(string name, int width, int length) {
             // deze methode slaat de kamer op.
-            Room room = RoomTemplateViewModel.SaveRoom(name, width, length);
+            Room room = RoomTemplate.SaveRoom(name, width, length);
             
             Assert.NotNull(room);
             Assert.AreEqual(room.Name, name);
@@ -46,7 +46,7 @@ namespace DesignerTest {
         public void SaveRoomWithTemplate_SameAsReturn(string name, int width, int length, int template)
         {
             // deze methode slaat de kamer op.
-            Room room = RoomTemplateViewModel.SaveRoom(name, width, length, template);
+            Room room = RoomTemplate.SaveRoom(name, width, length, template);
 
             Assert.NotNull(room);
             Assert.AreEqual(room.Name, name);
@@ -99,7 +99,7 @@ namespace DesignerTest {
             //TODO
             Assert.Inconclusive("Deze test werkt niet!");
             Room room = Room.FromDimensions(name, width, length);
-            RoomEditorViewModel revm = new RoomEditorViewModel();
+            RoomEditor revm = new RoomEditor();
 
             Assert.NotNull(revm.MakeRoom(room));
             Assert.AreEqual(revm.MakeRoom(room), room.Positions);

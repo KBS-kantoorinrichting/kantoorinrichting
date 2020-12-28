@@ -23,7 +23,7 @@
     </Page.Resources>
 
     <Page.DataContext>
-        <viewModel:ViewProductsViewModel x:Name="viewModel" />
+        <viewModel:ViewProducts x:Name="viewModel" />
     </Page.DataContext>
    
     

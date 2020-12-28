@@ -10,7 +10,7 @@
       WindowHeight="-1"
       Title="RoomEditorView">
     <Page.DataContext>
-        <viewModel:RoomEditorViewModel x:Name="viewModel" />
+        <viewModel:RoomEditor x:Name="viewModel" />
     </Page.DataContext>
     <Grid>
         <TextBox

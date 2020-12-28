@@ -10,7 +10,7 @@ namespace DesignerTest {
     public class ViewDesignTests : DatabaseTest {
         private static readonly Room Room = Room.FromDimensions("TestRoom", 250, 500);
         private static readonly Design Design = new Design("TestDesign", Room, new List<ProductPlacement>());
-        private static readonly ViewDesignViewModel ViewModel = new ViewDesignViewModel(Design);
+        private static readonly DesignEditor ViewModel = new DesignEditor(Design);
         private static readonly Product Product1 = new Product("Product1", 1, 5, 5);
         private static readonly Product Product2 = new Product("Product2", 2, 5, 5);
         private static readonly Product Product3 = new Product("Product3", 3, 5, 5);
@@ -67,7 +67,7 @@ namespace DesignerTest {
 
         [Test]
         public void ViewDesign_LoadProducts_Count() {
-            List<Product> products = ViewDesignViewModel.LoadProducts();
+            List<Product> products = DesignEditor.LoadProducts();
             Assert.AreEqual(3, products.Count);
         }
 

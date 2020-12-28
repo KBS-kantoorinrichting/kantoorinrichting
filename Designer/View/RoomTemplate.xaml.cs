@@ -9,13 +9,7 @@ namespace Designer.View {
     public partial class RoomTemplateView : Page {
 
         public RoomTemplateView() {
-            //pagina initializen
-
             InitializeComponent();
-
         }
-
-
-
     }
 }

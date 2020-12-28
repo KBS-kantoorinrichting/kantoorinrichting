@@ -14,7 +14,7 @@ namespace DesignerTest {
 
         [Test]
         public void SelectProduct_Test() {
-            ViewProductsViewModel Test = new ViewProductsViewModel();
+            ViewProducts Test = new ViewProducts();
             Test.SelectProduct(Product1.Id);
             // Product1 selecteren
 

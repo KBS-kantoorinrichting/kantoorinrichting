@@ -6,6 +6,5 @@ namespace Designer.View {
     /// </summary>
     public partial class ViewProductsView : Page {
         public ViewProductsView() { InitializeComponent(); }
-
     }
 }

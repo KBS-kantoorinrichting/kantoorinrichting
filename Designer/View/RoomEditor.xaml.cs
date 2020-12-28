@@ -20,7 +20,7 @@ namespace Designer.View
     /// </summary>
     public partial class RoomEditorView : Page
     {
-        private RoomEditorViewModel ViewModel => DataContext as RoomEditorViewModel;
+        private RoomEditor ViewModel => DataContext as RoomEditor;
 
 
         public RoomEditorView()
