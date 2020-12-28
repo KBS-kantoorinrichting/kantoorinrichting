@@ -1,0 +1,42 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
+    <PropertyGroup>
+        <OutputType>WinExe</OutputType>
+        <TargetFramework>netcoreapp3.1</TargetFramework>
+        <UseWPF>true</UseWPF>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <None Remove="Assets\Hoekvormig.jpg" />
+        <None Remove="Assets\Hoekvormig_Clicked.jpg" />
+        <None Remove="Assets\Vierhoek.jpg" />
+        <None Remove="Assets\Vierhoek_Clicked.jpg" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <None Include="Resources\**" CopyToOutputDirectory="Always" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\Models\Models.csproj" />
+        <ProjectReference Include="..\Services\Services.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <PackageReference Include="MaterialDesignThemes" Version="3.2.0" />
+        <PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" Version="1.1.19" />
+        <PackageReference Include="ShowMeTheXAML.MSBuild" Version="2.0.0" />
+        <PackageReference Include="System.Drawing.Common" Version="5.0.0" />
+        <PackageReference Include="WpfAnimatedGif" Version="2.0.0" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <Resource Include="Resources\Icons\close.png" CopyToOutputDirectory="Always" />
+        <Resource Include="Resources\Icons\delete.png" CopyToOutputDirectory="Always" />
+        <Resource Include="Resources\Icons\rotate_left.png" CopyToOutputDirectory="Always" />
+        <Resource Include="Resources\Icons\rotate_right.png" CopyToOutputDirectory="Always" />
+    </ItemGroup>
+    
+    <ItemGroup>
+        <Resource Include="Resources\Images\Assets\home_*.jpg" CopyToOutputDirectory="Always" />
+    </ItemGroup>
+</Project>

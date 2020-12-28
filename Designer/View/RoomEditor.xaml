@@ -1,0 +1,86 @@
+﻿<Page x:Class="Designer.View.RoomEditorView"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+      xmlns:behaviors="http://schemas.microsoft.com/xaml/behaviors"
+      xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+      xmlns:viewModel="clr-namespace:Designer.ViewModel"
+      mc:Ignorable="d"
+      WindowHeight="-1"
+      Title="RoomEditorView">
+    <Page.DataContext>
+        <viewModel:RoomEditor x:Name="viewModel" />
+    </Page.DataContext>
+    <Grid>
+        <TextBox
+            Style="{StaticResource MaterialDesignOutlinedTextFieldTextBox}"
+            VerticalAlignment="Top"
+            AcceptsReturn="True"
+            TextWrapping="Wrap"
+            Text="{Binding Name, UpdateSourceTrigger = PropertyChanged}"
+            Width="Auto"
+            Margin="5"
+            Height="40"
+            materialDesign:HintAssist.Hint="Naam van de ruimte" />
+        <Border Margin="7,50,0,0" Name="CanvasBorder">
+
+            <Canvas Margin="0,-1,0,32" Name="Editor">
+                <ContentPresenter Content="{Binding Path=Editor}" />
+                <behaviors:Interaction.Triggers>
+                    <behaviors:EventTrigger EventName="MouseMove" SourceObject="{Binding ElementName=Editor}">
+                        <behaviors:InvokeCommandAction Command="{Binding MouseOverCommand}"
+                                                       PassEventArgsToCommand="True" />
+                    </behaviors:EventTrigger>
+                    <behaviors:EventTrigger EventName="MouseDown" SourceObject="{Binding ElementName=Editor}">
+                        <behaviors:InvokeCommandAction Command="{ Binding MouseDownCommand }"
+                                                       PassEventArgsToCommand="True" />
+                    </behaviors:EventTrigger>
+                </behaviors:Interaction.Triggers>
+            </Canvas>
+        </Border>
+        <ToggleButton
+            Margin="0,0,180,20"
+            Width="56"
+            Height="56"
+            HorizontalAlignment="Right"
+            VerticalAlignment="Bottom"
+            Command="{Binding AddDoors}"
+            IsChecked="{Binding AddDoorsChecked}"
+            Style="{StaticResource MaterialDesignActionLightToggleButton}"
+            ToolTip="Deuren Toevoegen">
+            <materialDesign:PackIcon
+                Kind="Door"
+                Height="32"
+                Width="32" />
+        </ToggleButton>
+        <ToggleButton
+            HorizontalAlignment="Right"
+            VerticalAlignment="Bottom"
+            Margin="0,0,100,20"
+            Width="56"
+            Height="56"
+            Command="{Binding AddWindows}"
+            IsChecked="{Binding AddWindowsChecked}"
+            Style="{StaticResource MaterialDesignActionLightToggleButton}"
+            ToolTip="Ramen Toevoegen">
+            <materialDesign:PackIcon
+                Kind="Blinds"
+                Height="32"
+                Width="32" />
+        </ToggleButton>
+        <Button
+            Style="{StaticResource MaterialDesignFloatingActionAccentButton}"
+            ToolTip="Ruimte opslaan"
+            HorizontalAlignment="Right"
+            VerticalAlignment="Bottom"
+            Margin="0,0,20,20"
+            Command="{Binding Submit}">
+            <materialDesign:PackIcon
+                Kind="ContentSave"
+                Height="32"
+                Width="32" />
+        </Button>
+        <materialDesign:Snackbar HorizontalAlignment="Stretch" MessageQueue="{Binding MessageQueue}" />
+    </Grid>
+</Page>
