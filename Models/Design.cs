@@ -5,15 +5,7 @@ using System.Runtime.CompilerServices;
 
 namespace Models {
     public class Design : Data, IEntity, ICloneable {
-        [Column("DesignId")] public int Id { get; set; }
-
-        public string Name { get; set; }
-        public string Plexiglass { get; set; }
-
-        public int RoomId { get; set; }
-        public Room Room { get; set; }
-
-        public List<ProductPlacement> ProductPlacements { get; set; } = new List<ProductPlacement>();
+        private Polygon _route;
 
         public Design() { }
 
@@ -24,21 +16,25 @@ namespace Models {
             ProductPlacements = productPlacements;
         }
 
+        public string Name { get; set; }
+        public string Plexiglass { get; set; }
+
+        public int RoomId { get; set; }
+        public Room Room { get; set; }
+
+        public List<ProductPlacement> ProductPlacements { get; set; } = new List<ProductPlacement>();
+
         public string Route {
             get => _route?.Convert();
             set => _route = new Polygon(value);
         }
-        
-        private Polygon _route;
 
-        public Polygon GetRoutePoly() {
-            return _route;
-        }
-        
         protected override ITuple Variables => (Id, Name, RoomId, Room, ProductPlacements, Plexiglass, Route);
-        public object Clone()
-        {
-            return this.MemberwiseClone();
-        }
+
+        public object Clone() { return MemberwiseClone(); }
+
+        [Column("DesignId")] public int Id { get; set; }
+
+        public Polygon GetRoutePoly() { return _route; }
     }
 }

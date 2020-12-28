@@ -1,22 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Drawing;
 using System.Linq;
 using System.Runtime.CompilerServices;
 
 namespace Models {
     public class Room : Data, IEntity {
-        [Column("RoomId")] public int Id { get; set; }
-
-        public string Name { get; set; }
-
-        public string Positions {
-            get => _polygon.Convert();
-            set => _polygon = new Polygon(value);
-        }
-
-        public List<RoomPlacement> RoomPlacements { get; set; } = new List<RoomPlacement>();
+        private Polygon _polygon;
 
         public Room(
             string name = default,
@@ -30,14 +19,7 @@ namespace Models {
             Positions = positions ?? FromDimensions(width, length);
         }
 
-        protected override ITuple Variables => (Id, Name, Positions, RoomPlacements);
-
-        private Polygon _polygon;
-
-        public Polygon GetPoly() { return _polygon; }
-
-        public Room(string name, string positions)
-        {
+        public Room(string name, string positions) {
             Name = name;
             Positions = positions;
         }
@@ -45,6 +27,20 @@ namespace Models {
         public Room(string name, string positions, List<RoomPlacement> roomPlacements) : this(name, positions) {
             RoomPlacements = roomPlacements;
         }
+
+        public string Name { get; set; }
+
+        public string Positions {
+            get => _polygon.Convert();
+            set => _polygon = new Polygon(value);
+        }
+
+        public List<RoomPlacement> RoomPlacements { get; set; } = new List<RoomPlacement>();
+
+        protected override ITuple Variables => (Id, Name, Positions, RoomPlacements);
+        [Column("RoomId")] public int Id { get; set; }
+
+        public Polygon GetPoly() { return _polygon; }
 
         public static List<Position> ToList(string positions) {
             return positions switch {
@@ -71,10 +67,10 @@ namespace Models {
             // maakt een lijst posities aan van de gegeven breedte en lengte (vierhoek kamer)
             return FromList(
                 new[] {
-                    new Position(0, 0),
-                    new Position(width, 0),
+                    new Position(),
+                    new Position(width),
                     new Position(width, length),
-                    new Position(0, length),
+                    new Position(0, length)
                 }
             );
         }
@@ -85,30 +81,25 @@ namespace Models {
         }
 
         public static string FromTemplate(int width, int length, int template) {
-            if (template == 1) {
-                // maakt een lijst posities aan van de gegeven breedte en lengte (Hoek kamer)
+            if (template == 1) // maakt een lijst posities aan van de gegeven breedte en lengte (Hoek kamer)
                 return FromList(
                     new[] {
-                        new Position(0, 0),
-                        new Position((width / 2), 0),
-                        new Position((width / 2), (length / 2)),
-                        new Position(width, (length / 2)),
+                        new Position(),
+                        new Position(width / 2),
+                        new Position(width / 2, length / 2),
+                        new Position(width, length / 2),
                         new Position(width, length),
-                        new Position(0, length),
+                        new Position(0, length)
                     }
                 );
-            } else {
-                // maakt een lijst posities aan van de gegeven breedte en lengte (vierhoek kamer)
-                return FromList(
-                    new[] {
-                        new Position(0, 0),
-                        new Position(width, 0),
-                        new Position(width, length),
-                        new Position(0, length),
-                    }
-                );
-            }
+            return FromList(
+                new[] {
+                    new Position(),
+                    new Position(width),
+                    new Position(width, length),
+                    new Position(0, length)
+                }
+            );
         }
-
     }
 }

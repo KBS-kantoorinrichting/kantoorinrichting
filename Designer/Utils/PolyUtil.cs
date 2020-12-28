@@ -4,7 +4,8 @@ using System.Linq;
 namespace Models.Utils {
     public static class PolyUtil {
         /**
-         * Checks center distance if this is smaller than 5 m and bigger then 1.5m returns <see cref="MinDistance"/>
+         * Checks center distance if this is smaller than 5 m and bigger then 1.5m returns
+         * <see cref="MinDistance" />
          */
         public static bool IsSafe(this Polygon poly1, Polygon poly2) {
             double dis = poly1.Center().Distance(poly2.Center());
@@ -52,22 +53,19 @@ namespace Models.Utils {
                 //Vergelijkt deze vervolgens met de hoeken van de 2 polygon
                 foreach (Position to in poly2) {
                     Position from;
-                    if (Equals(p1, p2)) from = p1;
-                    else {
+                    if (Equals(p1, p2)) {
+                        @from = p1;
+                    } else {
                         //Berekend waar het punt zicht bevind relatief to de lijn
                         double dX = p2.X - p1.X;
                         double dY = p2.Y - p1.Y;
                         double lenSq = dX * dX + dY * dY;
                         double param = lenSq == 0 ? -1 : ((to.X - p1.X) * dX + (to.Y - p1.Y) * dY) / lenSq;
 
-                        if (param < 0) {
-                            from = p1;
-                        } else if (param > 1) {
-                            from = p2;
-                        } else {
-                            //Berkend het punt met een haakse lijn van de lijn to het punt
-                            from = new Position((int) (p1.X + param * dX), (int) (p1.Y + param * dY));
-                        }
+                        if (param < 0) @from = p1;
+                        else if (param > 1) @from = p2;
+                        else //Berkend het punt met een haakse lijn van de lijn to het punt
+                            @from = new Position((int) (p1.X + param * dX), (int) (p1.Y + param * dY));
                     }
 
                     //Houdt de kleinste afstanden bij
@@ -120,12 +118,10 @@ namespace Models.Utils {
             for (int i = 0; i < poly.Count(); i++) {
                 // Kijkt of de gegeven point in de polygon ligt qua coordinaten
                 if (poly[i].Y < position.Y && poly[j].Y >= position.Y ||
-                    poly[j].Y < position.Y && poly[i].Y >= position.Y) {
+                    poly[j].Y < position.Y && poly[i].Y >= position.Y)
                     if (poly[i].X + ((double) position.Y - poly[i].Y) / (poly[j].Y - (double) poly[i].Y) *
-                        (poly[j].X - (double) poly[i].X) < position.X) {
+                        (poly[j].X - (double) poly[i].X) < position.X)
                         result = !result;
-                    }
-                }
 
                 j = i;
             }
@@ -138,12 +134,12 @@ namespace Models.Utils {
         /**
          * Berekend het verschil in X. Kan negatief zijn
          */
-        private static int DeltaX(this Line line) => line.P1.X - line.P2.X;
+        private static int DeltaX(this Line line) { return line.P1.X - line.P2.X; }
 
         /**
          * Berekend het verschil in y. Kan negatief zijn
          */
-        private static int DeltaY(this Line line) => line.P1.Y - line.P2.Y;
+        private static int DeltaY(this Line line) { return line.P1.Y - line.P2.Y; }
 
         /**
          * Ontbind de lijn na de vorm y = ax + b
@@ -194,7 +190,7 @@ namespace Models.Utils {
             int dB = (int) Math.Sqrt(r * r + distance * distance) * (up ? 1 : -1);
 
             //Geeft de juiste offset op basis van het coordinaten systeem
-            return x ? line.Offset(y: dB) : line.Offset(x: dB);
+            return x ? line.Offset(y: dB) : line.Offset(dB);
         }
 
         /**
@@ -307,9 +303,9 @@ namespace Models.Utils {
 
             (double a, double b) = f.Value;
             (int cX, int cY) = line.Center.AsTuple;
-            
+
             Position p1, p2;
-            
+
             switch (x) {
                 //Als de lijn horizontaal is
                 case true when a == 0:
@@ -322,18 +318,18 @@ namespace Models.Utils {
                     p2 = new Position((int) b + dis, cY);
                     break;
                 //Als de lijn niet recht is
-                default: 
+                default:
                     a = -1 / a;
                     b = cY - cX * a;
-                
+
                     double d = Math.Sqrt(1 + a * a);
-                    double dx =  (dis / d);
-                
+                    double dx = dis / d;
+
                     p1 = new Position((int) (cX - dx), (int) ((cX - dx) * a + b));
                     p2 = new Position((int) (cX + dx), (int) ((cX + dx) * a + b));
                     break;
             }
-            
+
             return new Line(p1, p2);
         }
     }

@@ -101,13 +101,12 @@ namespace Designer.Utils {
             designer._route = new Polygon(positions);
             designer.RenderRoute();
         }
-        
+
         /**
          * Loopt alle mogelijke plaatsingen door om vervolgens de kamer zo vol mogelijk te krijgen
          */
-        public static void GenerateLayout(this DesignEditor designer)
-        {
-            Models.Polygon room = designer.Design.Room.GetPoly();
+        public static void GenerateLayout(this DesignEditor designer) {
+            Polygon room = designer.Design.Room.GetPoly();
             //TODO Pakt momententeel nog het eerste product om te plaatsen
             Product product = designer.Products.First();
 
@@ -117,55 +116,46 @@ namespace Designer.Utils {
 
             //Berekend de afstand per stap door middel van de afstand tussen de 2 boudning hoeken punten,
             //als dit te groot wordt pakt die de product lengte of hoogte ligt er aan welke kleiner is 
-            int accuracy = Math.Min((int)min.Distance(max) / 200, Math.Min(product.Length, product.Width));
+            int accuracy = Math.Min((int) min.Distance(max) / 200, Math.Min(product.Length, product.Width));
 
             //Maakt een nieuwe thread aan waar de dingen gecontrolleerd worden zodat je live de producten ziet plaatsen
             new Thread(
-                () =>
-                {
+                () => {
                     //Loopt door alle coordinaten binnen de ruimte boudning box heen met stappen van accuracy
                     for (int y = min.Y + 1; y < max.Y; y += accuracy)
-                    {
-                        for (int x = min.X + 1; x < max.X; x += accuracy)
-                        {
-                            Position position = new Position(x, y);
+                    for (int x = min.X + 1; x < max.X; x += accuracy) {
+                        Position position = new Position(x, y);
 
-                            //Als het punt binnen de ruimte zit controlleerd die of deze genoeg afstand heeft van alles
-                            if (room.Inside(product.GetPoly().Offset(position)))
-                            {
-                                ProductPlacement placement = new ProductPlacement(position, product, null);
-                                bool success = true;
-                                //Loopt alle plaatsingen langs om te kijken of die veilig is om te plaatsen
-                                for (int i = 0; i < designer.ProductPlacements.Count; i++)
-                                {
-                                    ProductPlacement place = designer.ProductPlacements[i];
-                                    if (place.GetPoly().IsSafe(placement.GetPoly())) continue;
+                        //Als het punt binnen de ruimte zit controlleerd die of deze genoeg afstand heeft van alles
+                        if (room.Inside(product.GetPoly().Offset(position))) {
+                            ProductPlacement placement = new ProductPlacement(position, product, null);
+                            bool success = true;
+                            //Loopt alle plaatsingen langs om te kijken of die veilig is om te plaatsen
+                            for (int i = 0; i < designer.ProductPlacements.Count; i++) {
+                                ProductPlacement place = designer.ProductPlacements[i];
+                                if (place.GetPoly().IsSafe(placement.GetPoly())) continue;
 
-                                    success = false;
-                                    break;
-                                }
+                                success = false;
+                                break;
+                            }
 
-                                //Kijkt of die ver genoeg van de lijn is
-                                if (success && designer._route != null && designer._route.Count >= 2)
-                                {
-                                    (Position p1, Position p2) = placement.GetPoly().MinDistance(designer._route);
-                                    if (p1.Distance(p2) < 150) success = false;
-                                }
+                            //Kijkt of die ver genoeg van de lijn is
+                            if (success && designer._route != null && designer._route.Count >= 2) {
+                                (Position p1, Position p2) = placement.GetPoly().MinDistance(designer._route);
+                                if (p1.Distance(p2) < 150) success = false;
+                            }
 
-                                //Als dit allemaal klopt voegd die het product toe;
-                                if (success)
-                                {
-                                    designer.ProductPlacements.Add(placement);
+                            //Als dit allemaal klopt voegd die het product toe;
+                            if (success) {
+                                designer.ProductPlacements.Add(placement);
 
-                                    designer.AddToOverview(placement.Product);
+                                designer.AddToOverview(placement.Product);
 
-                                    designer.Editor.Dispatcher.Invoke(
-                                        () =>
-                                        {
-                                            designer.DrawProduct(placement, designer.ProductPlacements.IndexOf(placement));
-                                        }
-                                    );
-                                }
+                                designer.Editor.Dispatcher.Invoke(
+                                    () => {
+                                        designer.DrawProduct(placement, designer.ProductPlacements.IndexOf(placement));
+                                    }
+                                );
                             }
                         }
                     }

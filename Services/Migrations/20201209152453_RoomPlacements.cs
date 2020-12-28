@@ -1,38 +1,35 @@
 ﻿using Microsoft.EntityFrameworkCore.Migrations;
 
-namespace Services.Migrations
-{
-    public partial class RoomPlacements : Migration
-    {
-        protected override void Up(MigrationBuilder migrationBuilder)
-        {
+namespace Services.Migrations {
+    public partial class RoomPlacements : Migration {
+        protected override void Up(MigrationBuilder migrationBuilder) {
             migrationBuilder.CreateTable(
-                name: "RoomPlacements",
-                columns: table => new
-                {
-                    RoomPlacementId = table.Column<int>(type: "int", nullable: false)
+                "RoomPlacements",
+                table => new {
+                    RoomPlacementId = table.Column<int>("int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    RoomId = table.Column<int>(type: "int", nullable: false),
-                    Positions = table.Column<int>(type: "nvarchar(max)", nullable: true),
-                    Rotation = table.Column<int>(type: "int", nullable: true),
-                    Type = table.Column<int>(type: "nvarchar(max)", nullable: true)
+                    RoomId = table.Column<int>("int", nullable: false),
+                    Positions = table.Column<int>("nvarchar(max)", nullable: true),
+                    Rotation = table.Column<int>("int", nullable: true),
+                    Type = table.Column<int>("nvarchar(max)", nullable: true)
                 },
-                constraints: table =>
-                {
+                constraints: table => {
                     table.PrimaryKey("PK_RoomPlacements", x => x.RoomPlacementId);
                     table.ForeignKey(
-                        name: "FK_RoomPlacements_Room_RoomId",
-                        column: x => x.RoomId,
-                        principalTable: "Rooms",
-                        principalColumn: "RoomId",
-                        onDelete: ReferentialAction.Cascade);
-                });
+                        "FK_RoomPlacements_Room_RoomId",
+                        x => x.RoomId,
+                        "Rooms",
+                        "RoomId",
+                        onDelete: ReferentialAction.Cascade
+                    );
+                }
+            );
         }
 
-        protected override void Down(MigrationBuilder migrationBuilder)
-        {
+        protected override void Down(MigrationBuilder migrationBuilder) {
             migrationBuilder.DropTable(
-                name: "RoomPlacements");
+                "RoomPlacements"
+            );
         }
     }
 }

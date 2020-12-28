@@ -3,11 +3,10 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:local="clr-namespace:Designer.View.Components"
              xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
              mc:Ignorable="d"
              d:DesignHeight="300" d:DesignWidth="300">
-   <Grid Width="300" MaxWidth="300">
+    <Grid Width="300" MaxWidth="300">
         <Grid.RowDefinitions>
             <RowDefinition
                 Height="Auto" />
@@ -45,7 +44,7 @@
                     VerticalAlignment="Bottom" />
                 <Button Name="AddPhoto" Command="{Binding EditPhoto, UpdateSourceTrigger=PropertyChanged}"
                         Content="Foto Toevoegen" Height="30"
-                    Width="150"/>
+                        Width="150" />
             </StackPanel>
             <TextBox
                 materialDesign:HintAssist.Hint="Breedte"

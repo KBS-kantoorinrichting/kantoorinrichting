@@ -3,20 +3,6 @@ using System.Runtime.CompilerServices;
 
 namespace Models {
     public class Product : Data, IEntity {
-        [Column("ProductId")] public int Id { get; set; }
-        public string Name { get; set; }
-
-#nullable enable
-        public double? Price { get; set; }
-        public string? Photo { get; set; }
-#nullable disable
-
-        public int Width { get; set; }
-        public int Length { get; set; }
-        public bool HasPerson { get; set; }
-
-        protected override ITuple Variables => (Id, Name, Price, Photo, Width, Length, HasPerson);
-
         public Product(
             string name = default,
             int id = default,
@@ -35,11 +21,22 @@ namespace Models {
             HasPerson = hasPerson;
         }
 
-        public Polygon GetPoly() => new Polygon(Width, Length);
-        
-        public Product Clone()
-        {
-            return (Product)this.MemberwiseClone();
-        }
+        public string Name { get; set; }
+
+        public int Width { get; set; }
+        public int Length { get; set; }
+        public bool HasPerson { get; set; }
+
+        protected override ITuple Variables => (Id, Name, Price, Photo, Width, Length, HasPerson);
+        [Column("ProductId")] public int Id { get; set; }
+
+        public Polygon GetPoly() { return new Polygon(Width, Length); }
+
+        public Product Clone() { return (Product) MemberwiseClone(); }
+
+#nullable enable
+        public double? Price { get; set; }
+        public string? Photo { get; set; }
+#nullable disable
     }
 }

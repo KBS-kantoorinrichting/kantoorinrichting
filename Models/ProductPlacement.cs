@@ -3,7 +3,25 @@ using System.Runtime.CompilerServices;
 
 namespace Models {
     public class ProductPlacement : Data, IEntity {
-        [Column("ProductPlacementId")] public int Id { get; set; }
+        private Polygon _poly;
+        private int _rotation;
+        private int _x;
+        private int _y;
+
+        public ProductPlacement() { }
+
+        public ProductPlacement(Position position, Product product, Design design) : this(
+            position.X, position.Y, product, design
+        ) {
+        }
+
+        public ProductPlacement(int x, int y, Product product, Design design = null) {
+            X = x;
+            Y = y;
+            Product = product;
+            Design = design;
+            Rotation = 0;
+        }
 
         public int X {
             get => _x;
@@ -36,31 +54,13 @@ namespace Models {
         }
 
         protected override ITuple Variables => (Id, X, Y, ProductId, Product, DesignId, Design, Rotation);
+        [Column("ProductPlacementId")] public int Id { get; set; }
 
-        public ProductPlacement() { }
-
-        public ProductPlacement(Position position, Product product, Design design) : this(
-            position.X, position.Y, product, design
-        ) {
-        }
-
-        public ProductPlacement(int x, int y, Product product, Design design = null) {
-            X = x;
-            Y = y;
-            Product = product;
-            Design = design;
-            Rotation = 0;
-        }
-
-        private Polygon _poly;
-        private int _x;
-        private int _y;
-        private int _rotation;
-
-        public virtual Polygon GetPoly() =>
+        public virtual Polygon GetPoly() {
             //Hoogte en breedte omgedraaid
-            _poly ??= Rotation % 180 == 0
+            return _poly ??= Rotation % 180 == 0
                 ? Product.GetPoly().Offset(X, Y)
                 : new Polygon(Product.Length, Product.Width).Offset(X, Y);
+        }
     }
 }

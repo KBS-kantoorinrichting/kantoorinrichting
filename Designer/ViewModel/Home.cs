@@ -1,15 +1,23 @@
-﻿using Designer.Other;
+﻿using System.ComponentModel;
+using Designer.Other;
 using Designer.View;
 using Services;
-using System.ComponentModel;
-using System.Diagnostics;
-using System.Windows;
 
-namespace Designer.ViewModel
-{
-    public class Home : INotifyPropertyChanged
-    {
-        public event PropertyChangedEventHandler PropertyChanged;
+namespace Designer.ViewModel {
+    public class Home : INotifyPropertyChanged {
+        public Home() {
+            GotoDesigns = new PageCommand(
+                () => {
+                    ViewDesignsView DesignCatalog = new ViewDesignsView();
+                    DesignCatalog.DesignSelected += (o, e) => {
+                        Navigator.Instance.Replace(new DesignEditorView(e.Value));
+                    };
+                    return DesignCatalog;
+                }
+            );
+            GotoProducts = new PageCommand(() => new ViewProductsView());
+            GotoRooms = new PageCommand(() => new ViewRoomsView());
+        }
 
         public string TotalProducts => ProductService.Instance.Count().ToString();
         public string TotalDesigns => DesignService.Instance.Count().ToString();
@@ -17,18 +25,6 @@ namespace Designer.ViewModel
         public BasicCommand GotoDesigns { get; set; }
         public BasicCommand GotoProducts { get; set; }
         public BasicCommand GotoRooms { get; set; }
-
-        public Home() {
-            GotoDesigns = new PageCommand(() => {
-                ViewDesignsView DesignCatalog = new ViewDesignsView();
-                DesignCatalog.DesignSelected += (o, e) =>
-                {
-                    Navigator.Instance.Replace(new View.DesignEditorView(e.Value));
-                };
-                return DesignCatalog;
-            });
-            GotoProducts = new PageCommand(() => new ViewProductsView());
-            GotoRooms = new PageCommand(() => new ViewRoomsView());
-        }
+        public event PropertyChangedEventHandler PropertyChanged;
     }
 }

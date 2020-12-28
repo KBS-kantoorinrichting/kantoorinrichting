@@ -1,9 +1,7 @@
 ﻿using System.Collections.Generic;
-using Designer.Other;
 using Designer.ViewModel;
 using Models;
 using NUnit.Framework;
-using Services;
 using ServicesTest;
 
 namespace DesignerTest {
@@ -45,16 +43,14 @@ namespace DesignerTest {
         private static readonly Design Design2 = new Design("TestDesign2", Room1, null);
         private static readonly Design Design3 = new Design("TestDesign3", Room2, null);
         private static readonly Design Design4 = new Design("TestDesign4", Room3, null);
-        
-        protected override List<Room> Rooms => new List<Room> {Room1, Room2};
-        protected override List<Design> Designs => new List<Design> {Design1, Design2};
-        
+
         private ViewDesigns _designModel;
 
+        protected override List<Room> Rooms => new List<Room> {Room1, Room2};
+        protected override List<Design> Designs => new List<Design> {Design1, Design2};
+
         [SetUp]
-        public void Setup() {
-            _designModel = new ViewDesigns();
-        }
+        public void Setup() { _designModel = new ViewDesigns(); }
 
         [Test]
         public void Selected_TriggersEvent() {

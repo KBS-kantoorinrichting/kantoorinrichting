@@ -6,7 +6,30 @@ using Services;
 
 namespace Designer.ViewModel {
     public class Main : INotifyPropertyChanged {
-        public event PropertyChangedEventHandler PropertyChanged;
+        public Main() {
+            Application.Current.MainWindow.WindowState = WindowState.Maximized;
+            //Maak de db connectie aan
+            RoomService.Instance.Get(0);
+
+            Navigator = Navigator.Instance;
+
+            //Listen naar propertychanged events van de navigator om de navigation bar te updaten
+            Navigator.PropertyChanged += OnNavigatorChange;
+
+            Navigator.Push(new HomeView());
+            GotoHome = new PageCommand(() => new HomeView());
+            GotoProducts = new PageCommand(() => new ViewProductsView());
+            GotoDesigns = new PageCommand(
+                () => {
+                    ViewDesignsView DesignCatalog = new ViewDesignsView();
+                    DesignCatalog.DesignSelected += (o, e) => {
+                        Navigator.Instance.Replace(new DesignEditorView(e.Value));
+                    };
+                    return DesignCatalog;
+                }
+            );
+            GotoRooms = new PageCommand(() => new ViewRoomsView());
+        }
 
         public BasicCommand GotoHome { get; set; }
         public BasicCommand GotoDesigns { get; set; }
@@ -21,36 +44,10 @@ namespace Designer.ViewModel {
         public bool OnProducts => Navigator.CurrentPage.GetType() == typeof(ViewProductsView);
         public bool OnDesigns => Navigator.CurrentPage.GetType() == typeof(ViewDesignsView);
         public bool OnRooms => Navigator.CurrentPage.GetType() == typeof(ViewRoomsView);
+        public event PropertyChangedEventHandler PropertyChanged;
 
-        public Main() {
-            Application.Current.MainWindow.WindowState = WindowState.Maximized;
-            //Maak de db connectie aan
-            RoomService.Instance.Get(0);
-            
-            Navigator = Navigator.Instance;
-            
-            //Listen naar propertychanged events van de navigator om de navigation bar te updaten
-            Navigator.PropertyChanged += OnNavigatorChange;
-            
-            Navigator.Push(new HomeView());
-            GotoHome = new PageCommand(() => new HomeView());
-            GotoProducts = new PageCommand(() => new ViewProductsView());
-            GotoDesigns = new PageCommand(() => {
-                ViewDesignsView DesignCatalog = new ViewDesignsView();
-                DesignCatalog.DesignSelected += (o, e) =>
-                {
-                    Navigator.Instance.Replace(new View.DesignEditorView(e.Value));
-                };
-                return DesignCatalog;
-            });
-            GotoRooms = new PageCommand(() => new ViewRoomsView());
-        }
+        private void OnNavigatorChange(object o, PropertyChangedEventArgs e) { OnPropertyChanged(); }
 
-        private void OnNavigatorChange(object o, PropertyChangedEventArgs e)
-        {
-            OnPropertyChanged();
-        }
-       
         private void OnPropertyChanged(string propertyName = "") {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }

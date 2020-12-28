@@ -30,13 +30,13 @@
                 </ItemsControl.ItemsPanel>
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
-                        <view:RoomCard Margin="0,10,10,0"/>
+                        <view:RoomCard Margin="0,10,10,0" />
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
             </ItemsControl>
         </ScrollViewer>
         <materialDesign:Snackbar HorizontalAlignment="Stretch" MessageQueue="{Binding MessageQueue}" />
-        <materialDesign:PopupBox 
+        <materialDesign:PopupBox
             Style="{StaticResource MaterialDesignMultiFloatingActionAccentPopupBox}"
             PlacementMode="TopAndAlignCentres"
             HorizontalAlignment="Right"
@@ -50,8 +50,9 @@
                             <StackPanel />
                         </ItemsPanelTemplate>
                     </Menu.ItemsPanel>
-                    <MenuItem Header="Template Ruimte" ToolTip="Ruimte op basis van template" Command="{Binding GotoRoomTemplate}" />
-                    <MenuItem Header="Ruimte op maat" ToolTip="Ruimte op maat" Command="{Binding GotoRoomEditor}"/>
+                    <MenuItem Header="Template Ruimte" ToolTip="Ruimte op basis van template"
+                              Command="{Binding GotoRoomTemplate}" />
+                    <MenuItem Header="Ruimte op maat" ToolTip="Ruimte op maat" Command="{Binding GotoRoomEditor}" />
                 </Menu>
             </materialDesign:PopupBox.PopupContent>
         </materialDesign:PopupBox>

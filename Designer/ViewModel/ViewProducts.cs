@@ -1,22 +1,37 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
-using System.Windows.Input;
-using Designer.Other;
-using System.Windows.Controls;
-using Designer.View;
-using Microsoft.Win32;
 using System.Diagnostics;
+using System.Linq;
 using System.Threading;
-using System.Windows;
-using Designer.View.Components;
+using Designer.Other;
 using MaterialDesignThemes.Wpf;
+using Microsoft.Win32;
 using Models;
 using Services;
 
 namespace Designer.ViewModel {
     public class ViewProducts : INotifyPropertyChanged {
+        public ViewProducts() {
+            // Tekenen van de catalogus 
+            Reload();
+            // Initialisatie van alle knoppen
+            AddPhoto = new BasicCommand(SelectPhoto);
+            Submit = new BasicCommand(SubmitItem);
+            DeleteCommand = new ArgumentCommand<int>(Delete);
+            EditCommand = new ArgumentCommand<int>(EditItem);
+            AddCommand = new BasicCommand(AddItem);
+            CancelAdd = new BasicCommand(CancelAddItem);
+            SaveEdit = new BasicCommand(SubmitEditedItem);
+            CancelEdit = new BasicCommand(CancelEditPopup);
+            EditPhoto = new BasicCommand(SelectPhoto);
+            //Controleert of het niet in een unit test wordt gedraaid
+            if (Thread.CurrentThread.GetApartmentState() == ApartmentState.STA)
+                //Dit wordt gebruikt door de snackbar om feedback te geven op
+                //verwijderen, toevoegen en aanpassen van producten
+                MessageQueue = new SnackbarMessageQueue();
+        }
+
         public string Name { get; set; }
         public double Price { get; set; }
         public string Photo { get; set; }
@@ -34,41 +49,20 @@ namespace Designer.ViewModel {
         public BasicCommand EditPhoto { get; set; }
         public BasicCommand AddCommand { get; set; }
         public BasicCommand CancelAdd { get; set; }
-        
-        public event PropertyChangedEventHandler PropertyChanged;
         public Product SelectedProduct { get; set; }
 
         public Product EditedItem { get; set; }
 
         public bool IsEditedRead => EditedItem == null;
-        public bool IsAdding { get; set; } = false;
-        public bool IsEditing { get; set; } = false;
+        public bool IsAdding { get; set; }
+        public bool IsEditing { get; set; }
 
         public List<Product> Products { get; set; }
         // Property van een lijst om de informatie vanuit de database op te slaan.
-        
+
         public SnackbarMessageQueue MessageQueue { get; set; }
-        public ViewProducts() {
-            // Tekenen van de catalogus 
-            Reload();
-            // Initialisatie van alle knoppen
-            AddPhoto = new BasicCommand(SelectPhoto);
-            Submit = new BasicCommand(SubmitItem);
-            DeleteCommand = new ArgumentCommand<int>(Delete);
-            EditCommand = new ArgumentCommand<int>(EditItem);
-            AddCommand = new BasicCommand(AddItem);
-            CancelAdd = new BasicCommand(CancelAddItem);
-            SaveEdit = new BasicCommand(SubmitEditedItem);
-            CancelEdit = new BasicCommand(CancelEditPopup);
-            EditPhoto = new BasicCommand(SelectPhoto);
-            //Controleert of het niet in een unit test wordt gedraaid
-            if (Thread.CurrentThread.GetApartmentState() == ApartmentState.STA)
-            {
-                //Dit wordt gebruikt door de snackbar om feedback te geven op
-                //verwijderen, toevoegen en aanpassen van producten
-                MessageQueue = new SnackbarMessageQueue(); 
-            }
-        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
 
         public void Reload() { // Reload de items zodat de juiste te zien zijn
             Products = LoadItems();
@@ -99,30 +93,25 @@ namespace Designer.ViewModel {
         public void Delete(int id) // Verwijderd geselecteerde item uit database 
         {
             SelectProduct(id);
-            if (SelectedProduct == null || ProductService.Instance.Count() == 0) {
-                return;
-            }
+            if (SelectedProduct == null || ProductService.Instance.Count() == 0) return;
 
             ProductService.Instance.Delete(SelectedProduct);
             MessageQueue.Enqueue("Het product is verwijderd");
             Reload();
         }
 
-        public void AddItem()
-        {
+        public void AddItem() {
             IsAdding = true;
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(""));
         }
 
-        public void CancelAddItem()
-        {
+        public void CancelAddItem() {
             IsAdding = false;
             ResetFields();
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(""));
         }
 
-        public void ResetFields()
-        {
+        public void ResetFields() {
             Name = "";
             Price = 0;
             Photo = "";
@@ -139,8 +128,7 @@ namespace Designer.ViewModel {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(""));
         }
 
-        public void CancelEditPopup()
-        {
+        public void CancelEditPopup() {
             IsEditing = false;
             OnPropertyChanged();
             EditedItem = null;
@@ -205,9 +193,7 @@ namespace Designer.ViewModel {
             bool hasPerson
         ) {
             // als er geen foto wordt toegevoegd, dan krijgt foto een standaard waarde
-            if (photo == null) {
-                photo = "placeholder.png";
-            }
+            if (photo == null) photo = "placeholder.png";
 
             // Kamer opslaan
             Product product = new Product(

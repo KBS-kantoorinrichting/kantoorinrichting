@@ -18,10 +18,8 @@ namespace ModelsTest {
             if (equals) Assert.AreEqual(d1, d2);
             else Assert.AreNotEqual(d1, d2);
         }
-        
-        public void Data_Hashcode_Equals(Data d1, Data d2) {
-            Assert.AreEqual(d1, d2);
-        }
+
+        public void Data_Hashcode_Equals(Data d1, Data d2) { Assert.AreEqual(d1, d2); }
 
         // [Test]
         // [TestCaseSource("TestCases")]
@@ -47,21 +45,31 @@ namespace ModelsTest {
                 yield return new TestCaseData(new Product(width: -1), new Product(width: 1), false);
                 yield return new TestCaseData(new Product(width: 100), new Product(width: 1), false);
                 yield return new TestCaseData(new Product(width: -1337), new Product(width: 1337), false);
-                yield return new TestCaseData(new Product(width: int.MaxValue), new Product(width: int.MinValue), false);
+                yield return new TestCaseData(
+                    new Product(width: int.MaxValue), new Product(width: int.MinValue), false
+                );
                 yield return new TestCaseData(new Product(length: -1), new Product(length: 1), false);
                 yield return new TestCaseData(new Product(length: 100), new Product(length: 1), false);
                 yield return new TestCaseData(new Product(length: -1337), new Product(length: 1337), false);
-                yield return new TestCaseData(new Product(length: int.MaxValue), new Product(length: int.MinValue), false);
+                yield return new TestCaseData(
+                    new Product(length: int.MaxValue), new Product(length: int.MinValue), false
+                );
                 yield return new TestCaseData(new Product(price: -1), new Product(price: 1), false);
                 yield return new TestCaseData(new Product(price: 100), new Product(price: 1), false);
                 yield return new TestCaseData(new Product(price: -1337), new Product(price: 1337), false);
                 yield return new TestCaseData(new Product(price: double.Epsilon), new Product(price: 0), false);
-                yield return new TestCaseData(new Product(price: double.NegativeInfinity), new Product(price: double.PositiveInfinity), false);
+                yield return new TestCaseData(
+                    new Product(price: double.NegativeInfinity), new Product(price: double.PositiveInfinity), false
+                );
                 yield return new TestCaseData(new Product(price: double.NaN), new Product(price: -1), false);
-                yield return new TestCaseData(new Product(price: double.MaxValue), new Product(price: double.MinValue), false);
+                yield return new TestCaseData(
+                    new Product(price: double.MaxValue), new Product(price: double.MinValue), false
+                );
                 yield return new TestCaseData(new Product(photo: ""), new Product(), false);
                 yield return new TestCaseData(new Product(photo: "klaas"), new Product(photo: ""), false);
-                yield return new TestCaseData(new Product(photo: "12121212"), new Product(photo: "3131231232131"), false);
+                yield return new TestCaseData(
+                    new Product(photo: "12121212"), new Product(photo: "3131231232131"), false
+                );
                 yield return new TestCaseData(new Product(photo: " "), new Product(photo: "  "), false);
                 yield return new TestCaseData(new Product(photo: "\r"), new Product(photo: "\n"), false);
             }

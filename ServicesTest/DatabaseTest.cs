@@ -37,8 +37,6 @@ namespace ServicesTest {
         }
 
         [TearDown]
-        public void TearDownDatabase() {
-            RoomDesignOptions.Reset();
-        }
+        public void TearDownDatabase() { RoomDesignOptions.Reset(); }
     }
 }

@@ -6,6 +6,11 @@ using System.Linq;
 namespace Models {
     public class Polygon : IReadOnlyList<Position> {
         private readonly List<Position> _positions;
+        private Polygon _bounds;
+        private Position _center;
+
+        private Position _max;
+        private Position _min;
 
         public Polygon(List<Position> positions) { _positions = positions; }
 
@@ -34,6 +39,15 @@ namespace Models {
 
         public Polygon(int width, int length) : this(new Position(), width, length) { }
 
+        public int Width => Max().X - Min().X;
+        public int Length => Max().Y - Min().Y;
+        IEnumerator IEnumerable.GetEnumerator() { return GetEnumerator(); }
+
+        public IEnumerator<Position> GetEnumerator() { return _positions.GetEnumerator(); }
+
+        public Position this[int index] => _positions[index];
+        public int Count => _positions.Count;
+
         public Polygon Offset(int xOffset = 0, int yOffset = 0) {
             List<Position> clone = _positions.Select(position => position.CopyAdd(xOffset, yOffset)).ToList();
             Polygon poly = new Polygon(clone);
@@ -50,11 +64,8 @@ namespace Models {
         /*
          * Geeft lijst van posities terug 
          */
-        public List<Position> GetPositions()
-        {
-            return _positions;
-        }
-        
+        public List<Position> GetPositions() { return _positions; }
+
         /**
          * Zet de polygon om naar een tekst van die lijkt op 0,0|10,10|20,10
          */
@@ -78,25 +89,17 @@ namespace Models {
         }
 
         public override string ToString() { return Convert(); }
-        IEnumerator IEnumerable.GetEnumerator() { return GetEnumerator(); }
 
-        protected bool Equals(Polygon other) {
-            return Equals(_positions, other?._positions);
-        }
+        protected bool Equals(Polygon other) { return Equals(_positions, other?._positions); }
 
         public override bool Equals(object obj) {
             if (ReferenceEquals(null, obj)) return false;
             if (ReferenceEquals(this, obj)) return true;
-            if (obj.GetType() != this.GetType()) return false;
+            if (obj.GetType() != GetType()) return false;
             return Equals((Polygon) obj);
         }
 
-        public override int GetHashCode() { return (_positions != null ? _positions.GetHashCode() : 0); }
-
-        private Position _max;
-        private Position _min;
-        private Position _center;
-        private Polygon _bounds;
+        public override int GetHashCode() { return _positions != null ? _positions.GetHashCode() : 0; }
 
         public Position Max() {
             return _max ??= _positions.Aggregate((p1, p2) => new Position(Math.Max(p1.X, p2.X), Math.Max(p1.Y, p2.Y)));
@@ -106,15 +109,12 @@ namespace Models {
             return _min ?? _positions.Aggregate((p1, p2) => new Position(Math.Min(p1.X, p2.X), Math.Min(p1.Y, p2.Y)));
         }
 
-        public int Width => Max().X - Min().X;
-        public int Length => Max().Y - Min().Y;
-
         public Position Center() {
             if (_center != null) return _center;
 
             Position min = Min();
             Position max = Max();
-            return _center = new Position((min.X + max.X) / 2, ((min.Y + max.Y) / 2));
+            return _center = new Position((min.X + max.X) / 2, (min.Y + max.Y) / 2);
         }
 
         public Polygon Bounds() {
@@ -126,27 +126,23 @@ namespace Models {
                 new List<Position> {min, new Position(min.X, max.Y), max, new Position(max.X, min.Y)}
             );
         }
-
-        public IEnumerator<Position> GetEnumerator() => _positions.GetEnumerator();
-        public Position this[int index] => _positions[index];
-        public int Count => _positions.Count;
     }
 
     public class Line {
-        public Position P1 { get; }
-        public Position P2 { get; }
-
         public Line(Position p1, Position p2) {
             P1 = p1;
             P2 = p2;
         }
 
-        public Line Offset(int x = 0, int y = 0) => new Line(P1.CopyAdd(x, y), P2.CopyAdd(x, y));
-        
+        public Position P1 { get; }
+        public Position P2 { get; }
+
         public (Position p1, Position p2) AsTuple => (P1, P2);
 
         public Position Center => new Position((P1.X + P2.X) / 2, (P1.Y + P2.Y) / 2);
-        
-        public List<Position> AsList() => new List<Position> {P1, P2};
+
+        public Line Offset(int x = 0, int y = 0) { return new Line(P1.CopyAdd(x, y), P2.CopyAdd(x, y)); }
+
+        public List<Position> AsList() { return new List<Position> {P1, P2}; }
     }
 }
