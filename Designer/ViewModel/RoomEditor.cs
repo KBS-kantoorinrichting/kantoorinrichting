@@ -258,9 +258,10 @@ namespace Designer.ViewModel
          */
         public void DrawGrid()
         {
-
-            var y = 50 * 25; // Scherm is 25 vakjes hoog
-            var x = 100 * 25; // Scherm is 50 vakjes breed
+            
+            Debug.WriteLine(Editor.Width);
+            var y = Math.Floor(Navigator.Instance.CurrentPage.ActualHeight / 25)  * 25; // Scherm is 25 vakjes hoog
+            var x = Math.Floor(Navigator.Instance.CurrentPage.ActualWidth / 25)  * 25; // Scherm is 50 vakjes breed
             for (int row = 0; row < y; row += 25)
             { // Voor elke rij
                 for (int column = 0; column < x; column += 25)

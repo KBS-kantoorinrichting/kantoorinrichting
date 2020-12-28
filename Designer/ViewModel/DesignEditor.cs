@@ -45,6 +45,7 @@ namespace Designer.ViewModel
         public BasicCommand GeneratePlexiline { get; set; }
         public BasicCommand RemoveRoute { get; set; }
         public BasicCommand Save { get; set; }
+        public  BasicCommand RemovePlexiglass { get; set; }
         public ArgumentCommand<MouseWheelEventArgs> CanvasMouseScrollCommand { get; set; }
         public Product SelectedProduct => _selectedPlacement.Product;
         public Design Design { get; set; }
@@ -72,32 +73,11 @@ namespace Designer.ViewModel
                 // telt lijnen
                 double count = distanceLines.Count(l => !l.Shows);
                 int m = distanceLines.Count == 0 ? 100 : (int)(count / distanceLines.Count * 100);
-
+                m = Math.Min(0, m);
+                m = Math.Max(100, m);
                 //                                                                             Groen       Rood
-                DistanceColour = (SolidColorBrush) new BrushConverter().ConvertFrom(m > 99 ? "#00D092" : "#d00037");
+                DistanceColour = (SolidColorBrush)new BrushConverter().ConvertFrom(m == 100 ? "#00D092" : "#d00037");
                 OnPropertyChanged("DistanceColour");
-                
-                return m;
-            }
-        }
-        
-        public int RouteScore {
-            get {
-                // maakt lijst van lijnen
-                List<DistanceLine> distanceLines = _lines
-                    .Where(e => e.Key == _fakeRoute)
-                    .Select(e => e.Value)
-                    .SelectMany(v => v.Values)
-                    .Distinct()
-                    .ToList();
-
-                // telt lijnen
-                double count = distanceLines.Count(l => !l.Shows);
-                int m = distanceLines.Count == 0 ? 100 : (int)(count / distanceLines.Count * 100);
-
-                //                                                                            Groen       Rood
-                RouteColour = (SolidColorBrush) new BrushConverter().ConvertFrom(m == 100 ? "#00D092" : "#d00037");
-                OnPropertyChanged("RouteColour");
                 
                 return m;
             }
@@ -133,14 +113,43 @@ namespace Designer.ViewModel
                 if (cm2 < 0) { cm2 = cm2 * -1; }
                 int m = (int)(cm2 / 10000);
                 m = 100 - (m - RoomPlacements.Count);
-                
+
+                m = Math.Min(0, m);
+                m = Math.Max(100, m);
                 //                                                                                Groen       Rood
-                VentilationColour = (SolidColorBrush) new BrushConverter().ConvertFrom(m > 55 ? "#00D092" : "#d00037");
+                VentilationColour = (SolidColorBrush)new BrushConverter().ConvertFrom(m > 55 ? "#00D092" : "#d00037");
+
                 OnPropertyChanged("VentilationColour");
                 
                 return m;
             }
         }
+
+        public int RouteScore {
+            get {
+                // maakt lijst van lijnen
+                List<DistanceLine> distanceLines = _lines
+                    .Where(e => e.Key == _fakeRoute)
+                    .Select(e => e.Value)
+                    .SelectMany(v => v.Values)
+                    .Distinct()
+                    .ToList();
+
+                // telt lijnen
+                double count = distanceLines.Count(l => !l.Shows);
+                int m = distanceLines.Count == 0 ? 100 : (int)(count / distanceLines.Count * 100);
+
+                m = Math.Max(0, m);
+                m = Math.Min(100, m);
+                //                                                                            Groen       Rood
+                RouteColour = (SolidColorBrush) new BrushConverter().ConvertFrom(m == 100 ? "#00D092" : "#d00037");
+                OnPropertyChanged("RouteColour");
+                
+                return m;
+            }
+        }
+        
+        
 
         public Brush DistanceColour { get; set; }
         public Brush VentilationColour { get; set; }
@@ -194,6 +203,7 @@ namespace Designer.ViewModel
             GenerateRoute = new BasicCommand(this.GenerateWalkRoute);
             GeneratePlexiline = new BasicCommand(this.GeneratePlexi);
             RemoveRoute = new BasicCommand(DeleteRoute);
+            RemovePlexiglass = new BasicCommand(DeletePlexiglass);
             ClearProducts = new BasicCommand(Clear);
             Save = new BasicCommand(() => DesignService.Instance.SaveChanges());
             CanvasMouseScrollCommand =
@@ -475,6 +485,14 @@ namespace Designer.ViewModel
             RenderRoute();
         }
 
+
+
+        public void DeletePlexiglass()
+        {
+            PlexiLines.Clear();
+            UpdateDbPlexiglass();
+            RenderPolyPlexi();
+        }
         /**
          * Tekend de meetlat tussen de 2 locaties
          */

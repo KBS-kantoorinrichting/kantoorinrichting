@@ -107,6 +107,13 @@
                                     Background="#d00037" VerticalAlignment="Center"
                                     Foreground="White"
                                     Style="{StaticResource MaterialDesignFlatButton}" />
+                            
+                            <Separator />
+                            <Button Content="Verwijder Plexiglas" Command="{Binding RemovePlexiglass}"
+                                    materialDesign:ButtonAssist.CornerRadius="7"
+                                    Background="#d00037" VerticalAlignment="Center"
+                                    Foreground="White"
+                                    Style="{StaticResource MaterialDesignFlatButton}" />
 
                         </ToolBar>
                     </ToolBarTray>

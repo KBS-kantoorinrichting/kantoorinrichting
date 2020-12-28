@@ -23,6 +23,7 @@ namespace Designer.ViewModel {
         public bool OnRooms => Navigator.CurrentPage.GetType() == typeof(ViewRoomsView);
 
         public Main() {
+            Application.Current.MainWindow.WindowState = WindowState.Maximized;
             //Maak de db connectie aan
             RoomService.Instance.Get(0);
             
