@@ -83,28 +83,6 @@ namespace Designer.ViewModel
             }
         }
         
-        public int RouteScore {
-            get {
-                // maakt lijst van lijnen
-                List<DistanceLine> distanceLines = _lines
-                    .Where(e => e.Key == _fakeRoute)
-                    .Select(e => e.Value)
-                    .SelectMany(v => v.Values)
-                    .Distinct()
-                    .ToList();
-
-                // telt lijnen
-                double count = distanceLines.Count(l => !l.Shows);
-                int m = distanceLines.Count == 0 ? 100 : (int)(count / distanceLines.Count * 100);
-
-                //                                                                            Groen       Rood
-                RouteColour = (SolidColorBrush) new BrushConverter().ConvertFrom(m == 100 ? "#00D092" : "#d00037");
-                OnPropertyChanged("RouteColour");
-                
-                return m;
-            }
-        }
-        
         public int VentilationScore
         {
             get
