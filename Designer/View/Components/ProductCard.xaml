@@ -30,8 +30,8 @@
                 <StackPanel
                     Orientation="Horizontal">
                     <TextBlock Text="{Binding Width}" FontSize="15" />
-                    <TextBlock Text="x" FontSize="15" />
-                    <TextBlock Text="{Binding Length}" FontSize="15" />
+                    <TextBlock Text=" x" FontSize="15" />
+                    <TextBlock Text="{Binding Length, StringFormat=' {0} cm'}" FontSize="15" />
                 </StackPanel>
                 <TextBlock Text="{Binding Path=Price, StringFormat='€{0}'}" FontSize="12" />
 
