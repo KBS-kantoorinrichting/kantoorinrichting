@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Windows.Controls;
 
-namespace Designer.Other {
+namespace Designer.Utils {
     public class Navigator : INotifyPropertyChanged {
         //Maakt een "singleton" omdat dit voor nu een makelijk manier is om in elke viewmodel er bij te kunnen.
         private static Navigator _instance;

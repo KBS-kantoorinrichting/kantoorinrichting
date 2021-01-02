@@ -9,7 +9,6 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
-using Designer.Other;
 using Designer.Utils;
 using Designer.View;
 using Designer.View.Components;

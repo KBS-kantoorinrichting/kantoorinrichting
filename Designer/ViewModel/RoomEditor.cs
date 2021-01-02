@@ -8,7 +8,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Shapes;
-using Designer.Other;
+using Designer.Utils;
 using MaterialDesignThemes.Wpf;
 using Models;
 using Services;

@@ -1,5 +1,5 @@
 ﻿using System.ComponentModel;
-using Designer.Other;
+using Designer.Utils;
 using Designer.View;
 using Services;
 

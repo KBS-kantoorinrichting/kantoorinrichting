@@ -9,7 +9,7 @@
     xmlns:behaviors="http://schemas.microsoft.com/xaml/behaviors"
     xmlns:designer="clr-namespace:Designer"
     xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
-    xmlns:other="clr-namespace:Designer.Other"
+    xmlns:other="clr-namespace:Designer.Utils"
     mc:Ignorable="d"
     d:DesignWidth="800"
     Title="ViewDesignPage"

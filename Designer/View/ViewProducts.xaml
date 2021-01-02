@@ -6,7 +6,7 @@
     xmlns:viewModel="clr-namespace:Designer.ViewModel"
     xmlns:model="clr-namespace:Models;assembly=Models"
     xmlns:designer="clr-namespace:Designer"
-    xmlns:designer1="clr-namespace:Designer.Other"
+    xmlns:designer1="clr-namespace:Designer.Utils"
     xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
     xmlns:view="clr-namespace:Designer.View"
     xmlns:components="clr-namespace:Designer.View.Components"

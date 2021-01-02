@@ -4,7 +4,6 @@ using System.ComponentModel;
 using System.Linq;
 using System.Threading;
 using System.Windows.Controls;
-using Designer.Other;
 using Designer.Utils;
 using Designer.View;
 using MaterialDesignThemes.Wpf;

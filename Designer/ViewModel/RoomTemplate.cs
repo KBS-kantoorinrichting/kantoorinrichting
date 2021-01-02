@@ -2,7 +2,7 @@
 using System.ComponentModel;
 using System.Globalization;
 using System.Windows.Controls;
-using Designer.Other;
+using Designer.Utils;
 using MaterialDesignThemes.Wpf;
 using Models;
 using Services;

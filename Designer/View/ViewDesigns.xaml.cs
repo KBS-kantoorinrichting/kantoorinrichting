@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Windows.Controls;
-using Designer.Other;
+using Designer.Utils;
 using Designer.ViewModel;
 using Models;
 
