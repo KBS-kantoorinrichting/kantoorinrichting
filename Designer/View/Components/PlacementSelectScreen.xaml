@@ -4,7 +4,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:viewModel="clr-namespace:Designer.ViewModel"
-    xmlns:designer="clr-namespace:Designer"
+    xmlns:utils="clr-namespace:Designer.Utils"
     x:Class="Designer.View.PlacementSelectScreen"
     mc:Ignorable="d"
     d:DesignHeight="130" d:DesignWidth="160">
@@ -13,7 +13,7 @@
         <viewModel:ViewDesigns x:Name="viewModel" />
     </UserControl.DataContext>
     <UserControl.Resources>
-        <designer:PriceConverter x:Key="PriceConverter" />
+        <utils:PriceConverter x:Key="PriceConverter" />
     </UserControl.Resources>
     <Grid Background="White">
         <Rectangle Height="40" Stroke="Black" VerticalAlignment="Top" Fill="#FF65EAEA" />

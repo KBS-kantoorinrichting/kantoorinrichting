@@ -4,11 +4,11 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:designer="clr-namespace:Designer"
+             xmlns:utils="clr-namespace:Designer.Utils"
              mc:Ignorable="d"
              d:DesignHeight="256" d:DesignWidth="250">
     <UserControl.Resources>
-        <designer:ImagePathConverter x:Key="ImagePathConverter" />
+        <utils:ImagePathConverter x:Key="ImagePathConverter" />
     </UserControl.Resources>
     <materialDesign:Card>
         <Grid Height="256" Width="250" Margin="0,0,0,0">
