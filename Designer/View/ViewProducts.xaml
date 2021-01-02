@@ -50,7 +50,7 @@
                         </ItemsControl.ItemsPanel>
                         <ItemsControl.ItemTemplate>
                             <DataTemplate DataType="model:Product">
-                                <view:ProductCard Margin="0,10,10,0" />
+                                <components:ProductCard Margin="0,10,10,0" />
                             </DataTemplate>
                         </ItemsControl.ItemTemplate>
 

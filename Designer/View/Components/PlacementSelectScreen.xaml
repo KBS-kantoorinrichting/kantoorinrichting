@@ -3,14 +3,14 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:utils="clr-namespace:Designer.Utils" 
     xmlns:viewModel="clr-namespace:Designer.ViewModel"
-    xmlns:utils="clr-namespace:Designer.Utils"
-    x:Class="Designer.View.PlacementSelectScreen"
+    x:Class="Designer.View.Components.PlacementSelectScreen"
     mc:Ignorable="d"
     d:DesignHeight="130" d:DesignWidth="160">
 
     <UserControl.DataContext>
-        <viewModel:ViewDesigns x:Name="viewModel" />
+        <viewModel:ViewDesigns />
     </UserControl.DataContext>
     <UserControl.Resources>
         <utils:PriceConverter x:Key="PriceConverter" />
