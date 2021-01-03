@@ -277,7 +277,7 @@
                                                                 TextWrapping="Wrap"
                                                                 FontWeight="Bold" />
                                                             <TextBlock
-                                                                Text="/"
+                                                                Text="x"
                                                                 Foreground="#B8B8B8"
                                                                 HorizontalAlignment="Left"
                                                                 VerticalAlignment="Top"
@@ -286,7 +286,7 @@
                                                                 TextWrapping="Wrap"
                                                                 FontWeight="Bold" />
                                                             <TextBlock
-                                                                Text="{Binding Width}"
+                                                                Text="{Binding Width, StringFormat=' {0} cm'}"
                                                                 Foreground="#B8B8B8"
                                                                 HorizontalAlignment="Left"
                                                                 VerticalAlignment="Top"
@@ -297,7 +297,7 @@
                                                         </StackPanel>
 
                                                         <TextBlock
-                                                            Text="{Binding Price}"
+                                                            Text="{Binding Price, StringFormat='€{0}'}"
                                                             Foreground="#B8B8B8"
                                                             HorizontalAlignment="Left"
                                                             VerticalAlignment="Top"
@@ -423,7 +423,7 @@
                                                                 TextWrapping="Wrap"
                                                                 FontWeight="Bold" />
                                                             <TextBlock
-                                                                Text="/"
+                                                                Text="x"
                                                                 Foreground="#B8B8B8"
                                                                 HorizontalAlignment="Left"
                                                                 VerticalAlignment="Top"
@@ -432,7 +432,7 @@
                                                                 TextWrapping="Wrap"
                                                                 FontWeight="Bold" />
                                                             <TextBlock
-                                                                Text="{Binding Key.Width}"
+                                                                Text="{Binding Key.Width, StringFormat=' {0} cm'}"
                                                                 Foreground="#B8B8B8"
                                                                 HorizontalAlignment="Left"
                                                                 VerticalAlignment="Top"
