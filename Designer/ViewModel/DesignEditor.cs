@@ -589,8 +589,8 @@ namespace Designer.ViewModel {
 
         public void SetDesign(Design design) {
             // Haalt het design uit de database
-            Design = design;
-            ProductPlacements ??= new List<ProductPlacement>();
+            Design = DesignService.Instance.Get(design.Id);
+            ProductPlacements = design.ProductPlacements;
             RoomPlacements = design.Room.RoomPlacements;
             ProductPlacements ??= new List<ProductPlacement>();
             _productOverview = new Dictionary<Product, ProductData>();
