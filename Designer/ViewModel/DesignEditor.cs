@@ -155,8 +155,8 @@ namespace Designer.ViewModel {
                 // telt lijnen
                 double count = distanceLines.Count(l => !l.Shows);
                 int m = distanceLines.Count == 0 ? 100 : (int) (count / distanceLines.Count * 100);
-                m = Math.Min(0, m);
-                m = Math.Max(100, m);
+                m = Math.Max(0, m);
+                m = Math.Min(100, m);
                 //                                                                             Groen       Rood
                 DistanceColour = (SolidColorBrush) new BrushConverter().ConvertFrom(m == 100 ? "#00D092" : "#d00037");
                 OnPropertyChanged("DistanceColour");
@@ -194,8 +194,8 @@ namespace Designer.ViewModel {
                 int m = (int) (cm2 / 10000);
                 m = 100 - (m - RoomPlacements.Count);
 
-                m = Math.Min(0, m);
-                m = Math.Max(100, m);
+                m = Math.Max(0, m);
+                m = Math.Min(100, m);
                 //                                                                                Groen       Rood
                 VentilationColour = (SolidColorBrush) new BrushConverter().ConvertFrom(m > 55 ? "#00D092" : "#d00037");
 
