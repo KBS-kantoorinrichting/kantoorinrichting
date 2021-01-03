@@ -589,7 +589,7 @@ namespace Designer.ViewModel {
 
         public void SetDesign(Design design) {
             // Haalt het design uit de database
-            Design = DesignService.Instance.Get(design.Id);
+            Design = (Design)design.Clone();
             ProductPlacements = design.ProductPlacements;
             RoomPlacements = design.Room.RoomPlacements;
             ProductPlacements ??= new List<ProductPlacement>();
@@ -903,6 +903,7 @@ namespace Designer.ViewModel {
                 ProductPlacements.Remove(placement);
                 _selectedPlacement = null;
                 // Toegevoegd zodat de corona score wordt bijgewerkt
+                RemoveFromOverview(placement.Product);
                 OnPropertyChanged();
                 RemoveCorona(placement);
                 Editor.Children.Remove(selectScreen);
@@ -1004,6 +1005,22 @@ namespace Designer.ViewModel {
                 _productOverview[product].TotalPrice = Math.Round(_productOverview[product].TotalPrice + price, 2);
             } else {
                 _productOverview.Add(product, new ProductData {Total = 1, TotalPrice = price});
+            }
+        }
+
+        public void RemoveFromOverview(Product product)
+        {
+            double price = product.Price ?? 0.0;
+            if (_productOverview.ContainsKey(product))
+            {
+                if(_productOverview[product].Total == 1)
+                {
+                    _productOverview.Remove(product);
+                } else
+                {
+                    _productOverview[product].Total = _productOverview[product].Total - 1;
+                    _productOverview[product].TotalPrice = Math.Round(_productOverview[product].TotalPrice - price, 2);
+                }
             }
         }
 
