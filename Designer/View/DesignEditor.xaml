@@ -7,9 +7,8 @@
     xmlns:model="clr-namespace:Models;assembly=Models"
     x:Class="Designer.View.DesignEditorView"
     xmlns:behaviors="http://schemas.microsoft.com/xaml/behaviors"
-    xmlns:designer="clr-namespace:Designer"
+    xmlns:utils="clr-namespace:Designer.Utils"
     xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
-    xmlns:other="clr-namespace:Designer.Other"
     mc:Ignorable="d"
     d:DesignWidth="800"
     Title="ViewDesignPage"
@@ -18,8 +17,8 @@
         <viewModel:DesignEditor x:Name="viewModel" />
     </Page.DataContext>
     <Page.Resources>
-        <other:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
-        <designer:ImagePathConverter x:Key="ImagePathConverter" />
+        <utils:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+        <utils:ImagePathConverter x:Key="ImagePathConverter" />
     </Page.Resources>
     <Grid Margin="10">
         <Grid.ColumnDefinitions>
@@ -278,7 +277,7 @@
                                                                 TextWrapping="Wrap"
                                                                 FontWeight="Bold" />
                                                             <TextBlock
-                                                                Text="/"
+                                                                Text="x"
                                                                 Foreground="#B8B8B8"
                                                                 HorizontalAlignment="Left"
                                                                 VerticalAlignment="Top"
@@ -287,7 +286,7 @@
                                                                 TextWrapping="Wrap"
                                                                 FontWeight="Bold" />
                                                             <TextBlock
-                                                                Text="{Binding Width}"
+                                                                Text="{Binding Width, StringFormat=' {0} cm'}"
                                                                 Foreground="#B8B8B8"
                                                                 HorizontalAlignment="Left"
                                                                 VerticalAlignment="Top"
@@ -298,7 +297,7 @@
                                                         </StackPanel>
 
                                                         <TextBlock
-                                                            Text="{Binding Price}"
+                                                            Text="{Binding Price, StringFormat='€{0}'}"
                                                             Foreground="#B8B8B8"
                                                             HorizontalAlignment="Left"
                                                             VerticalAlignment="Top"
@@ -424,7 +423,7 @@
                                                                 TextWrapping="Wrap"
                                                                 FontWeight="Bold" />
                                                             <TextBlock
-                                                                Text="/"
+                                                                Text="x"
                                                                 Foreground="#B8B8B8"
                                                                 HorizontalAlignment="Left"
                                                                 VerticalAlignment="Top"
@@ -433,7 +432,7 @@
                                                                 TextWrapping="Wrap"
                                                                 FontWeight="Bold" />
                                                             <TextBlock
-                                                                Text="{Binding Key.Width}"
+                                                                Text="{Binding Key.Width, StringFormat=' {0} cm'}"
                                                                 Foreground="#B8B8B8"
                                                                 HorizontalAlignment="Left"
                                                                 VerticalAlignment="Top"

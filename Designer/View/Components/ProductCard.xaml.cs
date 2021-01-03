@@ -1,6 +1,6 @@
 ﻿using System.Windows.Controls;
 
-namespace Designer.View {
+namespace Designer.View.Components {
     /// <summary>
     ///     Interaction logic for UserControl1.xaml
     /// </summary>

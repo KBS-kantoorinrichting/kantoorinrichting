@@ -2,7 +2,7 @@
 using System.Globalization;
 using System.Windows.Data;
 
-namespace Designer {
+namespace Designer.Utils {
     public class ImagePathConverter : IValueConverter {
         //Deze class wordt gebruikt overal om het de bestandsnaam in de database
         //om te zetten naar een relatief pad voor o.a. de product-catalogus

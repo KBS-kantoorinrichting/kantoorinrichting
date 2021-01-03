@@ -1,14 +1,14 @@
 ﻿<UserControl xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
-             x:Class="Designer.View.ProductCard"
+             x:Class="Designer.View.Components.ProductCard"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:designer="clr-namespace:Designer"
+             xmlns:utils="clr-namespace:Designer.Utils"
              mc:Ignorable="d"
              d:DesignHeight="256" d:DesignWidth="250">
     <UserControl.Resources>
-        <designer:ImagePathConverter x:Key="ImagePathConverter" />
+        <utils:ImagePathConverter x:Key="ImagePathConverter" />
     </UserControl.Resources>
     <materialDesign:Card>
         <Grid Height="256" Width="250" Margin="0,0,0,0">
@@ -31,7 +31,7 @@
                     Orientation="Horizontal">
                     <TextBlock Text="{Binding Width}" FontSize="15" />
                     <TextBlock Text="x" FontSize="15" />
-                    <TextBlock Text="{Binding Length}" FontSize="15" />
+                    <TextBlock Text="{Binding Length, StringFormat=' {0} cm'}" FontSize="15" />
                 </StackPanel>
                 <TextBlock Text="{Binding Path=Price, StringFormat='€{0}'}" FontSize="12" />
 

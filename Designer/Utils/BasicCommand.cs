@@ -2,7 +2,7 @@
 using System.Diagnostics;
 using System.Windows.Input;
 
-namespace Designer.Other {
+namespace Designer.Utils {
     //Command wat een actie uitvoert geen async
     public class BasicCommand : ICommand {
         private readonly Action _action;

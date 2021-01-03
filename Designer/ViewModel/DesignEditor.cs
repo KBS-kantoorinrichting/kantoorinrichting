@@ -9,12 +9,10 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
-using Designer.Other;
 using Designer.Utils;
 using Designer.View;
 using Designer.View.Components;
 using Models;
-using Models.Utils;
 using Services;
 using Line = Models.Line;
 using Polygon = Models.Polygon;
@@ -157,8 +155,8 @@ namespace Designer.ViewModel {
                 // telt lijnen
                 double count = distanceLines.Count(l => !l.Shows);
                 int m = distanceLines.Count == 0 ? 100 : (int) (count / distanceLines.Count * 100);
-                m = Math.Min(0, m);
-                m = Math.Max(100, m);
+                m = Math.Max(0, m);
+                m = Math.Min(100, m);
                 //                                                                             Groen       Rood
                 DistanceColour = (SolidColorBrush) new BrushConverter().ConvertFrom(m == 100 ? "#00D092" : "#d00037");
                 OnPropertyChanged("DistanceColour");
@@ -196,8 +194,8 @@ namespace Designer.ViewModel {
                 int m = (int) (cm2 / 10000);
                 m = 100 - (m - RoomPlacements.Count);
 
-                m = Math.Min(0, m);
-                m = Math.Max(100, m);
+                m = Math.Max(0, m);
+                m = Math.Min(100, m);
                 //                                                                                Groen       Rood
                 VentilationColour = (SolidColorBrush) new BrushConverter().ConvertFrom(m > 55 ? "#00D092" : "#d00037");
 
@@ -591,8 +589,8 @@ namespace Designer.ViewModel {
 
         public void SetDesign(Design design) {
             // Haalt het design uit de database
-            Design = design;
-            ProductPlacements ??= new List<ProductPlacement>();
+            Design = (Design)design.Clone();
+            ProductPlacements = design.ProductPlacements;
             RoomPlacements = design.Room.RoomPlacements;
             ProductPlacements ??= new List<ProductPlacement>();
             _productOverview = new Dictionary<Product, ProductData>();
@@ -905,6 +903,7 @@ namespace Designer.ViewModel {
                 ProductPlacements.Remove(placement);
                 _selectedPlacement = null;
                 // Toegevoegd zodat de corona score wordt bijgewerkt
+                RemoveFromOverview(placement.Product);
                 OnPropertyChanged();
                 RemoveCorona(placement);
                 Editor.Children.Remove(selectScreen);
@@ -1006,6 +1005,22 @@ namespace Designer.ViewModel {
                 _productOverview[product].TotalPrice = Math.Round(_productOverview[product].TotalPrice + price, 2);
             } else {
                 _productOverview.Add(product, new ProductData {Total = 1, TotalPrice = price});
+            }
+        }
+
+        public void RemoveFromOverview(Product product)
+        {
+            double price = product.Price ?? 0.0;
+            if (_productOverview.ContainsKey(product))
+            {
+                if(_productOverview[product].Total == 1)
+                {
+                    _productOverview.Remove(product);
+                } else
+                {
+                    _productOverview[product].Total = _productOverview[product].Total - 1;
+                    _productOverview[product].TotalPrice = Math.Round(_productOverview[product].TotalPrice - price, 2);
+                }
             }
         }
 

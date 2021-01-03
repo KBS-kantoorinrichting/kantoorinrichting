@@ -5,7 +5,6 @@ using System.Threading;
 using Designer.View.Components;
 using Designer.ViewModel;
 using Models;
-using Models.Utils;
 
 namespace Designer.Utils {
     public static class GenerationUtils {

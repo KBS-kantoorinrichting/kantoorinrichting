@@ -6,7 +6,7 @@
     xmlns:s="clr-namespace:System;assembly=mscorlib"
     xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
     xmlns:viewModel="clr-namespace:Designer.ViewModel"
-    xmlns:designer="clr-namespace:Designer"
+    xmlns:utils="clr-namespace:Designer.Utils"
     x:Class="Designer.View.RoomTemplateView"
     mc:Ignorable="d"
     WindowHeight="-1"
@@ -17,7 +17,7 @@
         <viewModel:RoomTemplate />
     </Page.DataContext>
     <Page.Resources>
-        <designer:ImagePathConverter x:Key="ImagePathConverter" />
+        <utils:ImagePathConverter x:Key="ImagePathConverter" />
     </Page.Resources>
 
     <Grid>

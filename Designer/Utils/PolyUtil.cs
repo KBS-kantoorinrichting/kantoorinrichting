@@ -1,7 +1,8 @@
-﻿using System;
+﻿using Models;
+using System;
 using System.Linq;
 
-namespace Models.Utils {
+namespace Designer.Utils {
     public static class PolyUtil {
         /**
          * Checks center distance if this is smaller than 5 m and bigger then 1.5m returns
