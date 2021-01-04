@@ -42,6 +42,8 @@
                             Margin="0 52 0 0"
                             HorizontalAlignment="Center"
                             Foreground="White"
+                            Background="#00D092"
+                            BorderBrush="#00D092"
                             Command="{Binding GotoProducts}">
                             Ga naar alle producten
                         </Button>
@@ -73,6 +75,8 @@
                             Margin="0 52 0 0"
                             HorizontalAlignment="Center"
                             Foreground="White"
+                            Background="#00D092"
+                            BorderBrush="#00D092"
                             Command="{Binding GotoDesigns}">
                             Ga naar alle ontwerpen
                         </Button>
@@ -103,6 +107,8 @@
                             Margin="0 52 0 0"
                             HorizontalAlignment="Center"
                             Foreground="White"
+                            Background="#00D092"
+                            BorderBrush="#00D092"
                             Command="{Binding GotoRooms}">
                             Ga naar alle ruimtes
                         </Button>
