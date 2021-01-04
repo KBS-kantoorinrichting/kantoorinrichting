@@ -268,7 +268,7 @@
 
                                                         <StackPanel Orientation="Horizontal">
                                                             <TextBlock
-                                                                Text="{Binding Length}"
+                                                                Text="{Binding Length, StringFormat={}{0} cm}"
                                                                 Foreground="#B8B8B8"
                                                                 HorizontalAlignment="Left"
                                                                 VerticalAlignment="Top"
@@ -277,7 +277,7 @@
                                                                 TextWrapping="Wrap"
                                                                 FontWeight="Bold" />
                                                             <TextBlock
-                                                                Text="x"
+                                                                Text=" x"
                                                                 Foreground="#B8B8B8"
                                                                 HorizontalAlignment="Left"
                                                                 VerticalAlignment="Top"
@@ -414,7 +414,7 @@
 
                                                         <StackPanel Orientation="Horizontal">
                                                             <TextBlock
-                                                                Text="{Binding Key.Length}"
+                                                                Text="{Binding Key.Length, StringFormat={}{0} cm}"
                                                                 Foreground="#B8B8B8"
                                                                 HorizontalAlignment="Left"
                                                                 VerticalAlignment="Top"
@@ -423,7 +423,7 @@
                                                                 TextWrapping="Wrap"
                                                                 FontWeight="Bold" />
                                                             <TextBlock
-                                                                Text="x"
+                                                                Text=" x"
                                                                 Foreground="#B8B8B8"
                                                                 HorizontalAlignment="Left"
                                                                 VerticalAlignment="Top"
