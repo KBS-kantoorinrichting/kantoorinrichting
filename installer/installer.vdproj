@@ -15,13 +15,13 @@
     {
         "Entry"
         {
-        "MsmKey" = "8:_9640D8327B52453E94B1F8F4815E802F"
+        "MsmKey" = "8:_0D67121596B94CBE805E8F7D8806A788"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
-        "MsmKey" = "8:_C447A2FBE5774A8585ADC6030CB433EF"
+        "MsmKey" = "8:_9640D8327B52453E94B1F8F4815E802F"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -43,6 +43,22 @@
         "PrivateKeyFile" = "8:"
         "TimeStampServer" = "8:"
         "InstallerBootstrapper" = "3:2"
+            "BootstrapperCfg:{63ACBE69-63AA-4F98-B2B6-99F9E24495F2}"
+            {
+            "Enabled" = "11:TRUE"
+            "PromptEnabled" = "11:TRUE"
+            "PrerequisitesLocation" = "2:1"
+            "Url" = "8:"
+            "ComponentsUrl" = "8:"
+                "Items"
+                {
+                    "{EDC2488A-8267-493A-A98E-7D9C3B36CDF3}:.NETFramework,Version=v4.7.2"
+                    {
+                    "Name" = "8:Microsoft .NET Framework 4.7.2 (x86 and x64)"
+                    "ProductCode" = "8:.NETFramework,Version=v4.7.2"
+                    }
+                }
+            }
         }
         "Release"
         {
@@ -59,6 +75,14 @@
         "PrivateKeyFile" = "8:"
         "TimeStampServer" = "8:"
         "InstallerBootstrapper" = "3:2"
+            "BootstrapperCfg:{63ACBE69-63AA-4F98-B2B6-99F9E24495F2}"
+            {
+            "Enabled" = "11:TRUE"
+            "PromptEnabled" = "11:TRUE"
+            "PrerequisitesLocation" = "2:1"
+            "Url" = "8:"
+            "ComponentsUrl" = "8:"
+            }
         }
     }
     "Deployable"
@@ -90,7 +114,7 @@
         }
         "File"
         {
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_C447A2FBE5774A8585ADC6030CB433EF"
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_0D67121596B94CBE805E8F7D8806A788"
             {
             "SourcePath" = "8:..\\..\\..\\..\\Desktop\\ico.ico"
             "TargetName" = "8:ico.ico"
@@ -178,7 +202,7 @@
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:installer"
         "ProductCode" = "8:{7EF31EA4-2AB9-447B-A2C1-72CE1070F087}"
-        "PackageCode" = "8:{75DCC987-A2EA-4044-B874-830B29362790}"
+        "PackageCode" = "8:{091667E0-9937-48F0-992D-ABB4C4E8313E}"
         "UpgradeCode" = "8:{C8661A73-5AA3-4601-98B6-9311F4FF6195}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
@@ -298,9 +322,9 @@
         }
         "Shortcut"
         {
-            "{970C0BB2-C7D0-45D7-ABFA-7EC378858BC0}:_5FAC1D432C23423BBB0EBF75E3978235"
+            "{970C0BB2-C7D0-45D7-ABFA-7EC378858BC0}:_C06FBDEB502641FCA305C28A694D4A2E"
             {
-            "Name" = "8:Shortcut to Publish Items from Designer (Active)"
+            "Name" = "8:Kantoor ontwerper"
             "Arguments" = "8:"
             "Description" = "8:"
             "ShowCmd" = "3:1"
@@ -309,7 +333,7 @@
             "Target" = "8:_9640D8327B52453E94B1F8F4815E802F"
             "Folder" = "8:_C86E9E16363D41C089C92A1E9E120CCB"
             "WorkingFolder" = "8:_29BE81098B7F4F7090D7131876307062"
-            "Icon" = "8:"
+            "Icon" = "8:_0D67121596B94CBE805E8F7D8806A788"
             "Feature" = "8:"
             }
         }
@@ -713,7 +737,7 @@
         {
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_9640D8327B52453E94B1F8F4815E802F"
             {
-            "SourcePath" = "8:..\\Designer\\obj\\Debug\\netcoreapp3.1\\apphost.exe"
+            "SourcePath" = "8:..\\Designer\\obj\\Debug\\netcoreapp3.1\\Designer.exe"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_29BE81098B7F4F7090D7131876307062"
