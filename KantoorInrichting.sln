@@ -17,6 +17,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ModelsTest", "ModelsTest\Mo
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ServicesTest", "ServicesTest\ServicesTest.csproj", "{7E2A1470-21B0-493C-B634-0F97FEB7ED33}"
 EndProject
+Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "installer", "installer\installer.vdproj", "{13B6AA08-4910-4F62-98B2-B7E3B13F38C5}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -47,6 +49,8 @@ Global
 		{7E2A1470-21B0-493C-B634-0F97FEB7ED33}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7E2A1470-21B0-493C-B634-0F97FEB7ED33}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7E2A1470-21B0-493C-B634-0F97FEB7ED33}.Release|Any CPU.Build.0 = Release|Any CPU
+		{13B6AA08-4910-4F62-98B2-B7E3B13F38C5}.Debug|Any CPU.ActiveCfg = Debug
+		{13B6AA08-4910-4F62-98B2-B7E3B13F38C5}.Release|Any CPU.ActiveCfg = Release
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
